@@ -9,8 +9,9 @@ public class WelcomeController {
 
 
     @GetMapping("/helloworld")
-    public String welcome(String name, Model model){
-        model.addAttribute(name);
+    public String welcome(String name, Integer age, Model model){
+        model.addAttribute("name", name);
+        model.addAttribute("age", age);
         return "hello";
     }
 }

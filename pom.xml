@@ -36,7 +36,7 @@
         <dependency>
             <groupId>pl.allegro.tech.boot</groupId>
             <artifactId>handlebars-spring-boot-starter</artifactId>
-            <version>0.2.15</version>
+            <version>0.3.0</version>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>

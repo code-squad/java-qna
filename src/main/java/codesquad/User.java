@@ -1,6 +1,6 @@
 package codesquad;
 
-public class UserDTO {
+public class User {
     private String userId;
     private String password;
     private String name;
@@ -10,8 +10,8 @@ public class UserDTO {
         return userId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUserId(String userID) {
+        this.userId = userID;
     }
 
     public String getPassword() {

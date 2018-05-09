@@ -13,13 +13,9 @@ public class UserController {
     List<User> users = new ArrayList<>();
 
     @PostMapping("/create")
-    public String create(User user, Model model){
+    public String create(User user){
         users.add(user);
-        model.addAttribute("userId", user.getUserId());
-        model.addAttribute("password", user.getPassword());
-        model.addAttribute("name", user.getName());
-        model.addAttribute("email", user.getEmail());
-        return "hello";
+        return "redirect:/list";
     }
 
     @GetMapping("/list")

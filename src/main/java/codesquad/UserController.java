@@ -2,17 +2,16 @@ package codesquad;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class UserController {
 
-    @GetMapping("/create")
-    public String create(String userId, String password, String name, Integer age, String email, Model model){
+    @PostMapping("/create")
+    public String create(String userId, String password, String name, String email, Model model){
         model.addAttribute("userId", userId);
         model.addAttribute("password", password);
         model.addAttribute("name", name);
-        model.addAttribute("age", age);
         model.addAttribute("email", email);
         return "hello";
     }

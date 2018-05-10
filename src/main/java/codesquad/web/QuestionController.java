@@ -17,7 +17,7 @@ import codesquad.domain.QuestionRepository;
 public class QuestionController {
 
 	@Autowired
-	QuestionRepository questionRepository;
+	private QuestionRepository questionRepository;
 	
 	
 	@GetMapping("/")

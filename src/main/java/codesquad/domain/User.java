@@ -27,6 +27,10 @@ public class User {
 		this.userId = userId;
 	}
 
+	public Long getId() {
+		return id;
+	}
+
 	public String getPassword() {
 		return password;
 	}
@@ -60,6 +64,10 @@ public class User {
 	@Override
 	public String toString() {
 		return "User [userId=" + userId + ", password=" + password + ", name=" + name + ", email=" + email + "]";
+	}
+
+	public Boolean check(String password) {
+		return this.password.equals(password);
 	}
 
 }

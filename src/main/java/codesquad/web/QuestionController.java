@@ -1,25 +1,34 @@
 package codesquad.web;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import codesquad.domain.Question;
+import codesquad.domain.QuestionRepository;
+
 @Controller
 public class QuestionController {
 
-	List<Question> questions = new ArrayList<>();
+	@Autowired
+	private QuestionRepository questionRepository;
+	
 	
 	@GetMapping("/")
 	public String home(Model model) {
-		model.addAttribute("questions", questions);
+		model.addAttribute("questions", questionRepository.findAll());
 		return "index";
+	}
+	
+	@GetMapping("/qna/form")
+	public String userForm() {
+		return "/qna/form";
 	}
 	
 	@PostMapping("/questions/create")
@@ -27,16 +36,14 @@ public class QuestionController {
 		SimpleDateFormat time = new SimpleDateFormat("yyyy-mm-dd hh:mm");
 		String nowTime = time.format(new Date(System.currentTimeMillis())); 
 		question.setTime(nowTime);
-		question.setId(questions.size()+1);
-		questions.add(question);
+		questionRepository.save(question);
 		return "redirect:/";
 	}
 	
 	@GetMapping("/questions/{id}")
-	public String showQuestion(@PathVariable int id, Model model) {
-		System.out.println(questions.get(id-1).toString());
-		model.addAttribute("question",questions.get(id-1));
-		return "show";
+	public String showQuestion(@PathVariable Long id, Model model) {
+		model.addAttribute("question", questionRepository.findById(id).get());
+		return "/qna/show";
 	}
 	
 }

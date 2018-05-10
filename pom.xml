@@ -33,11 +33,8 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
-	<!-- 	<dependency>
-			<groupId>pl.allegro.tech.boot</groupId>
-			<artifactId>handlebars-spring-boot-starter</artifactId>
-			<version>0.2.15</version>
-		</dependency> -->
+		<!-- <dependency> <groupId>pl.allegro.tech.boot</groupId> <artifactId>handlebars-spring-boot-starter</artifactId> 
+			<version>0.2.15</version> </dependency> -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
@@ -72,13 +69,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mustache</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		
+
 	</dependencies>
 	<build>
 		<plugins>

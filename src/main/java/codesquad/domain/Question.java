@@ -1,21 +1,25 @@
-package codesquad.web;
+package codesquad.domain;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 
+@Entity
 public class Question {
 
+	@Id
+	@GeneratedValue
+	private Long id;
+	
+	@Column(nullable = false)
 	private String writer;
+	
 	private String title;
 	private String contents;
 	private String time;
-	private int id;
 
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	public String getTime() {
 		return time;

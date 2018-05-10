@@ -63,7 +63,7 @@
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
-                <li class="active"><a href=/">Posts</a></li>
+                <li class="active"><a href="/">Posts</a></li>
                 <li><a href="/user/login.html" role="button">로그인</a></li>
                 <li><a href="/user/form.html" role="button">회원가입</a></li>
                 <li><a href="#" role="button">로그아웃</a></li>
@@ -84,11 +84,11 @@
               </thead>
               <tbody>
 
-              {{#users}}
+              {{#users.users}}
               <tr>
                     <td>{{userId}}</td> <td>{{name}}</td> <td>{{email}}</td><td><a href="#" class="btn btn-success" role="button">수정</a></td>
               </tr>
-              {{/users}}
+              {{/users.users}}
 
               </tbody>
           </table>

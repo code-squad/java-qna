@@ -5,19 +5,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.util.ArrayList;
-
 @Controller
 public class UserController {
-    private ArrayList<User> users = new ArrayList<>();
+    private Users users = new Users();
 
-    @RequestMapping(value="/user/create", method=RequestMethod.POST)
+    @RequestMapping(value = "/user/create", method = RequestMethod.POST)
     public String create(User user) {
-        users.add(user);
-        return "redirect:/user/list";
+        users.addUser(user);
+        return "redirect:/users";
     }
 
-    @RequestMapping("/user/list")
+    @RequestMapping("/users")
     public String list(Model model) {
         model.addAttribute("users", users);
         return "/user/list";

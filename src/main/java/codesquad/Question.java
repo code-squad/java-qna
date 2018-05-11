@@ -7,6 +7,7 @@ public class Question {
     private String title;
     private String content;
     private String date;
+    private Integer index;
 
     public Question() {
         LocalDateTime timeStamp = LocalDateTime.now();
@@ -39,5 +40,13 @@ public class Question {
 
     public String getDate() {
         return date;
+    }
+
+    public void setIndex(Integer index) {
+        this.index = index;
+    }
+
+    public Integer getIndex() {
+        return index;
     }
 }

@@ -13,7 +13,7 @@ public class QuestionController {
     List<Question> questions = new ArrayList<>();
 
     @GetMapping("/")
-    public String welcome(Model model){
+    public String welcome(Model model) {
         model.addAttribute("questions", questions);
         return "index";
     }
@@ -25,6 +25,7 @@ public class QuestionController {
 
     @PostMapping("/submit")
     public String submit(Question question) {
+        question.setIndex(questions.size() + 1);
         questions.add(question);
         return "redirect:/";
     }

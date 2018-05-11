@@ -13,6 +13,12 @@ public class QnaController {
         model.addAttribute("age", age);
         return "welcome";
     }
+
+    @GetMapping("/")
+    public String index() {
+        return "index";
+    }
+
 }
 
 

@@ -63,9 +63,9 @@
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
-                <li class="active"><a href="../index.html">Posts</a></li>
-                <li><a href="../../static/user/login.html" role="button">로그인</a></li>
-                <li><a href="../../static/user/form.html" role="button">회원가입</a></li>
+                <li class="active"><a href="/">Posts</a></li>
+                <li><a href="../../user/login.html" role="button">로그인</a></li>
+                <li><a href="../../user/form.html" role="button">회원가입</a></li>
                 <li><a href="#" role="button">로그아웃</a></li>
                 <li><a href="#" role="button">개인정보수정</a></li>
             </ul>
@@ -91,8 +91,8 @@
                       <div class="article-header-text">
 
 
-                          <a href="/users/{{user.userId}}" class="article-author-name">{{question.author}}</a>
-                          <a href="/qna/{{question.index}}" class="article-header-time" title="퍼머링크">
+                          <a href="/users/{{question.author}}" class="article-author-name">{{question.author}}</a>
+                          <a href="/question/{{question.index}}" class="article-header-time" title="퍼머링크">
                               {{question.date}}
                               <i class="icon-link"></i>
                           </a>

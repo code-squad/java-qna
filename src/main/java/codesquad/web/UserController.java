@@ -36,25 +36,25 @@ public class UserController {
 	public String login(String userId, String password, HttpSession session) {
 		User user = userRepository.findByUserId(userId);
 
-		if(user == null) {
+		if (user == null) {
 			System.out.println("login fail");
 			return "redirect:/users/loginForm";
 		}
-		
-		if(!password.equals(user.getPassword())) {
+
+		if (!password.equals(user.getPassword())) {
 			System.out.println("login fail");
 			return "redirect:/users/loginForm";
 		}
-		
+
 		System.out.println("login success");
-		session.setAttribute("user", user);
-		
+		session.setAttribute("sessionedUser", user);
+
 		return "redirect:/";
 	}
-	
+
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {
-		session.removeAttribute("user");
+		session.removeAttribute("sessionedUser");
 		return "redirect:/";
 	}
 
@@ -63,45 +63,41 @@ public class UserController {
 		return "/user/form";
 	}
 
-	@GetMapping("/updateform")
-	public String userUpdateForm(@PathVariable Long id, Model model) {
+	@GetMapping("/{id}/updateForm")
+	public String userUpdate(@PathVariable Long id, Model model, HttpSession session) {
+		Object tempUser = session.getAttribute("sessionedUser");
+		if (tempUser == null) {
+			return "redirect:/users/loginForm";
+		}
+		User sessionedUser = (User) tempUser;
+		if (!id.equals(sessionedUser.getId())) {
+			throw new IllegalStateException("You can't update the another user");
+		}
+
 		User user = userRepository.findById(id).get();
 		model.addAttribute("user", user);
 		return "/user/updateForm";
 	}
 
-	@PostMapping("/create")
-	public String create(User user) {
+	@PutMapping("/update/{id}")
+	public String userUpdate(@PathVariable Long id, User updatedUser, HttpSession session) {
+		Object tempUser = session.getAttribute("sessionedUser");
+		if (tempUser == null) {
+			return "redirect:/users/loginForm";
+		}
+		User sessionedUser = (User) tempUser;
+		if (!id.equals(sessionedUser.getId())) {
+			throw new IllegalStateException("You can't update the another user");
+		}
+
+		User user = userRepository.findById(id).get();
+		user.update(updatedUser);
 		userRepository.save(user);
 		return "redirect:/users";
 	}
 
-	@GetMapping("/checkUserForm/{id}")
-	public String checkUserForm(@PathVariable Long id, Model model) {
-		User user = userRepository.findById(id).get();
-		model.addAttribute("id", id);
-		model.addAttribute("userId", user.getUserId());
-		return "/user/checkUser";
-	}
-
-	@GetMapping("/checkUser/{id}")
-	public String checkUser(@PathVariable Long id, String password, Model model) throws Exception {
-		User user = userRepository.findById(id).get();
-		model.addAttribute("user", user);
-
-		if (user.check(password)) {
-			return "/user/updateform";
-		}
-		return "/users/checkUserForm/" + id;
-		/*
-		 * if(!user.check(password)) { throw new Exception("비밀번호가 틀렸습니다."); }
-		 */
-	}
-
-	@PutMapping("/update/{id}")
-	public String userUpdate(@PathVariable Long id, User newUser) {
-		User user = userRepository.findById(id).get();
-		user.update(newUser);
+	@PostMapping("/create")
+	public String create(User user) {
 		userRepository.save(user);
 		return "redirect:/users";
 	}
@@ -113,4 +109,25 @@ public class UserController {
 		return "/user/profile";
 	}
 
+	/*
+	 * gram's user validation
+	 * 
+	 * @GetMapping("/updateForm") public String userUpdateForm(@PathVariable Long
+	 * id, Model model, HttpSession session) { User user =
+	 * userRepository.findById(id).get(); model.addAttribute("user", user); return
+	 * "/user/updateForm"; }
+	 * 
+	 * @GetMapping("/checkUserForm/{id}") public String checkUserForm(@PathVariable
+	 * Long id, Model model) { User user = userRepository.findById(id).get();
+	 * model.addAttribute("id", id); model.addAttribute("userId", user.getUserId());
+	 * return "/user/checkUser"; }
+	 * 
+	 * @GetMapping("/checkUser/{id}") public String checkUser(@PathVariable Long id,
+	 * String password, Model model) throws Exception { User user =
+	 * userRepository.findById(id).get(); model.addAttribute("user", user);
+	 * 
+	 * if (user.check(password)) { return "/user/updateForm"; } return
+	 * "/users/checkUserForm/" + id; if(!user.check(password)) { throw new
+	 * Exception("비밀번호가 틀렸습니다."); } }
+	 */
 }

@@ -2,6 +2,7 @@ package codesquad.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Users {
     private ArrayList<User> users = new ArrayList<>();
@@ -16,5 +17,9 @@ public class Users {
 
     public List<User> getUsers() {
         return users;
+    }
+
+    public Optional<User> findById(String userId) {
+        return users.stream().filter(user -> user.isSame(userId)).findFirst();
     }
 }

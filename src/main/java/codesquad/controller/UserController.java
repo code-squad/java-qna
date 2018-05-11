@@ -24,7 +24,7 @@ public class UserController {
         return "/user/list";
     }
 
-    @RequestMapping("/user/{userId}")
+    @RequestMapping("/user/search/{userId}")
     public String getInfo(Model model, @PathVariable("userId") String userId) {
         Optional<User> user = users.findById(userId);
         if (!user.isPresent()) {

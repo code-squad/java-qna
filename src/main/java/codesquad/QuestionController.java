@@ -12,10 +12,14 @@ import java.util.List;
 public class QuestionController {
     List<Question> questions = new ArrayList<>();
 
-    @GetMapping("/question")
-    public String question(Model model) {
+    @GetMapping("/")
+    public String welcome(Model model){
         model.addAttribute("questions", questions);
-        System.out.println(questions.size());
+        return "index";
+    }
+
+    @GetMapping("/question")
+    public String question() {
         return "/qna/form";
     }
 

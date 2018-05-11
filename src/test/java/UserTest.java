@@ -18,7 +18,7 @@ public class UserTest {
 
 	@Test
 	public void checkTest() {
-		assertThat(user.check("1234"), is(true));
+		assertThat(user.matchPassword("1234"), is(true));
 	}
 
 }

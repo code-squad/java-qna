@@ -90,7 +90,7 @@ public class UserController {
 			return "redirect:/users/loginForm";
 		}
 		User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-		if (sessionedUser.matchId(id)) {
+		if (!sessionedUser.matchId(id)) {
 			throw new IllegalStateException("You can't update the another user");
 		}
 

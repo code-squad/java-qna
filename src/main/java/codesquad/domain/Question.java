@@ -7,6 +7,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.servlet.http.HttpSession;
+
+import codesquad.web.HttpSessionUtils;
 
 
 @Entity
@@ -35,8 +38,11 @@ public class Question {
 		this.contents = contents;
 		this.time = new SimpleDateFormat("yyyy-mm-dd hh:mm").format(new Date(System.currentTimeMillis())); ;
 	}
-
-
+	
+	public Boolean matchUserId(HttpSession session) {
+		return writer.equals(HttpSessionUtils.getUserFromSession(session).getUserId());
+	}
+	
 	public String getTime() {
 		return time;
 	}
@@ -56,6 +62,14 @@ public class Question {
 	@Override
 	public String toString() {
 		return "Question [writer=" + writer + ", title=" + title + ", contents=" + contents + "]";
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void update(String contents) {
+		this.contents = contents;
 	}
 
 }

@@ -26,4 +26,8 @@ public class User {
     public String toString() {
         return userId + " " + password + " " + name + " " + email;
     }
+
+    public boolean isValidUserId(String userId) {
+        return this.userId.equals(userId);
+    }
 }

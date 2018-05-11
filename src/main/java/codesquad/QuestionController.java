@@ -3,6 +3,7 @@ package codesquad;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
@@ -28,5 +29,17 @@ public class QuestionController {
         question.setIndex(questions.size() + 1);
         questions.add(question);
         return "redirect:/";
+    }
+
+    @GetMapping("/question/{index}")
+    public String showQuestion(@PathVariable String index, Model model) {
+        for (Question question : questions) {
+            if (question.getIndex() == Integer.parseInt(index)) {
+//                model.addAttribute("user", );
+                model.addAttribute("question", question);
+                break;
+            }
+        }
+        return "qna/show";
     }
 }

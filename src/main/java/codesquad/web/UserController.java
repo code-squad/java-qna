@@ -27,6 +27,12 @@ public class UserController {
 		return "/user/list";
 	}
 
+	@PostMapping("/create")
+	public String create(User user) {
+		userRepository.save(user);
+		return "redirect:/users";
+	}
+
 	@GetMapping("/loginForm")
 	public String loginForm() {
 		return "/user/login";
@@ -41,20 +47,20 @@ public class UserController {
 			return "redirect:/users/loginForm";
 		}
 
-		if (!password.equals(user.getPassword())) {
+		if (!user.matchPassword(password)) {
 			System.out.println("login fail");
 			return "redirect:/users/loginForm";
 		}
 
 		System.out.println("login success");
-		session.setAttribute("sessionedUser", user);
+		session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
 
 		return "redirect:/";
 	}
 
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {
-		session.removeAttribute("sessionedUser");
+		session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
 		return "redirect:/";
 	}
 
@@ -65,12 +71,11 @@ public class UserController {
 
 	@GetMapping("/{id}/updateForm")
 	public String userUpdate(@PathVariable Long id, Model model, HttpSession session) {
-		Object tempUser = session.getAttribute("sessionedUser");
-		if (tempUser == null) {
+		if (HttpSessionUtils.isLoginUser(session)) {
 			return "redirect:/users/loginForm";
 		}
-		User sessionedUser = (User) tempUser;
-		if (!id.equals(sessionedUser.getId())) {
+		User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+		if (!sessionedUser.matchId(id)) {
 			throw new IllegalStateException("You can't update the another user");
 		}
 
@@ -81,23 +86,16 @@ public class UserController {
 
 	@PutMapping("/update/{id}")
 	public String userUpdate(@PathVariable Long id, User updatedUser, HttpSession session) {
-		Object tempUser = session.getAttribute("sessionedUser");
-		if (tempUser == null) {
+		if (HttpSessionUtils.isLoginUser(session)) {
 			return "redirect:/users/loginForm";
 		}
-		User sessionedUser = (User) tempUser;
-		if (!id.equals(sessionedUser.getId())) {
+		User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+		if (sessionedUser.matchId(id)) {
 			throw new IllegalStateException("You can't update the another user");
 		}
 
 		User user = userRepository.findById(id).get();
 		user.update(updatedUser);
-		userRepository.save(user);
-		return "redirect:/users";
-	}
-
-	@PostMapping("/create")
-	public String create(User user) {
 		userRepository.save(user);
 		return "redirect:/users";
 	}
@@ -108,26 +106,4 @@ public class UserController {
 		model.addAttribute("user", user);
 		return "/user/profile";
 	}
-
-	/*
-	 * gram's user validation
-	 * 
-	 * @GetMapping("/updateForm") public String userUpdateForm(@PathVariable Long
-	 * id, Model model, HttpSession session) { User user =
-	 * userRepository.findById(id).get(); model.addAttribute("user", user); return
-	 * "/user/updateForm"; }
-	 * 
-	 * @GetMapping("/checkUserForm/{id}") public String checkUserForm(@PathVariable
-	 * Long id, Model model) { User user = userRepository.findById(id).get();
-	 * model.addAttribute("id", id); model.addAttribute("userId", user.getUserId());
-	 * return "/user/checkUser"; }
-	 * 
-	 * @GetMapping("/checkUser/{id}") public String checkUser(@PathVariable Long id,
-	 * String password, Model model) throws Exception { User user =
-	 * userRepository.findById(id).get(); model.addAttribute("user", user);
-	 * 
-	 * if (user.check(password)) { return "/user/updateForm"; } return
-	 * "/users/checkUserForm/" + id; if(!user.check(password)) { throw new
-	 * Exception("비밀번호가 틀렸습니다."); } }
-	 */
 }

@@ -3,17 +3,22 @@ package codesquad.web;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import codesquad.domain.Question;
 import codesquad.domain.QuestionRepository;
+import codesquad.domain.User;
 
 @Controller
+@RequestMapping("/questions")
 public class QuestionController {
 
 	@Autowired
@@ -26,17 +31,24 @@ public class QuestionController {
 		return "index";
 	}
 	
-	@GetMapping("/qna/form")
-	public String userForm() {
+	@GetMapping("/form")
+	public String questionForm(HttpSession session) {
+		if(!HttpSessionUtils.isLoginUser(session)) {
+			return "/users/loginForm"; 
+		}
+		
 		return "/qna/form";
 	}
 	
-	@PostMapping("/questions/create")
-	public String createQuestion(Question question) {
-		SimpleDateFormat time = new SimpleDateFormat("yyyy-mm-dd hh:mm");
-		String nowTime = time.format(new Date(System.currentTimeMillis())); 
-		question.setTime(nowTime);
-		questionRepository.save(question);
+	@PostMapping("/create") 
+	public String createQuestion(String title, String contents, HttpSession session) {
+		if(!HttpSessionUtils.isLoginUser(session)) {
+			return "/users/loginForm"; 
+		}
+		User sessionUser = HttpSessionUtils.getUserFromSession(session);
+		Question newQuestion = new Question(sessionUser.getUserId(), title, contents);
+		
+		questionRepository.save(newQuestion);
 		return "redirect:/";
 	}
 	

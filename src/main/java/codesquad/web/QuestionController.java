@@ -2,10 +2,10 @@ package codesquad.web;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.catalina.manager.util.SessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,9 +55,8 @@ public class QuestionController {
 			return "/users/loginForm";
 		}
 
-		User sessionedUser = HttpSessionUtils.getUserFromSession(session);
 		Question question = questionRepository.findById(id).get();
-		if (!sessionedUser.matchId(question.getId())) {
+		if (!question.matchUserId(session)) {
 			throw new IllegalStateException("You can't update the another user");
 		}
 
@@ -82,5 +81,21 @@ public class QuestionController {
 
 		return "redirect:/questions/" + id;
 	}
-
+	
+	@DeleteMapping("/{id}/delete")
+	public String deleteQuestion(@PathVariable Long id, HttpSession session) {
+		if (!HttpSessionUtils.isLoginUser(session)) {
+			return "redirect:/users/loginForm";
+		}
+		
+		Question question = questionRepository.findById(id).get();
+		if (!question.matchUserId(session)) {
+			throw new IllegalStateException("You can't delete the another user");
+		}
+		
+		questionRepository.deleteById(id);
+		return "redirect:/";
+	}
+	
+	
 }

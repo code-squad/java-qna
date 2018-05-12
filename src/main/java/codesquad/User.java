@@ -48,7 +48,7 @@ public class User {
 
     public void updateUserInfo(String oldPw, String newPw, String newName, String newEmail) throws IllegalArgumentException{
         if (!pwMatch(oldPw)) {
-            throw new IllegalArgumentException("비밀번호 불일치");
+            throw new IllegalArgumentException("사용자 정보수정 실패: 비밀번호 불일치");
         }
         this.password = newPw;
         this.name = newName;

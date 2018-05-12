@@ -71,6 +71,7 @@ public class UserController {
                 }
             }
         } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
             return "redirect:/user/" + userId + "/form";
         }
         return "redirect:/user/list";

@@ -41,4 +41,17 @@ public class User {
     public boolean isMatch(String userId) {
         return this.userId.equals(userId);
     }
+
+    private boolean pwMatch(String pw){
+        return this.password.equals(pw);
+    }
+
+    public void updateUserInfo(String oldPw, String newPw, String newName, String newEmail) throws IllegalArgumentException{
+        if (!pwMatch(oldPw)) {
+            throw new IllegalArgumentException("비밀번호 불일치");
+        }
+        this.password = newPw;
+        this.name = newName;
+        this.email = newEmail;
+    }
 }

@@ -36,16 +36,6 @@ public class UserController {
         return "/user/profile";
     }
 
-    @GetMapping("/user/form")
-    public String form() {
-        return "/user/form";
-    }
-
-    @GetMapping("/user/login")
-    public String login() {
-        return "/user/login";
-    }
-
     @GetMapping("/user/{userId}/form")
     public String updateForm(@PathVariable String userId, Model model) {
         for (User user : users) {
@@ -59,10 +49,6 @@ public class UserController {
 
     @PostMapping("/user/{userId}/update")
     public String updateUser(String userId, String oldPassword, String newPassword, String name, String email) {
-        System.out.println(userId);
-        System.out.println(oldPassword);
-        System.out.println(newPassword);
-        System.out.println(name);
         try {
             for (User u : users) {
                 if (u.isMatch(userId)) {

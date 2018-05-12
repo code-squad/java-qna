@@ -19,11 +19,6 @@ public class QuestionController {
         return "index";
     }
 
-    @GetMapping("/question")
-    public String question() {
-        return "/qna/form";
-    }
-
     @PostMapping("/submit")
     public String submit(Question question) {
         question.setIndex(questions.size() + 1);
@@ -35,7 +30,6 @@ public class QuestionController {
     public String showQuestion(@PathVariable String index, Model model) {
         for (Question question : questions) {
             if (question.getIndex() == Integer.parseInt(index)) {
-//                model.addAttribute("user", );
                 model.addAttribute("question", question);
                 break;
             }

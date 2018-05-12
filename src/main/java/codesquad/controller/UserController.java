@@ -14,20 +14,20 @@ import java.util.Optional;
 public class UserController {
     private Users users = new Users();
 
-    @RequestMapping(value = "/user/create", method = RequestMethod.POST)
+    @RequestMapping(value = "/users", method = RequestMethod.POST)
     public String create(User user) {
         users.addUser(user);
-        return "redirect:/user/list";
+        return "redirect:/users";
     }
 
-    @RequestMapping("/user/list")
-    public String getList(Model model) {
+    @RequestMapping("/users")
+    public String show(Model model) {
         model.addAttribute("users", users.getUsers());
         return "/user/list";
     }
 
-    @RequestMapping("/user/{userId}")
-    public String getInfo(Model model, @PathVariable("userId") String userId) {
+    @RequestMapping("/users/{userId}")
+    public String get(Model model, @PathVariable("userId") String userId) {
         Optional<User> user = users.findById(userId);
         if (!user.isPresent()) {
             System.out.println("존재하지않는 사용자입니다.");

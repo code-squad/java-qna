@@ -62,7 +62,6 @@ public class Question implements Comparable<Question> {
 
     @Override
     public int compareTo(Question otherQuestion) {
-        System.out.println("hi");
         return Integer.compare(otherQuestion.id, this.id);
     }
 }

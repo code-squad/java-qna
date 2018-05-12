@@ -14,13 +14,13 @@ import java.util.Optional;
 public class QuestionController {
     private Questions questions = new Questions();
 
-    @RequestMapping(value = "/qna/create", method = RequestMethod.POST)
+    @RequestMapping(value = "/questions", method = RequestMethod.POST)
     public String create(Question question) {
         questions.add(question);
         return "redirect:/";
     }
 
-    @RequestMapping("/qna/{id}")
+    @RequestMapping("/questions/{id}")
     public String show(Model model, @PathVariable("id") String id) {
         Optional<Question> question = questions.findById(id);
         if (!question.isPresent()) {
@@ -28,7 +28,7 @@ public class QuestionController {
             return "/error/show";
         }
         model.addAttribute("question", question.get());
-        return "/qna/show";
+        return "/question/show";
     }
 
     @RequestMapping("/")

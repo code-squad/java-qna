@@ -1,6 +1,7 @@
 package codesquad.model;
 
 public class User {
+    private int id;
     private String userId;
     private String passwd;
     private String name;
@@ -8,6 +9,14 @@ public class User {
 
     public User() {
 
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getUserId() {
@@ -46,6 +55,10 @@ public class User {
         return this.userId.equals(userId);
     }
 
+    public boolean isSame(int id) {
+        return this.id == id;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -54,5 +67,14 @@ public class User {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 '}';
+    }
+
+    public void changeInfo(String currentPasswd, String changePasswd, String name, String email) throws IllegalArgumentException {
+        if (!passwd.equals(currentPasswd)) {
+            throw new IllegalArgumentException("현재 비밀번호가 올바르지않습니다.");
+        }
+        passwd = changePasswd;
+        this.name = name;
+        this.email = email;
     }
 }

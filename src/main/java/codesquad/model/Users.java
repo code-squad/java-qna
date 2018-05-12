@@ -11,7 +11,8 @@ public class Users {
 
     }
 
-    public void addUser(User user) {
+    public void add(User user) {
+        user.setId(users.size() + 1);
         users.add(user);
     }
 
@@ -19,7 +20,7 @@ public class Users {
         return users;
     }
 
-    public Optional<User> findById(String userId) {
-        return users.stream().filter(user -> user.isSame(userId)).findFirst();
+    public Optional<User> findById(int id) {
+        return users.stream().filter(user -> user.isSame(id)).findFirst();
     }
 }

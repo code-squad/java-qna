@@ -22,7 +22,7 @@ public class UserController {
 
     @RequestMapping("/user/list")
     public String getList(Model model) {
-        model.addAttribute("users", users);
+        model.addAttribute("users", users.getUsers());
         return "/user/list";
     }
 

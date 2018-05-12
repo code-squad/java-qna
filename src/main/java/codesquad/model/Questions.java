@@ -2,6 +2,7 @@ package codesquad.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class Questions {
@@ -17,7 +18,7 @@ public class Questions {
         Collections.sort(questions);
     }
 
-    public ArrayList<Question> getQuestions() {
+    public List<Question> getQuestions() {
         return questions;
     }
 

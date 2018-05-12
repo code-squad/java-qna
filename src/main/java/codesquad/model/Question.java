@@ -1,6 +1,8 @@
 package codesquad.model;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class Question implements Comparable<Question> {
     private int id;
@@ -10,8 +12,7 @@ public class Question implements Comparable<Question> {
     private String date;
 
     public Question() {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd hh:mm");
-
+        date = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.KOREAN).format(new Date());
     }
 
     public int getId() {
@@ -44,6 +45,10 @@ public class Question implements Comparable<Question> {
 
     public void setContents(String contents) {
         this.contents = contents;
+    }
+
+    public String getDate() {
+        return date;
     }
 
     @Override

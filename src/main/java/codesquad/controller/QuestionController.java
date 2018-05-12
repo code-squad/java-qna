@@ -17,7 +17,6 @@ public class QuestionController {
     @RequestMapping(value = "/qna/create", method = RequestMethod.POST)
     public String create(Question question) {
         questions.add(question);
-        System.out.println(question);
         return "redirect:/";
     }
 

@@ -1,4 +1,4 @@
-package codesquad.controller;
+package codesquad.model;
 
 import java.util.ArrayList;
 import java.util.List;

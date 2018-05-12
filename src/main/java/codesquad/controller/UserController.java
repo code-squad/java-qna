@@ -1,5 +1,7 @@
 package codesquad.controller;
 
+import codesquad.model.User;
+import codesquad.model.Users;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,12 +26,12 @@ public class UserController {
         return "/user/list";
     }
 
-    @RequestMapping("/user/search/{userId}")
+    @RequestMapping("/user/{userId}")
     public String getInfo(Model model, @PathVariable("userId") String userId) {
         Optional<User> user = users.findById(userId);
         if (!user.isPresent()) {
             System.out.println("존재하지않는 사용자입니다.");
-            /* 에러페이지로 */
+            return "/error/show";
         }
         model.addAttribute("user", user.get());
         return "/user/profile";

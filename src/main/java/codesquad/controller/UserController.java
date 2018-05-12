@@ -45,7 +45,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/users/{id}", method = RequestMethod.POST)
-    public String update(@PathVariable("id") String id, String currentPasswd, String changePasswd, String name, String email) {
+    public String update(@PathVariable("id") String id, String userId, String currentPasswd, String changePasswd, String name, String email) {
         Optional<User> optionalUser = users.findById(Integer.parseInt(id));
         if (!optionalUser.isPresent()) {
             System.out.println("에러에 의해 사용자 삭제된 경우, 데이터베이스 임의조작에 의해 사용자 삭제된 경우");

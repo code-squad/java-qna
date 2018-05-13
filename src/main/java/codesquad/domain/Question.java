@@ -68,8 +68,10 @@ public class Question {
 		return id;
 	}
 
-	public void update(String contents) {
+	public Question update(String contents, String title) {
 		this.contents = contents;
+		this.title = title;
+		return this;
 	}
 
 }

@@ -1,5 +1,7 @@
 package codesquad.web;
 
+import java.util.Optional;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,20 +42,21 @@ public class UserController {
 
 	@PostMapping("/login")
 	public String login(String userId, String password, HttpSession session) {
-		User user = userRepository.findByUserId(userId);
-
-		if (user == null) {
+//		User user = userRepository.findByUserId(userId);
+		Optional<User> user = userRepository.findByUserId(userId);
+		
+		if (!user.isPresent()) {
 			System.out.println("login fail");
 			return "redirect:/users/loginForm";
 		}
 
-		if (!user.matchPassword(password)) {
+		if (!user.get().matchPassword(password)) {
 			System.out.println("login fail");
 			return "redirect:/users/loginForm";
 		}
 
 		System.out.println("login success");
-		session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
+		session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user.get());
 
 		return "redirect:/";
 	}

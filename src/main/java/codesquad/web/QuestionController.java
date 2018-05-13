@@ -31,7 +31,7 @@ public class QuestionController {
 		return "/qna/form";
 	}
 
-	@PostMapping("/create")
+	@PostMapping("")
 	public String createQuestion(String title, String contents, HttpSession session) {
 		if (!HttpSessionUtils.isLoginUser(session)) {
 			return "/users/loginForm";
@@ -64,8 +64,8 @@ public class QuestionController {
 		return "/qna/updateForm";
 	}
 
-	@PutMapping("/update")
-	public String updateQuestion(Long id, String contents, HttpSession session) {
+	@PutMapping("")
+	public String updateQuestion(Long id, String contents, String title, HttpSession session) {
 
 		if (!HttpSessionUtils.isLoginUser(session)) {
 			return "redirect: /users/loginForm";
@@ -76,13 +76,13 @@ public class QuestionController {
 			throw new IllegalStateException("You can't update the another user");
 		}
 		
-		question.update(contents);
+		question.update(contents,title);
 		questionRepository.save(question);
 
 		return "redirect:/questions/" + id;
 	}
 	
-	@DeleteMapping("/{id}/delete")
+	@DeleteMapping("/{id}")
 	public String deleteQuestion(@PathVariable Long id, HttpSession session) {
 		if (!HttpSessionUtils.isLoginUser(session)) {
 			return "redirect:/users/loginForm";

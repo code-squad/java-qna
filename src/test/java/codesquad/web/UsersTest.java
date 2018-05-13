@@ -1,5 +1,7 @@
 package codesquad.web;
 
+import codesquad.web.model.User;
+import codesquad.web.model.Users;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;

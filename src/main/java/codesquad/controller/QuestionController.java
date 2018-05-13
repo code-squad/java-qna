@@ -4,9 +4,7 @@ import codesquad.model.Question;
 import codesquad.model.Questions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -14,13 +12,19 @@ import java.util.Optional;
 public class QuestionController {
     private Questions questions = new Questions();
 
-    @RequestMapping(value = "/questions", method = RequestMethod.POST)
+    @GetMapping("/")
+    public String showQuestions(Model model) {
+        model.addAttribute("questions", questions.getQuestions());
+        return "index";
+    }
+
+    @PostMapping("/questions")
     public String create(Question question) {
         questions.add(question);
         return "redirect:/";
     }
 
-    @RequestMapping("/questions/{id}")
+    @GetMapping("/questions/{id}")
     public String show(Model model, @PathVariable("id") String id) {
         Optional<Question> question = questions.findById(id);
         if (!question.isPresent()) {
@@ -29,11 +33,5 @@ public class QuestionController {
         }
         model.addAttribute("question", question.get());
         return "/question/show";
-    }
-
-    @RequestMapping("/")
-    public String showQuestions(Model model) {
-        model.addAttribute("questions", questions.getQuestions());
-        return "index";
     }
 }

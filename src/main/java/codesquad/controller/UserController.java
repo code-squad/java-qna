@@ -4,29 +4,28 @@ import codesquad.model.User;
 import codesquad.model.Users;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
 @Controller
+@RequestMapping("/users")
 public class UserController {
     private Users users = new Users();
 
-    @RequestMapping(value = "/users", method = RequestMethod.POST)
+    @PostMapping
     public String create(User user) {
         users.add(user);
         return "redirect:/users";
     }
 
-    @RequestMapping("/users")
+    @GetMapping
     public String show(Model model) {
         model.addAttribute("users", users.getUsers());
         return "/user/list";
     }
 
-    @RequestMapping("/users/{id}")
+    @GetMapping("/{id}")
     public String get(Model model, @PathVariable("id") String id) {
         Optional<User> user = users.findById(Integer.parseInt(id));
         if (!user.isPresent()) {
@@ -37,14 +36,14 @@ public class UserController {
         return "/user/profile";
     }
 
-    @RequestMapping(value = "/users/{id}/edit")
+    @GetMapping("/{id}/edit")
     public String edit(@PathVariable("id") String id, Model model) {
         Optional<User> user = users.findById(Integer.parseInt(id));
         model.addAttribute("user", user.get());
         return "/user/edit";
     }
 
-    @RequestMapping(value = "/users/{id}", method = RequestMethod.POST)
+    @PostMapping("/{id}")
     public String update(@PathVariable("id") String id, String userId, String currentPasswd, String changePasswd, String name, String email) {
         Optional<User> optionalUser = users.findById(Integer.parseInt(id));
         if (!optionalUser.isPresent()) {

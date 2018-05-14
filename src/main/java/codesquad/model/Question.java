@@ -49,4 +49,8 @@ public class Question {
     public Integer getIndex() {
         return index;
     }
+
+    public boolean isMatch(String index) {
+        return this.index.equals(Integer.parseInt(index));
+    }
 }

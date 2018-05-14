@@ -1,6 +1,7 @@
 package codesquad;
 
 import codesquad.model.Question;
+import codesquad.model.Questions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @Controller
 public class QuestionController {
-    List<Question> questions = new ArrayList<>();
+    private final Questions questions = new Questions();
 
     @GetMapping("/")
     public String welcome(Model model) {
@@ -22,19 +23,19 @@ public class QuestionController {
 
     @PostMapping("/submit")
     public String submit(Question question) {
-        question.setIndex(questions.size() + 1);
-        questions.add(question);
+        questions.addQuestion(question);
         return "redirect:/";
     }
 
     @GetMapping("/question/{index}")
     public String showQuestion(@PathVariable String index, Model model) {
-        for (Question question : questions) {
-            if (question.getIndex() == Integer.parseInt(index)) {
-                model.addAttribute("question", question);
-                break;
-            }
+        try {
+            Question question = questions.getQuestion(index);
+            model.addAttribute("question", question);
+            return "qna/show";
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return "index";
         }
-        return "qna/show";
     }
 }

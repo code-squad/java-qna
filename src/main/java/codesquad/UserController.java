@@ -15,7 +15,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/users")
 public class UserController {
-    private Users users = new Users();
+    private final Users users = new Users();
 
     @PostMapping("/create")
     public String create(User user) {
@@ -55,10 +55,10 @@ public class UserController {
     public String updateUser(String userId, String oldPassword, String newPassword, String name, String email) {
         try {
             users.updateUser(userId, oldPassword, newPassword, name, email);
+            return "redirect:/users/list";
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             return "redirect:/users/" + userId + "/form";
         }
-        return "redirect:/users/list";
     }
 }

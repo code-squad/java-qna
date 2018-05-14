@@ -34,7 +34,7 @@ public class Answer {
 	private String contents;
 
 	private LocalDateTime createDate;
-
+	
 	public Answer() {
 	}
 

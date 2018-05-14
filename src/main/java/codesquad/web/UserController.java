@@ -42,7 +42,6 @@ public class UserController {
 
 	@PostMapping("/login")
 	public String login(String userId, String password, HttpSession session) {
-//		User user = userRepository.findByUserId(userId);
 		Optional<User> user = userRepository.findByUserId(userId);
 		
 		if (!user.isPresent()) {

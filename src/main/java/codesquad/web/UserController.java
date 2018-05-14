@@ -40,7 +40,6 @@ public class UserController {
     public String updateForm(@PathVariable Long id, Model model) {
         User user = userRepository.findOne(id);
         model.addAttribute("user", user);
-        // db에서 id에 해당하는 값을 조회를 해온다.
         return "/user/updateForm";
     }
 

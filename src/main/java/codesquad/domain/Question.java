@@ -6,7 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class QnA {
+public class Question {
     @Id
     @GeneratedValue
     private Long id;
@@ -44,7 +44,7 @@ public class QnA {
         this.contents = contents;
     }
 
-    public void update(QnA newQna) {
+    public void update(Question newQna) {
         this.title = newQna.title;
         this.contents = newQna.contents;
     }

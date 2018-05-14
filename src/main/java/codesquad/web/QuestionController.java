@@ -32,13 +32,4 @@ public class QuestionController {
         model.addAttribute("posts", questions);
         return "index";
     }
-
-    public Question findQuestion(String questionId) {
-        for (Question question : questions) {
-            if (question.isValidId(questionId)) {
-                return question;
-            }
-        }
-        return null;
-    }
 }

@@ -2,6 +2,8 @@ package codesquad.web;
 
 import codesquad.domain.User;
 import codesquad.domain.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,7 +14,7 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/users")
 public class UserController {
-
+    public static final Logger logger = LoggerFactory.getLogger(UserController.class);
     @Autowired
     private UserRepository userRepository;
 
@@ -26,7 +28,6 @@ public class UserController {
         userRepository.save(usr);
         return "redirect:/users";
     }
-
     @GetMapping("")
     public String list(Model model) {
         model.addAttribute("users", userRepository.findAll());
@@ -62,19 +63,24 @@ public class UserController {
     @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
         User user = userRepository.findByUserId(userId);
-        System.out.println("user is " + user.toString());
         if (user == null) {
-            System.out.println("user is null");
+            logger.debug("login failed user is null");
             return "redirect:/users/loginForm";
         }
 
         if (!password.equals(user.getPassword())) {
-            System.out.println("login Error");
+            logger.debug("login failed");
             return "redirect:/users/loginForm";
         }
-        // login success
-        System.out.println("login success");
+        logger.debug("login success");
         session.setAttribute("user", user);
+        return "redirect:/";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.removeAttribute("user");
+        logger.debug("logout ok");
         return "redirect:/";
     }
 }

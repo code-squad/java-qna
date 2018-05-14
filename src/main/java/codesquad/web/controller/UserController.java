@@ -37,4 +37,19 @@ public class UserController {
         return "user/profile";
     }
 
+    @GetMapping("/users/{userId}/form")
+    public String updateUser(Model model, @PathVariable("userId") String userId) {
+        User user = users.findUser(userId);
+        System.out.println("find user : " + user.getUserId());
+        model.addAttribute("user", user);
+        return "user/updateForm";
+    }
+
+    @PostMapping("/users/update")
+    public String update(String userId, String beforePassword, String password, String name, String email) {
+        User user = users.matchUser(userId, beforePassword);
+        if (user == null) return "/";
+        user.update(password, name, email);
+        return "redirect:/users";
+    }
 }

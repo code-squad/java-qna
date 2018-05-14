@@ -52,6 +52,18 @@ public class User {
         return this.userId.equals(userId);
     }
 
+    public boolean haveId(User updatedUserId) {
+        return this.userId.equals(updatedUserId.userId);
+    }
+
+    public boolean matchWith(String beforePassword) {
+        return this.password.equals(beforePassword);
+    }
+
+    public boolean matchWith(User updatedUser) {
+        return this.userId.equals(updatedUser.userId) && this.password.equals(updatedUser.password);
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -60,5 +72,17 @@ public class User {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 '}';
+    }
+
+    public void update(User updatedUser) {
+        this.name = updatedUser.name;
+        this.password = updatedUser.password;
+        this.email = updatedUser.email;
+    }
+
+    public void update(String password, String name, String email) {
+        this.password = password;
+        this.name = name;
+        this.email = email;
     }
 }

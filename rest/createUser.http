@@ -1,0 +1,6 @@
+POST http://localhost:8080/create
+Content-Type: application/x-www-form-urlencoded
+
+userId=sanjigi&password=password&name=박재성&email=javajigi@slipp.net
+
+###

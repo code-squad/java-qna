@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{userId}/form")
-    public String updateUser(Model model, @PathVariable("userId") String userId) {
+    public String showUpdatePage(Model model, @PathVariable("userId") String userId) {
         User user = users.findUser(userId);
         System.out.println("find user : " + user.getUserId());
         model.addAttribute("user", user);
@@ -52,4 +52,5 @@ public class UserController {
         user.update(password, name, email);
         return "redirect:/users";
     }
+
 }

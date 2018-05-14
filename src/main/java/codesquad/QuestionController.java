@@ -32,7 +32,7 @@ public class QuestionController {
         try {
             Question question = questions.getQuestion(index);
             model.addAttribute("question", question);
-            return "qna/show";
+            return "questions/show";
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             return "index";

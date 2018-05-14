@@ -1,19 +1,27 @@
 package codesquad.web.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Users {
 
-    private Set<User> users = new HashSet<>();
+    private List<User> users = new ArrayList<>();
 
     public void addUser(User user) {
+        user.setId(users.size());
         users.add(user);
     }
 
-    public Set<User> getUsers() {
+    public List<User> getUsers() {
         return users;
     }
+
+    public User findUser(int id) {
+        return users.get(id);
+    }
+
 
     public User findUser(String userId) {
         for (User user : users) {

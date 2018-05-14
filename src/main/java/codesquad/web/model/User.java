@@ -8,6 +8,7 @@ public class User {
     private String password;
     private String name;
     private String email;
+    private int id;
 
     public User() { }
 
@@ -93,5 +94,9 @@ public class User {
     public int hashCode() {
 
         return Objects.hash(userId, password, name, email);
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

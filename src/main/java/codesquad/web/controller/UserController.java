@@ -39,9 +39,9 @@ public class UserController {
         return "user/profile";
     }
 
-    @GetMapping("{userId}/form")
-    public String showUpdatePage(Model model, @PathVariable("userId") String userId) {
-        User user = users.findUser(userId);
+    @GetMapping("{id}/form")
+    public String showUpdatePage(Model model, @PathVariable("id") int id) {
+        User user = users.findUser(id);
         System.out.println("find user : " + user.getUserId());
         model.addAttribute("user", user);
         return "user/updateForm";

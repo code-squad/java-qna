@@ -1,6 +1,7 @@
 package codesquad;
 
 import codesquad.model.User;
+import codesquad.model.Users;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,11 +15,11 @@ import java.util.List;
 @Controller
 @RequestMapping("/users")
 public class UserController {
-    List<User> users = new ArrayList<>();
+    private Users users = new Users();
 
     @PostMapping("/create")
     public String create(User user) {
-        users.add(user);
+        users.addUser(user);
         return "redirect:/users/list";
     }
 
@@ -30,22 +31,22 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public String profile(@PathVariable String userId, Model model) {
-        for (User user : users) {
-            if (user.isMatch(userId)) {
-                model.addAttribute("user", user);
-                break;
-            }
+        try {
+            User user = users.getUser(userId);
+            model.addAttribute("user", user);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
         }
         return "/users/profile";
     }
 
     @GetMapping("/{userId}/form")
     public String updateForm(@PathVariable String userId, Model model) {
-        for (User user : users) {
-            if (user.isMatch(userId)) {
-                model.addAttribute("user", user);
-                break;
-            }
+        try {
+            User user = users.getUser(userId);
+            model.addAttribute("user", user);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
         }
         return "/users/updateForm";
     }
@@ -53,12 +54,7 @@ public class UserController {
     @PostMapping("/{userId}/update")
     public String updateUser(String userId, String oldPassword, String newPassword, String name, String email) {
         try {
-            for (User u : users) {
-                if (u.isMatch(userId)) {
-                    u.updateUserInfo(oldPassword, newPassword, name, email);
-                    break;
-                }
-            }
+            users.updateUser(userId, oldPassword, newPassword, name, email);
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             return "redirect:/users/" + userId + "/form";

@@ -5,15 +5,20 @@ import org.junit.Before;
 import org.junit.Test;
 
 import codesquad.domain.Question;
+import codesquad.domain.User;
 
 public class QuestionTest {
 
 	Question question;
-	
+	User user;
 	
 	@Before
 	public void setUp() {
-		question = new Question("gram","제목","내용");
+		user = new User();
+		user.setName("이그램");
+		user.setPassword("1234");
+		user.setEmail("gram@codesqaud");
+		question = new Question(user,"제목","내용");
 	}
 
 	@Test

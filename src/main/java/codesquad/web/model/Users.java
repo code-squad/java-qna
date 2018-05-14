@@ -30,14 +30,6 @@ public class Users {
         return users.size();
     }
 
-    public void updateUser(User updatedUser) {
-        for (User user : users) {
-            if (user.matchWith(updatedUser)) {
-                user.update(updatedUser);
-            }
-        }
-    }
-
     public User matchUser(String userId, String beforePassword) {
         User user = findUser(userId);
         if (user.matchWith(beforePassword)) return user;

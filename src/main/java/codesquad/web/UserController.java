@@ -58,7 +58,7 @@ public class UserController {
         return "redirect:/users";
     }
 
-    public User findUserId(String userId) {
+    private User findUserId(String userId) {
         for (User user : users) {
             if (user.isValidUserId(userId)) {
                 return user;

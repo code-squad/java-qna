@@ -17,11 +17,10 @@ public class QuestionController {
     public String questions(Question question) {
         question.setId(questions.size() + 1);
         questions.add(question);
-        System.out.println(question.toString());
         return "redirect:/";
     }
 
-    @GetMapping("/question/{index}")
+    @GetMapping("/questions/{index}")
     public String viewDetail(@PathVariable String index, Model model) {
         model.addAttribute("question", questions.get(Integer.valueOf(index) - 1));
         return "qna/show";

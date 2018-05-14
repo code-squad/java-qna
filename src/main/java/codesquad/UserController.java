@@ -6,27 +6,29 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@RequestMapping("/users")
 public class UserController {
     List<User> users = new ArrayList<>();
 
     @PostMapping("/create")
     public String create(User user) {
         users.add(user);
-        return "redirect:/user/list";
+        return "redirect:/users/list";
     }
 
-    @GetMapping("/user/list")
+    @GetMapping("/list")
     public String list(Model model) {
         model.addAttribute("users", users);
-        return "/user/list";
+        return "/users/list";
     }
 
-    @GetMapping("/users/{userId}")
+    @GetMapping("/{userId}")
     public String profile(@PathVariable String userId, Model model) {
         for (User user : users) {
             if (user.isMatch(userId)) {
@@ -34,10 +36,10 @@ public class UserController {
                 break;
             }
         }
-        return "/user/profile";
+        return "/users/profile";
     }
 
-    @GetMapping("/user/{userId}/form")
+    @GetMapping("/{userId}/form")
     public String updateForm(@PathVariable String userId, Model model) {
         for (User user : users) {
             if (user.isMatch(userId)) {
@@ -45,10 +47,10 @@ public class UserController {
                 break;
             }
         }
-        return "/user/updateForm";
+        return "/users/updateForm";
     }
 
-    @PostMapping("/user/{userId}/update")
+    @PostMapping("/{userId}/update")
     public String updateUser(String userId, String oldPassword, String newPassword, String name, String email) {
         try {
             for (User u : users) {
@@ -59,8 +61,8 @@ public class UserController {
             }
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
-            return "redirect:/user/" + userId + "/form";
+            return "redirect:/users/" + userId + "/form";
         }
-        return "redirect:/user/list";
+        return "redirect:/users/list";
     }
 }

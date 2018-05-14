@@ -54,10 +54,6 @@ public class User {
         return this.userId.equals(userId);
     }
 
-    public boolean haveId(User updatedUserId) {
-        return this.userId.equals(updatedUserId.userId);
-    }
-
     public boolean matchWith(String beforePassword) {
         return this.password.equals(beforePassword);
     }
@@ -74,12 +70,6 @@ public class User {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 '}';
-    }
-
-    public void update(User updatedUser) {
-        this.name = updatedUser.name;
-        this.password = updatedUser.password;
-        this.email = updatedUser.email;
     }
 
     public void update(String password, String name, String email) {

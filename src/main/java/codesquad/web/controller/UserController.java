@@ -7,14 +7,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@RequestMapping("/users")
 public class UserController {
 
     private Users users = new Users();
 
     // post는 받아서 전달
-    @PostMapping("/create")
+    @PostMapping("create")
     public String create(User user) {
         System.out.println("User : " + user);
         users.addUser(user);
@@ -22,14 +24,14 @@ public class UserController {
     }
 
     // get은 가진 것을 뿌려줌
-    @GetMapping("/users")
+    @GetMapping("")
     public String list(Model model) {
         model.addAttribute("users", users);
         System.out.println(users.toString());
         return "user/list";
     }
 
-    @GetMapping("/users/:{userId}")
+    @GetMapping("{userId}")
     public String showUser(Model model, @PathVariable("userId") String userId) {
         User user = users.findUser(userId);
         System.out.println("find user : " + user.getUserId());
@@ -37,7 +39,7 @@ public class UserController {
         return "user/profile";
     }
 
-    @GetMapping("/users/{userId}/form")
+    @GetMapping("{userId}/form")
     public String showUpdatePage(Model model, @PathVariable("userId") String userId) {
         User user = users.findUser(userId);
         System.out.println("find user : " + user.getUserId());
@@ -45,7 +47,7 @@ public class UserController {
         return "user/updateForm";
     }
 
-    @PostMapping("/users/update")
+    @PostMapping("update")
     public String update(String userId, String beforePassword, String password, String name, String email) {
         User user = users.matchUser(userId, beforePassword);
         if (user == null) return "/";

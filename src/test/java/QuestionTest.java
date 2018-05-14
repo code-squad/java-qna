@@ -15,10 +15,18 @@ public class QuestionTest {
 	@Before
 	public void setUp() {
 		user = new User();
+		user.setId((long) 1);
 		user.setName("이그램");
 		user.setPassword("1234");
 		user.setEmail("gram@codesqaud");
 		question = new Question(user, "제목", "내용");
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void matchUserIdTest() {
+		User newUser = new User();
+		newUser.setId((long) 2);
+		question.matchUserId(newUser);
 	}
 
 	@Test

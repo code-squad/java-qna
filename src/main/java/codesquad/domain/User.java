@@ -45,6 +45,10 @@ public class User {
 		this.password = password;
 	}
 
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -95,7 +99,8 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [userId=" + userId + ", password=" + password + ", name=" + name + ", email=" + email + "]";
+		return "User [id=" + id + "userId=" + userId + ", password=" + password + ", name=" + name + ", email=" + email
+				+ "]";
 	}
 
 }

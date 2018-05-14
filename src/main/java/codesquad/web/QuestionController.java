@@ -36,10 +36,7 @@ public class QuestionController {
 		if (!HttpSessionUtils.isLoginUser(session)) {
 			return Result.fail("로그인이 필요합니다.");
 		}
-		User loginUser = HttpSessionUtils.getUserFromSession(session);
-		if (!question.matchUserId(loginUser)) {
-			return Result.fail("자신이 쓴 글만 수정, 삭제 가능");
-		}
+		question.matchUserId(HttpSessionUtils.getUserFromSession(session));
 		return Result.ok();
 	}
 

@@ -14,7 +14,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
-
 @Entity
 public class Question {
 
@@ -27,30 +26,32 @@ public class Question {
 	private User writer;
 
 	private String title;
-	
+
 	@Lob
 	private String contents;
-	
+
 	private LocalDateTime createDate;
-	
-	@OneToMany(mappedBy="question")
+
+	@OneToMany(mappedBy = "question")
 	@OrderBy("id ASC")
 	private List<Answer> answers;
-	
+
 	public Question() {
 	}
-	
+
 	public Question(User writer, String title, String contents) {
 		this.writer = writer;
 		this.title = title;
 		this.contents = contents;
 		this.createDate = LocalDateTime.now();
 	}
-	
-	public Boolean matchUserId(User sessionUser) {
-		return writer.equals(sessionUser);
+
+	public void matchUserId(User sessionUser) {
+		if (!writer.equals(sessionUser)) {
+			throw new IllegalStateException("you can't update another write");
+		}
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Question [writer=" + writer + ", title=" + title + ", contents=" + contents + "]";
@@ -61,9 +62,9 @@ public class Question {
 		this.title = title;
 		return this;
 	}
-	
+
 	public String getFormattedCreateDate() {
-		if(createDate == null) {
+		if (createDate == null) {
 			return "";
 		}
 		return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));

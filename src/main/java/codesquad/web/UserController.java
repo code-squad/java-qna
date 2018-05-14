@@ -7,9 +7,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
+
 @Controller
 @RequestMapping("/users")
 public class UserController {
+
     @Autowired
     private UserRepository userRepository;
 
@@ -49,5 +52,29 @@ public class UserController {
         user.update(newUser);
         userRepository.save(user);
         return "redirect:/users";
+    }
+
+    @GetMapping("/loginForm")
+    public String loginForm() {
+        return "/user/login";
+    }
+
+    @PostMapping("/login")
+    public String login(String userId, String password, HttpSession session) {
+        User user = userRepository.findByUserId(userId);
+        System.out.println("user is " + user.toString());
+        if (user == null) {
+            System.out.println("user is null");
+            return "redirect:/users/loginForm";
+        }
+
+        if (!password.equals(user.getPassword())) {
+            System.out.println("login Error");
+            return "redirect:/users/loginForm";
+        }
+        // login success
+        System.out.println("login success");
+        session.setAttribute("user", user);
+        return "redirect:/";
     }
 }

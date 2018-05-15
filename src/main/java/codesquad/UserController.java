@@ -41,10 +41,10 @@ public class UserController {
     }
 
     @PutMapping("/{userId}/update")
-    public String updateUser(String userId, String oldPassword, String newPassword, String name, String email) {
+    public String updateUser(@PathVariable String userId, User newUser, String oldPassword) {
         try {
             User user = userRepository.findUserByUserId(userId);
-            user.updateUserInfo(oldPassword, newPassword, name, email);
+            user.updateUserInfo(newUser, oldPassword);
             userRepository.save(user);
             return "redirect:/users/list";
         } catch (IllegalArgumentException e) {

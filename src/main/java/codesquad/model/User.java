@@ -56,20 +56,16 @@ public class User {
         this.email = email;
     }
 
-    public boolean isMatch(String userId) {
-        return this.userId.equals(userId);
-    }
-
-    private boolean pwMatch(String pw) {
-        return this.password.equals(pw);
-    }
-
-    public void updateUserInfo(String oldPw, String newPw, String newName, String newEmail) throws IllegalArgumentException {
-        if (!pwMatch(oldPw)) {
+    public void updateUserInfo(User newUser, String password) throws IllegalArgumentException {
+        if (!pwMatch(password)) {
             throw new IllegalArgumentException("사용자 정보수정 실패: 비밀번호 불일치");
         }
-        this.password = newPw;
-        this.name = newName;
-        this.email = newEmail;
+        this.password = newUser.password;
+        this.name = newUser.name;
+        this.email = newUser.email;
+    }
+
+    private boolean pwMatch(String password) {
+        return this.password.equals(password);
     }
 }

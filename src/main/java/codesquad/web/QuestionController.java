@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import codesquad.domain.Question;
 import codesquad.domain.QuestionRepository;
+import codesquad.domain.Result;
 import codesquad.domain.User;
 
 @Controller
@@ -24,20 +25,40 @@ public class QuestionController {
 	private QuestionRepository questionRepository;
 
 	@GetMapping("/form")
-	public String questionForm(HttpSession session) {
-		if (!HttpSessionUtils.isLoginUser(session)) {
-			return "/users/loginForm";
+	public String questionForm(HttpSession session, Model model) {
+		Result result = valid(session);
+		if (!result.isValid()) {
+			model.addAttribute("errorMessage", result.getErrorMessage());
+			return "/user/login";
 		}
 		return "/qna/form";
 	}
 
+	private Result valid(HttpSession session) {
+		if (!HttpSessionUtils.isLoginUser(session)) {
+			return Result.fail("로그인이 필요합니다.");
+		}
+		return Result.ok();
+	}
+
+	private Result valid(HttpSession session, Question question) {
+		if (!HttpSessionUtils.isLoginUser(session)) {
+			return Result.fail("로그인이 필요합니다.");
+		}
+		if (!question.matchUserId(HttpSessionUtils.getUserFromSession(session))) {
+			return Result.fail("자신이 쓴 글만 수정, 삭제 가능");
+		}
+		return Result.ok();
+	}
+
 	@PostMapping("")
 	public String createQuestion(String title, String contents, HttpSession session) {
-		if (!HttpSessionUtils.isLoginUser(session)) {
-			return "/users/loginForm";
+		Result result = valid(session);
+		if (!result.isValid()) {
+			return "/user/login";
 		}
 		User sessionUser = HttpSessionUtils.getUserFromSession(session);
-		Question newQuestion = new Question(sessionUser.getUserId(), title, contents);
+		Question newQuestion = new Question(sessionUser, title, contents);
 
 		questionRepository.save(newQuestion);
 		return "redirect:/";
@@ -51,51 +72,38 @@ public class QuestionController {
 
 	@GetMapping("/{id}/updateForm")
 	public String questionUpdateForm(@PathVariable Long id, Model model, HttpSession session) {
-		if (!HttpSessionUtils.isLoginUser(session)) {
-			return "/users/loginForm";
-		}
-
 		Question question = questionRepository.findById(id).get();
-		if (!question.matchUserId(session)) {
-			throw new IllegalStateException("You can't update the another user");
+		Result result = valid(session, question);
+		if (!result.isValid()) {
+			model.addAttribute("errorMessage", result.getErrorMessage());
+			return "/user/login";
 		}
-
-		model.addAttribute("question", questionRepository.findById(id).get());
+		model.addAttribute("question", question);
 		return "/qna/updateForm";
 	}
 
 	@PutMapping("")
-	public String updateQuestion(Long id, String contents, String title, HttpSession session) {
-
-		if (!HttpSessionUtils.isLoginUser(session)) {
-			return "redirect: /users/loginForm";
-		}
-		
+	public String updateQuestion(Long id, String contents, String title, HttpSession session, Model model) {
 		Question question = questionRepository.findById(id).get();
-		if (!question.matchUserId(session)) {
-			throw new IllegalStateException("You can't update the another user");
+		Result result = valid(session, question);
+		if (!result.isValid()) {
+			model.addAttribute("errorMessage", result.getErrorMessage());
+			return "/user/login";
 		}
-		
-		question.update(contents,title);
+		question.update(contents, title, HttpSessionUtils.getUserFromSession(session));
 		questionRepository.save(question);
-
-		return "redirect:/questions/" + id;
+		return String.format("redirect:/questions/%d", id);
 	}
-	
+
 	@DeleteMapping("/{id}")
-	public String deleteQuestion(@PathVariable Long id, HttpSession session) {
-		if (!HttpSessionUtils.isLoginUser(session)) {
-			return "redirect:/users/loginForm";
+	public String deleteQuestion(@PathVariable Long id, HttpSession session, Model model) {
+		Result result = valid(session, questionRepository.findById(id).get());
+		if (!result.isValid()) {
+			model.addAttribute("errorMessage", result.getErrorMessage());
+			return "/user/login";
 		}
-		
-		Question question = questionRepository.findById(id).get();
-		if (!question.matchUserId(session)) {
-			throw new IllegalStateException("You can't delete the another user");
-		}
-		
 		questionRepository.deleteById(id);
 		return "redirect:/";
 	}
-	
-	
+
 }

@@ -1,16 +1,20 @@
 package codesquad.domain;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.servlet.http.HttpSession;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 import codesquad.web.HttpSessionUtils;
-
 
 @Entity
 public class Question {
@@ -18,45 +22,34 @@ public class Question {
 	@Id
 	@GeneratedValue
 	private Long id;
-	
-	@Column(nullable = false)
-	private String writer;
-	
+
+	@ManyToOne
+	@JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+	private User writer;
 
 	private String title;
-	private String contents;
-	private String time;
 
-	
+	@Lob
+	private String contents;
+
+	private LocalDateTime createDate;
+
+	@OneToMany(mappedBy = "question")
+	@OrderBy("id ASC")
+	private List<Answer> answers;
+
 	public Question() {
 	}
-	
-	public Question(String writer, String title, String contents) {
-		super();
+
+	public Question(User writer, String title, String contents) {
 		this.writer = writer;
 		this.title = title;
 		this.contents = contents;
-		this.time = new SimpleDateFormat("yyyy-mm-dd hh:mm").format(new Date(System.currentTimeMillis())); ;
-	}
-	
-	public Boolean matchUserId(HttpSession session) {
-		return writer.equals(HttpSessionUtils.getUserFromSession(session).getUserId());
-	}
-	
-	public String getTime() {
-		return time;
+		this.createDate = LocalDateTime.now();
 	}
 
-	public String getWriter() {
-		return writer;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public String getContents() {
-		return contents;
+	public Boolean matchUserId(User sessionUser) {
+		return writer.equals(sessionUser);
 	}
 
 	@Override
@@ -64,14 +57,20 @@ public class Question {
 		return "Question [writer=" + writer + ", title=" + title + ", contents=" + contents + "]";
 	}
 
-	public Long getId() {
-		return id;
-	}
-
-	public Question update(String contents, String title) {
+	public Question update(String contents, String title, User sessionUser) {
+		if (!matchUserId(sessionUser)) {
+			throw new IllegalStateException("you can't update another write");
+		}
 		this.contents = contents;
 		this.title = title;
 		return this;
+	}
+
+	public String getFormattedCreateDate() {
+		if (createDate == null) {
+			return "";
+		}
+		return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
 	}
 
 }

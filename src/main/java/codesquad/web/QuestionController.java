@@ -1,5 +1,6 @@
 package codesquad.web;
 
+import codesquad.domain.Question;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +27,7 @@ public class QuestionController {
         return "qna/show";
     }
 
-    @GetMapping({"/", "index"})
+    @GetMapping("/")
     public String welcome(Model model) {
         model.addAttribute("posts", questions);
         return "index";

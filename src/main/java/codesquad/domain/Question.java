@@ -1,4 +1,4 @@
-package codesquad.web;
+package codesquad.domain;
 
 public class Question {
     private int id;

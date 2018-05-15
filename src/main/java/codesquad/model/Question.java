@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class Question {
     @Id
     @GeneratedValue
-    private Long index;
+    private Long id;
     @Column(nullable = false, length = 32)
     private String author;
     @Column(nullable = false, length = 64)
@@ -52,15 +52,15 @@ public class Question {
         return date.toString();
     }
 
-    public void setIndex(Long index) {
-        this.index = index;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public Long getIndex() {
-        return index;
+    public Long getId() {
+        return id;
     }
 
     public boolean isMatch(String index) {
-        return this.index.equals(Long.parseLong(index));
+        return this.id.equals(Long.parseLong(index));
     }
 }

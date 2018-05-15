@@ -17,7 +17,7 @@ public class QuestionController {
 
     @GetMapping("/")
     public String welcome(Model model) {
-        model.addAttribute("questions", questionRepository.findAll());
+        model.addAttribute("questions", questionRepository.findAllByOrderByIdDesc());
         return "index";
     }
 

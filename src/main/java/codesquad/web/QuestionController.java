@@ -1,6 +1,8 @@
 package codesquad.web;
 
 import codesquad.domain.Question;
+import codesquad.domain.QuestionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,22 +16,24 @@ import java.util.List;
 public class QuestionController {
     List<Question> questions = new ArrayList<>();
 
+    @Autowired
+    QuestionRepository questionRepository;
+
     @PostMapping("/questions")
-    public String questions(Question question) {
-        question.setId(questions.size() + 1);
-        questions.add(question);
+    public String questions(Question question, Model model) {
+        questionRepository.save(question);
         return "redirect:/";
     }
 
-    @GetMapping("/questions/{index}")
-    public String viewDetail(@PathVariable String index, Model model) {
-        model.addAttribute("question", questions.get(Integer.valueOf(index) - 1));
+    @GetMapping("/questions/{id}")
+    public String viewDetail(@PathVariable Long id, Model model) {
+        model.addAttribute("question", questionRepository.findOne(id));
         return "qna/show";
     }
 
-    @GetMapping("/")
+    @GetMapping({"/", "/index"})
     public String welcome(Model model) {
-        model.addAttribute("posts", questions);
+        model.addAttribute("posts", questionRepository.findAll());
         return "index";
     }
 }

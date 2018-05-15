@@ -1,10 +1,27 @@
 package codesquad.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class Question {
-    private int id;
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(nullable = false)
     private String writer;
+
+    @Column(nullable = false)
     private String title;
+
     private String contents;
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public void setWriter(String writer) {
         this.writer = writer;
@@ -18,16 +35,24 @@ public class Question {
         this.contents = contents;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public Long getId() {
+        return id;
+    }
+
+    public String getWriter() {
+        return writer;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getContents() {
+        return contents;
     }
 
     @Override
     public String toString() {
         return writer + " " + title + " " + contents;
-    }
-
-    public boolean isValidId(String userId) {
-        return String.valueOf(this.id).equals(userId);
     }
 }

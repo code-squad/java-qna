@@ -30,21 +30,21 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public String profile(@PathVariable Long userId, Model model) {
+    public String profile(@PathVariable String userId, Model model) {
         User user = userRepository.findOne(userId);
         model.addAttribute("user", user);
         return "/users/profile";
     }
 
     @GetMapping("/{userId}/form")
-    public String updateForm(@PathVariable Long userId, Model model) {
+    public String updateForm(@PathVariable String userId, Model model) {
         User user = userRepository.findOne(userId);
         model.addAttribute("user", user);
         return "/users/updateForm";
     }
 
     @PostMapping("/{userId}/update")
-    public String updateUser(Long userId, String oldPassword, String newPassword, String name, String email) {
+    public String updateUser(String userId, String oldPassword, String newPassword, String name, String email) {
         User user = userRepository.findOne(userId);
         user.updateUserInfo(oldPassword, newPassword, name, email);
         return "redirect:/users/list";

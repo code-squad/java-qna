@@ -29,13 +29,8 @@ public class QuestionController {
 
     @GetMapping("/question/{index}")
     public String showQuestion(@PathVariable Long index, Model model) {
-        try {
-            Question question = questionRepository.findOne(index);
-            model.addAttribute("question", question);
-            return "questions/show";
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-            return "index";
-        }
+        Question question = questionRepository.findOne(index);
+        model.addAttribute("question", question);
+        return "questions/show";
     }
 }

@@ -1,35 +1,38 @@
 package codesquad.web;
 
+import codesquad.domain.Question;
+import codesquad.domain.QuestionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 public class QuestionController {
-    List<Question> questions = new ArrayList<>();
+    @Autowired
+    QuestionRepository questionRepository;
 
     @PostMapping("/questions")
     public String questions(Question question) {
-        question.setId(questions.size() + 1);
-        questions.add(question);
+        questionRepository.save(question);
+
         return "redirect:/";
     }
 
-    @GetMapping("/questions/{index}")
-    public String viewDetail(@PathVariable String index, Model model) {
-        model.addAttribute("question", questions.get(Integer.valueOf(index) - 1));
+    @GetMapping("/questions/{id}")
+    public String viewDetail(@PathVariable Long id, Model model) {
+        model.addAttribute("question", questionRepository.findOne(id));
+
         return "qna/show";
     }
 
-    @GetMapping({"/", "index"})
+    @GetMapping({"/", "/index"})
     public String welcome(Model model) {
-        model.addAttribute("posts", questions);
+        model.addAttribute("posts", questionRepository.findAll(new Sort(Sort.Direction.DESC, "id")));
+
         return "index";
     }
 }

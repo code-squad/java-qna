@@ -38,6 +38,8 @@ public class ApiAnswerController {
 		User sessionUser = HttpSessionUtils.getUserFromSession(session);
 		Question question = questionRepository.findById(questionId).get();
 		Answer answer = new Answer(sessionUser, question, contents);
+		question.addAnswer();
+		
 		return answerRepository.save(answer);
 	}
 
@@ -52,6 +54,10 @@ public class ApiAnswerController {
 			return Result.fail("자신의 글만 삭제 가능");
 		}
 		answerRepository.deleteById(id);
+		
+		Question question = questionRepository.findById(id).get();
+		question.deleteAnswer();
+		questionRepository.save(question);
 		return Result.ok();
 	}
 }

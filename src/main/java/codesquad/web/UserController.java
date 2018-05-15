@@ -16,17 +16,20 @@ public class UserController {
     @GetMapping()
     public String list(Model model) {
         model.addAttribute("users", userRepository.findAll());
+
         return "list";
     }
 
     @PostMapping()
     public String create(User user) {
         userRepository.save(user);
+
         return "redirect:/users";
     }
 
-    @GetMapping("/{userId}")
-    public String profile(@PathVariable String userId, Model model) {
+    @GetMapping("/{id}")
+    public String profile(@PathVariable Long id, Model model) {
+        model.addAttribute("user", userRepository.findOne(id));
 
         return "profile";
     }

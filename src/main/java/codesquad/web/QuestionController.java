@@ -18,18 +18,21 @@ public class QuestionController {
     @PostMapping("/questions")
     public String questions(Question question) {
         questionRepository.save(question);
+
         return "redirect:/";
     }
 
     @GetMapping("/questions/{id}")
     public String viewDetail(@PathVariable Long id, Model model) {
         model.addAttribute("question", questionRepository.findOne(id));
+
         return "qna/show";
     }
 
     @GetMapping({"/", "/index"})
     public String welcome(Model model) {
         model.addAttribute("posts", questionRepository.findAll(new Sort(Sort.Direction.DESC, "id")));
+
         return "index";
     }
 }

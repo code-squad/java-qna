@@ -63,10 +63,16 @@ public class User {
         return userId + " " + password + " " + name + " " + email;
     }
 
-    public void update(User newUser) {
-        this.name = newUser.name;
-        this.password = newUser.password;
-        this.email = newUser.email;
+    public boolean update(User newUser, String newPassword) {
+        if (isSamePassword(newUser)) {
+            this.name = newUser.name;
+            this.email = newUser.email;
+            if (!newPassword.isEmpty()) {
+                this.password = newPassword;
+            }
+            return true;
+        }
+        return false;
     }
 
     public boolean isSamePassword(User newUser) {

@@ -44,12 +44,11 @@ public class UserController {
     }
 
     @PutMapping("/{id}/update")
-    public String updateUserData(@PathVariable Long id, User newUser) {
+    public String updateUserData(@PathVariable Long id, User newUser, String newPassword) {
         User user = userRepository.findOne(id);
-        if (!user.isSamePassword(newUser)) {
+        if (!user.update(newUser, newPassword)) {
             return "/passwordError";
         }
-        user.update(newUser);
         userRepository.save(user);
 
         return "redirect:/users";

@@ -11,12 +11,22 @@ public class User {
     @GeneratedValue
     private Long id;
 
+
+
     @Column(nullable = false)
     private String userId;
 
     private String password;
     private String name;
     private String email;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public void setUserId(String userId) {
         this.userId = userId;
@@ -57,5 +67,10 @@ public class User {
 
     public boolean isValidUserId(String userId) {
         return this.userId.equals(userId);
+    }
+
+    public void update(User newUser) {
+        this.password = newUser.password;
+        this.email = newUser.email;
     }
 }

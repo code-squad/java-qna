@@ -41,6 +41,9 @@ public class UserController {
     @PutMapping("/{id}/update")
     public String updateUserData(@PathVariable Long id, User newUser) {
         User user = userRepository.findOne(id);
+        if(!user.isSamePassword(newUser)) {
+            return "/passwordError";
+        }
         user.update(newUser);
         userRepository.save(user);
 

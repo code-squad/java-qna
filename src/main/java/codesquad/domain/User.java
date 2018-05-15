@@ -11,8 +11,6 @@ public class User {
     @GeneratedValue
     private Long id;
 
-
-
     @Column(nullable = false)
     private String userId;
 
@@ -65,13 +63,13 @@ public class User {
         return userId + " " + password + " " + name + " " + email;
     }
 
-    public boolean isValidUserId(String userId) {
-        return this.userId.equals(userId);
-    }
-
     public void update(User newUser) {
         this.name = newUser.name;
         this.password = newUser.password;
         this.email = newUser.email;
+    }
+
+    public boolean isSamePassword(User newUser) {
+        return this.password.equals(newUser.password);
     }
 }

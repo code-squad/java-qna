@@ -1,5 +1,6 @@
 package codesquad.web;
 
+
 import codesquad.domain.User;
 import codesquad.domain.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ public class UserController {
         return "profile";
     }
 
+
     @GetMapping("/{id}/form")
     public String getUpdateForm(@PathVariable Long id, Model model) {
         model.addAttribute("user", userRepository.findOne(id));
@@ -44,7 +46,7 @@ public class UserController {
     @PutMapping("/{id}/update")
     public String updateUserData(@PathVariable Long id, User newUser) {
         User user = userRepository.findOne(id);
-        if(!user.isSamePassword(newUser)) {
+        if (!user.isSamePassword(newUser)) {
             return "/passwordError";
         }
         user.update(newUser);

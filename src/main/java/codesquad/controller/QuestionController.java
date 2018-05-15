@@ -25,7 +25,7 @@ public class QuestionController {
     }
 
     @GetMapping("/questions/{id}")
-    public String show(Model model, @PathVariable("id") String id) {
+    public String show(Model model, @PathVariable("id") int id) {
         Optional<Question> question = questions.findById(id);
         if (!question.isPresent()) {
             System.out.println("존재하지않는 게시글임"); // inner log

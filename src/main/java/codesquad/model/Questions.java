@@ -22,7 +22,7 @@ public class Questions {
         return questions;
     }
 
-    public Optional<Question> findById(String id) {
-        return Optional.of(questions.get(Integer.parseInt(id) - 1));
+    public Optional<Question> findById(int id) {
+        return Optional.of(questions.get(id - 1));
     }
 }

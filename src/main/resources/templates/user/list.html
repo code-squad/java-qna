@@ -18,16 +18,17 @@
                 </tr>
                 </thead>
                 <tbody>
-                {{#users.users}}
+                {{#users}}
                 <tr>
-                    <th scope="row">{{@index_1}}</th>
+                    <td>{{id}}</td>
+                    <!--<th scope="row">{{@index_1}}</th>-->
                     <td><a href="/users/{{userId}}">{{userId}}</a></td>
                     <td>{{name}}</td>
                     <td>{{email}}</td>
                     <td><a href="/users/{{@index}}/form" class="btn btn-success" role="button">수정</a></td>
                     <!--<td><a href="#" class="btn btn-success" role="button">수정</a></td>-->
                 </tr>
-                {{/users.users}}
+                {{/users}}
                 </tbody>
             </table>
         </div>

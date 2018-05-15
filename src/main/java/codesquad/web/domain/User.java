@@ -1,14 +1,24 @@
-package codesquad.web.model;
+package codesquad.web.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.Objects;
 
+@Entity
 public class User {
 
+    @Id
+    @GeneratedValue
+    private Long id; // Long vs. long ??
+
+    @Column(nullable = false, length = 20)
     private String userId;
     private String password;
     private String name;
     private String email;
-    private int id;
+
 
     public User() { }
 
@@ -96,7 +106,59 @@ public class User {
         return Objects.hash(userId, password, name, email);
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
+
+    public Long getId() {
+
+        return id;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+
+        private String userId;
+        private String password;
+        private String name;
+        private String email;
+
+        public Builder() { }
+
+        public Builder userId(String userId) {
+            this.userId = userId;
+            return this;
+        }
+
+        public Builder password(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder email(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public User build() {
+            return new User(this);
+        }
+    }
+
+    private User (Builder builder) {
+        userId = builder.userId;
+        password = builder.password;
+        name = builder.name;
+        email = builder.email;
+    }
+
+
 }

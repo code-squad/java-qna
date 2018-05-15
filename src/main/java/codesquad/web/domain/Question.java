@@ -1,4 +1,4 @@
-package codesquad.web.model;
+package codesquad.web.domain;
 
 public class Question {
 

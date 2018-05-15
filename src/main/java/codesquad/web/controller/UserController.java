@@ -1,7 +1,9 @@
 package codesquad.web.controller;
 
-import codesquad.web.model.User;
-import codesquad.web.model.Users;
+import codesquad.web.domain.User;
+import codesquad.web.domain.UserRepository;
+import codesquad.web.domain.Users;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,10 +17,14 @@ public class UserController {
 
     private Users users = new Users();
 
+    @Autowired
+    private UserRepository userRepository;
+
     // post는 받아서 전달
     @PostMapping("create")
     public String create(User user) {
         System.out.println("User : " + user);
+        userRepository.save(user);
         users.addUser(user);
         return "redirect:/users"; // 얘는 get맵핑이 되어 있어야 함.
     }
@@ -26,7 +32,7 @@ public class UserController {
     // get은 가진 것을 뿌려줌
     @GetMapping("")
     public String list(Model model) {
-        model.addAttribute("users", users);
+        model.addAttribute("users", userRepository.findAll());
         System.out.println(users.toString());
         return "user/list";
     }

@@ -1,16 +1,13 @@
-package codesquad.web.model;
+package codesquad.web.domain;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class Users {
 
     private List<User> users = new ArrayList<>();
 
     public void addUser(User user) {
-        user.setId(users.size());
         users.add(user);
     }
 

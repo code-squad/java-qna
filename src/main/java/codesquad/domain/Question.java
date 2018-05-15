@@ -19,6 +19,16 @@ public class Question {
 
     private String contents;
 
+    private String tag;
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }

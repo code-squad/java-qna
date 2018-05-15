@@ -47,6 +47,7 @@ public class UserController {
     public String updateUser(String userId, String oldPassword, String newPassword, String name, String email) {
         User user = userRepository.findOne(userId);
         user.updateUserInfo(oldPassword, newPassword, name, email);
+        userRepository.save(user);
         return "redirect:/users/list";
     }
 }

@@ -7,7 +7,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public class UserTest {
-    User user, newUser;
+    private User user, newUser;
 
     @Before
     public void setUp() {

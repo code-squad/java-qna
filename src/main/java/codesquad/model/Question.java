@@ -1,17 +1,27 @@
 package codesquad.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
+@Entity
 public class Question {
+    @Id
+    @GeneratedValue
+    private Long id;
+    @Column(nullable = false, length = 32)
     private String author;
+    @Column(nullable = false, length = 64)
     private String title;
     private String content;
-    private String date;
-    private Integer index;
+    private Timestamp date;
 
     public Question() {
-        LocalDateTime timeStamp = LocalDateTime.now();
-        this.date = timeStamp.toString();
+        LocalDateTime dateTime = LocalDateTime.now();
+        this.date = Timestamp.valueOf(dateTime);
     }
 
     public String getAuthor() {
@@ -39,18 +49,18 @@ public class Question {
     }
 
     public String getDate() {
-        return date;
+        return date.toString();
     }
 
-    public void setIndex(Integer index) {
-        this.index = index;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public Integer getIndex() {
-        return index;
+    public Long getId() {
+        return id;
     }
 
     public boolean isMatch(String index) {
-        return this.index.equals(Integer.parseInt(index));
+        return this.id.equals(Long.parseLong(index));
     }
 }

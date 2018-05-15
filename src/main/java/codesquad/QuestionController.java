@@ -1,41 +1,36 @@
 package codesquad;
 
 import codesquad.model.Question;
-import codesquad.model.Questions;
+import codesquad.model.QuestionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Controller
 public class QuestionController {
-    private final Questions questions = new Questions();
+
+    @Autowired
+    QuestionRepository questionRepository;
 
     @GetMapping("/")
     public String welcome(Model model) {
-        model.addAttribute("questions", questions);
+        model.addAttribute("questions", questionRepository.findAllByOrderByIdDesc());
         return "index";
     }
 
     @PostMapping("/submit")
     public String submit(Question question) {
-        questions.addQuestion(question);
+        questionRepository.save(question);
         return "redirect:/";
     }
 
     @GetMapping("/question/{index}")
-    public String showQuestion(@PathVariable String index, Model model) {
-        try {
-            Question question = questions.getQuestion(index);
-            model.addAttribute("question", question);
-            return "qna/show";
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-            return "index";
-        }
+    public String showQuestion(@PathVariable Long index, Model model) {
+        Question question = questionRepository.findOne(index);
+        model.addAttribute("question", question);
+        return "questions/show";
     }
 }

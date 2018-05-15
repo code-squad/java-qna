@@ -10,32 +10,32 @@
       <div class="panel panel-default qna-list">
           <ul class="list">
 
-              {{#questions.questions}}
+              {{#questions}}
               <li>
                   <div class="wrap">
                       <div class="main">
                           <strong class="subject">
-                              <a href="/question/{{index}}">{{title}}</a>
+                              <a href="/question/{{id}}">{{title}}</a>
                           </strong>
                           <div class="auth-info">
                               <i class="icon-add-comment"></i>
                               <span class="time">{{date}}</span>
-                              <a href="users/profile.html" class="author">{{author}}</a>
+                              <a href="users/{{author}}" class="author">{{author}}</a>
                           </div>
                           <div class="reply" title="댓글">
                               <i class="icon-reply"></i>
-                              <span class="point">{{index}}</span>
+                              <span class="point">{{id}}</span>
                           </div>
                       </div>
                   </div>
               </li>
-              {{/questions.questions}}
+              {{/questions}}
 
               <!--<li>-->
                   <!--<div class="wrap">-->
                       <!--<div class="main">-->
                           <!--<strong class="subject">-->
-                              <!--<a href="qna/show.html">국내에서 Ruby on Rails와 Play가 활성화되기 힘든 이유는 뭘까?</a>-->
+                              <!--<a href="questions/show.html">국내에서 Ruby on Rails와 Play가 활성화되기 힘든 이유는 뭘까?</a>-->
                           <!--</strong>-->
                           <!--<div class="auth-info">-->
                               <!--<i class="icon-add-comment"></i>-->
@@ -53,7 +53,7 @@
                   <!--<div class="wrap">-->
                       <!--<div class="main">-->
                           <!--<strong class="subject">-->
-                              <!--<a href="qna/show.html">runtime 에 reflect 발동 주체 객체가 뭔지 알 방법이 있을까요?</a>-->
+                              <!--<a href="questions/show.html">runtime 에 reflect 발동 주체 객체가 뭔지 알 방법이 있을까요?</a>-->
                           <!--</strong>-->
                           <!--<div class="auth-info">-->
                               <!--<i class="icon-add-comment"></i>-->

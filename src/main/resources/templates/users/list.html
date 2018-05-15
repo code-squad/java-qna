@@ -14,14 +14,14 @@
                 </tr>
               </thead>
               <tbody>
-              {{#users.users}}
+              {{#users}}
                 <tr>
-                    <th scope="row">{{@index}}</th>
+                    <th scope="row">{{id}}</th>
                     <td><a href="/users/{{userId}}">{{userId}}</a></td>
                     <td>{{name}}</td> <td>{{email}}</td>
                     <td><a href="/users/{{userId}}/form" class="btn btn-success" role="button">수정</a></td>
                 </tr>
-              {{/users.users}}
+              {{/users}}
               </tbody>
           </table>
         </div>

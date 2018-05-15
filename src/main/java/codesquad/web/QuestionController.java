@@ -2,32 +2,43 @@ package codesquad.web;
 
 import codesquad.domain.Question;
 import codesquad.domain.QuestionRepository;
+import codesquad.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("questions")
 public class QuestionController {
     @Autowired
     QuestionRepository qnaRepository;
+    // Autowired가 없으면 nullpoint가 발생을 하게된다.
 
     @GetMapping("/form")
-    public String getForm() {
+    public String getForm(HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session))
+            return "redirect:/users/loginForm";
         return "/qna/form";
     }
 
     @PostMapping("")
-    public String create(Question question) {
-        qnaRepository.save(question);
-        return "redirect:/questions";
+    public String create(String title, String contents, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session))
+            return "redirect:/users/loginForm";
+
+        User sessionUser = HttpSessionUtils.getUserFromSession(session);
+        Question newQuestion = new Question(sessionUser.getUserId(), title, contents);
+        qnaRepository.save(newQuestion);
+        return "redirect:/";
     }
 
     @GetMapping("")
     public String list(Model model) {
         model.addAttribute("questions", qnaRepository.findAll());
-        return "qna/list";
+        return "/qna/list";
     }
 
     @GetMapping("/{id}")

@@ -35,19 +35,13 @@ public class QuestionController {
         return "redirect:/";
     }
 
-    @GetMapping("")
-    public String list(Model model) {
-        model.addAttribute("questions", qnaRepository.findAll());
-        return "/qna/list";
-    }
-
     @GetMapping("/{id}")
     public String getQnA(@PathVariable Long id, Model model) {
         model.addAttribute("questions", qnaRepository.findOne(id));
         return "/qna/show";
     }
 
-    @GetMapping("{id}/form")
+    @GetMapping("/{id}/form")
     public String updateForm(@PathVariable Long id, Model model) {
         Question qna = qnaRepository.findOne(id);
         model.addAttribute("qna", qna);
@@ -59,6 +53,6 @@ public class QuestionController {
         Question qna = qnaRepository.findOne(id);
         qna.update(newQna);
         qnaRepository.save(qna);
-        return "redirect:/questions";
+        return "redirect:/";
     }
 }

@@ -1,7 +1,7 @@
 package codesquad.controller;
 
-import codesquad.model.Question;
-import codesquad.model.Questions;
+import codesquad.domain.Question;
+import codesquad.domain.Questions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;

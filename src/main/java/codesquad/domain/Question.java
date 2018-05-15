@@ -1,4 +1,4 @@
-package codesquad.model;
+package codesquad.domain;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

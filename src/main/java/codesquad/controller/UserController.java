@@ -1,7 +1,7 @@
 package codesquad.controller;
 
-import codesquad.model.User;
-import codesquad.model.Users;
+import codesquad.domain.User;
+import codesquad.domain.Users;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;

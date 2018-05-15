@@ -1,4 +1,4 @@
-package codesquad.model;
+package codesquad.domain;
 
 public class User {
     private int id;

@@ -1,4 +1,4 @@
-package codesquad.model;
+package codesquad.domain;
 
 import java.util.ArrayList;
 import java.util.List;

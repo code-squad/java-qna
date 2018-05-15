@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="kr">
+{{>overlap/header}}
+<body>
+
+{{>overlap/navbar}}
+
+<div class="container" id="main">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-default content-main">
+            <form name="question" method="post" action="/users/{{userId}}/update">
+                {{#user}}
+                <div class="form-group">
+                    <label for="userId">사용자 아이디</label>
+                    <input type="text" class="form-control" name="userId" value="{{userId}}" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="checkPassword">비밀번호 확인</label>
+                    <input type="text" class="form-control" name="checkPassword" placeholder="비밀번호가 다르면 수정이 안됩니다.">
+                </div>
+                <div class="form-group">
+                    <label for="password">비밀번호 변경</label>
+                    <input type="text" class="form-control" name="password" placeholder="Change Password">
+                </div>
+                <div class="form-group">
+                    <label for="name">이름</label>
+                    <input type="text" class="form-control" name="name" value="{{name}}">
+                </div>
+                <div class="form-group">
+                    <label for="email">이메일</label>
+                    <input type="text" type="email" class="form-control" name="email" value="{{email}}">
+                </div>
+                <button type="submit" class="btn btn-success clearfix pull-right">수정</button>
+                <div class="clearfix"/>
+                {{/user}}
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- script references -->
+<script src="../js/jquery-2.2.0.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/scripts.js"></script>
+</body>
+</html>

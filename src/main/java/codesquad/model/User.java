@@ -1,9 +1,22 @@
 package codesquad.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class User {
+    @Id
+    @GeneratedValue
+    private Long id;
+    @Column(nullable = false, length = 32)
     private String userId;
+    @Column(nullable = false, length = 32)
     private String password;
+    @Column(nullable = false, length = 64)
     private String name;
+    @Column(nullable = false)
     private String email;
 
     public String getUserId() {
@@ -42,11 +55,11 @@ public class User {
         return this.userId.equals(userId);
     }
 
-    private boolean pwMatch(String pw){
+    private boolean pwMatch(String pw) {
         return this.password.equals(pw);
     }
 
-    public void updateUserInfo(String oldPw, String newPw, String newName, String newEmail) throws IllegalArgumentException{
+    public void updateUserInfo(String oldPw, String newPw, String newName, String newEmail) throws IllegalArgumentException {
         if (!pwMatch(oldPw)) {
             throw new IllegalArgumentException("사용자 정보수정 실패: 비밀번호 불일치");
         }

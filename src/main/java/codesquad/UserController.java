@@ -1,7 +1,9 @@
 package codesquad;
 
 import codesquad.model.User;
+import codesquad.model.UserRepository;
 import codesquad.model.Users;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,17 +11,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Controller
 @RequestMapping("/users")
 public class UserController {
     private final Users users = new Users();
 
+    @Autowired
+    private UserRepository userRepository;
+
     @PostMapping("/create")
     public String create(User user) {
         users.addUser(user);
+        userRepository.save(user);
         return "redirect:/users/list";
     }
 

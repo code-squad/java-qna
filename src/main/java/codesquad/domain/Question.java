@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
+import codesquad.web.HttpSessionUtils;
+
 @Entity
 public class Question {
 
@@ -46,10 +48,8 @@ public class Question {
 		this.createDate = LocalDateTime.now();
 	}
 
-	public void matchUserId(User sessionUser) {
-		if (!writer.equals(sessionUser)) {
-			throw new IllegalStateException("you can't update another write");
-		}
+	public Boolean matchUserId(User sessionUser) {
+		return writer.equals(sessionUser);
 	}
 
 	@Override
@@ -57,7 +57,10 @@ public class Question {
 		return "Question [writer=" + writer + ", title=" + title + ", contents=" + contents + "]";
 	}
 
-	public Question update(String contents, String title) {
+	public Question update(String contents, String title, User sessionUser) {
+		if (!matchUserId(sessionUser)) {
+			throw new IllegalStateException("you can't update another write");
+		}
 		this.contents = contents;
 		this.title = title;
 		return this;

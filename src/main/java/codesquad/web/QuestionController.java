@@ -25,24 +25,36 @@ public class QuestionController {
 	private QuestionRepository questionRepository;
 
 	@GetMapping("/form")
-	public String questionForm(HttpSession session) {
-		if (!HttpSessionUtils.isLoginUser(session)) {
+	public String questionForm(HttpSession session, Model model) {
+		Result result = valid(session);
+		if (!result.isValid()) {
+			model.addAttribute("errorMessage", result.getErrorMessage());
 			return "/user/login";
 		}
 		return "/qna/form";
+	}
+
+	private Result valid(HttpSession session) {
+		if (!HttpSessionUtils.isLoginUser(session)) {
+			return Result.fail("로그인이 필요합니다.");
+		}
+		return Result.ok();
 	}
 
 	private Result valid(HttpSession session, Question question) {
 		if (!HttpSessionUtils.isLoginUser(session)) {
 			return Result.fail("로그인이 필요합니다.");
 		}
-		question.matchUserId(HttpSessionUtils.getUserFromSession(session));
+		if (!question.matchUserId(HttpSessionUtils.getUserFromSession(session))) {
+			return Result.fail("자신이 쓴 글만 수정, 삭제 가능");
+		}
 		return Result.ok();
 	}
 
 	@PostMapping("")
 	public String createQuestion(String title, String contents, HttpSession session) {
-		if (!HttpSessionUtils.isLoginUser(session)) {
+		Result result = valid(session);
+		if (!result.isValid()) {
 			return "/user/login";
 		}
 		User sessionUser = HttpSessionUtils.getUserFromSession(session);
@@ -55,7 +67,6 @@ public class QuestionController {
 	@GetMapping("/{id}")
 	public String showQuestion(@PathVariable Long id, Model model) {
 		model.addAttribute("question", questionRepository.findById(id).get());
-
 		return "/qna/show";
 	}
 
@@ -79,19 +90,17 @@ public class QuestionController {
 			model.addAttribute("errorMessage", result.getErrorMessage());
 			return "/user/login";
 		}
-		question.update(contents, title);
+		question.update(contents, title, HttpSessionUtils.getUserFromSession(session));
 		questionRepository.save(question);
 		return String.format("redirect:/questions/%d", id);
 	}
 
 	@DeleteMapping("/{id}")
 	public String deleteQuestion(@PathVariable Long id, HttpSession session, Model model) {
-		Question question = questionRepository.findById(id).get();
-		Result result = valid(session, question);
+		Result result = valid(session, questionRepository.findById(id).get());
 		if (!result.isValid()) {
 			model.addAttribute("errorMessage", result.getErrorMessage());
 			return "/user/login";
-
 		}
 		questionRepository.deleteById(id);
 		return "redirect:/";

@@ -23,16 +23,17 @@ public class QuestionTest {
 	}
 
 	@Test(expected = IllegalStateException.class)
-	public void matchUserIdTest() {
+	public void updateTest() {
 		User newUser = new User();
 		newUser.setId((long) 2);
-		question.matchUserId(newUser);
+		question.update(null, null, newUser);
 	}
 
 	@Test
-	public void updateTest() {
-		question.update("제목2", "내용2");
-		assertThat(question, is(question.update("제목2", "내용2")));
+	public void updateTest2() {
+		User newUser = new User();
+		newUser.setId((long) 1);
+		assertThat(question, is(question.update("제목2", "내용2", newUser)));
 	}
 
 }

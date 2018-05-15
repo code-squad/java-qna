@@ -40,10 +40,10 @@ public class UserController {
         return "/users/updateForm";
     }
 
-    @PostMapping("/{userId}/update")
+    @PutMapping("/{userId}/update")
     public String updateUser(String userId, String oldPassword, String newPassword, String name, String email) {
         try {
-            User user = userRepository.findOne(userId);
+            User user = userRepository.findUserByUserId(userId);
             user.updateUserInfo(oldPassword, newPassword, name, email);
             userRepository.save(user);
             return "redirect:/users/list";

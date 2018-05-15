@@ -5,15 +5,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@RequestMapping("/users")
 public class UserController {
     private List<User> users = new ArrayList<>();
 
-    @PostMapping("/users")
+    @PostMapping
     public String join(User user) {
         user.setIndex(users.size() + 1);
         this.users.add(user);
@@ -21,30 +23,29 @@ public class UserController {
         return "redirect:/users";
     }
 
-    @GetMapping("/users")
+    @GetMapping
     public String list(Model model) {
         model.addAttribute("users", users);
 
         return "user/list";
     }
 
-    @GetMapping("/users/{userId}")
+    @GetMapping("/{userId}")
     public String profile(@PathVariable String userId, Model model) {
-        User foundUser = null;
-        foundUser = findUser(userId, foundUser);
+        User foundUser = findUser(userId);
 
         model.addAttribute("user", foundUser);
 
         return "user/profile";
     }
 
-    private User findUser(@PathVariable String userId, User foundUser) {
+    private User findUser(@PathVariable String userId) {
         for (User user : users) {
             if (user.getUserId().equals(userId)) {
-                foundUser = user;
-                break;
+                return user;
             }
         }
-        return foundUser;
+
+        return null;
     }
 }

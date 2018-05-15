@@ -42,17 +42,31 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}/form")
-    public String updateForm(@PathVariable Long id, Model model) {
+    public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session))
+            return "redirect:/users/loginForm";
+
         Question qna = qnaRepository.findOne(id);
         model.addAttribute("qna", qna);
         return "/qna/updateForm";
     }
 
     @PutMapping("/{id}")
-    public String editPost(@PathVariable Long id, Question newQna) {
-        Question qna = qnaRepository.findOne(id);
-        qna.update(newQna);
-        qnaRepository.save(qna);
+    public String editPost(@PathVariable Long id, Question newQna, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session))
+            return "redirect:/users/loginForm";
+
+        Question question = qnaRepository.findOne(id);
+        question.update(newQna);
+        qnaRepository.save(question);
+        return "redirect:/";
+    }
+
+    @DeleteMapping("{id}")
+    public String deletePost(@PathVariable Long id, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session))
+            return "redirect:/users/loginForm";
+        qnaRepository.delete(id);
         return "redirect:/";
     }
 }

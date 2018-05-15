@@ -1,10 +1,19 @@
 package codesquad.web;
 
 public class User {
+    private int index;
     private String userId;
     private String password;
     private String name;
     private String email;
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
 
     public String getUserId() {
         return userId;

@@ -10,6 +10,7 @@ public class User {
     @Id
     @GeneratedValue
     private Long id;
+
     @Column(nullable = false, length = 32)
     private String userId;
     @Column(nullable = false, length = 32)

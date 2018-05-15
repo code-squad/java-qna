@@ -1,7 +1,23 @@
 package codesquad.web.domain;
 
+import javax.persistence.*;
+
+@Entity
 public class Question {
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    public Long getId() {
+        return id;
+    }
+
+    @Column(nullable = false)
     private String writer;
     private String title;
     private String contents;

@@ -1,9 +1,6 @@
 package codesquad.web.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
@@ -117,6 +114,12 @@ public class User {
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    public void update(User updateUser) {
+        password = updateUser.password;
+        name = updateUser.name;
+        email = updateUser.email;
     }
 
     public static class Builder {

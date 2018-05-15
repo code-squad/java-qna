@@ -3,6 +3,8 @@ package codesquad.web.controller;
 import codesquad.web.domain.Question;
 import codesquad.web.domain.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +32,7 @@ public class QuestionController {
 
     @GetMapping("/")
     public String showQuestions(Model model) {
-        model.addAttribute("questions", questionRepository.findAll());
+        model.addAttribute("questions", questionRepository.findAll(new Sort(Sort.Direction.DESC, "id")));
         return "index";
     }
 

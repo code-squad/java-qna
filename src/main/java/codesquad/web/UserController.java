@@ -5,28 +5,30 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@RequestMapping("/users")
 public class UserController {
     private List<User> users = new ArrayList<>();
 
-    @GetMapping("/users")
+    @GetMapping()
     public String list(Model model) {
         model.addAttribute("users", users);
         return "list";
     }
 
-    @PostMapping("/users")
+    @PostMapping()
     public String create(User user) {
         users.add(user);
         System.out.println("user is " + user);
         return "redirect:/users";
     }
 
-    @GetMapping("/users/{userId}")
+    @GetMapping("/{userId}")
     public String profile(@PathVariable String userId, Model model) {
         User user = findUserId(userId);
         System.out.println("users size is " + users.size());
@@ -38,7 +40,7 @@ public class UserController {
         return "profile";
     }
 
-    @GetMapping("/users/{userId}/form")
+    @GetMapping("/{userId}/form")
     public String getUpdateForm(@PathVariable String userId, Model model) {
         User user = findUserId(userId);
         if (user == null) {
@@ -49,7 +51,7 @@ public class UserController {
         return "user/updateForm";
     }
 
-    @PostMapping("/users/{userId}/update")
+    @PostMapping("/{userId}/update")
     public String updateUserData(@PathVariable String userId, String password, String email) {
         User user = findUserId(userId);
         user.setPassword(password);

@@ -23,7 +23,7 @@ public class Question extends TimeEntity {
     @Column(nullable = false, length = 100)
     private String title;
 
-    @Column(nullable = false, length = 2000)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String contents;
 
     @Builder

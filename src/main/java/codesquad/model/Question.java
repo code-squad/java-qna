@@ -63,4 +63,14 @@ public class Question {
     public boolean isMatch(String index) {
         return this.id.equals(Long.parseLong(index));
     }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "id=" + id +
+                ", author='" + author + '\'' +
+                ", title='" + title + '\'' +
+                ", date=" + date +
+                '}';
+    }
 }

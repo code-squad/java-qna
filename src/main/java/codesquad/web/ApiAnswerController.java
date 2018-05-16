@@ -1,7 +1,5 @@
 package codesquad.web;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
-
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;

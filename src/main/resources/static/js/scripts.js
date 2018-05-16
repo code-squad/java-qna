@@ -1,11 +1,5 @@
-String.prototype.format = function() {
-	var args = arguments;
-	return this.replace(/{(\d+)}/g, function(match, number) {
-		return typeof args[number] != 'undefined' ? args[number] : match;
-	});
-};
-
 $(".answer-write input[type=submit").click(addAnswer);
+$(document).on("click", ".link-delete-comment", deleteAnswer);
 
 function addAnswer(e) {
 	e.preventDefault();
@@ -34,33 +28,39 @@ function onError() {
 function onSuccess(data, status) {
 	console.log(data);
 	var answerTemplate = $("#answerTemplate").html();
-	var template = answerTemplate.format(data.writer.userId, data.formattedCreateDate, data.contents, data.id);
+	var template = answerTemplate.format(data.writer.userId,
+			data.formattedCreateDate, data.contents, data.question.id, data.id);
 	$(".qna-comment-slipp-articles").prepend(template);
-	
+
 	$(".answer-write textarea").val("");
 }
 
-$(".link-delete-article").click(deleteAnswer);
+String.prototype.format = function() {
+	var args = arguments;
+	return this.replace(/{(\d+)}/g, function(match, number) {
+		return typeof args[number] != 'undefined' ? args[number] : match;
+	});
+};
 
-function deleteAnswer(e){
+function deleteAnswer(e) {
 	e.preventDefault();
 	
 	var deleteBtn = $(this);
-	var url = 	deleteBtn.attr("href");
-	console.log("url :" + url);
-	
+	var url = deleteBtn.attr("href");
+	console.log("답변삭제부 url :" + url);
+
 	$.ajax({
 		type : 'delete',
 		url : url,
 		dataType : 'json',
-		error : function(xhr, status){
+		error : function(xhr, status) {
 			console.log("error");
 		},
-		success : function(data, status){
+		success : function(data, status) {
 			console.log(data);
-			if(data.valid){
+			if (data.valid) {
 				deleteBtn.closest("article").remove();
-			}else{
+			} else {
 				alert(data.errorMessage);
 			}
 		}

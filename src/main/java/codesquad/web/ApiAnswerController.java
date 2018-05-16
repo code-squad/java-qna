@@ -2,6 +2,8 @@ package codesquad.web;
 
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +22,8 @@ import codesquad.domain.User;
 @RequestMapping("/api/questions/{questionId}/answers")
 public class ApiAnswerController {
 
+	private final Logger logger = LoggerFactory.getLogger(this.getClass()); 
+	
 	@Autowired
 	private QuestionRepository questionRepository;
 
@@ -28,11 +32,10 @@ public class ApiAnswerController {
 
 	@PostMapping("")
 	public Answer create(@PathVariable Long questionId, String contents, HttpSession session) {
-		System.out.println("오냐");
 		if (!HttpSessionUtils.isLoginUser(session)) {
 			return null;
 		}
-
+		
 		User sessionUser = HttpSessionUtils.getUserFromSession(session);
 		Question question = questionRepository.findById(questionId).get();
 		Answer answer = new Answer(sessionUser, question, contents);
@@ -42,7 +45,9 @@ public class ApiAnswerController {
 	}
 
 	@DeleteMapping("/{id}")
-	public Result delete(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
+	public Result deleteAnswer(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
+		logger.debug("답변삭제");
+		
 		if (!HttpSessionUtils.isLoginUser(session)) {
 			return Result.fail("로그인 해야합니다");
 		}

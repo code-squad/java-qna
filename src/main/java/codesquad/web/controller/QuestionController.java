@@ -2,6 +2,8 @@ package codesquad.web.controller;
 
 import codesquad.web.domain.Question;
 import codesquad.web.domain.QuestionRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.domain.Sort;
@@ -20,11 +22,13 @@ public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
 
+    private final Logger log = LoggerFactory.getLogger(QuestionController.class);
+
     private List<Question> questions = new ArrayList<>();
 
     @PostMapping("/qna")
     public String question(Question question) {
-        System.out.println(question.toString());
+        log.info("Submit Question {} : ", question.toString());
         questions.add(question);
         questionRepository.save(question);
         return "redirect:/";
@@ -32,7 +36,7 @@ public class QuestionController {
 
     @GetMapping("/")
     public String showQuestions(Model model) {
-        model.addAttribute("questions", questionRepository.findAll(new Sort(Sort.Direction.DESC, "id")));
+        model.addAttribute("questions", questionRepository.findAllByOrderByIdDesc());
         return "index";
     }
 

@@ -62,7 +62,7 @@ public class QuestionController {
         return "redirect:/";
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public String deletePost(@PathVariable Long id, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session))
             return "redirect:/users/loginForm";

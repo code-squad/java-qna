@@ -3,6 +3,7 @@ package codesquad.domain;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -15,9 +16,17 @@ public class Question {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     private User writer;
     private String title;
+    @Lob
     private String contents;
+    // Lob이라는 어노테이션을 추가하면 255이상으로 작성이 가능하다.
+
     private LocalDateTime createDate;
     // JPA에서는 매핑을 할때 인자를 받는 생성자와 기본 생성자를 같이 만들어야한다.
+
+    @OneToMany(mappedBy = "question")
+    @OrderBy("id ASC")
+    public List<Answer> answers;
+
     public Question() {}
 
     public Question(User writer, String title, String contents) {

@@ -54,9 +54,9 @@ public class QuestionController {
         model.addAttribute("question", question);
         return "/qna/updateForm";
     }
-
+    
     @PutMapping("/{id}")
-    public String editPost(@PathVariable Long id, Question newQuestion ,HttpSession session) {
+    public String editPost(@PathVariable Long id, String title, String contents ,HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session))
             return "redirect:/users/loginForm";
 
@@ -65,7 +65,7 @@ public class QuestionController {
         if (!question.isSameWriter(loginUser))
             return "/users/loginForm";
 
-        question.update(newQuestion);
+        question.update(title, contents);
         qnaRepository.save(question);
         return String.format("redirect:/questions/%d", id);
     }

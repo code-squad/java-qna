@@ -66,9 +66,9 @@ public class Question {
         this.contents = contents;
     }
 
-    public void update(Question newQna) {
-        this.title = newQna.title;
-        this.contents = newQna.contents;
+    public void update(String title, String contents) {
+        this.title = title;
+        this.contents = contents;
     }
 
     public boolean isSameWriter(User loginUser) {

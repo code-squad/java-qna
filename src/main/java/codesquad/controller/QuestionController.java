@@ -37,13 +37,13 @@ public class QuestionController {
     }
 
     @GetMapping("/questions/{id}")
-    public String show(Model model, @PathVariable("id") String id) {
-        Optional<Question> question = questionRepo.findById(Long.valueOf(id));
-        if (!question.isPresent()) {
+    public String show(Model model, @PathVariable("id") Long id) {
+        Optional<Question> optionalQuestion = questionRepo.findById(id);
+        if (!optionalQuestion.isPresent()) {
             System.out.println("존재하지않는 게시글임");
             return "redirect:/error/db";
         }
-        model.addAttribute("question", question.get());
+        model.addAttribute("question", optionalQuestion.get());
         return "/question/show";
     }
 }

@@ -35,8 +35,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public String get(Model model, @PathVariable("id") String id) {
-        Optional<User> user = userRepo.findById(Long.valueOf(id));
+    public String get(Model model, @PathVariable("id") Long id) {
+        Optional<User> user = userRepo.findById(id);
         if (!user.isPresent()) {
             System.out.println("존재하지않는 사용자입니다.");
             return "redirect:/error/db";
@@ -46,8 +46,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}/edit")
-    public String edit(@PathVariable("id") String id, Model model) {
-        Optional<User> optionalUser = userRepo.findById(Long.valueOf(id));
+    public String edit(@PathVariable("id") Long id, Model model) {
+        Optional<User> optionalUser = userRepo.findById(id);
         if (!optionalUser.isPresent()) {
             return "redirect:/error/db";
         }
@@ -56,8 +56,8 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public String update(@PathVariable("id") String id, String currentPasswd, User updateInfo) {
-        Optional<User> optionalUser = userRepo.findById(Long.valueOf(id));
+    public String update(@PathVariable("id") Long id, String currentPasswd, User updateInfo) {
+        Optional<User> optionalUser = userRepo.findById(id);
         if (!optionalUser.isPresent()) {
             return "redirect:/error/db";
         }

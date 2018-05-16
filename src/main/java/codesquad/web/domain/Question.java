@@ -9,10 +9,6 @@ public class Question {
     @GeneratedValue
     private Long id;
 
-    public Long getId() {
-        return id;
-    }
-
     @Column(nullable = false, length = 20)
     private String writer;
 
@@ -28,6 +24,10 @@ public class Question {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public void setId(Long id) {

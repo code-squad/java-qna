@@ -8,7 +8,7 @@ public class User {
 
     @Id
     @GeneratedValue
-    private Long id; // Long vs. long ??
+    private Long id; // Long -> null 체크를 가능하게 함으로써 유저정보 유무를 확인
 
     @Column(nullable = false, length = 20)
     private String userId;
@@ -67,18 +67,6 @@ public class User {
         return id;
     }
 
-    public boolean haveId(String userId) {
-        return this.userId.equals(userId);
-    }
-
-    public boolean matchWith(String beforePassword) {
-        return this.password.equals(beforePassword);
-    }
-
-    public boolean matchWith(User updatedUser) {
-        return this.userId.equals(updatedUser.userId) && this.password.equals(updatedUser.password);
-    }
-
     public void update(String beforePassword, User updateUser) {
         if (!this.isMatch(beforePassword)) {
             throw new RuntimeException("password is not matched");
@@ -86,14 +74,14 @@ public class User {
         this.updateUserInfo(updateUser);
     }
 
+    boolean isMatch(String beforePassword) {
+        return password.equals(beforePassword);
+    }
+
     private void updateUserInfo(User updateUser) {
         password = updateUser.password;
         name = updateUser.name;
         email = updateUser.email;
-    }
-
-    private boolean isMatch(String beforePassword) {
-        return password.equals(beforePassword);
     }
 
     public static Builder builder() {

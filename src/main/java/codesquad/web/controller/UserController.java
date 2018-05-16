@@ -2,12 +2,10 @@ package codesquad.web.controller;
 
 import codesquad.web.domain.User;
 import codesquad.web.domain.UserRepository;
-import codesquad.web.domain.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/users")
@@ -31,19 +29,19 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public String showUser(@PathVariable("id") long id, Model model) {
+    public String showUser(@PathVariable("id") Long id, Model model) {
         model.addAttribute("user", userRepository.findOne(id));
         return "user/profile";
     }
 
     @GetMapping("/{id}/form")
-    public String showUpdatePage(@PathVariable("id") long id, Model model) {
+    public String showUpdatePage(@PathVariable("id") Long id, Model model) {
         model.addAttribute("user", userRepository.findOne(id));
         return "user/updateForm";
     }
 
     @PutMapping("/{id}")
-    public String update(@PathVariable("id") long id, String beforePassword, User updateUser) {
+    public String update(@PathVariable("id") Long id, String beforePassword, User updateUser) {
         User user = userRepository.findOne(id);
         try {
             user.update(beforePassword, updateUser);

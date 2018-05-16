@@ -2,10 +2,7 @@ package codesquad.domain;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @NoArgsConstructor
 @Getter
@@ -14,7 +11,7 @@ import javax.persistence.Id;
 @Entity
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, length = 15, unique = true, updatable = false)
@@ -23,10 +20,10 @@ public class User {
     @Column(nullable = false, length = 15)
     private String passwd;
 
-    @Column(nullable = false, length = 12)
+    @Column(nullable = false, length = 15)
     private String name;
 
-    @Column(nullable = false, length = 20, unique = true)
+    @Column(nullable = false, length = 30, unique = true)
     private String email;
 
     @Builder

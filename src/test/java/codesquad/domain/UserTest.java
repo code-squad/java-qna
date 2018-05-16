@@ -16,12 +16,12 @@ public class UserTest {
 
     @Test
     public void valid_change_passwd() {
-        user.changeInfo("1234", new User());
+        user.changeInfo("1234", User.builder().name("colin").userId("imjinbro").passwd("1234").build());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void invalid_change_passwd() {
-        user.changeInfo("123567", new User());
+        user.changeInfo("123567", User.builder().name("colin").userId("imjinbro").passwd("1234").build());
     }
 
     @Test(expected = IllegalArgumentException.class)

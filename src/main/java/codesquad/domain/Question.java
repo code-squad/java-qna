@@ -1,9 +1,9 @@
 package codesquad.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 @Entity
 public class Question {
@@ -11,25 +11,34 @@ public class Question {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false, length = 20)
-    private String writer;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    private User writer;
     private String title;
     private String contents;
-
+    private LocalDateTime createDate;
+    // JPA에서는 매핑을 할때 인자를 받는 생성자와 기본 생성자를 같이 만들어야한다.
     public Question() {}
 
-    public Question(String writer, String title, String contents) {
+    public Question(User writer, String title, String contents) {
         super();
         this.writer = writer;
         this.title = title;
         this.contents = contents;
+        this.createDate = LocalDateTime.now();
+    }
+
+    public String getFormattedCreateDate() {
+        if (createDate == null)
+            return "";
+        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getWriter() {
+    public User getWriter() {
         return writer;
     }
 
@@ -41,8 +50,12 @@ public class Question {
         return contents;
     }
 
-    public void setWriter(String writer) {
+    public void setWriter(User writer) {
         this.writer = writer;
+    }
+
+    public LocalDateTime getCreateDate() {
+        return createDate;
     }
 
     public void setTitle(String title) {
@@ -56,5 +69,9 @@ public class Question {
     public void update(Question newQna) {
         this.title = newQna.title;
         this.contents = newQna.contents;
+    }
+
+    public boolean isSameWriter(User loginUser) {
+        return this.writer.equals(loginUser);
     }
 }

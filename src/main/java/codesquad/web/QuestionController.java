@@ -30,7 +30,7 @@ public class QuestionController {
             return "redirect:/users/loginForm";
 
         User sessionUser = HttpSessionUtils.getUserFromSession(session);
-        Question newQuestion = new Question(sessionUser.getUserId(), title, contents);
+        Question newQuestion = new Question(sessionUser, title, contents);
         qnaRepository.save(newQuestion);
         return "redirect:/";
     }
@@ -46,26 +46,40 @@ public class QuestionController {
         if (!HttpSessionUtils.isLoginUser(session))
             return "redirect:/users/loginForm";
 
-        Question qna = qnaRepository.findOne(id);
-        model.addAttribute("qna", qna);
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        Question question = qnaRepository.findOne(id);
+        if (!question.isSameWriter(loginUser))
+            return "/users/loginForm";
+
+        model.addAttribute("question", question);
         return "/qna/updateForm";
     }
 
     @PutMapping("/{id}")
-    public String editPost(@PathVariable Long id, Question newQna, HttpSession session) {
+    public String editPost(@PathVariable Long id, Question newQuestion ,HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session))
             return "redirect:/users/loginForm";
 
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
         Question question = qnaRepository.findOne(id);
-        question.update(newQna);
+        if (!question.isSameWriter(loginUser))
+            return "/users/loginForm";
+
+        question.update(newQuestion);
         qnaRepository.save(question);
-        return "redirect:/";
+        return String.format("redirect:/questions/%d", id);
     }
 
     @DeleteMapping("{id}")
     public String deletePost(@PathVariable Long id, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session))
             return "redirect:/users/loginForm";
+
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        Question question = qnaRepository.findOne(id);
+        if (!question.isSameWriter(loginUser))
+            return "/users/loginForm";
+
         qnaRepository.delete(id);
         return "redirect:/";
     }

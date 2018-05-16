@@ -22,7 +22,7 @@ public class QuestionController {
 
     private List<Question> questions = new ArrayList<>();
 
-    @PostMapping("/qna/submit")
+    @PostMapping("/qna")
     public String question(Question question) {
         System.out.println(question.toString());
         questions.add(question);

@@ -58,6 +58,15 @@ public class User {
         return email;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+
+        return id;
+    }
+
     public boolean haveId(String userId) {
         return this.userId.equals(userId);
     }
@@ -70,56 +79,25 @@ public class User {
         return this.userId.equals(updatedUser.userId) && this.password.equals(updatedUser.password);
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "userId='" + userId + '\'' +
-                ", password='" + password + '\'' +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+    public void update(String beforePassword, User updateUser) {
+        if (!this.isMatch(beforePassword)) {
+            throw new RuntimeException("password is not matched");
+        }
+        this.updateUserInfo(updateUser);
     }
 
-    public void update(String password, String name, String email) {
-        this.password = password;
-        this.name = name;
-        this.email = email;
+    private void updateUserInfo(User updateUser) {
+        password = updateUser.password;
+        name = updateUser.name;
+        email = updateUser.email;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(userId, user.userId) &&
-                Objects.equals(password, user.password) &&
-                Objects.equals(name, user.name) &&
-                Objects.equals(email, user.email);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(userId, password, name, email);
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-
-        return id;
+    private boolean isMatch(String beforePassword) {
+        return password.equals(beforePassword);
     }
 
     public static Builder builder() {
         return new Builder();
-    }
-
-    public void update(User updateUser) {
-        password = updateUser.password;
-        name = updateUser.name;
-        email = updateUser.email;
     }
 
     public static class Builder {
@@ -161,6 +139,33 @@ public class User {
         password = builder.password;
         name = builder.name;
         email = builder.email;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId='" + userId + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(userId, user.userId) &&
+                Objects.equals(password, user.password) &&
+                Objects.equals(name, user.name) &&
+                Objects.equals(email, user.email);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(userId, password, name, email);
     }
 
 

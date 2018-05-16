@@ -3,6 +3,7 @@ package codesquad.web;
 import codesquad.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +27,7 @@ public class AnwerController {
 
         User loginUser = HttpSessionUtils.getUserFromSession(session);
         Question question = questionRepository.findOne(questionId);
-        Answer answer = new Answer(loginUser, question,contents);
+        Answer answer = new Answer(loginUser, question, contents);
         answerRepository.save(answer);
         return String.format("redirect:/questions/%d", questionId);
     }

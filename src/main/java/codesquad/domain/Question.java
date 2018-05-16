@@ -25,7 +25,7 @@ public class Question {
 
     @OneToMany(mappedBy = "question")
     @OrderBy("id ASC")
-    public List<Answer> answers;
+    private List<Answer> answers;
 
     public Question() {}
 

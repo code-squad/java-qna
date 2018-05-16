@@ -5,27 +5,39 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
 @NoArgsConstructor
 @Getter
 @Setter
 @ToString
+@Entity
 public class User {
-    private int id;
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(nullable = false, length = 15, unique = true, updatable = false)
     private String userId;
+
+    @Column(nullable = false, length = 15)
     private String passwd;
+
+    @Column(nullable = false, length = 12)
     private String name;
+
+    @Column(nullable = false, length = 20, unique = true)
     private String email;
 
-    public boolean isSame(int id) {
-        return this.id == id;
-    }
-
-    public void changeInfo(String currentPasswd, String changePasswd, String name, String email) throws IllegalArgumentException {
+    public void changeInfo(String currentPasswd, User userInfo) {
         if (!passwd.equals(currentPasswd)) {
-            throw new IllegalArgumentException("현재 비밀번호가 올바르지않습니다.");
+            throw new IllegalArgumentException("현재 비밀번호가 아닙니다.");
         }
-        passwd = changePasswd;
-        this.name = name;
-        this.email = email;
+        this.passwd = userInfo.passwd;
+        this.name = userInfo.name;
+        this.email = userInfo.email;
     }
 }

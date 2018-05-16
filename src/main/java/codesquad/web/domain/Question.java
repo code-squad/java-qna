@@ -1,9 +1,21 @@
-package codesquad.web.model;
+package codesquad.web.domain;
 
+import javax.persistence.*;
+
+@Entity
 public class Question {
 
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(nullable = false, length = 20)
     private String writer;
+
+    @Column(nullable = false, length = 50)
     private String title;
+
+    @Column(nullable = true, length = 200)
     private String contents;
 
     public Question() {}
@@ -12,6 +24,14 @@ public class Question {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getWriter() {

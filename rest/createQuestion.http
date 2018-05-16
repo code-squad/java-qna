@@ -1,4 +1,4 @@
-POST http://localhost:8080/questions
+POST http://localhost:8080/qna/submit
 Content-Type: application/x-www-form-urlencoded
 
 writer=sanjigi&title=안녕하세요&contents=이것은 내용입니다.

@@ -59,7 +59,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}")
-    public String update(@PathVariable("id") String id, String currentPasswd, User userInfo) {
+    public String update(@PathVariable("id") String id, String currentPasswd, User updateInfo) {
         Optional<User> optionalUser = userRepo.findById(Long.valueOf(id));
         if (!optionalUser.isPresent()) {
             return "redirect:/error/db";
@@ -67,12 +67,13 @@ public class UserController {
 
         try {
             User user = optionalUser.get();
-            user.changeInfo(currentPasswd, userInfo);
+            user.changeInfo(currentPasswd, updateInfo);
             userRepo.save(user);
             return "redirect:/users/" + id;
         } catch (DataAccessException e) {
             return "redirect:/error/db";
         } catch (IllegalArgumentException e) {
+            /* TODO : redirect URI 수정하기 */
             return "redirect:/";
         }
     }

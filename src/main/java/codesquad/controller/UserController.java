@@ -1,7 +1,9 @@
 package codesquad.controller;
 
-import codesquad.model.User;
-import codesquad.model.Users;
+import codesquad.domain.User;
+import codesquad.domain.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -11,51 +13,64 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/users")
 public class UserController {
-    private Users users = new Users();
+    @Autowired
+    private UserRepository userRepo;
 
     @PostMapping
     public String create(User user) {
-        users.add(user);
-        return "redirect:/users";
+        try {
+            userRepo.save(user);
+            return "redirect:/users";
+        } catch (DataAccessException e) {
+            /* error 처리 컨트롤러로 리다이렉트 시켜야함 : 새로운 요청으로 만들어서 이전 form 데이터값 없애기 */
+            System.out.println(e.getMessage());
+            return "redirect:/err/db";
+        }
     }
 
     @GetMapping
     public String show(Model model) {
-        model.addAttribute("users", users.getUsers());
+        model.addAttribute("users", userRepo.findAll());
         return "/user/list";
     }
 
     @GetMapping("/{id}")
-    public String get(Model model, @PathVariable("id") String id) {
-        Optional<User> user = users.findById(Integer.parseInt(id));
+    public String get(Model model, @PathVariable("id") Long id) {
+        Optional<User> user = userRepo.findById(id);
         if (!user.isPresent()) {
             System.out.println("존재하지않는 사용자입니다.");
-            return "/error/show";
+            return "redirect:/error/db";
         }
         model.addAttribute("user", user.get());
         return "/user/profile";
     }
 
     @GetMapping("/{id}/edit")
-    public String edit(@PathVariable("id") String id, Model model) {
-        Optional<User> user = users.findById(Integer.parseInt(id));
-        model.addAttribute("user", user.get());
+    public String edit(@PathVariable("id") Long id, Model model) {
+        Optional<User> optionalUser = userRepo.findById(id);
+        if (!optionalUser.isPresent()) {
+            return "redirect:/error/db";
+        }
+        model.addAttribute("user", optionalUser.get());
         return "/user/edit";
     }
 
-    @PostMapping("/{id}")
-    public String update(@PathVariable("id") String id, String userId, String currentPasswd, String changePasswd, String name, String email) {
-        Optional<User> optionalUser = users.findById(Integer.parseInt(id));
+    @PutMapping("/{id}")
+    public String update(@PathVariable("id") Long id, String currentPasswd, User updateInfo) {
+        Optional<User> optionalUser = userRepo.findById(id);
         if (!optionalUser.isPresent()) {
-            System.out.println("에러에 의해 사용자 삭제된 경우, 데이터베이스 임의조작에 의해 사용자 삭제된 경우");
-            return "/error/show";
+            return "redirect:/error/db";
         }
 
         try {
-            optionalUser.get().changeInfo(currentPasswd, changePasswd, name, email);
+            User user = optionalUser.get();
+            user.changeInfo(currentPasswd, updateInfo);
+            userRepo.save(user);
             return "redirect:/users/" + id;
+        } catch (DataAccessException e) {
+            return "redirect:/error/db";
         } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+            /* TODO : redirect URI 수정하기 */
             return "redirect:/";
         }
     }

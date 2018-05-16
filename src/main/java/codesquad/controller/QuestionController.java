@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.Optional;
+
 @Controller
 public class QuestionController {
 
@@ -27,7 +29,7 @@ public class QuestionController {
         try {
             questionRepo.save(question);
             return "redirect:/";
-        } catch(javax.persistence.RollbackException e) {
+        } catch (javax.persistence.RollbackException e) {
             /* error 처리 컨트롤러로 리다이렉트 시켜야함 : 새로운 요청으로 만들어서 이전 form 데이터값 없애기 */
             System.out.println(e.getMessage());
             return "/";
@@ -35,14 +37,13 @@ public class QuestionController {
     }
 
     @GetMapping("/questions/{id}")
-    public String show(Model model, @PathVariable("id") int id) {
-
-        /*Optional<Question> question = questions.findById(id);
+    public String show(Model model, @PathVariable("id") String id) {
+        Optional<Question> question = questionRepo.findById(Long.valueOf(id));
         if (!question.isPresent()) {
-            System.out.println("존재하지않는 게시글임"); // inner log
-            return "/error/show";
+            System.out.println("존재하지않는 게시글임");
+            return "redirect:/error/db";
         }
-        model.addAttribute("question", question.get());*/
+        model.addAttribute("question", question.get());
         return "/question/show";
     }
 }

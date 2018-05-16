@@ -1,30 +1,35 @@
 package codesquad.domain;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
+@NoArgsConstructor
 @Getter
 @Setter
 @ToString
 @Entity
-public class Question {
+public class Question extends TimeEntity {
     @Id
     @GeneratedValue
     private Long id;
-    private String writer;
-    private String title;
-    private String contents;
-    private String date;
 
-    public Question() {
-        date = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.KOREAN).format(new Date());
+    @Column(nullable = false, length = 12)
+    private String writer;
+
+    @Column(nullable = false, length = 100)
+    private String title;
+
+    @Column(nullable = false, length = 2000)
+    private String contents;
+
+    @Builder
+    public Question(String writer, String title, String contents) {
+        this.writer = writer;
+        this.title = title;
+        this.contents = contents;
     }
 }

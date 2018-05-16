@@ -1,9 +1,6 @@
 package codesquad.domain;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,6 +28,14 @@ public class User {
 
     @Column(nullable = false, length = 20, unique = true)
     private String email;
+
+    @Builder
+    public User(String userId, String passwd, String name, String email) {
+        this.userId = userId;
+        this.passwd = passwd;
+        this.name = name;
+        this.email = email;
+    }
 
     public void changeInfo(String currentPasswd, User userInfo) {
         if (!passwd.equals(currentPasswd)) {

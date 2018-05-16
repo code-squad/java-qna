@@ -2,6 +2,7 @@ package codesquad.web;
 
 import codesquad.domain.Question;
 import codesquad.domain.QuestionRepository;
+import codesquad.domain.Result;
 import codesquad.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -43,51 +44,48 @@ public class QuestionController {
 
     @GetMapping("/{id}/form")
     public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
-        try {
-            Question question = qnaRepository.findOne(id);
-            hasPermission(session, question);
-            model.addAttribute("question", question);
-            return "/qna/updateForm";
-        } catch (IllegalStateException e) {
-            model.addAttribute("errorMessage", e.getMessage());
+        Question question = qnaRepository.findOne(id);
+        Result result = valid(session, question);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
             return "/user/login";
         }
+        model.addAttribute("question", question);
+        return "/qna/updateForm";
     }
 
-    private boolean hasPermission(HttpSession session, Question question) {
+    private Result valid(HttpSession session, Question question) {
         if (!HttpSessionUtils.isLoginUser(session))
-            throw new IllegalStateException("로그인이 필요합니다.");
+            return Result.fail("로그인이 필요합니다.");
+
         User loginUser = HttpSessionUtils.getUserFromSession(session);
         if (!question.isSameWriter(loginUser))
-            throw new IllegalStateException("자신이 쓴 글만 수정, 삭제가 가능합니다.");
-        return true;
+            return Result.fail("자신이 쓴 글만 수정, 삭제가 가능합니다.");
+        return Result.ok();
     }
     
     @PutMapping("/{id}")
     public String editPost(@PathVariable Long id, String title, String contents ,HttpSession session, Model model) {
-        try {
-            Question question = qnaRepository.findOne(id);
-            hasPermission(session, question);
-            question.update(title, contents);
-            qnaRepository.save(question);
-            return String.format("redirect:/questions/%d", id);
-        } catch (IllegalStateException e) {
-            model.addAttribute("errorMessage", e.getMessage());
+        Question question = qnaRepository.findOne(id);
+        Result result = valid(session, question);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
             return "/user/login";
         }
+        question.update(title, contents);
+        qnaRepository.save(question);
+        return String.format("redirect:/questions/%d", id);
     }
 
     @DeleteMapping("{id}")
     public String deletePost(@PathVariable Long id, HttpSession session, Model model) {
-        try {
-            Question question = qnaRepository.findOne(id);
-            hasPermission(session, question);
-            model.addAttribute("question", question);
-            qnaRepository.delete(id);
-            return "redirect:/";
-        } catch (IllegalStateException e) {
-            model.addAttribute("errorMessage", e.getMessage());
+        Question question = qnaRepository.findOne(id);
+        Result result = valid(session, question);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
             return "/user/login";
         }
+        qnaRepository.delete(id);
+        return "redirect:/";
     }
 }

@@ -20,11 +20,11 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    @PostMapping("/user/login")
+    @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
         Optional<User> maybeUser = userRepository.findUserByUserId(userId);
         if (!maybeUser.isPresent()) {
-            logger.debug("User with userId: {} is not present in User DB", userId);
+            logger.debug("User with userId: {} is not present in User DB.", userId);
             return "redirect:/users/login";
         }
 
@@ -32,10 +32,10 @@ public class UserController {
             User user = maybeUser.filter(u -> u.passwordMatch(password))
                     .orElseThrow(IllegalArgumentException::new);
             session.setAttribute("user", user);
-            logger.debug("User login session saved for User: {}", user);
+            logger.debug("User login SUCCESSFUL for User: {}", user);
             return "redirect:/";
         } catch (IllegalArgumentException e) {
-            logger.info("비밀번호 불일치");
+            logger.debug("User login FAILED: incorrect password.");
             return "redirect:/users/login";
         }
     }
@@ -43,13 +43,14 @@ public class UserController {
     @PostMapping("/create")
     public String create(User user) {
         userRepository.save(user);
-        logger.debug("User: {}", user);
+        logger.trace("New User created successfully: {}", user);
         return "redirect:/users/list";
     }
 
     @GetMapping("/list")
     public String getList(Model model) {
         model.addAttribute("users", userRepository.findAll());
+        logger.trace("Users list added to model. Redirecting to user list...");
         return "/users/list";
     }
 
@@ -57,6 +58,7 @@ public class UserController {
     public String getProfile(@PathVariable String userId, Model model) {
         User user = userRepository.getUserByUserId(userId);
         model.addAttribute("user", user);
+        logger.trace("User added to Model. Redirecting to user profile...");
         return "/users/profile";
     }
 
@@ -64,6 +66,7 @@ public class UserController {
     public String showUpdateForm(@PathVariable String userId, Model model) {
         User user = userRepository.getUserByUserId(userId);
         model.addAttribute("user", user);
+        logger.trace("User added to Model. Redirecting to update form...");
         return "/users/updateForm";
     }
 

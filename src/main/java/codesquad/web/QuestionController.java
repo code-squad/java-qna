@@ -1,5 +1,7 @@
 package codesquad.web;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,14 +15,14 @@ import java.util.List;
 @Controller
 public class QuestionController {
 
-    private List<Question> questions = new ArrayList<>();
+    private static final Logger log = LoggerFactory.getLogger(QuestionController.class);
     @Autowired
     private QuestionRepository questionRepository;
 
     @PostMapping("/questions")
     public String saveQuestion(Question question){
         questionRepository.save(question);
-        System.out.println(question);
+        log.debug("Question : {}", question);
         return "redirect:/";
     }
 

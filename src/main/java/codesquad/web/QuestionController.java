@@ -72,7 +72,8 @@ public class QuestionController {
             model.addAttribute("errorMessage", result.getErrorMessage());
             return "/user/login";
         }
-        question.update(title, contents);
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        question.update(title, contents, loginUser);
         qnaRepository.save(question);
         return String.format("redirect:/questions/%d", id);
     }

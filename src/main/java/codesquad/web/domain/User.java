@@ -67,11 +67,17 @@ public class User {
         return id;
     }
 
-    public void update(String beforePassword, User updateUser) {
-        if (!this.isMatch(beforePassword)) {
-            throw new RuntimeException("password is not matched");
-        }
+    public boolean update(String beforePassword, User updateUser) {
+        if (!this.isMatch(beforePassword)) return false;
+        if (nothingToChange(updateUser)) return false;
         this.updateUserInfo(updateUser);
+        return true;
+    }
+
+    private boolean nothingToChange(User updateUser) {
+        return password.equals(updateUser.password)
+                && name.equals(updateUser.name)
+                && email.equals(updateUser.email);
     }
 
     boolean isMatch(String beforePassword) {
@@ -95,7 +101,7 @@ public class User {
         private String name;
         private String email;
 
-        public Builder() { }
+        Builder() { }
 
         public Builder userId(String userId) {
             this.userId = userId;

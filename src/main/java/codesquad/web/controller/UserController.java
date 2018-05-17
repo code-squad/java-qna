@@ -9,13 +9,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @Controller
 @RequestMapping("/users")
 public class UserController {
 
     @Autowired
     private UserRepository userRepository;
-
     private final Logger log = LoggerFactory.getLogger(UserController.class);
 
     // post는 받아서 전달
@@ -41,20 +42,18 @@ public class UserController {
 
     @GetMapping("/{id}/form")
     public String showUpdatePage(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("user", userRepository.findOne(id));
+        Optional<User> maybeUser = userRepository.findById(id);
+        User user = maybeUser.orElseThrow(RuntimeException::new);
+        model.addAttribute("user", user);
         return "user/updateForm";
     }
 
     @PutMapping("/{id}")
     public String update(@PathVariable("id") Long id, String beforePassword, User updateUser) {
-        User user = userRepository.findOne(id);
-        try {
-            user.update(beforePassword, updateUser);
-            userRepository.save(user);
-            return "redirect:/users";
-        } catch (RuntimeException e) {
-            return "redirect:/users";
-        }
+        userRepository.findById(id)
+                .filter(u -> u.update(beforePassword, updateUser))
+                .ifPresent(u -> userRepository.save(u));
+        return "redirect:/users";
     }
 
 }

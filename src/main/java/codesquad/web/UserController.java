@@ -1,51 +1,52 @@
 package codesquad.web;
 
+import codesquad.domain.User;
+import codesquad.domain.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/users")
 public class UserController {
-    private List<User> users = new ArrayList<>();
+
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping
     public String join(User user) {
-        user.setIndex(users.size() + 1);
-        this.users.add(user);
+        userRepository.save(user);
 
         return "redirect:/users";
     }
 
     @GetMapping
     public String list(Model model) {
-        model.addAttribute("users", users);
+        model.addAttribute("users", userRepository.findAll());
 
-        return "user/list";
+        return "/user/list";
     }
 
     @GetMapping("/{userId}")
-    public String profile(@PathVariable String userId, Model model) {
-        User foundUser = findUser(userId);
+    public String profile(@PathVariable Long userId, Model model) {
+        model.addAttribute("user", userRepository.getOne(userId));
 
-        model.addAttribute("user", foundUser);
-
-        return "user/profile";
+        return "/user/profile";
     }
 
-    private User findUser(@PathVariable String userId) {
-        for (User user : users) {
-            if (user.getUserId().equals(userId)) {
-                return user;
-            }
-        }
+    @GetMapping("/{id}/form")
+    public String updateForm(@PathVariable Long id, Model model) {
+        model.addAttribute("user", userRepository.findOne(id));
+        return "/user/updateForm";
+    }
 
-        return null;
+    @PutMapping("/{id}")
+    public String update(@PathVariable Long id, User newUser) {
+        User user = userRepository.findOne(id);
+        user.update(newUser);
+        // 없으면 insert, 기존 사용자면 update
+        userRepository.save(user);
+        return "redirect:/users";
     }
 }

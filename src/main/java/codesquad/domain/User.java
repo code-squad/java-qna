@@ -1,18 +1,29 @@
-package codesquad.web;
+package codesquad.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class User {
-    private int index;
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(nullable = false, length = 25)
     private String userId;
+
     private String password;
     private String name;
     private String email;
 
-    public int getIndex() {
-        return index;
+    public Long getId() {
+        return id;
     }
 
-    public void setIndex(int index) {
-        this.index = index;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUserId() {
@@ -45,5 +56,11 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void update(User newUser) {
+        this.password = newUser.password;
+        this.name = newUser.name;
+        this.email = newUser.email;
     }
 }

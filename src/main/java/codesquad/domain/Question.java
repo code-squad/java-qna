@@ -1,7 +1,17 @@
-package codesquad.web;
+package codesquad.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class Question {
+    @Id
+    @GeneratedValue
     private int index;
+
+    @Column(nullable = false)
     private String writer;
     private String title;
     private String contents;

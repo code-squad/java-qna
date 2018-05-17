@@ -1,36 +1,39 @@
 package codesquad.web;
 
+import codesquad.domain.Question;
+import codesquad.domain.QuestionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Controller
 public class QuestionController {
-    private List<Question> questions = new ArrayList<>();
+
+    @Autowired
+    private QuestionRepository questionsRepository;
 
     @PostMapping("/questions")
     public String inputQuestion(Question question) {
-        question.setIndex(questions.size() + 1);
-        this.questions.add(question);
+        questionsRepository.save(question);
 
         return "redirect:/";
     }
 
     @GetMapping("/")
     public String questionList(Model model) {
-        model.addAttribute("questions", questions);
+        model.addAttribute("questions", questionsRepository.findAll());
 
         return "index";
     }
 
     @GetMapping("/questions/{index}")
     public String questionDetail(@PathVariable int index, Model model) {
-        model.addAttribute("question", questions.get(index - 1));
+        Question question = questionsRepository.findOne(index);
+        model.addAttribute("question", question);
+
         return "/qna/show";
     }
 }

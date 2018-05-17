@@ -77,12 +77,6 @@ public class QuestionController {
         return String.format("redirect:/questions/%d", id);
     }
 
-<<<<<<< HEAD
-    @DeleteMapping("/{id}")
-    public String deletePost(@PathVariable Long id, HttpSession session) {
-        if (!HttpSessionUtils.isLoginUser(session))
-            return "redirect:/users/loginForm";
-=======
     @DeleteMapping("{id}")
     public String deletePost(@PathVariable Long id, HttpSession session, Model model) {
         Question question = qnaRepository.findOne(id);
@@ -91,7 +85,6 @@ public class QuestionController {
             model.addAttribute("errorMessage", result.getErrorMessage());
             return "/user/login";
         }
->>>>>>> 5eff6ebaefa7fa7b6df1fd7b7cb54a966adcd012
         qnaRepository.delete(id);
         return "redirect:/";
     }

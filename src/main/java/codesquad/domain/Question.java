@@ -55,6 +55,10 @@ public class Question {
         return title;
     }
 
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
     public String getContents() {
         return contents;
     }

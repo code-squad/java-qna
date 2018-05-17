@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface QuestionRepository extends JpaRepository<Question, Long> {
 
-    public List<Question> findAllByOrderByIdDesc();
+    List<Question> findAllByOrderByIdDesc();
 }

@@ -34,24 +34,20 @@ public class AnwerController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteAnswer(@PathVariable Long id, HttpSession session, Model model) {
+    public String deleteAnswer(@PathVariable Long id, @PathVariable Long questionId, HttpSession session, Model model) {
         Answer answer = answerRepository.findOne(id);
-        Result result = valid(session, questionRepository.findOne(id));
+        Result result = valid(session, questionRepository.findOne(questionId));
         if (!result.isValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());
             return "/user/login";
         }
         answerRepository.delete(id);
-        return String.format("redirect:/questions/%d", id);
+        return String.format("redirect:/questions/%d", questionId);
     }
 
     private Result valid(HttpSession session, Question question) {
         if (!HttpSessionUtils.isLoginUser(session))
             return Result.fail("로그인이 필요합니다.");
-
-        User loginUser = HttpSessionUtils.getUserFromSession(session);
-        if (!question.isSameWriter(loginUser))
-            return Result.fail("자신이 쓴 글만 수정, 삭제가 가능합니다.");
         return Result.ok();
     }
 }

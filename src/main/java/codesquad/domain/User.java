@@ -64,10 +64,16 @@ public class User {
         this.email = email;
     }
 
-    public void update(User newUser) {
-        this.password = newUser.password;
-        this.name = newUser.name;
-        this.email = newUser.email;
+    public void update(User loginUser, String password, String name, String email) {
+        if (!isSameUser(loginUser))
+            throw new IllegalStateException("유저가 다릅니다.");
+        this.password = password;
+        this.name = name;
+        this.email = email;
+    }
+
+    public boolean isSameUser(User loginUser) {
+        return this.userId.equals(loginUser.getUserId());
     }
 
     @Override

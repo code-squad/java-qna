@@ -18,7 +18,7 @@ public class PaginationTest {
 	}
 	
 	@Test
-	public void isFirstPageSetTest() {
+	public void TestIsFirstPageSet() {
 		assertThat(paginationTdd.isFirstPageSet(0), is(true));
 		assertThat(paginationTdd.isFirstPageSet(1), is(true));
 		assertThat(paginationTdd.isFirstPageSet(2), is(true));
@@ -29,13 +29,13 @@ public class PaginationTest {
 	}
 	
 	@Test
-	public void calcNextPageSet() {
+	public void TestCalcNextPageSet() {
 		assertThat(paginationTdd.calcNextPageSet(0), is(5));
 		assertThat(paginationTdd.calcNextPageSet(5), is(10));
 	}
 	
 	@Test
-	public void isLastPageSet() {
+	public void TestIsLastPageSet() {
 		assertThat(paginationTdd.isLastPageSet(1), is(false));
 		assertThat(paginationTdd.isLastPageSet(2), is(false));
 		assertThat(paginationTdd.isLastPageSet(3), is(false));
@@ -47,7 +47,7 @@ public class PaginationTest {
 	}
 	
 	@Test
-	public void makeleftMoveButtonTest() {
+	public void TestMakeleftMoveButtonTest() {
 		assertThat(paginationTdd.makeleftMoveButton(5), is("<li><a href=?page="+ 0 +">«</a></li>\r\n"));
 		assertThat(paginationTdd.makeleftMoveButton(6), is("<li><a href=?page="+ 1 +">«</a></li>\r\n"));
 		assertThat(paginationTdd.makeleftMoveButton(7), is("<li><a href=?page="+ 2 +">«</a></li>\r\n"));
@@ -56,7 +56,7 @@ public class PaginationTest {
 	}
 	
 	@Test
-	public void makeRightMoveButtonTest() {
+	public void TestMakeRightMoveButtonTest() {
 		assertThat(paginationTdd.makeRightMoveButton(0), is("<li><a href=?page="+ 5 +">»</a></li>\r\n"));
 		assertThat(paginationTdd.makeRightMoveButton(1), is("<li><a href=?page="+ 5 +">»</a></li>\r\n"));
 		assertThat(paginationTdd.makeRightMoveButton(2), is("<li><a href=?page="+ 5 +">»</a></li>\r\n"));
@@ -65,7 +65,7 @@ public class PaginationTest {
 	}
 	
 	@Test
-	public void makePagination() {
+	public void TestMakePagination() {
 		assertThat(paginationTdd.makeNormalButton(0), is("<li><a href=?page=" + 0 + ">" + 1 + "</a></li>"));
 		assertThat(paginationTdd.makeNormalButton(1), is("<li><a href=?page=" + 1 + ">" + 2 + "</a></li>"));
 		assertThat(paginationTdd.makeNormalButton(2), is("<li><a href=?page=" + 2 + ">" + 3 + "</a></li>"));
@@ -74,7 +74,7 @@ public class PaginationTest {
 	}
 	
 	@Test
-	public void calcFirstPageNumber() {
+	public void TestCalcFirstPageNumber() {
 		assertThat(paginationTdd.calcFirstPageNumber(0), is(0));
 		assertThat(paginationTdd.calcFirstPageNumber(1), is(0));
 		assertThat(paginationTdd.calcFirstPageNumber(5), is(5));
@@ -82,7 +82,7 @@ public class PaginationTest {
 	}
 	
 	@Test
-	public void calcLastPageNumber() {
+	public void TestCalcLastPageNumber() {
 		assertThat(paginationTdd.calcLastPageNumber(0), is(5));
 		assertThat(paginationTdd.calcLastPageNumber(1), is(5));
 		assertThat(paginationTdd.calcLastPageNumber(2), is(5));
@@ -94,7 +94,7 @@ public class PaginationTest {
 	}
 	
 	@Test
-	public void makeWholePagination() {
+	public void TestMakeWholePagination() {
 		String pagination = "<li><a href=?page=" + 0 + ">" + 1 + "</a></li>";
 		pagination += "<li><a href=?page=" + 1 + ">" + 2 + "</a></li>";
 		pagination += "<li><a href=?page=" + 2 + ">" + 3 + "</a></li>";
@@ -104,7 +104,7 @@ public class PaginationTest {
 		assertThat(paginationTdd.makeWholePagination(1), is(pagination));
 	}
 	@Test
-	public void makeWholePagination2() {
+	public void TestMakeWholePagination2() {
 		String pagination = "<li><a href=?page="+ 0 +">«</a></li>\r\n";
 		pagination += "<li><a href=?page=" + 5 + ">" + 6 + "</a></li>";
 		pagination += "<li><a href=?page=" + 6 + ">" + 7 + "</a></li>";

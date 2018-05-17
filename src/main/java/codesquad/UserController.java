@@ -78,4 +78,12 @@ public class UserController {
         logger.info("User information update complete for User: {}", user);
         return "redirect:/users/list";
     }
+
+    @GetMapping("/logout")
+    public String logoutUser(HttpSession session) {
+        logger.debug("Logout User: {}", session.getAttribute("user"));
+        session.removeAttribute("user");
+        logger.debug("User Logout SUCCESSFUL. User: {}", session.getAttribute("user"));
+        return "/";
+    }
 }

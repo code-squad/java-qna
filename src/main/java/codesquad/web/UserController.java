@@ -1,12 +1,10 @@
 package codesquad.web;
 
 import com.sun.org.apache.xpath.internal.operations.Mod;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,53 +13,44 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
 
-    private List<User> users = new ArrayList<>();
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping
     public String create(User user) {
         System.out.println(user);
-        users.add(user);
+        userRepository.save(user);
         return "redirect:/users";
     }
 
     @GetMapping
     public String view(Model model) {
-        System.out.println(users.size());
-        model.addAttribute("users", users);
+        System.out.println(userRepository.count());
+        model.addAttribute("users", userRepository.findAll());
         return "user/list";
     }
 
-    @GetMapping("/{userId}")
-    public String showProfile(@PathVariable String userId, Model model) {
-        for (User user : users) {
-            if (user.match(userId)) {
-                model.addAttribute("user", user);
-                break;
-            }
-        }
+    @GetMapping("/{id}")
+    public String showProfile(@PathVariable Long id, Model model) {
+        User user = userRepository.findOne(id);
+        System.out.println(user);
+        model.addAttribute("user", user);
         return "user/profile";
     }
 
-    @GetMapping("/{userId}/form")
-    public String searchUser(@PathVariable String userId, Model model) {
-        for (User user : users) {
-            if (user.match(userId)) {
-                model.addAttribute("user", user);
-                break;
-            }
-        }
+    @GetMapping("/{id}/form")
+    public String searchUser(@PathVariable Long id, Model model) {
+        User user = userRepository.findOne(id);
+        model.addAttribute("user", user);
         return "user/updateForm";
     }
 
-    @PostMapping("/{userId}/update")
-    public String updateUser(@PathVariable String userId, User updateUser, String checkPassword) {
+    @PutMapping("/{id}/update")
+    public String updateUser(@PathVariable Long id, User updateUser, String checkPassword) {
         System.out.println("checkPassword : " + checkPassword);
-        for (User user : users) {
-            if (user.match(userId)) {
-                user.updateUser(updateUser, checkPassword);
-                break;
-            }
-        }
+        User user = userRepository.findOne(id);
+        user.updateUser(updateUser, checkPassword);
+        userRepository.save(user);
         return "redirect:/users";
     }
 }

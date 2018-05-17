@@ -2,6 +2,8 @@ package codesquad.controller;
 
 import codesquad.domain.User;
 import codesquad.domain.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,8 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/users")
 public class UserController {
+    private Logger logger = LoggerFactory.getLogger(UserController.class);
+
     @Autowired
     private UserRepository userRepo;
 
@@ -22,8 +26,8 @@ public class UserController {
             userRepo.save(user);
             return "redirect:/users";
         } catch (DataAccessException e) {
-            System.out.println(e.getMessage());
-            return "redirect:/err/db";
+            logger.error("ERROR {} ", e.getMessage());
+            return "redirect:/err";
         }
     }
 
@@ -52,10 +56,8 @@ public class UserController {
             user.changeInfo(currentPasswd, updateInfo);
             userRepo.save(user);
             return "redirect:/users/" + id;
-        } catch (DataAccessException e) {
-            return "redirect:/error/db";
-        } catch (IllegalArgumentException e) {
-            return "redirect:/";
+        } catch (DataAccessException | IllegalArgumentException e) {
+            return "redirect:/error";
         }
     }
 }

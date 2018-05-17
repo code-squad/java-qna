@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/error")
 public class ErrorController {
 
-    @GetMapping("/db")
-    public String dbErr() {
+    @GetMapping
+    public String show() {
         return "/error/show";
     }
 }

@@ -2,6 +2,8 @@ package codesquad.controller;
 
 import codesquad.domain.Question;
 import codesquad.domain.QuestionRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
@@ -15,6 +17,8 @@ import java.util.Optional;
 
 @Controller
 public class QuestionController {
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+
     @Autowired
     private QuestionRepository questionRepo;
 
@@ -30,8 +34,8 @@ public class QuestionController {
             questionRepo.save(question);
             return "redirect:/";
         } catch (DataAccessException e) {
-            System.out.println(e.getMessage());
-            return "redirect:/error/db";
+            logger.error("ERROR {} ", e.getMessage());
+            return "redirect:/error";
         }
     }
 

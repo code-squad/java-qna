@@ -1,7 +1,17 @@
 package codesquad.web;
 
-public class User {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
+@Entity
+public class User {
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(nullable = false, length = 20)
     private String userId;
     private String password;
     private String name;
@@ -19,6 +29,10 @@ public class User {
         }
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public void setUserId(String userId) {
         this.userId = userId;
     }
@@ -33,6 +47,10 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getUserId() {
@@ -54,6 +72,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
+                "id='" + id + '\'' +
                 "userId='" + userId + '\'' +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +

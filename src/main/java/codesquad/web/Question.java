@@ -1,13 +1,23 @@
 package codesquad.web;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class Question {
 
-    private int id;
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(nullable = false, length = 30)
     private String writer;
     private String title;
     private String contents;
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -23,7 +33,7 @@ public class Question {
         this.contents = contents;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 

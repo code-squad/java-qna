@@ -15,7 +15,6 @@ import java.util.Optional;
 
 @Controller
 public class QuestionController {
-
     @Autowired
     private QuestionRepository questionRepo;
 
@@ -31,7 +30,6 @@ public class QuestionController {
             questionRepo.save(question);
             return "redirect:/";
         } catch (DataAccessException e) {
-            /* error 처리 컨트롤러로 리다이렉트 시켜야함 : 새로운 요청으로 만들어서 이전 form 데이터값 없애기 */
             System.out.println(e.getMessage());
             return "redirect:/error/db";
         }
@@ -39,12 +37,7 @@ public class QuestionController {
 
     @GetMapping("/questions/{id}")
     public String show(Model model, @PathVariable("id") Long id) {
-        Optional<Question> optionalQuestion = questionRepo.findById(id);
-        if (!optionalQuestion.isPresent()) {
-            System.out.println("존재하지않는 게시글임");
-            return "redirect:/error/db";
-        }
-        model.addAttribute("question", optionalQuestion.get());
+        model.addAttribute("question", questionRepo.findById(id).get());
         return "/question/show";
     }
 }

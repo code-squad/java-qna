@@ -2,7 +2,10 @@ package codesquad.controller;
 
 import codesquad.domain.Question;
 import codesquad.domain.QuestionRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +17,7 @@ import java.util.Optional;
 
 @Controller
 public class QuestionController {
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     @Autowired
     private QuestionRepository questionRepo;
@@ -29,21 +33,15 @@ public class QuestionController {
         try {
             questionRepo.save(question);
             return "redirect:/";
-        } catch (javax.persistence.RollbackException e) {
-            /* error 처리 컨트롤러로 리다이렉트 시켜야함 : 새로운 요청으로 만들어서 이전 form 데이터값 없애기 */
-            System.out.println(e.getMessage());
-            return "/";
+        } catch (DataAccessException e) {
+            logger.error("ERROR {} ", e.getMessage());
+            return "redirect:/error";
         }
     }
 
     @GetMapping("/questions/{id}")
     public String show(Model model, @PathVariable("id") Long id) {
-        Optional<Question> optionalQuestion = questionRepo.findById(id);
-        if (!optionalQuestion.isPresent()) {
-            System.out.println("존재하지않는 게시글임");
-            return "redirect:/error/db";
-        }
-        model.addAttribute("question", optionalQuestion.get());
+        model.addAttribute("question", questionRepo.findById(id).get());
         return "/question/show";
     }
 }

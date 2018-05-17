@@ -2,6 +2,8 @@ package codesquad.controller;
 
 import codesquad.domain.User;
 import codesquad.domain.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,8 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/users")
 public class UserController {
+    private Logger logger = LoggerFactory.getLogger(UserController.class);
+
     @Autowired
     private UserRepository userRepo;
 
@@ -22,9 +26,8 @@ public class UserController {
             userRepo.save(user);
             return "redirect:/users";
         } catch (DataAccessException e) {
-            /* error 처리 컨트롤러로 리다이렉트 시켜야함 : 새로운 요청으로 만들어서 이전 form 데이터값 없애기 */
-            System.out.println(e.getMessage());
-            return "redirect:/err/db";
+            logger.error("ERROR {} ", e.getMessage());
+            return "redirect:/err";
         }
     }
 
@@ -36,42 +39,25 @@ public class UserController {
 
     @GetMapping("/{id}")
     public String get(Model model, @PathVariable("id") Long id) {
-        Optional<User> user = userRepo.findById(id);
-        if (!user.isPresent()) {
-            System.out.println("존재하지않는 사용자입니다.");
-            return "redirect:/error/db";
-        }
-        model.addAttribute("user", user.get());
+        model.addAttribute("user", userRepo.findById(id).get());
         return "/user/profile";
     }
 
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable("id") Long id, Model model) {
-        Optional<User> optionalUser = userRepo.findById(id);
-        if (!optionalUser.isPresent()) {
-            return "redirect:/error/db";
-        }
-        model.addAttribute("user", optionalUser.get());
+        model.addAttribute("user", userRepo.findById(id).get());
         return "/user/edit";
     }
 
     @PutMapping("/{id}")
     public String update(@PathVariable("id") Long id, String currentPasswd, User updateInfo) {
-        Optional<User> optionalUser = userRepo.findById(id);
-        if (!optionalUser.isPresent()) {
-            return "redirect:/error/db";
-        }
-
         try {
-            User user = optionalUser.get();
+            User user = userRepo.findById(id).get();
             user.changeInfo(currentPasswd, updateInfo);
             userRepo.save(user);
             return "redirect:/users/" + id;
-        } catch (DataAccessException e) {
-            return "redirect:/error/db";
-        } catch (IllegalArgumentException e) {
-            /* TODO : redirect URI 수정하기 */
-            return "redirect:/";
+        } catch (DataAccessException | IllegalArgumentException e) {
+            return "redirect:/error";
         }
     }
 }

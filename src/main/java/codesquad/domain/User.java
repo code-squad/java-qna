@@ -1,8 +1,11 @@
 package codesquad.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Size;
 
 @NoArgsConstructor
 @Getter
@@ -14,16 +17,20 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Size(min = 3, max = 15)
     @Column(nullable = false, length = 15, unique = true, updatable = false)
     private String userId;
 
+    @Size(min = 5, max = 15)
     @Column(nullable = false, length = 15)
+    @JsonIgnore
     private String passwd;
 
     @Column(nullable = false, length = 15)
     private String name;
 
-    @Column(nullable = false, length = 30, unique = true)
+    @Email
+    @Column(nullable = false, length = 30)
     private String email;
 
     @Builder

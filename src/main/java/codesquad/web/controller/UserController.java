@@ -2,6 +2,8 @@ package codesquad.web.controller;
 
 import codesquad.web.domain.User;
 import codesquad.web.domain.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,10 +16,13 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    private final Logger log = LoggerFactory.getLogger(UserController.class);
+
     // post는 받아서 전달
     @PostMapping("")
     public String create(User user) {
         userRepository.save(user);
+        log.info("Create user : {} ", user.toString());
         return "redirect:/users"; // 얘는 get맵핑이 되어 있어야 함.
     }
 

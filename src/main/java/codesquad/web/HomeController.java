@@ -8,7 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import codesquad.domain.Pagination;
+import codesquad.domain.PaginationTdd;
 import codesquad.domain.QuestionRepository;
 
 @Controller
@@ -22,8 +22,11 @@ public class HomeController {
 	public String home(Model model, String page, @PageableDefault(sort = {"id"}, direction = Direction.DESC, size=2) Pageable pageAble) {
 		model.addAttribute("questions", questionRepository.findAll(pageAble));
 		
-		Pagination pagination = new Pagination(questionRepository.findAll().size());
-		model.addAttribute("pagination", pagination.makePagination(Pagination.calcNowPage(page)));
+//		Pagination pagination = new Pagination(questionRepository.findAll().size());
+//		model.addAttribute("pagination", pagination.makePagination(Pagination.calcNowPage(page)));
+		
+		PaginationTdd pagination = PaginationTdd.of(questionRepository.findAll().size());
+		model.addAttribute("pagination", pagination.makeWholePagination(PaginationTdd.calcNowPage(page)));
 		return "index";
 	}
 }

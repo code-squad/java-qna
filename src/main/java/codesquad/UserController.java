@@ -31,7 +31,7 @@ public class UserController {
         try {
             User user = maybeUser.filter(u -> u.passwordMatch(password))
                     .orElseThrow(IllegalArgumentException::new);
-            session.setAttribute("user", user);
+            session.setAttribute("loggedInUser", user);
             logger.debug("User login SUCCESSFUL for User: {}", user);
             return "redirect:/";
         } catch (IllegalArgumentException e) {
@@ -63,27 +63,37 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/form")
-    public String showUpdateForm(@PathVariable String userId, Model model) {
-        User user = userRepository.getUserByUserId(userId);
+    public String showUpdateForm(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("loggedInUser");
+        if (user == null) {
+            logger.debug("User is NOT logged in.");
+            return "redirect:/users/loginForm";
+        }
+
         model.addAttribute("user", user);
         logger.trace("User added to Model. Redirecting to update form...");
         return "/users/updateForm";
     }
 
     @PutMapping("/{userId}/update")
-    public String updateUser(@PathVariable String userId, User newUser, String oldPassword) {
-        User user = userRepository.getUserByUserId(userId);
+    public String updateUser(HttpSession session, User newUser, String oldPassword) {
+        User user = (User) session.getAttribute("loggedInUser");
+        if (user == null) {
+            logger.debug("User is NOT logged in.");
+            return "redirect:/users/loginForm";
+        }
+
         user.updateUserInfo(newUser, oldPassword);
         userRepository.save(user);
         logger.info("User information update complete for User: {}", user);
-        return "redirect:/users/list";
+        return "redirect:/";
     }
 
     @GetMapping("/logout")
     public String logoutUser(HttpSession session) {
-        logger.debug("Logout User: {}", session.getAttribute("user"));
-        session.removeAttribute("user");
-        logger.debug("User Logout SUCCESSFUL. User: {}", session.getAttribute("user"));
+        logger.debug("Logout User: {}", session.getAttribute("loggedInUser"));
+        session.removeAttribute("loggedInUser");
+        logger.debug("User Logout SUCCESSFUL. User: {}", session.getAttribute("loggedInUser"));
         return "/";
     }
 }

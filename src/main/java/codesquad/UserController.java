@@ -25,7 +25,7 @@ public class UserController {
         Optional<User> maybeUser = userRepository.findUserByUserId(userId);
         if (!maybeUser.isPresent()) {
             logger.debug("User with userId: {} is not present in User DB.", userId);
-            return "redirect:/users/login";
+            return "redirect:/users/loginFailed";
         }
 
         try {
@@ -36,7 +36,7 @@ public class UserController {
             return "redirect:/";
         } catch (IllegalArgumentException e) {
             logger.debug("User login FAILED: incorrect password.");
-            return "redirect:/users/login";
+            return "redirect:/users/loginFailed";
         }
     }
 

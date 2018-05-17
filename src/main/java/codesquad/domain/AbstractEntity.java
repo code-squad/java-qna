@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
@@ -18,9 +19,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @EntityListeners(AuditingEntityListener.class)
 public class AbstractEntity {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@JsonProperty
 	private Long id;
+
+	@CreatedDate
+	private LocalDateTime createDate;
+
+	@LastModifiedDate
+	private LocalDateTime modifiedDate;
 
 	public Long getId() {
 		return id;
@@ -29,12 +36,6 @@ public class AbstractEntity {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
-	@CreatedDate
-	private LocalDateTime createDate;
-
-	@LastModifiedDate
-	private LocalDateTime modifiedDate;
 
 	public String getFormattedCreateDate() {
 		return getFormattedDate(createDate, "yyyy.MM.dd HH:mm");

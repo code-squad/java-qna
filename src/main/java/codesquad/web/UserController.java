@@ -31,6 +31,17 @@ public class UserController {
 
 	@PostMapping("/create")
 	public String create(User user) {
+		
+		
+		/*Optional<User> aa = userRepository.findById(1L);
+		User u = aa.orElseThrow(EntityNotFoundException::new);
+		User g = userRepository.getOne(1L);
+		
+//		
+		userRepository.getOne(1L);
+		Optional<User> maybeUser = userRepository.findByUserId("gram");
+		User ab =  maybeUser.filter(u -> u.matchPassword(user.getPassword())).orElseThrow(IllegalArgumentException::new);*/
+		
 		userRepository.save(user);
 		return "redirect:/users";
 	}

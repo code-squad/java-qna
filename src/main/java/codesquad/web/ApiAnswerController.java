@@ -46,6 +46,7 @@ public class ApiAnswerController {
 
 	@DeleteMapping("/{id}")
 	public Result deleteAnswer(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
+		logger.debug("QuestionId와 id : {}, {},", questionId, id);
 		logger.debug("답변삭제");
 		
 		if (!HttpSessionUtils.isLoginUser(session)) {

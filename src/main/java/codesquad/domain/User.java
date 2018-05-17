@@ -2,6 +2,7 @@ package codesquad.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -14,6 +15,12 @@ public class User extends AbstractEntity {
 	private String userId;
 	@JsonIgnore
 	private String password;
+	public String getPassword() {
+		return password;
+	}
+
+	@Size(min = 3, max = 20)
+	@Column(nullable = false, length = 20)
 	@JsonProperty
 	private String name;
 	@JsonProperty

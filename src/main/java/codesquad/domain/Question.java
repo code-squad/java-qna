@@ -86,7 +86,24 @@ public class Question {
         this.contents = contents;
     }
 
+    public Question update2(String title, String contents, User loginUser) {
+        if (!isSameWriter(loginUser))
+            throw new IllegalStateException("글쓴이만 수정할 수 있습니다.");
+        this.title = title;
+        this.contents = contents;
+        return this;
+    }
+
     public boolean isSameWriter(User loginUser) {
         return this.writer.equals(loginUser);
+    }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "writer=" + writer +
+                ", title='" + title + '\'' +
+                ", contents='" + contents + '\'' +
+                '}';
     }
 }

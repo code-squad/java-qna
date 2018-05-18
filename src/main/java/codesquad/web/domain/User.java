@@ -16,7 +16,6 @@ public class User {
     private String name;
     private String email;
 
-
     public User() { }
 
     public User(String userId, String password, String name, String email) {
@@ -80,7 +79,7 @@ public class User {
                 && email.equals(updateUser.email);
     }
 
-    boolean isMatch(String beforePassword) {
+    public boolean isMatch(String beforePassword) {
         return password.equals(beforePassword);
     }
 

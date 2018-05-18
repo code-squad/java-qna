@@ -37,7 +37,7 @@ public class QuestionTest {
     @Test
     public void updateTest() {
         System.out.println("Before update " + question.toString());
-        Question updateQuestion = question.update2("after title", "afterContents", loginUser);
+        Question updateQuestion = question.update("after title", "afterContents", loginUser);
         System.out.println("After update " + updateQuestion.toString());
     }
 }

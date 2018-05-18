@@ -79,14 +79,14 @@ public class Question {
         this.contents = contents;
     }
 
-    public void update(String title, String contents, User loginUser) {
-        if (!isSameWriter(loginUser))
-            throw new IllegalStateException("글쓴이만 수정할 수 있습니다.");
-        this.title = title;
-        this.contents = contents;
-    }
+//    public void update(String title, String contents, User loginUser) {
+//        if (!isSameWriter(loginUser))
+//            throw new IllegalStateException("글쓴이만 수정할 수 있습니다.");
+//        this.title = title;
+//        this.contents = contents;
+//    }
 
-    public Question update2(String title, String contents, User loginUser) {
+    public Question update(String title, String contents, User loginUser) {
         if (!isSameWriter(loginUser))
             throw new IllegalStateException("글쓴이만 수정할 수 있습니다.");
         this.title = title;

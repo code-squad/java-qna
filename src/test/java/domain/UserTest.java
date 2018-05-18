@@ -30,7 +30,7 @@ public class UserTest {
 
     @Test
     public void userUpdate() {
-        User updatedUser = user.update2(loginUser, "11111", "jimmyEdit", "edit@naver.com");
+        User updatedUser = user.update(loginUser, "11111", "jimmyEdit", "edit@naver.com");
         System.out.println(updatedUser.toString());
     }
 }

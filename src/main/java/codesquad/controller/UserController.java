@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 @Controller
@@ -34,19 +35,19 @@ public class UserController {
     @GetMapping
     public String show(Model model) {
         model.addAttribute("users", userRepo.findAll());
-        return "/user/list";
+        return "/users/list";
     }
 
     @GetMapping("/{id}")
     public String get(Model model, @PathVariable("id") Long id) {
         model.addAttribute("user", userRepo.findById(id).get());
-        return "/user/profile";
+        return "/users/profile";
     }
 
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable("id") Long id, Model model) {
         model.addAttribute("user", userRepo.findById(id).get());
-        return "/user/edit";
+        return "/users/edit";
     }
 
     @PutMapping("/{id}")
@@ -59,5 +60,16 @@ public class UserController {
         } catch (DataAccessException | IllegalArgumentException e) {
             return "redirect:/error";
         }
+    }
+
+    @PostMapping("/login")
+    public String login(String userId, String passwd, HttpSession session) {
+        Optional<User> maybeUser = userRepo.findByUserId(userId);
+        if (!maybeUser.isPresent() || !maybeUser.filter(user -> user.isMatch(passwd)).isPresent()) {
+            return "redirect:/users/loginFail";
+        }
+        logger.info("USER {} ", maybeUser.get());
+        session.setAttribute("user", maybeUser.get());
+        return "redirect:/";
     }
 }

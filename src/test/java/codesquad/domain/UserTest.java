@@ -28,4 +28,14 @@ public class UserTest {
     public void invalid_change_passwd_2() {
         user.changeInfo(null, new User());
     }
+
+    @Test
+    public void match_password() {
+        assertTrue(user.isMatch("1234"));
+    }
+
+    @Test
+    public void invalid_match_password() {
+        assertFalse(user.isMatch("12345678"));
+    }
 }

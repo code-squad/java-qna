@@ -21,7 +21,7 @@ public class User {
     @Column(nullable = false, length = 15, unique = true, updatable = false)
     private String userId;
 
-    @Size(min = 5, max = 15)
+    @Size(min = 3, max = 15)
     @Column(nullable = false, length = 15)
     @JsonIgnore
     private String passwd;
@@ -48,5 +48,9 @@ public class User {
         this.passwd = userInfo.passwd;
         this.name = userInfo.name;
         this.email = userInfo.email;
+    }
+
+    public boolean isMatch(String passwd) {
+        return this.passwd.equals(passwd);
     }
 }

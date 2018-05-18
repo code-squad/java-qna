@@ -8,10 +8,13 @@
    <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
       <div class="panel panel-default content-main">
           <form name="question" method="post" action="/submit">
+              <input type="hidden" name="_method" value="put" />
+              {{#user}}
               <div class="form-group">
                   <label for="author">글쓴이</label>
-                  <input class="form-control" id="author" name="author" placeholder="글쓴이"/>
+                  <input class="form-control" id="author" name="author" value ="{{userId}}" readonly="readonly">
               </div>
+              {{/user}}
               <div class="form-group">
                   <label for="title">제목</label>
                   <input type="text" class="form-control" id="title" name="title" placeholder="제목"/>

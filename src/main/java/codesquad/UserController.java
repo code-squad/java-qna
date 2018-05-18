@@ -76,7 +76,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/form")
-    public String showUpdateForm(Model model, HttpSession session) {
+    public String getUpdateForm(Model model, HttpSession session) {
         if (!userIsLoggedIn(session)) {
             logger.debug("User is NOT logged in.");
             return "redirect:/users/loginForm";

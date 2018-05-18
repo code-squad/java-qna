@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,7 +25,7 @@ public class QuestionController {
     QuestionRepository questionRepository;
 
     @GetMapping("/")
-    public String welcome(Model model) {
+    public String showMainPage(Model model) {
         model.addAttribute("questions", questionRepository.findAllByOrderByIdDesc());
         return "index";
     }
@@ -81,21 +82,40 @@ public class QuestionController {
     public String updateQuestion(HttpSession session, Question updated, @PathVariable Long id) {
         if (!userIsLoggedIn(session)) {
             logger.debug("User is NOT logged in.");
-            //TODO: direct to error page?
+
             return "redirect:/users/loginForm";
         }
-
         User user = getUserFromSession(session);
-        if (!updated.authorAndUserIdMatch(user)) {
-            logger.debug("Author and user ID do NOT match.");
-            //TODO: direct to error page?
-            return "redirect:/";
-        }
-
         Question question = questionRepository.findQuestionById(id);
+        if (!question.authorAndUserIdMatch(user)) {
+            logger.debug("Update Failed: UserId and question author do NOT match.");
+
+            return "/questions/error";
+        }
         question.updateQuestion(updated);
         questionRepository.save(question);
         logger.debug("Question updated!");
+
         return "redirect:/questions/" + id;
+    }
+
+    @DeleteMapping("/questions/{id}/delete")
+    public String deleteQuestion(HttpSession session, @PathVariable Long id) {
+        if (!userIsLoggedIn(session)) {
+            logger.debug("User is NOT logged in.");
+
+            return "redirect:/users/loginForm";
+        }
+        User user = getUserFromSession(session);
+        Question question = questionRepository.findQuestionById(id);
+        if (!question.authorAndUserIdMatch(user)) {
+            logger.debug("Delete FAILED: UserId and question author do NOT match.");
+
+            return "/questions/error";
+        }
+        questionRepository.delete(question);
+        logger.debug("Question deleted: {}", question);
+
+        return "redirect:/";
     }
 }

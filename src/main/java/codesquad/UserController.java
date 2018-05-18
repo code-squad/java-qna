@@ -12,9 +12,13 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
+import static codesquad.HttpSessionUtils.*;
+
 @Controller
 @RequestMapping("/users")
 public class UserController {
+    private static final String USER_LIST = "users";
+    private static final String USER = "user";
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
@@ -29,15 +33,24 @@ public class UserController {
         }
 
         try {
-            User user = maybeUser.filter(u -> u.passwordMatch(password))
+            User user = maybeUser.filter(u -> u.passwordsMatch(password))
                     .orElseThrow(IllegalArgumentException::new);
-            session.setAttribute("loggedInUser", user);
+            session.setAttribute(HTTP_SESSION_KEY, user);
             logger.debug("User login SUCCESSFUL for User: {}", user);
             return "redirect:/";
+
         } catch (IllegalArgumentException e) {
             logger.debug("User login FAILED: incorrect password.");
             return "redirect:/users/loginFailed";
         }
+    }
+
+    @GetMapping("/logout")
+    public String logoutUser(HttpSession session) {
+        logger.debug("Logout User: {}", getUserFromSession(session));
+        session.removeAttribute("loggedInUser");
+        logger.debug("User Logout SUCCESSFUL. User: {}", getUserFromSession(session));
+        return "/";
     }
 
     @PostMapping("/create")
@@ -49,51 +62,49 @@ public class UserController {
 
     @GetMapping("/list")
     public String getList(Model model) {
-        model.addAttribute("users", userRepository.findAll());
+        model.addAttribute(USER_LIST, userRepository.findAll());
         logger.trace("Users list added to model. Redirecting to user list...");
         return "/users/list";
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/{userId}/profile")
     public String getProfile(@PathVariable String userId, Model model) {
         User user = userRepository.getUserByUserId(userId);
-        model.addAttribute("user", user);
+        model.addAttribute(USER, user);
         logger.trace("User added to Model. Redirecting to user profile...");
         return "/users/profile";
     }
 
     @GetMapping("/{userId}/form")
     public String showUpdateForm(Model model, HttpSession session) {
-        User user = (User) session.getAttribute("loggedInUser");
-        if (user == null) {
+        if (!userIsLoggedIn(session)) {
             logger.debug("User is NOT logged in.");
             return "redirect:/users/loginForm";
         }
 
-        model.addAttribute("user", user);
-        logger.trace("User added to Model. Redirecting to update form...");
+        User user = getUserFromSession(session);
+        model.addAttribute(USER, user);
+        logger.trace("User added to Model. Directing to update form...");
         return "/users/updateForm";
     }
 
     @PutMapping("/{userId}/update")
     public String updateUser(HttpSession session, User newUser, String oldPassword) {
-        User user = (User) session.getAttribute("loggedInUser");
-        if (user == null) {
+        if (!userIsLoggedIn(session)) {
             logger.debug("User is NOT logged in.");
             return "redirect:/users/loginForm";
         }
 
-        user.updateUserInfo(newUser, oldPassword);
-        userRepository.save(user);
-        logger.info("User information update complete for User: {}", user);
-        return "redirect:/";
-    }
+        try {
+            User user = getUserFromSession(session);
+            user.updateUserInfo(newUser, oldPassword);
+            userRepository.save(user);
+            logger.info("User information update complete for User: {}", user);
+            return "redirect:/";
 
-    @GetMapping("/logout")
-    public String logoutUser(HttpSession session) {
-        logger.debug("Logout User: {}", session.getAttribute("loggedInUser"));
-        session.removeAttribute("loggedInUser");
-        logger.debug("User Logout SUCCESSFUL. User: {}", session.getAttribute("loggedInUser"));
-        return "/";
+        } catch (IllegalArgumentException e) {
+            logger.debug(e.getMessage());
+            return "redirect:/users/{" + newUser.getUserId() + "}/form";
+        }
     }
 }

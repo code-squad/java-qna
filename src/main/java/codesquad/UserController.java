@@ -36,7 +36,7 @@ public class UserController {
             User user = maybeUser.filter(u -> u.passwordsMatch(password))
                     .orElseThrow(IllegalArgumentException::new);
             session.setAttribute(HTTP_SESSION_KEY, user);
-            logger.debug("User login SUCCESSFUL for User: {}", user);
+            logger.debug("User login for User: {}", user);
             return "redirect:/";
 
         } catch (IllegalArgumentException e) {
@@ -48,8 +48,8 @@ public class UserController {
     @GetMapping("/logout")
     public String logoutUser(HttpSession session) {
         logger.debug("Logout User: {}", getUserFromSession(session));
-        session.removeAttribute("loggedInUser");
-        logger.debug("User Logout SUCCESSFUL. User: {}", getUserFromSession(session));
+        session.removeAttribute(HTTP_SESSION_KEY);
+        logger.debug("User Logout for User: {}", getUserFromSession(session));
         return "/";
     }
 
@@ -104,7 +104,8 @@ public class UserController {
 
         } catch (IllegalArgumentException e) {
             logger.debug(e.getMessage());
-            return "redirect:/users/{" + newUser.getUserId() + "}/form";
+            //TODO: 예외처리는 어떻게 해야하나? 어디로 사용자를 redirect해줘야 하나?
+            return "redirect:/";
         }
     }
 }

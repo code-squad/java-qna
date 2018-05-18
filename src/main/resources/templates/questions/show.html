@@ -12,6 +12,8 @@
                 <h2 class="qna-title">{{question.title}}</h2>
             </header>
             <div class="content-main">
+
+                {{#question}}
                 <article class="article">
 
                     <div class="article-header">
@@ -20,22 +22,21 @@
                                  class="article-author-thumb" alt="">
                         </div>
                         <div class="article-header-text">
-                            <a href="/users/{{question.author}}/profile" class="article-author-name">{{question.author}}</a>
-                            <a href="/question/{{question.id}}" class="article-header-time" title="퍼머링크">
-                                {{question.date}}
+                            <a href="/users/{{author}}/profile" class="article-author-name">{{author}}</a>
+                            <a href="/question/{{id}}" class="article-header-time" title="퍼머링크">
+                                {{date}}
                                 <i class="icon-link"></i>
                             </a>
                         </div>
                     </div>
                     <div class="article-doc">
-                        {{question.content}}
-                        <!--<p>A 에 의존성을 가지는 B라는 클래스가 있습니다.</p><p>B라는 클래스는 InitializingBean 을 상속하고 afterPropertiesSet을 구현하고 있습니다.-->
-                        <!--서버가 가동되면서 bean들이 초기화되는 시점에 B라는 클래스의 afterPropertiesSet 메소드는</p><p>A라는 클래스의 특정 메소드인 afunc()를 호출하고 있습니다.</p>-->
+                        {{content}}
                     </div>
+
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
-                                <a class="link-modify-article" href="/questions/423/form">수정</a>
+                                <a class="link-modify-article" href="/questions/{{id}}/edit">수정</a>
                             </li>
                             <li>
                                 <form class="form-delete" action="/questions/423" method="POST">
@@ -49,7 +50,7 @@
                         </ul>
                     </div>
                 </article>
-
+                {{/question}}
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
                         <p class="qna-comment-count"><strong>2</strong>개의 의견</p>

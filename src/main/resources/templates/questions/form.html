@@ -11,8 +11,7 @@
               <input type="hidden" name="_method" value="put" />
               {{#user}}
               <div class="form-group">
-                  <label for="author">글쓴이</label>
-                  <input class="form-control" id="author" name="author" value ="{{userId}}" readonly="readonly">
+                  <input type="hidden" id="author" name="author" value ="{{userId}}">
               </div>
               {{/user}}
               <div class="form-group">

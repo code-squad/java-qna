@@ -60,8 +60,8 @@ public class Question {
         return id;
     }
 
-    public boolean isMatch(String index) {
-        return this.id.equals(Long.parseLong(index));
+    public boolean authorAndUserIdMatch(User user) {
+        return user.userIdsMatch(author);
     }
 
     @Override

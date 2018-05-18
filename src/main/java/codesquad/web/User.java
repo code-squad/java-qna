@@ -11,7 +11,7 @@ public class User {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, unique = true)
     private String userId;
     private String password;
     private String name;
@@ -19,6 +19,14 @@ public class User {
 
     public boolean match(String userId) {
         return this.userId.equals(userId);
+    }
+
+    public boolean matchId(Long id) {
+        return this.id == id;
+    }
+
+    public boolean matchPassword(String password){
+        return this.password.equals(password);
     }
 
     public void updateUser(User updateUser, String checkPassword) {

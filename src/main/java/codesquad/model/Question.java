@@ -64,6 +64,16 @@ public class Question {
         return user.userIdsMatch(author);
     }
 
+    public void updateQuestion(Question updated) throws IllegalStateException { //TODO: 여기서 예외를 체크하는 게 좋은지 아니면 컨트롤러에서 할지??
+        if (!this.id.equals(updated.id)) {
+            throw new IllegalStateException("서로 다른 질문 아이디 값을 가지고 있습니다.");
+        }
+        if (!this.author.equals(updated.author)) {
+            throw new IllegalStateException("질문자 아이디가 일치하지 않습니다.");
+        }
+        this.content = updated.content;
+    }
+
     @Override
     public String toString() {
         return "Question{" +

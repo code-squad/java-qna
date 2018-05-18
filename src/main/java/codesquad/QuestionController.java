@@ -29,7 +29,7 @@ public class QuestionController {
         return "index";
     }
 
-    @GetMapping("/question/{id}")
+    @GetMapping("/questions/{id}")
     public String getQuestion(@PathVariable Long id, Model model) {
         Question question = questionRepository.findOne(id);
         model.addAttribute("question", question);
@@ -72,7 +72,30 @@ public class QuestionController {
             return "redirect:/";
         }
         model.addAttribute("question", question);
-        logger.debug("Redirecting to /question/form...");
+        model.addAttribute("user", user);
+        logger.debug("Redirecting to /question/edit...");
         return "/questions/edit";
+    }
+
+    @PutMapping("/questions/{id}/update")
+    public String updateQuestion(HttpSession session, Question updated, @PathVariable Long id) {
+        if (!userIsLoggedIn(session)) {
+            logger.debug("User is NOT logged in.");
+            //TODO: direct to error page?
+            return "redirect:/users/loginForm";
+        }
+
+        User user = getUserFromSession(session);
+        if (!updated.authorAndUserIdMatch(user)) {
+            logger.debug("Author and user ID do NOT match.");
+            //TODO: direct to error page?
+            return "redirect:/";
+        }
+
+        Question question = questionRepository.findQuestionById(id);
+        question.updateQuestion(updated);
+        questionRepository.save(question);
+        logger.debug("Question updated!");
+        return "redirect:/questions/" + id;
     }
 }

@@ -1,3 +1,4 @@
+package codesquad.domain;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 

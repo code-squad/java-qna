@@ -39,10 +39,16 @@ public class PaginationTdd {
 	}
 
 	public String makeleftMoveButton(int nowPage) {
+		if(isFirstPageSet(nowPage)) {
+			return "";
+		}
 		return "<li><a href=?page=" + (nowPage - PAGE_SIZE) + ">«</a></li>\r\n";
 	}
 
 	public String makeRightMoveButton(int nowPage) {
+		if(isLastPageSet(nowPage)) {
+			return "";
+		}
 		return "<li><a href=?page=" + calcNextPageSet(nowPage) + ">»</a></li>\r\n";
 	}
 
@@ -51,7 +57,7 @@ public class PaginationTdd {
 	}
 
 	public int calcNextPageSet(int nowPage) {
-		return  (((nowPage / PAGE_SIZE) * PAGE_SIZE) + PAGE_SIZE);
+		return  ((nowPage/PAGE_SIZE)*PAGE_SIZE)+PAGE_SIZE;
 	}
 
 	public int calcFirstPageNumber(int nowPage) {
@@ -67,20 +73,15 @@ public class PaginationTdd {
 	
 
 	public String makeWholePagination(int nowPage) {
-		String pagination ="";
-		
-		if(!isFirstPageSet(nowPage)) {
-			pagination += makeleftMoveButton(nowPage);
-		}
-		
+		return makeleftMoveButton(nowPage)+makeBody(nowPage)+makeRightMoveButton(nowPage);
+	}
+	
+	public String makeBody(int nowPage) {
+		String body ="";
 		for(int i = calcFirstPageNumber(nowPage); i < calcLastPageNumber(nowPage); i++) {
-			pagination += "<li><a href=?page=" + i + ">" + (i + 1) + "</a></li>";
+			body += "<li><a href=?page=" + i + ">" + (i + 1) + "</a></li>";
 		}
-		
-		if(!isLastPageSet(nowPage)) {
-			pagination += makeRightMoveButton(nowPage);
-		}
-		return pagination;
+		return body;
 	}
 	
 

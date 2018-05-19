@@ -67,4 +67,8 @@ public class Question {
                 '}';
     }
 
+    public void update(Question updateQuestion) {
+        this.title = updateQuestion.title;
+        this.contents = updateQuestion.contents;
+    }
 }

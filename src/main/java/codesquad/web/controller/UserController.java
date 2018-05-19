@@ -8,9 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
+
+import static codesquad.web.utils.HttpSessionUtils.USER_SESSION_KEY;
+import static codesquad.web.utils.HttpSessionUtils.isLoginUser;
 
 @Controller
 @RequestMapping("/users")
@@ -31,8 +35,17 @@ public class UserController {
     // get은 가진 것을 뿌려줌
     @GetMapping("")
     public String list(Model model) {
+        log.debug("show list");
         model.addAttribute("users", userRepository.findAll());
         return "user/list";
+    }
+
+    @GetMapping("/profile/{userId}")
+    public String showUserByUserId(@PathVariable("userId") String userId) {
+        log.debug("user id : {}", userId);
+        return "redirect:/users/" + userRepository.findByUserId(userId)
+                .map(u -> String.valueOf(u.getId()))
+                .orElse("");
     }
 
     @GetMapping("/{id}")
@@ -42,16 +55,31 @@ public class UserController {
     }
 
     @GetMapping("/{id}/form")
-    public String showUpdatePage(@PathVariable("id") Long id, Model model) {
-        Optional<User> maybeUser = userRepository.findById(id);
+    public String showUpdatePage(@PathVariable("id") Long id, Model model, HttpSession session) {
+        if (!isLoginUser(session)) {
+            return "user/login";
+        }
+        User sessionUser = (User) session.getAttribute(USER_SESSION_KEY);;
+        if (!id.equals(sessionUser.getId())) {
+            throw new IllegalStateException("Cannot update other's profile");
+        }
+        Optional<User> maybeUser = userRepository.findById(sessionUser.getId());
         User user = maybeUser.orElseThrow(RuntimeException::new);
+        log.debug("update user : {}", user.toString());
         model.addAttribute("user", user);
         return "user/updateForm";
     }
 
     @PutMapping("/{id}")
-    public String update(@PathVariable("id") Long id, String beforePassword, User updateUser) {
-        userRepository.findById(id)
+    public String update(@PathVariable("id") Long id, String beforePassword, User updateUser, HttpSession session) {
+        if (!isLoginUser(session)) {
+            return "user/login";
+        }
+        User sessionUser = (User) session.getAttribute(USER_SESSION_KEY);;;
+        if (!id.equals(sessionUser.getId())) {
+            throw new IllegalStateException("Cannot update other's profile");
+        }
+        userRepository.findById(sessionUser.getId())
                 .filter(u -> u.update(beforePassword, updateUser))
                 .ifPresent(u -> userRepository.save(u));
         return "redirect:/users";
@@ -59,18 +87,18 @@ public class UserController {
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.removeAttribute("user");
+        session.removeAttribute(USER_SESSION_KEY);
         return "redirect:/";
     }
 
     @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
-        log.info("login - id : {}, pw : {}", userId, password);
+        log.debug("login - id : {}, pw : {}", userId, password);
         return userRepository.findByUserId(userId)
                 .filter(u -> u.isMatch(password))
                 .map(u -> {
-                    session.setAttribute("user", u);
-                    return "redirect:/";})
+                    session.setAttribute(USER_SESSION_KEY, u);
+                    return "redirect:/"; })
                 .orElseGet(() -> {
                     return "redirect:/users/loginForm";
                 });

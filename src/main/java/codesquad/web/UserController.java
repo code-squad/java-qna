@@ -30,20 +30,24 @@ public class UserController {
     @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
         log.info("로그인 시도");
-
         User user = userRepository.findByUserId(userId);
-        if (user == null) {
-            return "redirect:/users/loginForm";
-        }
-
-        if (user.matchPassword(password)) {
-            return "redirect:/users/loginForm";
-        }
+        if (checkValidLogin(password, user)) return "redirect:/users/loginForm";
 
         session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
 
         log.info("/로 갑니다");
         return "redirect:/";
+    }
+
+    private boolean checkValidLogin(String password, User user) {
+        if (user == null) {
+            return true;
+        }
+
+        if (user.matchPassword(password)) {
+            return true;
+        }
+        return false;
     }
 
     @GetMapping("/logout")
@@ -55,41 +59,28 @@ public class UserController {
     @PostMapping
     public String join(User user) {
         log.info("가입 시도");
-
         userRepository.save(user);
-
         return "redirect:/users";
     }
 
     @GetMapping
     public String list(Model model) {
         log.info("유저 리스트");
-
         model.addAttribute("users", userRepository.findAll());
-
         return "/user/list";
     }
 
     @GetMapping("/{userId}")
     public String profile(@PathVariable Long userId, Model model) {
+        log.info("유저 프로필");
         model.addAttribute("user", userRepository.getOne(userId));
-
         return "/user/profile";
     }
 
     @GetMapping("/{id}/form")
     public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
-        Object tempUser = session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
-        if (HttpSessionUtils.isLoginUser(session)) {
-            return "redirect:/users/loginForm";
-        }
-
-        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-        if (!sessionedUser.matchId(id)) {
-            throw new IllegalStateException("You can't update the another user");
-        }
-
-        log.info("유저 수정");
+        log.info("유저 수정 폼");
+        if (checkSessionById(id, session)) return "redirect:/users/loginForm";
 
         model.addAttribute("user", userRepository.findOne(id));
         return "/user/updateForm";
@@ -98,19 +89,25 @@ public class UserController {
     // 예외 처리 중요
     @PutMapping("/{id}")
     public String update(@PathVariable Long id, User updatedUser, HttpSession session) {
-        if (HttpSessionUtils.isLoginUser(session)) {
-            return "redirect:/users/loginForm";
-        }
-
-        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-        if (!sessionedUser.matchId(id)) {
-            throw new IllegalStateException("You can't update the another user");
-        }
+        log.info("유저 수정 실행");
+        if (checkSessionById(id, session)) return "redirect:/users/loginForm";
 
         User user = userRepository.findOne(id);
         user.update(updatedUser);
         // 없으면 insert, 기존 사용자면 update
         userRepository.save(user);
         return "redirect:/users";
+    }
+
+    private boolean checkSessionById(@PathVariable Long id, HttpSession session) {
+        if (HttpSessionUtils.isLoginUser(session)) {
+            return true;
+        }
+
+        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+        if (!sessionedUser.matchId(id)) {
+            throw new IllegalStateException("You can't update the another user");
+        }
+        return false;
     }
 }

@@ -41,7 +41,7 @@ public class QuestionController {
     public String question(String title, String contents, HttpSession session) {
         if (!isLoginUser(session)) return "user/login";
         User sessionUSer = (User) session.getAttribute(USER_SESSION_KEY);
-        Question question = new Question(sessionUSer.getUserId(), title, contents);
+        Question question = new Question(sessionUSer, title, contents);
         log.info("Submit Question {} : ", question.toString());
         questionRepository.save(question);
         return "redirect:/";
@@ -78,7 +78,6 @@ public class QuestionController {
     }
 
     @DeleteMapping("/{id}")
-    @Transactional
     public String DeleteQuestion(@PathVariable("id") Long id, HttpSession session) {
         if (!isLoginUser(session)) return "user/login";
         return questionRepository.findById(id)

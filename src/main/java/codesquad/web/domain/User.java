@@ -10,7 +10,7 @@ public class User {
     @GeneratedValue
     private Long id; // Long -> null 체크를 가능하게 함으로써 유저정보 유무를 확인
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, unique = true)
     private String userId;
     private String password;
     private String name;

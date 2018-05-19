@@ -17,6 +17,11 @@ public class Question {
     private String title;
     private String contents;
 
+    public void update(Question question){
+        this.title = question.title;
+        this.contents = question.contents;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }

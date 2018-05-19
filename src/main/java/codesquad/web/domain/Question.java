@@ -71,4 +71,8 @@ public class Question {
         this.title = updateQuestion.title;
         this.contents = updateQuestion.contents;
     }
+
+    public boolean matchWriterId(Long id) {
+        return this.id.equals(id);
+    }
 }

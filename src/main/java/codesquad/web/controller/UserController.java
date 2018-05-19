@@ -56,26 +56,20 @@ public class UserController {
 
     @GetMapping("/{id}/form")
     public String showUpdatePage(@PathVariable("id") Long id, Model model, HttpSession session) {
-        if (!isLoginUser(session)) {
-            return "user/login";
-        }
-        User sessionUser = (User) session.getAttribute(USER_SESSION_KEY);;
+        if (!isLoginUser(session)) return "user/login";
+        User sessionUser = (User) session.getAttribute(USER_SESSION_KEY);
         if (!id.equals(sessionUser.getId())) {
             throw new IllegalStateException("Cannot update other's profile");
         }
-        Optional<User> maybeUser = userRepository.findById(sessionUser.getId());
-        User user = maybeUser.orElseThrow(RuntimeException::new);
-        log.debug("update user : {}", user.toString());
-        model.addAttribute("user", user);
+        model.addAttribute("user", userRepository.findById(sessionUser.getId())
+                .orElseThrow(RuntimeException::new));
         return "user/updateForm";
     }
 
     @PutMapping("/{id}")
     public String update(@PathVariable("id") Long id, String beforePassword, User updateUser, HttpSession session) {
-        if (!isLoginUser(session)) {
-            return "user/login";
-        }
-        User sessionUser = (User) session.getAttribute(USER_SESSION_KEY);;;
+        if (!isLoginUser(session)) return "user/login";
+        User sessionUser = (User) session.getAttribute(USER_SESSION_KEY);
         if (!id.equals(sessionUser.getId())) {
             throw new IllegalStateException("Cannot update other's profile");
         }
@@ -98,10 +92,9 @@ public class UserController {
                 .filter(u -> u.isMatch(password))
                 .map(u -> {
                     session.setAttribute(USER_SESSION_KEY, u);
-                    return "redirect:/"; })
-                .orElseGet(() -> {
-                    return "redirect:/users/loginForm";
-                });
+                    return "redirect:/";
+                })
+                .orElse("redirect:/users/loginForm");
     }
 
 }

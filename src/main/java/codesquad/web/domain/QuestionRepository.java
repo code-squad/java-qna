@@ -10,4 +10,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     List<Question> findAllByOrderByIdDesc();
 
     Optional<Question> findById(Long id);
+
+    void deleteById(Long id);
 }

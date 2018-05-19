@@ -76,17 +76,38 @@ public class UserController {
     }
 
     @GetMapping("/{id}/form")
-    public String updateForm(@PathVariable Long id, Model model) {
+    public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
+        Object tempUser = session.getAttribute("sessionedUser");
+        if (tempUser == null) {
+            return "redirect:/users/loginForm";
+        }
+
+        User sessionedUser = (User) tempUser;
+        if (!id.equals(sessionedUser.getId())) {
+            throw new IllegalStateException("You can't update the another user");
+        }
+
         log.info("유저 수정");
 
         model.addAttribute("user", userRepository.findOne(id));
         return "/user/updateForm";
     }
 
+    // 예외 처리 중요
     @PutMapping("/{id}")
-    public String update(@PathVariable Long id, User newUser) {
+    public String update(@PathVariable Long id, User updatedUser, HttpSession session) {
+        Object tempUser = session.getAttribute("sessionedUser");
+        if (tempUser == null) {
+            return "redirect:/users/loginForm";
+        }
+
+        User sessionedUser = (User) tempUser;
+        if (!id.equals(sessionedUser.getId())) {
+            throw new IllegalStateException("You can't update the another user");
+        }
+
         User user = userRepository.findOne(id);
-        user.update(newUser);
+        user.update(updatedUser);
         // 없으면 insert, 기존 사용자면 update
         userRepository.save(user);
         return "redirect:/users";

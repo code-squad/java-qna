@@ -1,5 +1,6 @@
-package codesquad.web.domain;
+package codesquad.web.domain.repository;
 
+import codesquad.web.domain.model.Question;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import javax.transaction.Transactional;

@@ -1,23 +1,18 @@
 package codesquad.web.controller;
 
-import codesquad.web.domain.Question;
-import codesquad.web.domain.QuestionRepository;
-import codesquad.web.domain.User;
-import com.sun.org.apache.xpath.internal.operations.Mod;
+import codesquad.web.domain.model.Question;
+import codesquad.web.domain.repository.AnswerRepository;
+import codesquad.web.domain.repository.QuestionRepository;
+import codesquad.web.domain.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 import static codesquad.web.utils.HttpSessionUtils.USER_SESSION_KEY;
 import static codesquad.web.utils.HttpSessionUtils.isLoginUser;
@@ -28,6 +23,9 @@ public class QuestionController {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private AnswerRepository answerRepository;
 
     private final Logger log = LoggerFactory.getLogger(QuestionController.class);
 
@@ -44,12 +42,13 @@ public class QuestionController {
         Question question = new Question(sessionUSer, title, contents);
         log.info("Submit Question {} : ", question.toString());
         questionRepository.save(question);
-        return "redirect:/";
+        return "redirect:/qna/" + question.getId();
     }
 
     @GetMapping("/{id}")
-    public String showUser(@PathVariable("id") Long id, Model model) {
+    public String showQuestion(@PathVariable("id") Long id, Model model) {
         model.addAttribute("question", questionRepository.findOne(id));
+        model.addAttribute("answers", answerRepository.findAllByQuestion_Id(id));
         return "qna/show";
     }
 

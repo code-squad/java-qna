@@ -1,5 +1,7 @@
 package codesquad.web.domain;
 
+import codesquad.web.domain.model.User;
+import codesquad.web.domain.repository.UserRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

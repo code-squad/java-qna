@@ -51,9 +51,7 @@
 
               <div class="qna-comment">
                   <div class="qna-comment-slipp">
-                      {{#answer}}
-                      <p class="qna-comment-count"><strong>{{answers.length}}</strong>개의 의견</p>
-                      {{/answer}}
+                      <p class="qna-comment-count"><strong>{{answersLength}}</strong>개의 의견</p>
                       <div class="qna-comment-slipp-articles">
                           {{#answers}}
                           <article class="article" id="answer-1406">
@@ -74,10 +72,10 @@
                               <div class="article-util">
                                   <ul class="article-util-list">
                                       <li>
-                                          <a class="link-modify-article" href="/questions/413/answers/1405/form">수정</a>
+                                          <a class="link-modify-article" href="/qna/{{question.id}}/answers/{{id}}/form">수정</a>
                                       </li>
                                       <li>
-                                          <form class="form-delete" action="/questions/413/answers/1405" method="POST">
+                                          <form class="form-delete" action="/qna/{{question.id}}/answers/{{id}}" method="POST">
                                               <input type="hidden" name="_method" value="DELETE">
                                               <button type="submit" class="delete-answer-button">삭제</button>
                                           </form>

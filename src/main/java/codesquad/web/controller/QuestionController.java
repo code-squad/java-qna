@@ -49,6 +49,7 @@ public class QuestionController {
     public String showQuestion(@PathVariable("id") Long id, Model model) {
         model.addAttribute("question", questionRepository.findOne(id));
         model.addAttribute("answers", answerRepository.findAllByQuestion_Id(id));
+        model.addAttribute("answersLength", answerRepository.findAllByQuestion_Id(id).size());
         return "qna/show";
     }
 
@@ -80,12 +81,24 @@ public class QuestionController {
     public String DeleteQuestion(@PathVariable("id") Long id, HttpSession session) {
         if (!isLoginUser(session)) return "user/login";
         return questionRepository.findById(id)
-                .filter(q -> q.matchWriterId(((User) session.getAttribute(USER_SESSION_KEY)).getId()))
+                .filter(q -> q.matchWriter((User) session.getAttribute(USER_SESSION_KEY)))
                 .map(q -> {
                     questionRepository.deleteById(id);
                     return "redirect:/";
                 })
                 .orElse("user/login");
+    }
+
+    @DeleteMapping("/{questionId}/answers/{answerId}")
+    public String showUpdateAnswerPage(@PathVariable("questionId") Long qId, @PathVariable("answerId") Long aId, HttpSession session) {
+        if (!isLoginUser(session)) return "user/login";
+        return answerRepository.findById(aId)
+                .filter(a -> a.matchWriter((User) session.getAttribute(USER_SESSION_KEY)))
+                .map(a -> {
+                    answerRepository.deleteById(aId);
+                    return "redirect:/qna/" + qId;
+                })
+                .orElseThrow(() -> new IllegalStateException("cannot change other's answer"));
     }
 
 }

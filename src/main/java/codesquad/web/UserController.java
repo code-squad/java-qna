@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 
 @Controller
-//@RequestMapping(value="/users" ,method={RequestMethod.POST, RequestMethod.GET})
 @RequestMapping("/users")
 public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
@@ -42,6 +41,12 @@ public class UserController {
         session.setAttribute("sessionedUser", user);
 
         log.info("/로 갑니다");
+        return "redirect:/";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.removeAttribute("sessionedUser");
         return "redirect:/";
     }
 

@@ -42,12 +42,8 @@ public class User {
     }
 
     public void changeInfo(String currentPasswd, User userInfo) {
-        if (!isMatch(userInfo.id)) {
-            throw new IllegalArgumentException("일치하지않은 사용자입니다."); // id 고쳐서 요청하는 경우
-        }
-
         if (!isMatch(currentPasswd)) {
-            throw new IllegalArgumentException("현재 비밀번호가 아닙니다.");
+            throw new IllegalArgumentException("invalid current password");
         }
         this.passwd = userInfo.passwd;
         this.name = userInfo.name;

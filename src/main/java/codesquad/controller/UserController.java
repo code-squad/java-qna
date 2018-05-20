@@ -29,7 +29,7 @@ public class UserController {
             return "redirect:/users";
         } catch (DataAccessException e) {
             logger.error("ERROR {} ", e.getMessage());
-            return "redirect:/err";
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
@@ -50,14 +50,13 @@ public class UserController {
     @PostMapping("/login")
     public String logining(String userId, String passwd, HttpSession session) {
         if (HttpSessionUtils.isLogin(session)) {
-            return "redirect:/";
+            throw new IllegalArgumentException("You are already login");
         }
 
         Optional<User> maybeUser = userRepo.findByUserId(userId);
-        if (!maybeUser.isPresent() || !maybeUser.filter(userInfo -> userInfo.isMatch(passwd)).isPresent()) {
+        if (!maybeUser.filter(userInfo -> userInfo.isMatch(passwd)).isPresent()) {
             return "redirect:/users/loginFail";
         }
-        logger.info("USER {} ", maybeUser.get());
         session.setAttribute("sessionedUser", maybeUser.get());
         return "redirect:/";
     }
@@ -71,14 +70,8 @@ public class UserController {
 
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable("id") Long id, Model model, HttpSession session) {
-        if (!HttpSessionUtils.isLogin(session)) {
-            return "redirect:/users/loginPage";
-        }
+        validateRequest(session, id);
 
-        Optional<User> sessionUser = HttpSessionUtils.getUserFromSession(session, id);
-        if (!sessionUser.isPresent()) {
-            return "redirect:/error/show";
-        }
         model.addAttribute("user", userRepo.findById(id).get());
         return "/users/edit";
     }
@@ -86,22 +79,21 @@ public class UserController {
 
     @PutMapping("/{id}")
     public String update(@PathVariable("id") Long id, String currentPasswd, User updateInfo, HttpSession session) {
+        validateRequest(session, id);
+
+        User user = userRepo.findById(id).get();
+        user.changeInfo(currentPasswd, updateInfo);
+        userRepo.save(user);
+        return "redirect:/users/" + id;
+    }
+
+    private void validateRequest(HttpSession session, Long pathId) throws IllegalArgumentException {
         if (!HttpSessionUtils.isLogin(session)) {
-            return "redirect:/error/show";
+            throw new IllegalArgumentException("required Login");
         }
 
-        Optional<User> sessionUser = HttpSessionUtils.getUserFromSession(session, id);
-        if (!sessionUser.isPresent()) {
-            return "redirect:/error/show";
-        }
-
-        try {
-            User user = userRepo.findById(id).get();
-            user.changeInfo(currentPasswd, updateInfo);
-            userRepo.save(user);
-            return "redirect:/users/" + id;
-        } catch (DataAccessException | IllegalArgumentException e) {
-            return "redirect:/error";
+        if (!HttpSessionUtils.getUserFromSession(session, pathId).isPresent()) {
+            throw new IllegalArgumentException("request to change another user's information.");
         }
     }
 }

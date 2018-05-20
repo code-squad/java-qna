@@ -12,13 +12,13 @@ public class HttpSessionUtils {
         return session.getAttribute(USER_SESSION_KEY) != null;
     }
 
-    public static Optional<User> getUserFromSession(HttpSession session, Long id) {
+    public static Optional<User> getUserFromSession(HttpSession session, Long pathId) {
         if (!isLogin(session)) {
             return Optional.empty();
         }
 
         User user = (User) session.getAttribute(USER_SESSION_KEY);
-        if (!user.isMatch(id)) {
+        if (!user.isMatch(pathId)) {
             return Optional.empty();
         }
         return Optional.of(user);

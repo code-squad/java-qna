@@ -11,7 +11,7 @@
             {{#question}}
             <form name="question" method="post" action="/questions/{{id}}/form">
                 <input type="hidden" name="_method" value="PUT">
-                <input type="hidden" name="writer" value="{{writer}}">
+                <input type="hidden" name="writer" value="{{writer.id}}">
                 <div class="form-group">
                     <label for="title">제목</label>
                     <input type="text" class="form-control" id="title" name="title" value="{{title}}">
@@ -20,15 +20,14 @@
                     <label for="contents">내용</label>
                     <textarea name="contents" id="contents" rows="5" class="form-control">{{contents}}</textarea>
                 </div>
-                <button type="submit" class="btn btn-success clearfix pull-right">질문하기</button>
+                <button type="submit" class="btn btn-success clearfix pull-right">질문수정</button>
                 <div class="clearfix"/>
-                {{/question}}
             </form>
+            {{/question}}
         </div>
     </div>
 </div>
 
-<!-- script references -->
-{{> overlap/footer}}
+{{>overlap/footer}}
 </body>
 </html>

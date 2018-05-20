@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.Objects;
 
 @Entity
 public class User {
@@ -27,6 +28,10 @@ public class User {
 
     public boolean matchPassword(String password){
         return this.password.equals(password);
+    }
+
+    public boolean isSameWriter(Question question){
+        return this.equals(question.getWriter());
     }
 
     public void updateUser(User updateUser, String checkPassword) {
@@ -86,5 +91,18 @@ public class User {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return this.id==user.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

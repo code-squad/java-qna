@@ -15,6 +15,8 @@ public class QuestionController {
     private static final Logger log = LoggerFactory.getLogger(QuestionController.class);
     @Autowired
     private QuestionRepository questionRepository;
+    @Autowired
+    private AnswerRepository answerRepository;
 
     @GetMapping("/questions/form")
     public String goForm(HttpSession session) {
@@ -27,7 +29,7 @@ public class QuestionController {
     @PostMapping("/questions")
     public String saveQuestion(Question question, HttpSession session) {
         User user = HttpSessionUtils.getSessionedUser(session);
-        question.setWriter(user.getUserId());
+        question.setWriter(user);
         questionRepository.save(question);
         log.debug("Question : {}", question);
         return "redirect:/";
@@ -53,28 +55,29 @@ public class QuestionController {
 
         Question question = questionRepository.findOne(id);
         User user = HttpSessionUtils.getSessionedUser(session);
-        if (!user.match(question.getWriter())) {
-            return "redirect:/";
+        if (!user.isSameWriter(question)) {
+            throw new IllegalStateException("You can't update another user's Question");
         }
 
-        log.debug("Question {}", question);
+        log.debug("Question Search{}", question);
         model.addAttribute("question", question);
         return "/qna/updateForm";
     }
 
     @PutMapping("/questions/{id}/form")
     public String updateQuestion(@PathVariable Long id, Question question, HttpSession session){
+        log.debug("Question new {}", question);
         if(!HttpSessionUtils.isLoginUser(session)){
             throw new IllegalStateException("You can't update, Please Login");
         }
         User user = HttpSessionUtils.getSessionedUser(session);
-        if(!user.match(question.getWriter())){
+        if(!user.isSameWriter(question)){
             throw new IllegalStateException("You can't update another user's Question");
         }
         Question beforeQuestion = questionRepository.findOne(id);
         beforeQuestion.update(question);
         questionRepository.save(beforeQuestion);
-        log.debug("Question {}", beforeQuestion);
+        log.debug("Question Update{}", beforeQuestion);
         return "redirect:/";
     }
 
@@ -86,7 +89,7 @@ public class QuestionController {
         User user = HttpSessionUtils.getSessionedUser(session);
         Question question = questionRepository.findOne(id);
 
-        if(!user.match(question.getWriter())){
+        if(!user.isSameWriter(question)){
             throw new IllegalStateException("You can't delete another user's Question");
         }
 

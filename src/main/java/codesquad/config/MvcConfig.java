@@ -18,6 +18,6 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
         log.info("MvcConfig를 거쳐감");
 
         registry.addViewController("/users/form").setViewName("/user/form");
-        registry.addViewController("/questions/form").setViewName("/qna/form");
+        registry.addViewController("/users/loginForm").setViewName("/user/login");
     }
 }

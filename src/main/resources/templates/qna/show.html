@@ -15,7 +15,7 @@
                                  class="article-author-thumb" alt="">
                         </div>
                         <div class="article-header-text">
-                            <a href="/users/92/kimmunsu" class="article-author-name">{{question.writer}}</a>
+                            <a href="#" class="article-author-name">{{question.writer}}</a>
                             <a href="/questions/413" class="article-header-time" title="{{question.title}}">
                                 2015-12-30 01:47
                                 <i class="icon-link"></i>
@@ -28,16 +28,16 @@
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
-                                <a class="link-modify-article" href="/questions/423/form">수정</a>
+                                <a class="link-modify-article" href="/questions/{{question.index}}/form">수정</a>
                             </li>
                             <li>
-                                <form class="form-delete" action="/questions/423" method="POST">
+                                <form class="form-delete" action="/questions/{{question.index}}" method="POST">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <button class="link-delete-article" type="submit">삭제</button>
                                 </form>
                             </li>
                             <li>
-                                <a class="link-modify-article" href="/index">목록</a>
+                                <a class="link-modify-article" href="/">목록</a>
                             </li>
                         </ul>
                     </div>

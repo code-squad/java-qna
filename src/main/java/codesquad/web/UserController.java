@@ -14,6 +14,8 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/users")
 public class UserController {
+    private static final String ANOTHER_USER_UPDATE_MSG = "You can't update the another user";
+    private static final String REDIRECT_USERS_LOGIN_FORM = "redirect:/users/loginForm";
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     // TODO 다른 사용자의 정보를 수정하려는 경우 에러 페이지를 만든 후 에러 메시지를 출력한다.
@@ -21,17 +23,11 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/loginForm")
-    public String loginForm() {
-        log.info("로그인 페이지로 이동");
-        return "/user/login";
-    }
-
     @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
         log.info("로그인 시도");
         User user = userRepository.findByUserId(userId);
-        if (checkValidLogin(password, user)) return "redirect:/users/loginForm";
+        if (!checkValidLogin(password, user)) return REDIRECT_USERS_LOGIN_FORM;
 
         session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
 
@@ -41,13 +37,13 @@ public class UserController {
 
     private boolean checkValidLogin(String password, User user) {
         if (user == null) {
-            return true;
+            return false;
         }
 
-        if (user.matchPassword(password)) {
-            return true;
+        if (!user.matchPassword(password)) {
+            return false;
         }
-        return false;
+        return true;
     }
 
     @GetMapping("/logout")
@@ -80,7 +76,7 @@ public class UserController {
     @GetMapping("/{id}/form")
     public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
         log.info("유저 수정 폼");
-        if (checkSessionById(id, session)) return "redirect:/users/loginForm";
+        if (!checkSessionById(id, session)) return REDIRECT_USERS_LOGIN_FORM;
 
         model.addAttribute("user", userRepository.findOne(id));
         return "/user/updateForm";
@@ -90,7 +86,7 @@ public class UserController {
     @PutMapping("/{id}")
     public String update(@PathVariable Long id, User updatedUser, HttpSession session) {
         log.info("유저 수정 실행");
-        if (checkSessionById(id, session)) return "redirect:/users/loginForm";
+        if (!checkSessionById(id, session)) return REDIRECT_USERS_LOGIN_FORM;
 
         User user = userRepository.findOne(id);
         user.update(updatedUser);
@@ -100,14 +96,14 @@ public class UserController {
     }
 
     private boolean checkSessionById(@PathVariable Long id, HttpSession session) {
-        if (HttpSessionUtils.isLoginUser(session)) {
-            return true;
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return false;
         }
 
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
         if (!sessionedUser.matchId(id)) {
-            throw new IllegalStateException("You can't update the another user");
+            throw new IllegalStateException(ANOTHER_USER_UPDATE_MSG);
         }
-        return false;
+        return true;
     }
 }

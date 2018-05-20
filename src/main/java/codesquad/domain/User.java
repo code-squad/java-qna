@@ -79,4 +79,12 @@ public class User {
 
         return newId.equals(id);
     }
+
+    public boolean matchUserId(String userId) {
+        if (userId == null) {
+            return false;
+        }
+
+        return userId.equals(this.userId);
+    }
 }

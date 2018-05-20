@@ -1,6 +1,6 @@
 package codesquad.logger;
 
-import codesquad.domain.Question;
+import codesquad.domain.question.Question;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

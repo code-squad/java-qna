@@ -1,5 +1,6 @@
-package codesquad.domain;
+package codesquad.domain.question;
 
+import codesquad.domain.TimeEntity;
 import lombok.*;
 
 import javax.persistence.*;

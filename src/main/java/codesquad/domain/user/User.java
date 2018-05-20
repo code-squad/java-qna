@@ -1,4 +1,4 @@
-package codesquad.domain;
+package codesquad.domain.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
@@ -42,7 +42,11 @@ public class User {
     }
 
     public void changeInfo(String currentPasswd, User userInfo) {
-        if (!passwd.equals(currentPasswd)) {
+        if (!isMatch(userInfo.id)) {
+            throw new IllegalArgumentException("일치하지않은 사용자입니다."); // id 고쳐서 요청하는 경우
+        }
+
+        if (!isMatch(currentPasswd)) {
             throw new IllegalArgumentException("현재 비밀번호가 아닙니다.");
         }
         this.passwd = userInfo.passwd;
@@ -51,6 +55,16 @@ public class User {
     }
 
     public boolean isMatch(String passwd) {
+        if (passwd == null) {
+            return false;
+        }
         return this.passwd.equals(passwd);
+    }
+
+    public boolean isMatch(Long id) {
+        if (id == null) {
+            return false;
+        }
+        return this.id.equals(id);
     }
 }

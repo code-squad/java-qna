@@ -1,4 +1,4 @@
-package codesquad.config;
+package codesquad.controller.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -13,7 +13,6 @@ public class MvcConfig implements WebMvcConfigurer {
         registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
 
         registry.addViewController("/users/form").setViewName("/users/form");
-        registry.addViewController("/users/loginPage").setViewName("/users/login");
         registry.addViewController("/users/loginFail").setViewName("/users/login_failed");
 
         registry.addViewController("/question/form").setViewName("/question/form");

@@ -1,5 +1,6 @@
 package codesquad.domain;
 
+import codesquad.domain.user.User;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,21 +13,40 @@ public class UserTest {
     @Before
     public void setUp() {
         user = User.builder().name("colin").userId("imjinbro").passwd("1234").build();
+        user.setId(1L);
     }
 
     @Test
-    public void valid_change_passwd() {
-        user.changeInfo("1234", User.builder().name("colin").userId("imjinbro").passwd("1234").build());
+    public void valid_passwd_change_passwd() {
+        User updateInfo = User.builder().name("colin").userId("imjinbro").passwd("1234").build();
+        updateInfo.setId(1L);
+        user.changeInfo("1234", updateInfo);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void invalid_change_passwd() {
-        user.changeInfo("123567", User.builder().name("colin").userId("imjinbro").passwd("1234").build());
+    public void invalid_passwd_change_passwd() {
+        User updateInfo = User.builder().name("colin").userId("imjinbro").passwd("456789").build();
+        updateInfo.setId(1L);
+        user.changeInfo("1234567", updateInfo);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void invalid_change_passwd_2() {
+    public void invalid_passwd_change_passwd_2() {
         user.changeInfo(null, new User());
+    }
+
+    @Test
+    public void valid_id_change_passwd() {
+        User updateInfo = User.builder().name("colin").userId("imjinbro").passwd("456789").build();
+        updateInfo.setId(1L);
+        user.changeInfo("1234", updateInfo);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void invalid_id_change_passwd() {
+        User updateInfo = User.builder().name("colin").userId("imjinbro").passwd("456789").build();
+        updateInfo.setId(2L);
+        user.changeInfo("1234", updateInfo);
     }
 
     @Test
@@ -37,5 +57,10 @@ public class UserTest {
     @Test
     public void invalid_match_password() {
         assertFalse(user.isMatch("12345678"));
+    }
+
+    @Test
+    public void invalid_match_password_null() {
+        assertFalse(user.isMatch(null));
     }
 }

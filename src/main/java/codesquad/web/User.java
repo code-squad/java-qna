@@ -34,6 +34,10 @@ public class User {
         return this.equals(question.getWriter());
     }
 
+    public boolean isSameWriterOfAnswer(Answer answer){
+        return this.equals(answer.getWriter());
+    }
+
     public void updateUser(User updateUser, String checkPassword) {
         if (password.equals(checkPassword)) {
             password = updateUser.password;

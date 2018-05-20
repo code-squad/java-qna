@@ -75,10 +75,10 @@
                                     <ul class="article-util-list">
                                         <li>
                                             <a class="link-modify-article"
-                                               href="/questions/413/answers/1405/form">수정</a>
+                                               href="/questions/{{question.id}}/answers/{{id}}">수정</a>
                                         </li>
                                         <li>
-                                            <form class="delete-answer-form" action="/questions/413/answers/1405"
+                                            <form class="delete-answer-form" action="/questions/{{question.id}}/answers/{{id}}"
                                                   method="POST">
                                                 <input type="hidden" name="_method" value="DELETE">
                                                 <button type="submit" class="delete-answer-button">삭제</button>
@@ -122,10 +122,11 @@
                             </article>
                             <form class="submit-write" method="post" action="/questions/{{question.id}}/answers">
                                 <input type="hidden" name="question" value="{{question.id}}">
-                                <div class="form-group" style="padding:14px;" >
-                                    <textarea name="contents" class="form-control" placeholder="Update your status"></textarea>
+                                <div class="form-group" style="padding:14px;">
+                                    <textarea name="contents" class="form-control"
+                                              placeholder="Update your status"></textarea>
                                 </div>
-                                <button type="submit" class="btn btn-success pull-right" >답변하기</button>
+                                <button type="submit" class="btn btn-success pull-right">답변하기</button>
                                 <div class="clearfix"/>
                             </form>
                         </div>

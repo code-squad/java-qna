@@ -16,6 +16,10 @@ public class Answer {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
     private Question question;
 
+    public void update(String contents) {
+        this.contents = contents;
+    }
+
     public Long getId() {
         return id;
     }
@@ -48,6 +52,10 @@ public class Answer {
         this.writer = writer;
     }
 
+    public Long getIdOfQuestion(){
+        return question.getId();
+    }
+
     @Override
     public String toString() {
         return "Answer{" +
@@ -57,4 +65,5 @@ public class Answer {
                 ", question=" + question +
                 '}';
     }
+
 }

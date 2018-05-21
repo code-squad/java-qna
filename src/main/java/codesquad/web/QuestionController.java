@@ -40,12 +40,7 @@ public class QuestionController {
 
         User sessionUser = HttpSessionUtils.getUserFromSession(session);
         Question question = new Question(sessionUser, title, contents);
-
-//        question.setWriter(user.getName());
-//        question.setWriterId(user.getUserId());
         question.checkEqualSession(session);
-
-//        question.matchUser(user);
 
         questionsRepository.save(question);
 

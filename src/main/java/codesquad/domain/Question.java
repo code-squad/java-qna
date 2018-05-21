@@ -4,6 +4,8 @@ import codesquad.web.HttpSessionUtils;
 
 import javax.persistence.*;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Question {
@@ -15,27 +17,20 @@ public class Question {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     private User writer;
 
-    //    private String writer;
     private String title;
     private String contents;
+    private LocalDateTime createDate;
 
     public Question(User writer, String title, String contents) {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
+        this.createDate = LocalDateTime.now();
     }
 
     public Question() {
 
     }
-
-//    public String getWriterId() {
-//        return writerId;
-//    }
-//
-//    public void setWriterId(String writerId) {
-//        this.writerId = writerId;
-//    }
 
     public Long getId() {
         return id;
@@ -44,14 +39,6 @@ public class Question {
     public void setId(Long id) {
         this.id = id;
     }
-
-//    public String getWriter() {
-//        return writer;
-//    }
-//
-//    public void setWriter(String writer) {
-//        this.writer = writer;
-//    }
 
     public String getTitle() {
         return title;
@@ -85,5 +72,13 @@ public class Question {
         if (!matchUser(userFromSession)) {
             throw new IllegalStateException("Don't manipulate Other's contents");
         }
+    }
+
+    public String getFormattedCreateDate() {
+        if (createDate == null) {
+            return "";
+        }
+
+        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
     }
 }

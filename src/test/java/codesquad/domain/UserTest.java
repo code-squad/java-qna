@@ -20,33 +20,33 @@ public class UserTest {
     public void valid_passwd_change_passwd() {
         User updateInfo = User.builder().name("colin").userId("imjinbro").passwd("1234").build();
         updateInfo.setId(1L);
-        user.changeInfo("1234", updateInfo);
+        user.update("1234", updateInfo);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void invalid_passwd_change_passwd() {
         User updateInfo = User.builder().name("colin").userId("imjinbro").passwd("456789").build();
         updateInfo.setId(1L);
-        user.changeInfo("1234567", updateInfo);
+        user.update("1234567", updateInfo);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void invalid_passwd_change_passwd_2() {
-        user.changeInfo(null, new User());
+        user.update(null, new User());
     }
 
     @Test
     public void valid_id_change_passwd() {
         User updateInfo = User.builder().name("colin").userId("imjinbro").passwd("456789").build();
         updateInfo.setId(1L);
-        user.changeInfo("1234", updateInfo);
+        user.update("1234", updateInfo);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void invalid_id_change_passwd() {
         User updateInfo = User.builder().name("colin").userId("imjinbro").passwd("456789").build();
         updateInfo.setId(2L);
-        user.changeInfo("1234", updateInfo);
+        user.update("1234", updateInfo);
     }
 
     @Test

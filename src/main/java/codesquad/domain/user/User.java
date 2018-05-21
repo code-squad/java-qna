@@ -41,7 +41,7 @@ public class User {
         this.email = email;
     }
 
-    public void changeInfo(String currentPasswd, User userInfo) {
+    public void update(String currentPasswd, User userInfo) {
         if (!isMatch(currentPasswd)) {
             throw new IllegalArgumentException("invalid current password");
         }
@@ -62,5 +62,9 @@ public class User {
             return false;
         }
         return this.id.equals(id);
+    }
+
+    public boolean isMatch(User sessionUser) {
+        return this.id.equals(sessionUser.id);
     }
 }

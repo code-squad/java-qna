@@ -9,11 +9,11 @@
       <div class="panel panel-default content-main">
           <form name="question" method="post" action="/submit">
               <input type="hidden" name="_method" value="put" />
-              {{#user}}
+
               <div class="form-group">
-                  <input type="hidden" id="author" name="author" value ="{{userId}}">
+                  <input type="hidden" id="author" name="author" value ="{{userId}}" />
               </div>
-              {{/user}}
+
               <div class="form-group">
                   <label for="title">제목</label>
                   <input type="text" class="form-control" id="title" name="title" placeholder="제목"/>

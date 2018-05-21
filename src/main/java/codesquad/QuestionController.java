@@ -1,5 +1,7 @@
 package codesquad;
 
+import codesquad.exceptions.NoSessionedUserException;
+import codesquad.exceptions.UnauthorizedRequestException;
 import codesquad.model.Question;
 import codesquad.model.QuestionRepository;
 import codesquad.model.User;
@@ -40,82 +42,84 @@ public class QuestionController {
 
     @GetMapping("/questionForm")
     public String getQuestionForm(HttpSession session, Model model) {
-        if (!userIsLoggedIn(session)) {
+        try {
+            User user = getUserFromSession(session);
+            model.addAttribute("user", user);
+            return "/questions/form";
+        } catch (NoSessionedUserException e) {
             logger.debug("User is NOT logged in.");
             return "redirect:/users/loginForm";
         }
 
-        User user = getUserFromSession(session);
-        model.addAttribute(user);
-        return "/questions/form";
     }
 
     @PutMapping("/submit")
-    public String submitQuestion(Question question) {
-        questionRepository.save(question);
-        logger.debug("Question added: {}", question);
-        return "redirect:/";
+    public String submitQuestion(HttpSession session, Question question) {
+        try {
+            User user = getUserFromSession(session);
+            question.setAuthor(user);
+            questionRepository.save(question);
+            logger.debug("Question added: {}", question);
+            return "redirect:/";
+        } catch (NoSessionedUserException e) {
+            logger.debug("Failed to submit question - User is NOT logged in.");
+            return "/users/login";
+        }
     }
 
     @GetMapping("/questions/{id}/edit")
     public String editQuestion(HttpSession session, @PathVariable Long id, Model model) {
-        if (!userIsLoggedIn(session)) {
+        try {
+            User user = getUserFromSession(session);
+            Question question = questionRepository.findQuestionById(id);
+            model.addAttribute("question", question);
+            model.addAttribute("user", user);
+            logger.debug("Redirecting to /question/edit...");
+            return "/questions/edit";
+        } catch (NoSessionedUserException e) {
             logger.debug("User is NOT logged in.");
-            //TODO: direct to error page?
             return "redirect:/users/loginForm";
-        }
-
-        User user = getUserFromSession(session);
-        Question question = questionRepository.findQuestionById(id);
-        if (!question.authorAndUserIdMatch(user)) {
+        } catch (UnauthorizedRequestException e) {
             logger.debug("Author and user ID do NOT match.");
-            //TODO: direct to error page?
-            return "redirect:/";
+            return "/questions/error";
         }
-        model.addAttribute("question", question);
-        model.addAttribute("user", user);
-        logger.debug("Redirecting to /question/edit...");
-        return "/questions/edit";
     }
 
     @PutMapping("/questions/{id}/update")
     public String updateQuestion(HttpSession session, Question updated, @PathVariable Long id) {
-        if (!userIsLoggedIn(session)) {
+        try {
+            User user = getUserFromSession(session);
+            Question question = questionRepository.findQuestionById(id);
+            question.updateQuestion(updated, user);
+            questionRepository.save(question);
+            logger.debug("Question updated!");
+            return "redirect:/questions/" + id;
+        } catch (NoSessionedUserException e) {
             logger.debug("User is NOT logged in.");
-
             return "redirect:/users/loginForm";
-        }
-        User user = getUserFromSession(session);
-        Question question = questionRepository.findQuestionById(id);
-        if (!question.authorAndUserIdMatch(user)) {
+        } catch (UnauthorizedRequestException e) {
             logger.debug("Update Failed: UserId and question author do NOT match.");
-
             return "/questions/error";
         }
-        question.updateQuestion(updated);
-        questionRepository.save(question);
-        logger.debug("Question updated!");
-
-        return "redirect:/questions/" + id;
     }
 
     @DeleteMapping("/questions/{id}/delete")
     public String deleteQuestion(HttpSession session, @PathVariable Long id) {
-        if (!userIsLoggedIn(session)) {
+        try {
+            User user = getUserFromSession(session);
+            Question question = questionRepository.findQuestionById(id);
+            if (question.authorAndUserIdMatch(user)) {
+                throw new UnauthorizedRequestException("question.userId.mismatch");
+            }
+            questionRepository.delete(question);
+            logger.debug("Question deleted: {}", question);
+            return "redirect:/";
+        } catch (NoSessionedUserException e) {
             logger.debug("User is NOT logged in.");
-
             return "redirect:/users/loginForm";
-        }
-        User user = getUserFromSession(session);
-        Question question = questionRepository.findQuestionById(id);
-        if (!question.authorAndUserIdMatch(user)) {
+        } catch (UnauthorizedRequestException e) {
             logger.debug("Delete FAILED: UserId and question author do NOT match.");
-
             return "/questions/error";
         }
-        questionRepository.delete(question);
-        logger.debug("Question deleted: {}", question);
-
-        return "redirect:/";
     }
 }

@@ -1,9 +1,8 @@
 package codesquad.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import codesquad.exceptions.UnauthorizedRequestException;
+
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
@@ -12,10 +11,14 @@ public class Question {
     @Id
     @GeneratedValue
     private Long id;
-    @Column(nullable = false, length = 32)
-    private String author;
+
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_author"))
+    private User author;
+
     @Column(nullable = false, length = 64)
     private String title;
+
     private String content;
     private Timestamp date;
 
@@ -24,12 +27,12 @@ public class Question {
         this.date = Timestamp.valueOf(dateTime);
     }
 
-    public String getAuthor() {
+    public User getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setAuthor(User user) {
+        this.author = user;
     }
 
     public String getTitle() {
@@ -60,24 +63,13 @@ public class Question {
         return id;
     }
 
-    public boolean questionIdsMatch(Question question) {
-        return id.equals(question.id);
-    }
-
-    public boolean authorsMatch(Question question) {
-        return author.equals(question.author);
-    }
-
     public boolean authorAndUserIdMatch(User user) {
-        return user.userIdsMatch(author);
+        return author.userIdsMatch(user);
     }
 
-    public void updateQuestion(Question updated) throws IllegalStateException { //TODO: 여기서 예외를 체크하는 게 좋은지 아니면 컨트롤러에서 할지??
-        if (!questionIdsMatch(updated)) {
-            throw new IllegalStateException("질문 번호가 일치하지 않습니다.");
-        }
-        if (!authorsMatch(updated)) {
-            throw new IllegalStateException("질문자 아이디가 일치하지 않습니다.");
+    public void updateQuestion(Question updated, User user) throws UnauthorizedRequestException {
+        if (!authorAndUserIdMatch(user)) {
+            throw new UnauthorizedRequestException("Question.userId.mismatch");
         }
         this.content = updated.content;
     }

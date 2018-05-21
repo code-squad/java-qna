@@ -1,9 +1,13 @@
 package codesquad.model;
 
+import codesquad.exceptions.PasswordMismatchException;
+import org.hibernate.validator.constraints.Email;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.Size;
 
 @Entity
 public class User {
@@ -11,12 +15,19 @@ public class User {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false, length = 32)
+    @Size(min = 3, max = 20)
+    @Column(nullable = false, length = 32, unique = true)
     private String userId;
+
+    @Size(min = 6, max = 20)
     @Column(nullable = false, length = 32)
     private String password;
+
+    @Size(min = 3, max = 20)
     @Column(nullable = false, length = 64)
     private String name;
+
+    @Email
     @Column(nullable = false)
     private String email;
 
@@ -56,9 +67,9 @@ public class User {
         this.email = email;
     }
 
-    public void updateUserInfo(User newUser, String password) throws IllegalArgumentException {
+    public void updateUserInfo(User newUser, String password) throws PasswordMismatchException {
         if (!passwordsMatch(password)) {
-            throw new IllegalArgumentException("사용자 정보수정 실패: 비밀번호 불일치");
+            throw new PasswordMismatchException("User.password.mismatch");
         }
         this.password = newUser.password;
         this.name = newUser.name;
@@ -69,8 +80,8 @@ public class User {
         return this.password.equals(password);
     }
 
-    public boolean userIdsMatch(String userId) {
-        return this.userId.equals(userId);
+    public boolean userIdsMatch(User user) {
+        return this.userId.equals(user.userId);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package codesquad.controller;
 
 import codesquad.controller.handler.UnAuthorizedException;
+import codesquad.domain.answer.AnswerRepository;
 import codesquad.domain.question.Question;
 import codesquad.domain.question.QuestionRepository;
 import codesquad.domain.user.User;
@@ -8,7 +9,6 @@ import codesquad.util.HttpSessionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -55,20 +55,18 @@ public class QuestionController {
 
     @GetMapping("/questions/{id}/edit")
     public String edit(@PathVariable("id") Long id, Model model, HttpSession session) {
-        model.addAttribute("user", HttpSessionUtils.getUserFromSession(session).get());
+        Question question = questionRepo.findById(id).get();
+        if (!question.isMatch(HttpSessionUtils.getUserFromSession(session).get())) {
+            throw new UnAuthorizedException("");
+        }
         model.addAttribute("question", questionRepo.findById(id).get());
         return "/question/edit";
     }
 
-
-
-
-
-
     @PutMapping("/questions/{id}")
     public String update(@PathVariable("id") Long id, Question updateQuestion, HttpSession session) {
-        if (!updateQuestion.isMatch(id)) {
-            throw new IllegalArgumentException("");
+        if (!HttpSessionUtils.isLogin(session)) {
+            throw new UnAuthorizedException("user.not.exist");
         }
         Question question = questionRepo.findById(id).get();
         question.update(HttpSessionUtils.getUserFromSession(session).get(), updateQuestion);
@@ -80,7 +78,7 @@ public class QuestionController {
     public String delete(@PathVariable("id") Long id, HttpSession session) {
         Question question = questionRepo.findById(id).get();
         if (!question.isMatch(HttpSessionUtils.getUserFromSession(session).get())) {
-            throw new UnAuthorizedException("");
+            throw new UnAuthorizedException("question.mismatch.userId");
         }
         questionRepo.delete(question);
         return "redirect:/";

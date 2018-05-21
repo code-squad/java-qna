@@ -1,6 +1,5 @@
 package codesquad.controller;
 
-import codesquad.controller.handler.UnAuthorizedException;
 import codesquad.domain.user.User;
 import codesquad.domain.user.UserRepository;
 import codesquad.util.HttpSessionUtils;
@@ -51,7 +50,7 @@ public class UserController {
     @PostMapping("/login")
     public String logining(String userId, String passwd, HttpSession session) {
         if (HttpSessionUtils.isLogin(session)) {
-            throw new IllegalArgumentException("user.mismatch.password");
+            return "redirect:/";
         }
 
         Optional<User> maybeUser = userRepo.findByUserId(userId);
@@ -74,40 +73,26 @@ public class UserController {
         return "redirect:/";
     }
 
-
-
-
-
-
-
-
-
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable("id") Long id, Model model, HttpSession session) {
-        validateRequest(session, id);
-
-        model.addAttribute("user", userRepo.findById(id).get());
+        if (!HttpSessionUtils.isLogin(session)) {
+            return "redirect:/users/login";
+        }
+        User sessionUser = HttpSessionUtils.getUserFromSession(session, id).get();
+        model.addAttribute("user", sessionUser);
         return "/users/edit";
     }
 
 
     @PutMapping("/{id}")
     public String update(@PathVariable("id") Long id, String currentPasswd, User updateInfo, HttpSession session) {
-        validateRequest(session, id);
-
+        if (!HttpSessionUtils.isLogin(session)) {
+            return "redirect:/users/login";
+        }
+        User sessionUser = HttpSessionUtils.getUserFromSession(session).get();
         User user = userRepo.findById(id).get();
-        user.update(currentPasswd, updateInfo);
+        user.update(sessionUser, currentPasswd, updateInfo);
         userRepo.save(user);
         return "redirect:/users/" + id;
-    }
-
-    private void validateRequest(HttpSession session, Long pathId) throws UnAuthorizedException {
-        if (!HttpSessionUtils.isLogin(session)) {
-            throw new UnAuthorizedException("required Login");
-        }
-
-        if (!HttpSessionUtils.getUserFromSession(session, pathId).isPresent()) {
-            throw new UnAuthorizedException("request to change another user's information.");
-        }
     }
 }

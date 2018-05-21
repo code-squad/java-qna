@@ -1,5 +1,6 @@
 package codesquad.util;
 
+import codesquad.controller.handler.UnAuthorizedException;
 import codesquad.domain.user.User;
 
 import javax.servlet.http.HttpSession;
@@ -14,7 +15,7 @@ public class HttpSessionUtils {
 
     public static Optional<User> getUserFromSession(HttpSession session) {
         if (!isLogin(session)) {
-            return Optional.empty();
+            throw new UnAuthorizedException("user.not.exist");
         }
         User user = (User) session.getAttribute(USER_SESSION_KEY);
         return Optional.of(user);
@@ -22,10 +23,10 @@ public class HttpSessionUtils {
 
     public static Optional<User> getUserFromSession(HttpSession session, Long pathId) {
         User sessionUser = getUserFromSession(session).get();
-        if (isMatchRequestUserAndSessionUser(sessionUser, pathId)) {
-            return Optional.of(sessionUser);
+        if (!isMatchRequestUserAndSessionUser(sessionUser, pathId)) {
+            throw new UnAuthorizedException("user.mismatch.sessionuser");
         }
-        return Optional.empty();
+        return Optional.of(sessionUser);
     }
 
     private static boolean isMatchRequestUserAndSessionUser(User sessionUser, Long pathId) {

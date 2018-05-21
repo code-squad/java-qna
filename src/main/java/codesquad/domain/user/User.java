@@ -41,7 +41,11 @@ public class User {
         this.email = email;
     }
 
-    public void update(String currentPasswd, User userInfo) {
+    public void update(User sessionUser, String currentPasswd, User userInfo) {
+        if (isMatch(sessionUser)) {
+            throw new IllegalArgumentException("user.mismatch.sessionuser");
+        }
+
         if (!isMatch(currentPasswd)) {
             throw new IllegalArgumentException("invalid current password");
         }

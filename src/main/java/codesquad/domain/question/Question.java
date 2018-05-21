@@ -1,10 +1,12 @@
 package codesquad.domain.question;
 
 import codesquad.domain.TimeEntity;
+import codesquad.domain.answer.Answer;
 import codesquad.domain.user.User;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -20,8 +22,9 @@ public class Question extends TimeEntity {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_user"))
     private User user;
 
-    @Column(nullable = false, length = 12)
-    private String writer;
+    @OneToMany(mappedBy = "question")
+    @OrderBy("id ASC")
+    private List<Answer> answers;
 
     @Column(nullable = false, length = 100)
     private String title;
@@ -30,15 +33,14 @@ public class Question extends TimeEntity {
     private String contents;
 
     @Builder
-    public Question(String writer, String title, String contents) {
-        this.writer = writer;
+    public Question(String title, String contents) {
         this.title = title;
         this.contents = contents;
     }
 
     public void update(User sessionUser, Question updateQuestion) {
         if (!user.isMatch(sessionUser)) {
-            return;
+            throw new IllegalArgumentException("question.mismatch.userId");
         }
         this.title = updateQuestion.title;
         this.contents = updateQuestion.contents;
@@ -46,9 +48,5 @@ public class Question extends TimeEntity {
 
     public boolean isMatch(User sessionUser) {
         return user.isMatch(sessionUser);
-    }
-
-    public boolean isMatch(Long id) {
-        return this.id.equals(id);
     }
 }

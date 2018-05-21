@@ -59,6 +59,7 @@ public class QuestionController {
     @GetMapping("/{id}/form")
     public String showQuestionUpdatePage(@PathVariable("id") Long id, Model model, HttpSession session) {
         if (!isLoginUser(session)) return "user/login";
+        log.debug("present login user : {}", ((User) session.getAttribute(USER_SESSION_KEY)).getId());
         if (!id.equals(((User) session.getAttribute(USER_SESSION_KEY)).getId())) {
             throw new IllegalStateException("Cannot update other's question");
         }

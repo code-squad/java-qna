@@ -64,7 +64,7 @@ public class User {
     }
 
     public boolean update(User newUser, String newPassword) {
-        if (isSamePassword(newUser)) {
+        if (isMatchedPassword(newUser)) {
             this.name = newUser.name;
             this.email = newUser.email;
             if (!newPassword.isEmpty()) {
@@ -75,7 +75,24 @@ public class User {
         return false;
     }
 
-    public boolean isSamePassword(User newUser) {
+    public boolean isMatchedPassword(User newUser) {
         return this.password.equals(newUser.password);
+    }
+
+    public boolean isMatchedPassword(String newPassword) {
+        if (newPassword == null) {
+            return false;
+        }
+
+        // newPassword.equals() VS password.equals()
+        return newPassword.equals(password);
+    }
+
+    public boolean isMatchedId(Long newId) {
+        if (newId == null) {
+            return false;
+        }
+
+        return newId.equals(id);
     }
 }

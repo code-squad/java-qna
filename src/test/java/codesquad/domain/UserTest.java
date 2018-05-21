@@ -33,19 +33,19 @@ public class UserTest {
         User newPasswordUser = new User();
         newPasswordUser.setPassword("4321");
         user.update(newUser, "4321");
-        assertThat(user.isSamePassword(newPasswordUser), is(true));
+        assertThat(user.isMatchedPassword(newPasswordUser), is(true));
     }
 
     @Test
     public void isSamePassword_pass() {
         // 1234.equals(1234)
-        assertThat(user.isSamePassword(newUser), is(true));
+        assertThat(user.isMatchedPassword(newUser), is(true));
     }
 
     @Test
     public void isSamePassword_fail() {
         newUser.setPassword("4321");
         // 1234.equals(4321)
-        assertThat(user.isSamePassword(newUser), is(false));
+        assertThat(user.isMatchedPassword(newUser), is(false));
     }
 }

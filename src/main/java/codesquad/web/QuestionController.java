@@ -33,50 +33,55 @@ public class QuestionController {
     }
 
     @PostMapping
-    public String inputQuestion(Question question, HttpSession session) {
+    public String inputQuestion(String title, String contents, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/user/login";
         }
 
-        User user = (User) session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
-        question.setWriter(user.getName());
-        question.setWriterId(user.getUserId());
+        User sessionUser = HttpSessionUtils.getUserFromSession(session);
+        Question question = new Question(sessionUser, title, contents);
+
+//        question.setWriter(user.getName());
+//        question.setWriterId(user.getUserId());
+        question.checkEqualSession(session);
+
+//        question.matchUser(user);
 
         questionsRepository.save(question);
 
         return "redirect:/";
     }
 
-    @GetMapping("/{index}")
-    public String questionDetail(@PathVariable int index, Model model) {
-        Question question = getQuestionFromRepo(index);
+    @GetMapping("/{id}")
+    public String questionDetail(@PathVariable Long id, Model model) {
+        Question question = getQuestionFromRepo(id);
         model.addAttribute("question", question);
 
         return "/qna/show";
     }
 
-    private Question getQuestionFromRepo(int index) {
-        return questionsRepository.findOne(index);
+    private Question getQuestionFromRepo(Long id) {
+        return questionsRepository.findOne(id);
     }
 
-    @GetMapping("/{index}/form")
-    public String updateForm(@PathVariable int index, Model model, HttpSession session) {
-        if (!checkSessionByIndex(index, session)) {
+    @GetMapping("/{id}/form")
+    public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
+        if (!checkSessionById(id, session)) {
             return REDIRECT_USERS_LOGIN_FORM;
         }
 
         // TODO 체크할때 repository에서 한번 꺼내고 모델에 추가할때 한번 더 꺼내는데 괜찮은가?
-        model.addAttribute("question", getQuestionFromRepo(index));
+        model.addAttribute("question", getQuestionFromRepo(id));
         return "/qna/updateForm";
     }
 
-    private boolean checkSessionByIndex(int index, HttpSession session) {
+    private boolean checkSessionById(Long id, HttpSession session) {
         if (!checkLoginUser(session)) {
             return false;
         }
 
-        Question question = getQuestionFromRepo(index);
-        checkSessionEqualsQuestion(session, question);
+        Question question = getQuestionFromRepo(id);
+        question.checkEqualSession(session);
 
         return true;
     }
@@ -89,38 +94,31 @@ public class QuestionController {
         return true;
     }
 
-    private void checkSessionEqualsQuestion(HttpSession session, Question question) {
-        User userFromSession = HttpSessionUtils.getUserFromSession(session);
-        if (!question.matchUserId(userFromSession)) {
-            throw new IllegalStateException("Don't manipulate Other's contents");
-        }
-    }
-
-    @PutMapping("/{index}")
-    public String update(@PathVariable int index, Question updatedQuestion, HttpSession session) {
+    @PutMapping("/{id}")
+    public String update(@PathVariable Long id, Question updatedQuestion, HttpSession session) {
         if (!checkLoginUser(session)) {
             throw new IllegalStateException("Do not modify other user");
         }
 
-        Question question = questionsRepository.getOne(index);
-        checkSessionEqualsQuestion(session, question);
+        Question question = questionsRepository.getOne(id);
+        question.update(updatedQuestion, session);
 
-        question.update(updatedQuestion);
         questionsRepository.save(question);
 
-        return "redirect:/questions/{index}";
+        // TODO String Format 과의 차이?
+        return "redirect:/questions/{id}";
     }
 
-    @DeleteMapping("/{index}")
-    public String delete(@PathVariable int index, HttpSession session) {
-        if (!checkSessionByIndex(index, session)) {
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable Long id, HttpSession session) {
+        if (!checkSessionById(id, session)) {
             return REDIRECT_USERS_LOGIN_FORM;
         }
 
-        Question question = questionsRepository.getOne(index);
-        checkSessionEqualsQuestion(session, question);
+        Question question = questionsRepository.getOne(id);
+        question.checkEqualSession(session);
 
-        questionsRepository.delete(index);
+        questionsRepository.delete(id);
 
         return "redirect:/";
     }

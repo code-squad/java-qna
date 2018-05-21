@@ -1,45 +1,57 @@
 package codesquad.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import codesquad.web.HttpSessionUtils;
+
+import javax.persistence.*;
+import javax.servlet.http.HttpSession;
 
 @Entity
 public class Question {
     @Id
     @GeneratedValue
-    private int index;
+    private Long id;
 
-    @Column(nullable = false)
-    private String writerId;
-    private String writer;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    private User writer;
+
+    //    private String writer;
     private String title;
     private String contents;
 
-    public String getWriterId() {
-        return writerId;
-    }
-
-    public void setWriterId(String writerId) {
-        this.writerId = writerId;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    public String getWriter() {
-        return writer;
-    }
-
-    public void setWriter(String writer) {
+    public Question(User writer, String title, String contents) {
         this.writer = writer;
+        this.title = title;
+        this.contents = contents;
     }
+
+    public Question() {
+
+    }
+
+//    public String getWriterId() {
+//        return writerId;
+//    }
+//
+//    public void setWriterId(String writerId) {
+//        this.writerId = writerId;
+//    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+//    public String getWriter() {
+//        return writer;
+//    }
+//
+//    public void setWriter(String writer) {
+//        this.writer = writer;
+//    }
 
     public String getTitle() {
         return title;
@@ -57,13 +69,21 @@ public class Question {
         this.contents = contents;
     }
 
-    public boolean matchUserId(User user) {
-        String id = user.getUserId();
-        return id.equals(writerId);
+    public boolean matchUser(User user) {
+        return writer.equals(user);
     }
 
-    public void update(Question updatedQuestion) {
+    public void update(Question updatedQuestion, HttpSession session) {
+        checkEqualSession(session);
+
         this.title = updatedQuestion.getTitle();
         this.contents = updatedQuestion.getContents();
+    }
+
+    public void checkEqualSession(HttpSession session) {
+        User userFromSession = HttpSessionUtils.getUserFromSession(session);
+        if (!matchUser(userFromSession)) {
+            throw new IllegalStateException("Don't manipulate Other's contents");
+        }
     }
 }

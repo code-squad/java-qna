@@ -39,7 +39,10 @@ public class QuestionController {
     public String question(String title, String contents, HttpSession session) {
         if (!isLoginUser(session)) return "user/login";
         User sessionUser = (User) session.getAttribute(USER_SESSION_KEY);
-        Question question = new Question(sessionUser, title, contents);
+        Question question = Question.builder()
+                .writer(sessionUser)
+                .contents(contents)
+                .title(title).build();
         log.info("Submit Question {} : ", question.toString());
         questionRepository.save(question);
         return "redirect:/questions/" + question.getId();

@@ -1,5 +1,6 @@
-package codesquad.web.domain;
+package codesquad.domain;
 
+import codesquad.domain.model.User;
 import org.junit.Before;
 import org.junit.Test;
 

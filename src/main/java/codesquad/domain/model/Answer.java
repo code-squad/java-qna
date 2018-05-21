@@ -1,5 +1,6 @@
 package codesquad.domain.model;
 
+import codesquad.domain.utils.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -8,7 +9,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Answer {
+public class Answer extends BaseTimeEntity {
 
     @Id
     @GeneratedValue

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 
 @Controller
+@RequestMapping("/questions")
 public class QuestionController {
 
     private static final Logger log = LoggerFactory.getLogger(QuestionController.class);
@@ -18,7 +19,7 @@ public class QuestionController {
     @Autowired
     private AnswerRepository answerRepository;
 
-    @GetMapping("/questions/form")
+    @GetMapping("/form")
     public String goForm(HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/";
@@ -26,7 +27,7 @@ public class QuestionController {
         return "/qna/form";
     }
 
-    @PostMapping("/questions")
+    @PostMapping("")
     public String saveQuestion(Question question, HttpSession session) {
         User user = HttpSessionUtils.getSessionedUser(session);
         question.setWriter(user);
@@ -35,19 +36,13 @@ public class QuestionController {
         return "redirect:/";
     }
 
-    @GetMapping("/")
-    public String goHome(Model model) {
-        model.addAttribute("questions", questionRepository.findAll());
-        return "index";
-    }
-
-    @GetMapping("/questions/{id}")
+    @GetMapping("/{id}")
     public String showQuestion(@PathVariable Long id, Model model) {
         model.addAttribute("question", questionRepository.findOne(id));
         return "qna/show";
     }
 
-    @GetMapping("/questions/{id}/form")
+    @GetMapping("/{id}/form")
     public String searchQuestion(@PathVariable Long id, HttpSession session, Model model) {
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/";
@@ -64,32 +59,33 @@ public class QuestionController {
         return "/qna/updateForm";
     }
 
-    @PutMapping("/questions/{id}/form")
-    public String updateQuestion(@PathVariable Long id, Question question, HttpSession session){
+    @PutMapping("/{id}/form")
+    public String updateQuestion(@PathVariable Long id, Question question, HttpSession session) {
         log.debug("Question new {}", question);
-        if(!HttpSessionUtils.isLoginUser(session)){
+        if (!HttpSessionUtils.isLoginUser(session)) {
             throw new IllegalStateException("You can't update, Please Login");
         }
         User user = HttpSessionUtils.getSessionedUser(session);
-        if(!user.isSameWriter(question)){
-            throw new IllegalStateException("You can't update another user's Question");
-        }
         Question beforeQuestion = questionRepository.findOne(id);
-        beforeQuestion.update(question);
-        questionRepository.save(beforeQuestion);
-        log.debug("Question Update{}", beforeQuestion);
+        try {
+            beforeQuestion.update(question, user);
+            questionRepository.save(beforeQuestion);
+            log.debug("Question Update{}", beforeQuestion);
+        }catch (IllegalStateException e){
+            return "/user/login.html";
+        }
         return "redirect:/";
     }
 
-    @DeleteMapping("questions/{id}")
-    public String delete(@PathVariable Long id, HttpSession session){
-        if(!HttpSessionUtils.isLoginUser(session)){
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable Long id, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
             throw new IllegalStateException("You can't delete, Please Login");
         }
         User user = HttpSessionUtils.getSessionedUser(session);
         Question question = questionRepository.findOne(id);
 
-        if(!user.isSameWriter(question)){
+        if (!user.isSameWriter(question)) {
             throw new IllegalStateException("You can't delete another user's Question");
         }
 

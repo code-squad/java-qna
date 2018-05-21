@@ -15,7 +15,7 @@
                         <p class="qna-comment-count"><strong>수정</strong></p>
                         <div class="qna-comment-slipp-articles">
                             {{#answer}}
-                            <form name="answer" method="post" action="/answers/{{id}}">
+                            <form name="answer" method="post" action="/questions/{{question.id}}/answers/{{id}}">
                                 <input type="hidden" name="_method" value="put">
                                 <article class="article" id="answer-1405">
                                     <div class="article-doc comment-doc">

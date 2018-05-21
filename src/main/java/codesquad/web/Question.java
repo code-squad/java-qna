@@ -22,7 +22,10 @@ public class Question {
     private String title;
     private String contents;
 
-    public void update(Question question){
+    public void update(Question question, User user){
+        if(!user.isSameWriter(question)){
+            throw new IllegalStateException("You can't update another user's Question");
+        }
         this.title = question.title;
         this.contents = question.contents;
     }
@@ -65,13 +68,6 @@ public class Question {
 
     public void setAnswers(List<Answer> answers) {
         this.answers = answers;
-    }
-
-    public void addAnswers(Answer answer){
-        if(answers == null){
-            answers = new ArrayList<>();
-        }
-        answers.add(answer);
     }
 
     @Override

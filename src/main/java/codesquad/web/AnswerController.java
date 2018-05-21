@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
+@RequestMapping("/questions/{questionId}/answers")
 public class AnswerController {
     private static final Logger log = LoggerFactory.getLogger(AnswerController.class);
     @Autowired
@@ -19,7 +20,7 @@ public class AnswerController {
     @Autowired
     private QuestionRepository questionRepository;
 
-    @PostMapping("/questions/{questionId}/answers")
+    @PostMapping("")
     public String createAnswer(@PathVariable Long questionId, Answer answer, HttpSession session) {
         log.debug("beforeAnswer : {}", answer);
         if (!HttpSessionUtils.isLoginUser(session)) {
@@ -30,13 +31,12 @@ public class AnswerController {
         answer.setWriter(user);
 
         Question question = questionRepository.findOne(questionId);
-        question.addAnswers(answer);
         answerRepository.save(answer);
         log.debug("Answer Save Success");
         return String.format("redirect:/questions/%d", questionId);
     }
 
-    @GetMapping("/questions/{questionId}/answers/{id}")
+    @GetMapping("/{id}")
     public String searchAnswer(@PathVariable Long questionId, @PathVariable Long id, HttpSession session, Model model) {
         if(!HttpSessionUtils.isLoginUser(session)){
             return "redirect:/user/login.html";
@@ -52,15 +52,15 @@ public class AnswerController {
         return "/qna/updateAnswerForm";
     }
 
-    @PutMapping("/answers/{id}")
-    public String update(@PathVariable Long id, String contents){
+    @PutMapping("/{id}")
+    public String update(@PathVariable Long questionId, @PathVariable Long id, String contents){
         Answer answer = answerRepository.findOne(id);
         answer.update(contents);
         answerRepository.save(answer);
-        return String.format("redirect:/questions/%d", answer.getIdOfQuestion());
+        return String.format("redirect:/questions/%d", questionId);
     }
 
-    @DeleteMapping("/questions/{questionId}/answers/{id}")
+    @DeleteMapping("/{id}")
     public String delete(@PathVariable Long questionId, @PathVariable Long id, HttpSession session){
         if(!HttpSessionUtils.isLoginUser(session)){
             return "redirect:/user/login.html";

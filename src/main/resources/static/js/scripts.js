@@ -7,3 +7,4 @@ String.prototype.format = function() {
         ;
   });
 };
+

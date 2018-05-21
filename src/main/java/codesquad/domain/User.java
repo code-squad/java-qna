@@ -63,7 +63,7 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
-    
+
     public User update(User loginUser, String password, String name, String email) {
         if (!isSameUser(loginUser))
             throw new IllegalStateException("유저가 다릅니다.");

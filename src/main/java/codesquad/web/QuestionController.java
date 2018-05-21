@@ -2,11 +2,8 @@ package codesquad.web;
 
 import codesquad.domain.Question;
 import codesquad.domain.QuestionRepository;
-<<<<<<< HEAD
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-=======
->>>>>>> 95362516e306cc92becd367c3a6aded63f62e1fb
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -17,11 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class QuestionController {
-<<<<<<< HEAD
     private static final Logger logger = LoggerFactory.getLogger(QuestionController.class);
 
-=======
->>>>>>> 95362516e306cc92becd367c3a6aded63f62e1fb
     @Autowired
     QuestionRepository questionRepository;
 

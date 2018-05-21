@@ -2,6 +2,7 @@ package codesquad.domain.model;
 
 import codesquad.domain.utils.BaseTimeEntity;
 import lombok.*;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 
@@ -23,7 +24,7 @@ public class Answer extends BaseTimeEntity {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
     private User writer;
 
-    @Column(nullable = false, length = 50)
+    @Lob
     private String contents;
 
     @Builder

@@ -24,10 +24,11 @@ public class Question extends BaseTimeEntity {
     @Column(nullable = false, length = 50)
     private String title;
 
-    @Column(nullable = true, length = 200)
+    @Lob
     private String contents;
 
     @OneToMany(mappedBy = "question", orphanRemoval = true)
+    @OrderBy("id ASC")
     private List<Answer> answers;
 
     @Builder

@@ -2,6 +2,7 @@ package codesquad.web;
 
 import codesquad.domain.model.User;
 import codesquad.domain.repository.UserRepository;
+import codesquad.domain.utils.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,26 +55,26 @@ public class UserController {
 
     @GetMapping("/{id}/form")
     public String showUpdatePage(@PathVariable("id") Long id, Model model, HttpSession session) {
-        if (!isLoginUser(session)) return "user/login";
-        User sessionUser = (User) session.getAttribute(USER_SESSION_KEY);
-        if (!id.equals(sessionUser.getId())) {
-            throw new IllegalStateException("Cannot update other's profile");
+        Result result = Result.valid(session);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return "user/login";
         }
-        model.addAttribute("user", userRepository.findById(sessionUser.getId())
-                .orElseThrow(RuntimeException::new));
+        User sessionUser = (User) session.getAttribute(USER_SESSION_KEY);
+        model.addAttribute("user", sessionUser);
         return "user/updateForm";
     }
 
     @PutMapping("/{id}")
-    public String update(@PathVariable("id") Long id, String beforePassword, User updateUser, HttpSession session) {
-        if (!isLoginUser(session)) return "user/login";
-        User sessionUser = (User) session.getAttribute(USER_SESSION_KEY);
-        if (!id.equals(sessionUser.getId())) {
-            throw new IllegalStateException("Cannot update other's profile");
+    public String update(@PathVariable("id") Long id, String beforePassword, User updateUser, HttpSession session, Model model) {
+        Result result = Result.valid(session);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return "user/login";
         }
-        userRepository.findById(sessionUser.getId())
-                .filter(u -> u.update(beforePassword, updateUser))
-                .ifPresent(u -> userRepository.save(u));
+        User sessionUser = (User) session.getAttribute(USER_SESSION_KEY);
+        sessionUser.update(beforePassword, updateUser);
+        userRepository.save(sessionUser);
         return "redirect:/users";
     }
 

@@ -18,7 +18,7 @@ import static codesquad.web.utils.HttpSessionUtils.USER_SESSION_KEY;
 import static codesquad.web.utils.HttpSessionUtils.isLoginUser;
 
 @Controller
-@RequestMapping("/qna")
+@RequestMapping("/questions")
 public class QuestionController {
 
     @Autowired
@@ -38,11 +38,11 @@ public class QuestionController {
     @PostMapping("")
     public String question(String title, String contents, HttpSession session) {
         if (!isLoginUser(session)) return "user/login";
-        User sessionUSer = (User) session.getAttribute(USER_SESSION_KEY);
-        Question question = new Question(sessionUSer, title, contents);
+        User sessionUser = (User) session.getAttribute(USER_SESSION_KEY);
+        Question question = new Question(sessionUser, title, contents);
         log.info("Submit Question {} : ", question.toString());
         questionRepository.save(question);
-        return "redirect:/qna/" + question.getId();
+        return "redirect:/questions/" + question.getId();
     }
 
     @GetMapping("/{id}")
@@ -74,11 +74,11 @@ public class QuestionController {
             q.update(updateQuestion);
             questionRepository.save(q);
         });
-        return "redirect:/qna/" + id;
+        return "redirect:/questions/" + id;
     }
 
     @DeleteMapping("/{id}")
-    public String DeleteQuestion(@PathVariable("id") Long id, HttpSession session) {
+    public String deleteQuestion(@PathVariable("id") Long id, HttpSession session) {
         if (!isLoginUser(session)) return "user/login";
         return questionRepository.findById(id)
                 .filter(q -> q.matchWriter((User) session.getAttribute(USER_SESSION_KEY)))
@@ -96,7 +96,7 @@ public class QuestionController {
                 .filter(a -> a.matchWriter((User) session.getAttribute(USER_SESSION_KEY)))
                 .map(a -> {
                     answerRepository.deleteById(aId);
-                    return "redirect:/qna/" + qId;
+                    return "redirect:/questions/" + qId;
                 })
                 .orElseThrow(() -> new IllegalStateException("cannot change other's answer"));
     }

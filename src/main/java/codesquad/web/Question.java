@@ -1,9 +1,8 @@
 package codesquad.web;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Question {
@@ -12,16 +11,34 @@ public class Question {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false, length = 30)
-    private String writer;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    private User writer;
+
+    @OneToMany(fetch=FetchType.EAGER, mappedBy = "question")
+    @OrderBy
+    private List<Answer> answers;
+
     private String title;
     private String contents;
+
+    public void update(Question question, User user){
+        if(!user.isSameWriter(question)){
+            throw new IllegalStateException("You can't update another user's Question");
+        }
+        this.title = question.title;
+        this.contents = question.contents;
+    }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public void setWriter(String writer) {
+    public User getWriter() {
+        return writer;
+    }
+
+    public void setWriter(User writer) {
         this.writer = writer;
     }
 
@@ -37,10 +54,6 @@ public class Question {
         return id;
     }
 
-    public String getWriter() {
-        return writer;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -49,10 +62,20 @@ public class Question {
         return contents;
     }
 
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
+    }
+
     @Override
     public String toString() {
         return "Question{" +
-                "writer='" + writer + '\'' +
+                "id=" + id +
+                ", writer=" + writer +
+                ", answers=" + answers +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
                 '}';

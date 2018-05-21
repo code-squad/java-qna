@@ -1,1 +1,2 @@
 INSERT INTO USER (USER_ID, PASSWORD, NAME, EMAIL) VALUES ('pobi', '9229', 'parkjaesung', 'pobi@codesquad.ac.kr');
+INSERT INTO USER (USER_ID, PASSWORD, NAME, EMAIL) VALUES ('jk', '9229', 'kimjung', 'jk@codesquad.ac.kr');

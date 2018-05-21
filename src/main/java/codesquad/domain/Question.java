@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Entity
 public class Question {
@@ -18,8 +19,15 @@ public class Question {
     private User writer;
 
     private String title;
+
+    @Lob
     private String contents;
+
     private LocalDateTime createDate;
+
+    @OneToMany(mappedBy = "question")
+    @OrderBy("id ASC")
+    private List<Answer> answers;
 
     public Question(User writer, String title, String contents) {
         this.writer = writer;

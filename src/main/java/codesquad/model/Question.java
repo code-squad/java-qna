@@ -1,16 +1,18 @@
 package codesquad.model;
 
 import codesquad.exceptions.UnauthorizedRequestException;
+import org.springframework.core.annotation.Order;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class Question {
     @Id
     @GeneratedValue
-    private Long id;
+    private Long questionId;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_author"))
@@ -21,6 +23,22 @@ public class Question {
 
     private String content;
     private Timestamp date;
+
+    @OneToMany(mappedBy = "question")
+    @OrderBy
+    private List<Answer> answers;
+
+    public void setDate(Timestamp date) {
+        this.date = date;
+    }
+
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
+    }
 
     public Question() {
         LocalDateTime dateTime = LocalDateTime.now();
@@ -55,12 +73,12 @@ public class Question {
         return date.toString();
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setQuestionId(Long id) {
+        this.questionId = id;
     }
 
-    public Long getId() {
-        return id;
+    public Long getQuestionId() {
+        return questionId;
     }
 
     public boolean authorAndUserIdMatch(User user) {
@@ -77,7 +95,7 @@ public class Question {
     @Override
     public String toString() {
         return "Question{" +
-                "id=" + id +
+                "id=" + questionId +
                 ", author='" + author + '\'' +
                 ", title='" + title + '\'' +
                 ", date=" + date +

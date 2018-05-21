@@ -40,8 +40,8 @@ public class UserController {
             session.setAttribute(HTTP_SESSION_KEY, user);
             logger.debug("User login for User: {}", user);
             return "redirect:/";
-        } catch (IllegalArgumentException e) {
-            logger.debug("User.password.mismatch");
+        } catch (PasswordMismatchException e) {
+            logger.debug(e.getMessage());
             return "redirect:/users/loginFailed";
         }
     }

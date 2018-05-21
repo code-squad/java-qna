@@ -1,5 +1,7 @@
 package codesquad.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -10,13 +12,19 @@ import java.util.Objects;
 public class Question {
     @Id
     @GeneratedValue
+    @JsonProperty
     private Long id;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    @JsonProperty
     private User writer;
+
+    @JsonProperty
     private String title;
+
     @Lob
+    @JsonProperty
     private String contents;
     // Lob이라는 어노테이션을 추가하면 255이상으로 작성이 가능하다.
 
@@ -24,7 +32,7 @@ public class Question {
     // JPA에서는 매핑을 할때 인자를 받는 생성자와 기본 생성자를 같이 만들어야한다.
 
     @OneToMany(mappedBy = "question")
-    @OrderBy("id ASC")
+    @OrderBy("id DESC")
     private List<Answer> answers;
 
     public Question() {}

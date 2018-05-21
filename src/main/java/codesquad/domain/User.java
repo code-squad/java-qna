@@ -1,5 +1,8 @@
 package codesquad.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,12 +13,17 @@ import java.util.Objects;
 public class User {
     @Id
     @GeneratedValue
+    @JsonProperty
     private Long id;
 
     @Column(nullable = false, length = 20, unique=true)
+    @JsonProperty
     private String userId;
+    @JsonIgnore
     private String password;
+    @JsonProperty
     private String name;
+    @JsonProperty
     private String email;
 
     public Long getId() { return id; }

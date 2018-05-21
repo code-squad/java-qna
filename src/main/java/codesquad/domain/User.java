@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.Objects;
 
 @Entity
 public class User {
@@ -11,13 +12,19 @@ public class User {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, unique=true)
     private String userId;
     private String password;
     private String name;
     private String email;
 
     public Long getId() { return id; }
+
+    public boolean matchId(Long newId) {
+        if (newId == null)
+            return false;
+        return newId.equals(id);
+    }
 
     public String getUserId() {
         return userId;
@@ -43,6 +50,12 @@ public class User {
         this.password = password;
     }
 
+    public boolean matchPassword(String newPassword) {
+        if (newPassword == null)
+            return false;
+        return newPassword.equals(password);
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -51,10 +64,30 @@ public class User {
         this.email = email;
     }
 
-    public void update(User newUser) {
-        this.password = newUser.password;
-        this.name = newUser.name;
-        this.email = newUser.email;
+    public User update(User loginUser, String password, String name, String email) {
+        if (!isSameUser(loginUser))
+            throw new IllegalStateException("유저가 다릅니다.");
+        this.password = password;
+        this.name = name;
+        this.email = email;
+        return this;
+    }
+
+    public boolean isSameUser(User loginUser) {
+        return this.userId.equals(loginUser.getUserId());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     @Override

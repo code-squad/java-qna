@@ -16,6 +16,8 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
+    private static final String USER_LOGIN = "/user/login";
+    private static final String ERROR_MESSAGE = "errorMessage";
     private static final Logger log = LoggerFactory.getLogger(QuestionController.class);
 
     @Autowired
@@ -65,8 +67,8 @@ public class QuestionController {
     public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
         Result result = valid(id, session);
         if (!result.isValid()) {
-            model.addAttribute("errorMessage", result.getErrorMessage());
-            return "/user/login";
+            model.addAttribute(ERROR_MESSAGE, result.getErrorMessage());
+            return USER_LOGIN;
         }
 
         // TODO 체크할때 repository에서 한번 꺼내고 모델에 추가할때 한번 더 꺼내는데 괜찮은가?
@@ -88,19 +90,15 @@ public class QuestionController {
     }
 
     private boolean checkLoginUser(HttpSession session) {
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            return false;
-        }
-
-        return true;
+        return HttpSessionUtils.isLoginUser(session);
     }
 
     @PutMapping("/{id}")
     public String update(@PathVariable Long id, Question updatedQuestion, Model model, HttpSession session) {
         Result result = valid(id, session);
         if (!result.isValid()) {
-            model.addAttribute("errorMessage", result.getErrorMessage());
-            return "/user/login";
+            model.addAttribute(ERROR_MESSAGE, result.getErrorMessage());
+            return USER_LOGIN;
         }
 
         Question question = questionsRepository.getOne(id);
@@ -116,8 +114,8 @@ public class QuestionController {
     public String delete(@PathVariable Long id, Model model, HttpSession session) {
         Result result = valid(id, session);
         if (!result.isValid()) {
-            model.addAttribute("errorMessage", result.getErrorMessage());
-            return "/user/login";
+            model.addAttribute(ERROR_MESSAGE, result.getErrorMessage());
+            return USER_LOGIN;
         }
 
         questionsRepository.delete(id);

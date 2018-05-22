@@ -1,4 +1,4 @@
-package codesquad.controller.handler;
+package codesquad.domain.exception;
 
 public class UnAuthorizedException extends RuntimeException {
 

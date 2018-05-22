@@ -1,5 +1,6 @@
 package codesquad.domain.user;
 
+import codesquad.domain.exception.UnAuthorizedException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
@@ -43,11 +44,11 @@ public class User {
 
     public void update(User sessionUser, String currentPasswd, User userInfo) {
         if (isMatch(sessionUser)) {
-            throw new IllegalArgumentException("user.mismatch.sessionuser");
+            throw new UnAuthorizedException("user.mismatch.sessionuser");
         }
 
         if (!isMatch(currentPasswd)) {
-            throw new IllegalArgumentException("invalid current password");
+            throw new UnAuthorizedException("user.mismatch.password");
         }
         this.passwd = userInfo.passwd;
         this.name = userInfo.name;

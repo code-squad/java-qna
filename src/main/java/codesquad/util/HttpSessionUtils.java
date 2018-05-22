@@ -1,6 +1,6 @@
 package codesquad.util;
 
-import codesquad.controller.handler.UnAuthorizedException;
+import codesquad.domain.exception.UnAuthorizedException;
 import codesquad.domain.user.User;
 
 import javax.servlet.http.HttpSession;
@@ -14,9 +14,6 @@ public class HttpSessionUtils {
     }
 
     public static Optional<User> getUserFromSession(HttpSession session) {
-        if (!isLogin(session)) {
-            throw new UnAuthorizedException("user.not.exist");
-        }
         User user = (User) session.getAttribute(USER_SESSION_KEY);
         return Optional.of(user);
     }

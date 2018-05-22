@@ -1,7 +1,6 @@
 package codesquad.controller;
 
-import codesquad.controller.handler.UnAuthorizedException;
-import codesquad.domain.answer.AnswerRepository;
+import codesquad.domain.exception.UnAuthorizedException;
 import codesquad.domain.question.Question;
 import codesquad.domain.question.QuestionRepository;
 import codesquad.domain.user.User;
@@ -54,7 +53,7 @@ public class QuestionController {
     public String edit(@PathVariable("id") Long id, Model model, HttpSession session) {
         Question question = questionRepo.findById(id).get();
         if (!question.isMatch(HttpSessionUtils.getUserFromSession(session).get())) {
-            throw new UnAuthorizedException("");
+            throw new UnAuthorizedException("user.mismatch.sessionuser");
         }
         model.addAttribute("question", questionRepo.findById(id).get());
         return "/question/edit";
@@ -72,7 +71,7 @@ public class QuestionController {
     public String delete(@PathVariable("id") Long id, HttpSession session) {
         Question question = questionRepo.findById(id).get();
         if (!question.isMatch(HttpSessionUtils.getUserFromSession(session).get())) {
-            throw new UnAuthorizedException("question.mismatch.userId");
+            throw new UnAuthorizedException("user.mismatch.sessionuser");
         }
         questionRepo.delete(question);
         return "redirect:/";

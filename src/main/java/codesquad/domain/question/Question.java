@@ -1,5 +1,6 @@
 package codesquad.domain.question;
 
+import codesquad.domain.exception.UnAuthorizedException;
 import codesquad.domain.TimeEntity;
 import codesquad.domain.answer.Answer;
 import codesquad.domain.user.User;
@@ -40,7 +41,7 @@ public class Question extends TimeEntity {
 
     public void update(User sessionUser, Question updateQuestion) {
         if (!user.isMatch(sessionUser)) {
-            throw new IllegalArgumentException("question.mismatch.userId");
+            throw new UnAuthorizedException("user.mismatch.sessionuser");
         }
         this.title = updateQuestion.title;
         this.contents = updateQuestion.contents;

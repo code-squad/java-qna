@@ -21,6 +21,16 @@ public class Question {
 
     private String tag;
 
+
+    public Question() {
+    }
+
+    public Question(User user, String title, String contents) {
+        writer = user.getUserId();
+        this.title = title;
+        this.contents = contents;
+    }
+
     public String getTag() {
         return tag;
     }

@@ -32,9 +32,6 @@ public class QuestionController {
 
     @GetMapping("/questions/form")
     public String getForm(Model model, HttpSession session) {
-        if (!HttpSessionUtils.isLogin(session)) {
-            return "redirect:/users/login";
-        }
         model.addAttribute("user", HttpSessionUtils.getUserFromSession(session).get());
         return "/question/form";
     }
@@ -65,9 +62,6 @@ public class QuestionController {
 
     @PutMapping("/questions/{id}")
     public String update(@PathVariable("id") Long id, Question updateQuestion, HttpSession session) {
-        if (!HttpSessionUtils.isLogin(session)) {
-            throw new UnAuthorizedException("user.not.exist");
-        }
         Question question = questionRepo.findById(id).get();
         question.update(HttpSessionUtils.getUserFromSession(session).get(), updateQuestion);
         questionRepo.save(question);

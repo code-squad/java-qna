@@ -39,20 +39,11 @@ public class UserController {
         return "/users/list";
     }
 
-    @GetMapping("/login")
-    public String login(HttpSession session) {
-        if (HttpSessionUtils.isLogin(session)) {
-            return "redirect:/";
-        }
-        return "/users/login";
-    }
-
     @PostMapping("/login")
     public String logining(String userId, String passwd, HttpSession session) {
         if (HttpSessionUtils.isLogin(session)) {
             return "redirect:/";
         }
-
         Optional<User> maybeUser = userRepo.findByUserId(userId);
         if (!maybeUser.isPresent() || !maybeUser.filter(userInfo -> userInfo.isMatch(passwd)).isPresent()) {
             return "redirect:/users/loginFail";
@@ -75,20 +66,13 @@ public class UserController {
 
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable("id") Long id, Model model, HttpSession session) {
-        if (!HttpSessionUtils.isLogin(session)) {
-            return "redirect:/users/login";
-        }
         User sessionUser = HttpSessionUtils.getUserFromSession(session, id).get();
         model.addAttribute("user", sessionUser);
         return "/users/edit";
     }
 
-
     @PutMapping("/{id}")
     public String update(@PathVariable("id") Long id, String currentPasswd, User updateInfo, HttpSession session) {
-        if (!HttpSessionUtils.isLogin(session)) {
-            return "redirect:/users/login";
-        }
         User sessionUser = HttpSessionUtils.getUserFromSession(session).get();
         User user = userRepo.findById(id).get();
         user.update(sessionUser, currentPasswd, updateInfo);

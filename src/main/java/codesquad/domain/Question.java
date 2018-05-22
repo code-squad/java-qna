@@ -1,9 +1,6 @@
 package codesquad.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Question {
@@ -11,8 +8,17 @@ public class Question {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false)
-    private String writer;
+    public User getWriter() {
+        return writer;
+    }
+
+    public void setWriter(User writer) {
+        this.writer = writer;
+    }
+
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_id"))
+    private User writer;
 
     @Column(nullable = false)
     private String title;
@@ -26,7 +32,7 @@ public class Question {
     }
 
     public Question(User user, String title, String contents) {
-        writer = user.getUserId();
+        writer = user;
         this.title = title;
         this.contents = contents;
     }
@@ -39,10 +45,6 @@ public class Question {
         this.id = id;
     }
 
-    public void setWriter(String writer) {
-        this.writer = writer;
-    }
-
     public void setTitle(String title) {
         this.title = title;
     }
@@ -53,10 +55,6 @@ public class Question {
 
     public Long getId() {
         return id;
-    }
-
-    public String getWriter() {
-        return writer;
     }
 
     public String getTitle() {

@@ -1,6 +1,8 @@
 package codesquad.web;
 
 import codesquad.domain.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +14,8 @@ import javax.servlet.http.HttpSession;
 @RestController
 @RequestMapping("/api/questions/{questionId}/answers")
 public class ApiAnswerController {
+    public static final Logger logger = LoggerFactory.getLogger(ApiAnswerController.class);
+
     @Autowired
     private QuestionRepository questionRepository;
 
@@ -31,20 +35,23 @@ public class ApiAnswerController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteAnswer(@PathVariable Long id, @PathVariable Long questionId, HttpSession session, Model model) {
+    public Result delete(@PathVariable Long questionId , @PathVariable Long id, HttpSession session) {
+        logger.debug("delete 메소드 호출");
+        if (!HttpSessionUtils.isLoginUser(session))
+            return Result.fail("로그인해야 합니다.");
+
         Answer answer = answerRepository.findOne(id);
-        Result result = valid(session, questionRepository.findOne(questionId));
-        if (!result.isValid()) {
-            model.addAttribute("errorMessage", result.getErrorMessage());
-            return "/user/login";
-        }
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        if (!answer.isSameWriter(loginUser))
+            return Result.fail("자신의 글만 삭제할 수 있습니다.");
+        logger.debug("예외처리 패스 id는 {}", id);
         answerRepository.delete(id);
-        return String.format("redirect:/questions/%d", questionId);
+        logger.debug("삭제성공");
+        return Result.ok();
     }
 
-    private Result valid(HttpSession session, Question question) {
-        if (!HttpSessionUtils.isLoginUser(session))
-            return Result.fail("로그인이 필요합니다.");
-        return Result.ok();
+    @GetMapping("{id}")
+    public String get(@PathVariable Long id) {
+        return "redirect:/";
     }
 }

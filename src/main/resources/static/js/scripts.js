@@ -1,3 +1,5 @@
+
+// 답변기능
 $(".answer-write input[type=submit]").click(addAnswer);
 
 function addAnswer(e) {
@@ -29,8 +31,42 @@ function onSuccess(data, status) {
     console.log("success");
     console.log(data);
     var answerTemplate = $("#answerTemplate").html();
-    var template = answerTemplate.format(data.writer.userId, data.formattedCreateDate, data.contents, data.id, data.id);
+    var template = answerTemplate.format(data.writer.userId, data.formattedCreateDate, data.contents, data.question.id, data.id);
     $(".qna-comment-slipp-articles").prepend(template);
+
+    $("textarea[name=contents]").val("");
+}
+
+
+// 삭제기능
+// $("a.delete-answer").click(deleteAnswer);
+$("button.link-delete-article").click(deleteAnswer);
+function deleteAnswer(e) {
+    console.log("delete button")
+    e.preventDefault();
+    // evenet를 막는다. 다른 url로 가지 못하도록
+
+    var deleteBtn = $(this);
+    var url = deleteBtn.attr("href");
+    // 현재 클릭한 이벤트에 대해서 href의 값을 가져온다.
+    console.log("url : " + url);
+    
+    $.ajax({
+        type : 'delete',
+        url : url,
+        dataType : 'json',
+        error : function (xhr, status) {
+            console.log("error");
+        },
+        success : function (data, status) {
+            console.log(data);
+            if (data.valid) {
+                deleteBtn.closest("article").remove();
+            } else {
+                alert(data.errorMessage);
+            }
+        }
+    });
 }
 
 String.prototype.format = function() {

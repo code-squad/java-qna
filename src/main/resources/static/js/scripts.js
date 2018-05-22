@@ -1,17 +1,7 @@
-
-String.prototype.format = function() {
-    var args = arguments;
-    return this.replace(/{(\d+)}/g, function(match, number) {
-        return typeof args[number] != 'undefined'
-            ? args[number]
-            : match
-            ;
-    });
-};
-
 $(".answer-write input[type=submit]").click(addAnswer);
 
 function addAnswer(e) {
+    // e는 클릭이 발생한 이벤트 정보가 들어가있다.
     e.preventDefault();
     console.log("addClick");
 
@@ -27,8 +17,7 @@ function addAnswer(e) {
         data : queryString,
         dataType : 'json',
         error : onError,
-        success : onSuccess
-    });
+        success : onSuccess});
 }
 
 function onError() {
@@ -36,9 +25,20 @@ function onError() {
 }
 
 function onSuccess(data, status) {
+    // data는 answer데이터
     console.log("success");
     console.log(data);
     var answerTemplate = $("#answerTemplate").html();
-    var template = answerTemplate.format(data.writer.userId, data.formattedCreateDate, data.contents, data.question.id, data.id);
+    var template = answerTemplate.format(data.writer.userId, data.formattedCreateDate, data.contents, data.id, data.id);
     $(".qna-comment-slipp-articles").prepend(template);
 }
+
+String.prototype.format = function() {
+    var args = arguments;
+    return this.replace(/{(\d+)}/g, function(match, number) {
+        return typeof args[number] != 'undefined'
+            ? args[number]
+            : match
+            ;
+    });
+};

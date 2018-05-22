@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
+// RestController를 사용을 하면 data의 타입을 json형태로 바꿔준다
 @RestController
 @RequestMapping("/api/questions/{questionId}/answers")
 public class ApiAnswerController {

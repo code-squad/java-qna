@@ -1,5 +1,6 @@
 package codesquad.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
@@ -29,6 +30,7 @@ public class Answer {
     @JsonProperty
     private String contents;
 
+    @JsonProperty
     private LocalDateTime createDate;
 
     public Answer() {}

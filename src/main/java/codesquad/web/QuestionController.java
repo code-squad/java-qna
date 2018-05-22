@@ -59,7 +59,6 @@ public class QuestionController {
         if (!editingUser.isMatchedUserId(updateQuestion)) {
             throw new IllegalStateException("question.id.mismatch");
         }
-
         model.addAttribute("editedQuestion", updateQuestion);
         //일치하면 수정 페이지로 들어가자.
         return "/qna/updateForm";
@@ -71,11 +70,9 @@ public class QuestionController {
         Question oldQuestion = questionRepository.findOne(id);
 
         log.debug("updateQuestion : {}", updateQuestion);
-
         if (!editingUser.isMatchedUserId(updateQuestion)) {
             throw new IllegalStateException("question.id.mismatch");
         }
-
         if (!oldQuestion.update(updateQuestion)) {
             throw new IllegalStateException("question.update.fail");
         }
@@ -85,4 +82,19 @@ public class QuestionController {
         return "redirect:/questions/{id}";
     }
 
+    @DeleteMapping("/{id}/form")
+    public String delete(@PathVariable Long id, HttpSession session) {
+        User deletingUser = SessionUtils.getUserFromSession(session);
+        Question deleteQuestion = questionRepository.findOne(id);
+
+        if (!SessionUtils.isLoginUser(session)) {
+            return "/users/loginForm";
+        }
+        if (!deletingUser.isMatchedUserId(deleteQuestion)) {
+            throw new IllegalStateException("question.id.mismatch");
+        }
+        questionRepository.delete(id);
+
+        return "redirect:/";
+    }
 }

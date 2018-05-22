@@ -31,10 +31,6 @@ public class Question {
         this.contents = contents;
     }
 
-    public String getTag() {
-        return tag;
-    }
-
     public void setTag(String tag) {
         this.tag = tag;
     }
@@ -71,8 +67,27 @@ public class Question {
         return contents;
     }
 
+    public String getTag() {
+        return tag;
+    }
+
     @Override
     public String toString() {
         return writer + " " + title + " " + contents;
+    }
+
+    public boolean isMatchedWriter(String userId) {
+        return writer.equals(userId);
+    }
+
+    public boolean update(Question updateQuestion) {
+        if (updateQuestion.title == null) {
+            return false;
+        }
+
+        this.title = updateQuestion.title;
+        this.contents = updateQuestion.contents;
+
+        return true;
     }
 }

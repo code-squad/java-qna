@@ -8,10 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -47,9 +44,45 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}")
-    public String viewDetail(@PathVariable Long id, Model model) {
+    public String showQuestion(@PathVariable Long id, Model model) {
         model.addAttribute("question", questionRepository.findOne(id));
 
-        return "qna/show";
+        return "/qna/show";
     }
+
+    @GetMapping("/{id}/form")
+    public String updateForm(@PathVariable Long id, HttpSession session, Model model) {
+        // 글쓴이랑 현재 수정하려고 접근한 세션 유저의 아이디랑 일치해야 한다.
+        User editingUser = SessionUtils.getUserFromSession(session);
+        Question updateQuestion = questionRepository.findOne(id);
+
+        if (!editingUser.isMatchedUserId(updateQuestion)) {
+            throw new IllegalStateException("question.id.mismatch");
+        }
+
+        model.addAttribute("editedQuestion", updateQuestion);
+        //일치하면 수정 페이지로 들어가자.
+        return "/qna/updateForm";
+    }
+
+    @PutMapping("/{id}/update")
+    public String update(@PathVariable Long id, Question updateQuestion, HttpSession session) {
+        User editingUser = SessionUtils.getUserFromSession(session);
+        Question oldQuestion = questionRepository.findOne(id);
+
+        log.debug("updateQuestion : {}", updateQuestion);
+
+        if (!editingUser.isMatchedUserId(updateQuestion)) {
+            throw new IllegalStateException("question.id.mismatch");
+        }
+
+        if (!oldQuestion.update(updateQuestion)) {
+            throw new IllegalStateException("question.update.fail");
+        }
+
+        questionRepository.save(oldQuestion);
+
+        return "redirect:/questions/{id}";
+    }
+
 }

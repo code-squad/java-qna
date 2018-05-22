@@ -40,7 +40,7 @@ public class Question extends TimeEntity {
     }
 
     public void update(User sessionUser, Question updateQuestion) {
-        if (!user.isMatch(sessionUser)) {
+        if (!user.equals(sessionUser)) {
             throw new UnAuthorizedException("user.mismatch.sessionuser");
         }
         this.title = updateQuestion.title;
@@ -48,6 +48,6 @@ public class Question extends TimeEntity {
     }
 
     public boolean isMatch(User sessionUser) {
-        return user.isMatch(sessionUser);
+        return user.equals(sessionUser);
     }
 }

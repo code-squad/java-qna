@@ -13,6 +13,7 @@ import javax.validation.constraints.Size;
 @Setter
 @ToString
 @Entity
+@EqualsAndHashCode(exclude = {"userId", "passwd", "name", "email"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,7 +44,7 @@ public class User {
     }
 
     public void update(User sessionUser, String currentPasswd, User userInfo) {
-        if (isMatch(sessionUser)) {
+        if (!equals(sessionUser)) {
             throw new UnAuthorizedException("user.mismatch.sessionuser");
         }
 
@@ -67,9 +68,5 @@ public class User {
             return false;
         }
         return this.id.equals(id);
-    }
-
-    public boolean isMatch(User sessionUser) {
-        return this.id.equals(sessionUser.id);
     }
 }

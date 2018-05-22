@@ -1,5 +1,7 @@
 package codesquad.web;
 
+import codesquad.domain.User;
+import codesquad.domain.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,7 @@ public class UserController {
     public String login(String userId, String password, HttpSession session) {
         User sessionUser = userRepository.findByUserId(userId);
 
-        if(sessionUser == null){
+        if (sessionUser == null) {
             log.debug("Login Failed");
             return "redirect:/user/login.html";
         }
@@ -36,7 +38,7 @@ public class UserController {
     }
 
     @GetMapping("/logout")
-    public String logout(HttpSession session){
+    public String logout(HttpSession session) {
         log.debug("Logout");
         session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
         return "redirect:/";
@@ -66,33 +68,38 @@ public class UserController {
 
     @GetMapping("/{id}/form")
     public String searchUser(@PathVariable Long id, Model model, HttpSession session) {
-        if(!HttpSessionUtils.isLoginUser(session)){
-            return "redirect:/user/login.html";
+        try {
+            User sessionedUser = hasPermission(session, id);
+            model.addAttribute("user", sessionedUser);
+            return "user/updateForm";
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/user/login";
         }
-
-        User sessionedUser = HttpSessionUtils.getSessionedUser(session);
-        if (!sessionedUser.matchId(id)){
-            throw new IllegalStateException("You can't update another user.");
-        }
-
-        model.addAttribute("user", sessionedUser);
-        return "user/updateForm";
     }
 
     @PutMapping("/{id}")
-    public String updateUser(@PathVariable Long id, User updateUser, String checkPassword, HttpSession session) {
-        log.debug("checkPassword : {}", checkPassword);
-        if(!HttpSessionUtils.isLoginUser(session)){
-            return "redirect:/user/login.html";
+    public String updateUser(@PathVariable Long id, Model model, User updateUser, String checkPassword, HttpSession session) {
+        try {
+            log.debug("checkPassword : {}", checkPassword);
+            User sessionedUser = hasPermission(session, id);
+            sessionedUser.updateUser(updateUser, checkPassword);
+            userRepository.save(sessionedUser);
+            return "redirect:/users";
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/user/login";
         }
+    }
 
+    private User hasPermission(HttpSession session, Long id) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            throw new IllegalStateException("You need login");
+        }
         User sessionedUser = HttpSessionUtils.getSessionedUser(session);
-        if (!sessionedUser.matchId(id)){
+        if (!sessionedUser.matchId(id)) {
             throw new IllegalStateException("You can't update another user.");
         }
-
-        sessionedUser.updateUser(updateUser, checkPassword);
-        userRepository.save(sessionedUser);
-        return "redirect:/users";
+        return sessionedUser;
     }
 }

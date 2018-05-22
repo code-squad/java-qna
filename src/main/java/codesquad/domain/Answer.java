@@ -1,6 +1,8 @@
-package codesquad.web;
+package codesquad.domain;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Answer {
@@ -11,13 +13,17 @@ public class Answer {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
     private User writer;
+    @Lob
     private String contents;
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
     private Question question;
 
+    private LocalDateTime createDate = LocalDateTime.now();
+
     public void update(String contents) {
         this.contents = contents;
+        this.createDate = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -52,8 +58,15 @@ public class Answer {
         this.writer = writer;
     }
 
-    public Long getIdOfQuestion(){
+    public Long getIdOfQuestion() {
         return question.getId();
+    }
+
+    public String getFormattedCreateDate() {
+        if (createDate == null) {
+            return "";
+        }
+        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
     }
 
     @Override

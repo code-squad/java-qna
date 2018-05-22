@@ -1,7 +1,8 @@
-package codesquad.web;
+package codesquad.domain;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Entity
@@ -15,19 +16,34 @@ public class Question {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     private User writer;
 
-    @OneToMany(fetch=FetchType.EAGER, mappedBy = "question")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "question", cascade = CascadeType.REMOVE)
     @OrderBy
     private List<Answer> answers;
 
     private String title;
+    @Lob
     private String contents;
 
-    public void update(Question question, User user){
-        if(!user.isSameWriter(question)){
+    private LocalDateTime createDate;
+
+    public Question() {
+        this.createDate = LocalDateTime.now();
+    }
+
+    public String getFormattedCreateDate() {
+        if (createDate == null) {
+            return "";
+        }
+        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
+    }
+
+    public void update(Question question, User user) {
+        if (!user.isSameWriter(question)) {
             throw new IllegalStateException("You can't update another user's Question");
         }
         this.title = question.title;
         this.contents = question.contents;
+        this.createDate = LocalDateTime.now();
     }
 
     public void setId(Long id) {
@@ -68,6 +84,10 @@ public class Question {
 
     public void setAnswers(List<Answer> answers) {
         this.answers = answers;
+    }
+
+    public int getNumberOfAnswer() {
+        return answers.size();
     }
 
     @Override

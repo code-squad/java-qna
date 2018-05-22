@@ -1,5 +1,9 @@
 package codesquad.web;
 
+import codesquad.domain.AnswerRepository;
+import codesquad.domain.Question;
+import codesquad.domain.QuestionRepository;
+import codesquad.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +33,10 @@ public class QuestionController {
 
     @PostMapping("")
     public String saveQuestion(Question question, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "redirect:/";
+        }
+
         User user = HttpSessionUtils.getSessionedUser(session);
         question.setWriter(user);
         questionRepository.save(question);
@@ -71,10 +79,10 @@ public class QuestionController {
             beforeQuestion.update(question, user);
             questionRepository.save(beforeQuestion);
             log.debug("Question Update{}", beforeQuestion);
+            return "redirect:/";
         }catch (IllegalStateException e){
-            return "/user/login.html";
+            return "/user/login";
         }
-        return "redirect:/";
     }
 
     @DeleteMapping("/{id}")

@@ -55,7 +55,7 @@
                                              class="article-author-thumb" alt="">
                                     </div>
                                     <div class="article-header-text">
-                                        <a href="/users/1/자바지기" class="article-author-name">{{writer.userId}}</a>
+                                        <a href="/users/{{writer.id}}" class="article-author-name">{{writer.userId}}</a>
                                         <a href="#answer-1434" class="article-header-time" title="퍼머링크">
                                             {{formattedCreateDate}}
                                         </a>
@@ -67,11 +67,16 @@
                                 <div class="article-util">
                                     <ul class="article-util-list">
                                         <li>
-                                            <a class="link-modify-article"
-                                               href="/questions/413/answers/1405/form">수정</a>
+                                            <form class="modify-answer-form"
+                                                  action="/questions/{{writer.id}}/answers/{{id}}"
+                                                  method="POST">
+                                                <input type="hidden" name="_method" value="PUT">
+                                                <button type="submit" class="modify-answer-button">수정</button>
+                                            </form>
                                         </li>
                                         <li>
-                                            <form class="delete-answer-form" action="/questions/413/answers/1405"
+                                            <form class="delete-answer-form"
+                                                  action="/questions/{{writer.id}}/answers/{{id}}"
                                                   method="POST">
                                                 <input type="hidden" name="_method" value="DELETE">
                                                 <button type="submit" class="delete-answer-button">삭제</button>

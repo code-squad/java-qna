@@ -69,17 +69,21 @@ public class Question {
     }
 
     public void update(Question updatedQuestion, HttpSession session) {
-        checkEqualSession(session);
+        if (!checkEqualSession(session)) {
+            throw new IllegalStateException("update error");
+        }
 
         this.title = updatedQuestion.getTitle();
         this.contents = updatedQuestion.getContents();
     }
 
-    public void checkEqualSession(HttpSession session) {
+    public boolean checkEqualSession(HttpSession session) {
         User userFromSession = HttpSessionUtils.getUserFromSession(session);
         if (!matchUser(userFromSession)) {
-            throw new IllegalStateException("Don't manipulate Other's contents");
+            return false;
         }
+
+        return true;
     }
 
     public String getFormattedCreateDate() {

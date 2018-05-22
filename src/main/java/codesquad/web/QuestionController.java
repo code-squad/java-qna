@@ -2,6 +2,7 @@ package codesquad.web;
 
 import codesquad.domain.Question;
 import codesquad.domain.QuestionRepository;
+import codesquad.domain.Result;
 import codesquad.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,6 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
-    private static final String REDIRECT_USERS_LOGIN_FORM = "redirect:/users/loginForm";
     private static final Logger log = LoggerFactory.getLogger(QuestionController.class);
 
     @Autowired
@@ -40,7 +40,9 @@ public class QuestionController {
 
         User sessionUser = HttpSessionUtils.getUserFromSession(session);
         Question question = new Question(sessionUser, title, contents);
-        question.checkEqualSession(session);
+        if (!question.checkEqualSession(session)) {
+            throw new IllegalStateException("InputQuestion error");
+        }
 
         questionsRepository.save(question);
 
@@ -61,8 +63,10 @@ public class QuestionController {
 
     @GetMapping("/{id}/form")
     public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
-        if (!checkSessionById(id, session)) {
-            return REDIRECT_USERS_LOGIN_FORM;
+        Result result = valid(id, session);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return "/user/login";
         }
 
         // TODO 체크할때 repository에서 한번 꺼내고 모델에 추가할때 한번 더 꺼내는데 괜찮은가?
@@ -70,15 +74,17 @@ public class QuestionController {
         return "/qna/updateForm";
     }
 
-    private boolean checkSessionById(Long id, HttpSession session) {
+    private Result valid(Long id, HttpSession session) {
         if (!checkLoginUser(session)) {
-            return false;
+            return Result.fail("로그인이 필요합니다");
         }
 
         Question question = getQuestionFromRepo(id);
-        question.checkEqualSession(session);
+        if (!question.checkEqualSession(session)) {
+            return Result.fail("자신이 쓴 글만 수정, 삭제가 가능합니다");
+        }
 
-        return true;
+        return Result.ok();
     }
 
     private boolean checkLoginUser(HttpSession session) {
@@ -90,9 +96,11 @@ public class QuestionController {
     }
 
     @PutMapping("/{id}")
-    public String update(@PathVariable Long id, Question updatedQuestion, HttpSession session) {
-        if (!checkLoginUser(session)) {
-            throw new IllegalStateException("Do not modify other user");
+    public String update(@PathVariable Long id, Question updatedQuestion, Model model, HttpSession session) {
+        Result result = valid(id, session);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return "/user/login";
         }
 
         Question question = questionsRepository.getOne(id);
@@ -105,13 +113,12 @@ public class QuestionController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id, HttpSession session) {
-        if (!checkSessionById(id, session)) {
-            return REDIRECT_USERS_LOGIN_FORM;
+    public String delete(@PathVariable Long id, Model model, HttpSession session) {
+        Result result = valid(id, session);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return "/user/login";
         }
-
-        Question question = questionsRepository.getOne(id);
-        question.checkEqualSession(session);
 
         questionsRepository.delete(id);
 

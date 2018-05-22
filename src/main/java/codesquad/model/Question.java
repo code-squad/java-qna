@@ -1,35 +1,56 @@
 package codesquad.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import codesquad.exceptions.UnauthorizedRequestException;
+import org.springframework.core.annotation.Order;
+
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class Question {
     @Id
     @GeneratedValue
-    private Long id;
-    @Column(nullable = false, length = 32)
-    private String author;
+    private Long questionId;
+
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_author"))
+    private User author;
+
     @Column(nullable = false, length = 64)
     private String title;
+
     private String content;
     private Timestamp date;
+
+    @OneToMany(mappedBy = "question")
+    @OrderBy
+    private List<Answer> answers;
+
+    public void setDate(Timestamp date) {
+        this.date = date;
+    }
+
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
+    }
 
     public Question() {
         LocalDateTime dateTime = LocalDateTime.now();
         this.date = Timestamp.valueOf(dateTime);
     }
 
-    public String getAuthor() {
+    public User getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setAuthor(User user) {
+        this.author = user;
     }
 
     public String getTitle() {
@@ -52,22 +73,29 @@ public class Question {
         return date.toString();
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setQuestionId(Long id) {
+        this.questionId = id;
     }
 
-    public Long getId() {
-        return id;
+    public Long getQuestionId() {
+        return questionId;
     }
 
-    public boolean isMatch(String index) {
-        return this.id.equals(Long.parseLong(index));
+    public boolean authorAndUserIdMatch(User user) {
+        return author.userIdsMatch(user);
+    }
+
+    public void updateQuestion(Question updated, User user) throws UnauthorizedRequestException {
+        if (!authorAndUserIdMatch(user)) {
+            throw new UnauthorizedRequestException("Question.userId.mismatch");
+        }
+        this.content = updated.content;
     }
 
     @Override
     public String toString() {
         return "Question{" +
-                "id=" + id +
+                "id=" + questionId +
                 ", author='" + author + '\'' +
                 ", title='" + title + '\'' +
                 ", date=" + date +

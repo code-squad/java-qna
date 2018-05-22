@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="kr">
-{{> partial/header}}
+{{> includes/header}}
 <body>
-{{> partial/navbar}}
+{{> includes/navbar}}
 
 <div class="container" id="main">
    <div class="col-md-10 col-md-offset-1">
@@ -17,7 +17,7 @@
               {{#users}}
                 <tr>
                     <th scope="row">{{id}}</th>
-                    <td><a href="/users/{{userId}}">{{userId}}</a></td>
+                    <td><a href="/users/{{userId}}/profile">{{userId}}</a></td>
                     <td>{{name}}</td> <td>{{email}}</td>
                     <td><a href="/users/{{userId}}/form" class="btn btn-success" role="button">수정</a></td>
                 </tr>
@@ -29,6 +29,6 @@
 </div>
 
 <!-- script references -->
-{{> partial/decoration}}
+{{> includes/decoration}}
 	</body>
 </html>

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="kr">
-{{> partial/header}}
+{{> includes/header}}
 	
 	<body>
-{{> partial/navbar}}
+{{> includes/navbar}}
 
 <div class="container" id="main">
    <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
@@ -15,12 +15,12 @@
                   <div class="wrap">
                       <div class="main">
                           <strong class="subject">
-                              <a href="/question/{{id}}">{{title}}</a>
+                              <a href="/questions/{{questionId}}">{{title}}</a>
                           </strong>
                           <div class="auth-info">
                               <i class="icon-add-comment"></i>
                               <span class="time">{{date}}</span>
-                              <a href="users/{{author}}" class="author">{{author}}</a>
+                              <a href="users/{{author.userId}}/profile" class="author">{{author.userId}}</a>
                           </div>
                           <div class="reply" title="댓글">
                               <i class="icon-reply"></i>
@@ -82,7 +82,7 @@
                 </ul>
               </div>
               <div class="col-md-3 qna-write">
-                  <a href="/question" class="btn btn-primary pull-right" role="button">질문하기</a>
+                  <a href="/questionForm" class="btn btn-primary pull-right" role="button">질문하기</a>
               </div>
           </div>
         </div>
@@ -167,6 +167,6 @@
 -->
 
 <!-- script references -->
-{{> partial/decoration}}
+{{> includes/decoration}}
 	</body>
 </html>

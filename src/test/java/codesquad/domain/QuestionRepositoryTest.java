@@ -30,7 +30,6 @@ public class QuestionRepositoryTest {
         LocalDateTime now = LocalDateTime.now();
         questionRepo.save(
                 Question.builder()
-                        .writer("colin")
                         .title("첫 글")
                         .contents("안녕하세요")
                         .build()

@@ -8,7 +8,6 @@ import codesquad.util.HttpSessionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,25 +16,20 @@ import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 @Controller
+@RequestMapping("/questions")
 public class QuestionController {
     private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     @Autowired
     private QuestionRepository questionRepo;
 
-    @GetMapping("/")
-    public String showQuestions(Model model) {
-        model.addAttribute("questions", questionRepo.findAll(Sort.by(Sort.Order.desc("id"))));
-        return "index";
-    }
-
-    @GetMapping("/questions/form")
+    @GetMapping("/form")
     public String getForm(Model model, HttpSession session) {
         model.addAttribute("user", HttpSessionUtils.getUserFromSession(session).get());
         return "/question/form";
     }
 
-    @PostMapping("/questions")
+    @PostMapping
     public String create(Question question, HttpSession session) {
         Optional<User> maybeUser = HttpSessionUtils.getUserFromSession(session);
         question.setUser(maybeUser.get());
@@ -43,13 +37,13 @@ public class QuestionController {
         return "redirect:/";
     }
 
-    @GetMapping("/questions/{id}")
+    @GetMapping("/{id}")
     public String show(Model model, @PathVariable("id") Long id) {
         model.addAttribute("question", questionRepo.findById(id).get());
         return "/question/show";
     }
 
-    @GetMapping("/questions/{id}/edit")
+    @GetMapping("/{id}/edit")
     public String edit(@PathVariable("id") Long id, Model model, HttpSession session) {
         Question question = questionRepo.findById(id).get();
         if (!question.isMatch(HttpSessionUtils.getUserFromSession(session).get())) {
@@ -59,7 +53,7 @@ public class QuestionController {
         return "/question/edit";
     }
 
-    @PutMapping("/questions/{id}")
+    @PutMapping("/{id}")
     public String update(@PathVariable("id") Long id, Question updateQuestion, HttpSession session) {
         Question question = questionRepo.findById(id).get();
         question.update(HttpSessionUtils.getUserFromSession(session).get(), updateQuestion);
@@ -67,7 +61,7 @@ public class QuestionController {
         return "redirect:/questions/" + id;
     }
 
-    @DeleteMapping("/questions/{id}")
+    @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") Long id, HttpSession session) {
         Question question = questionRepo.findById(id).get();
         if (!question.isMatch(HttpSessionUtils.getUserFromSession(session).get())) {

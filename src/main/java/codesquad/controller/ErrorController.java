@@ -18,6 +18,6 @@ public class ErrorController {
     @ExceptionHandler(UnAuthorizedException.class)
     public ResponseEntity<?> handleUnAuthorizeRequest(UnAuthorizedException e) {
         log.error(" ERROR OCCUR : { } ", e.getMessage());
-        return new ResponseEntity<>("권한이 없습니다.", HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 }

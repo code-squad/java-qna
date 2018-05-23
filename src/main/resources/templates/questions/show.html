@@ -82,7 +82,7 @@
                                                href="#">수정</a>
                                         </li>
                                         <li>
-                                            <form class="delete-answer-form" action="/questions/{{questionId}}/answers/{{id}}/delete"
+                                            <form class="delete-answer-form" action="/api/questions/{{questionId}}/answers/{{id}}/delete"
                                                   method="POST">
                                                 <input type="hidden" name="_method" value="DELETE">
                                                 <button type="submit" class="delete-answer-button">삭제</button>
@@ -117,7 +117,7 @@
                 <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
             </div>
             <div class="article-header-text">
-                <a href="#" class="article-author-name">{0}</a>
+                <a href="/users/{0}/profile" class="article-author-name">{0}</a>
                 <div class="article-header-time">{1}</div>
             </div>
         </div>

@@ -1,5 +1,6 @@
 package codesquad.web;
 
+import codesquad.domain.Result;
 import codesquad.domain.User;
 import codesquad.domain.UserRepository;
 import org.slf4j.Logger;
@@ -68,38 +69,37 @@ public class UserController {
 
     @GetMapping("/{id}/form")
     public String searchUser(@PathVariable Long id, Model model, HttpSession session) {
-        try {
-            User sessionedUser = hasPermission(session, id);
-            model.addAttribute("user", sessionedUser);
-            return "user/updateForm";
-        } catch (IllegalStateException e) {
-            model.addAttribute("errorMessage", e.getMessage());
+        User sessionedUser = HttpSessionUtils.getSessionedUser(session);
+        Result result = isValid(session, id, sessionedUser);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
             return "/user/login";
         }
+        model.addAttribute("user", sessionedUser);
+        return "user/updateForm";
     }
 
     @PutMapping("/{id}")
     public String updateUser(@PathVariable Long id, Model model, User updateUser, String checkPassword, HttpSession session) {
-        try {
-            log.debug("checkPassword : {}", checkPassword);
-            User sessionedUser = hasPermission(session, id);
-            sessionedUser.updateUser(updateUser, checkPassword);
-            userRepository.save(sessionedUser);
-            return "redirect:/users";
-        } catch (IllegalStateException e) {
-            model.addAttribute("errorMessage", e.getMessage());
+        log.debug("checkPassword : {}", checkPassword);
+        User sessionedUser = HttpSessionUtils.getSessionedUser(session);
+        Result result = isValid(session, id, sessionedUser);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
             return "/user/login";
         }
+        sessionedUser.updateUser(updateUser, checkPassword);
+        userRepository.save(sessionedUser);
+        return "redirect:/users";
     }
 
-    private User hasPermission(HttpSession session, Long id) {
+    private Result isValid(HttpSession session, Long id, User sessionedUser) {
         if (!HttpSessionUtils.isLoginUser(session)) {
-            throw new IllegalStateException("You need login");
+            return Result.fail("You need login");
         }
-        User sessionedUser = HttpSessionUtils.getSessionedUser(session);
         if (!sessionedUser.matchId(id)) {
-            throw new IllegalStateException("You can't update another user.");
+            return Result.fail("You can't update another user.");
         }
-        return sessionedUser;
+        return Result.ok();
     }
 }

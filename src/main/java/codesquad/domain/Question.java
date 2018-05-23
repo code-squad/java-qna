@@ -37,13 +37,14 @@ public class Question {
         return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
     }
 
-    public void update(Question question, User user) {
+    public Result update(Question question, User user) {
         if (!user.isSameWriter(question)) {
-            throw new IllegalStateException("You can't update another user's Question");
+            return Result.fail("You can't update another user's Question");
         }
         this.title = question.title;
         this.contents = question.contents;
         this.createDate = LocalDateTime.now();
+        return Result.ok();
     }
 
     public void setId(Long id) {

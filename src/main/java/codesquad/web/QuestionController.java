@@ -1,9 +1,6 @@
 package codesquad.web;
 
-import codesquad.domain.AnswerRepository;
-import codesquad.domain.Question;
-import codesquad.domain.QuestionRepository;
-import codesquad.domain.User;
+import codesquad.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,53 +49,58 @@ public class QuestionController {
 
     @GetMapping("/{id}/form")
     public String searchQuestion(@PathVariable Long id, HttpSession session, Model model) {
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            return "redirect:/";
-        }
-
         Question question = questionRepository.findOne(id);
-        User user = HttpSessionUtils.getSessionedUser(session);
-        if (!user.isSameWriter(question)) {
-            throw new IllegalStateException("You can't update another user's Question");
-        }
-
+        Result result = isValid(session, question);
         log.debug("Question Search{}", question);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return "/user/login";
+        }
         model.addAttribute("question", question);
         return "/qna/updateForm";
     }
 
     @PutMapping("/{id}/form")
-    public String updateQuestion(@PathVariable Long id, Question question, HttpSession session) {
+    public String updateQuestion(@PathVariable Long id, Question question, HttpSession session, Model model) {
         log.debug("Question new {}", question);
         if (!HttpSessionUtils.isLoginUser(session)) {
-            throw new IllegalStateException("You can't update, Please Login");
+            Result result = Result.fail("You can't update, Please Login");
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return "/user/login";
         }
         User user = HttpSessionUtils.getSessionedUser(session);
         Question beforeQuestion = questionRepository.findOne(id);
-        try {
-            beforeQuestion.update(question, user);
-            questionRepository.save(beforeQuestion);
-            log.debug("Question Update{}", beforeQuestion);
-            return "redirect:/";
-        }catch (IllegalStateException e){
+        Result result = beforeQuestion.update(question, user);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
             return "/user/login";
         }
+        questionRepository.save(beforeQuestion);
+        log.debug("Question Update{}", beforeQuestion);
+        return "redirect:/";
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id, HttpSession session) {
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            throw new IllegalStateException("You can't delete, Please Login");
-        }
-        User user = HttpSessionUtils.getSessionedUser(session);
+    public String delete(@PathVariable Long id, HttpSession session, Model model) {
         Question question = questionRepository.findOne(id);
-
-        if (!user.isSameWriter(question)) {
-            throw new IllegalStateException("You can't delete another user's Question");
+        Result result = isValid(session, question);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return "/user/login";
         }
-
         questionRepository.delete(id);
         log.debug("Question Delete");
         return "redirect:/";
+    }
+
+    private Result isValid(HttpSession session, Question question) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return Result.fail("You can't delete, Please Login");
+        }
+        User user = HttpSessionUtils.getSessionedUser(session);
+        if (!user.isSameWriter(question)) {
+            return Result.fail("You can't delete another user's Question");
+        }
+        return Result.ok();
     }
 }

@@ -36,55 +36,50 @@ public class AnswerController {
 
     @GetMapping("/{id}")
     public String searchAnswer(@PathVariable Long id, HttpSession session, Model model) {
-        try {
-            Answer answer = answerRepository.findOne(id);
-            hasPermission(session, answer);
-            model.addAttribute("answer", answer);
-            return "/qna/updateAnswerForm";
-        } catch (IllegalStateException e) {
-            log.debug("error : {}", e.getMessage());
-            model.addAttribute("errorMessage", e.getMessage());
+        Answer answer = answerRepository.findOne(id);
+        Result result = isValid(session, answer);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
             return "/user/login";
         }
+        model.addAttribute("answer", answer);
+        return "/qna/updateAnswerForm";
     }
 
     @PutMapping("/{id}")
     public String update(@PathVariable Long questionId, @PathVariable Long id, HttpSession session, Model model, String contents) {
-        try {
-            Answer answer = answerRepository.findOne(id);
-            hasPermission(session, answer);
-            answer.update(contents);
-            answerRepository.save(answer);
-            return String.format("redirect:/questions/%d", questionId);
-        } catch (IllegalStateException e) {
-            log.debug("error : {}", e.getMessage());
-            model.addAttribute("errorMessage", e.getMessage());
+        Answer answer = answerRepository.findOne(id);
+        Result result = isValid(session, answer);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
             return "/user/login";
         }
+        answer.update(contents);
+        answerRepository.save(answer);
+        return String.format("redirect:/questions/%d", questionId);
     }
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long questionId, @PathVariable Long id, HttpSession session, Model model) {
-        try {
-            Answer answer = answerRepository.findOne(id);
-            hasPermission(session, answer);
-            answerRepository.delete(id);
-            log.debug("Answer delete");
-            return String.format("redirect:/questions/%d", questionId);
-        } catch (IllegalStateException e) {
-            log.debug("error : {}", e.getMessage());
-            model.addAttribute("errorMessage", e.getMessage());
+        Answer answer = answerRepository.findOne(id);
+        Result result = isValid(session, answer);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
             return "/user/login";
         }
+        answerRepository.delete(id);
+        log.debug("Answer delete");
+        return String.format("redirect:/questions/%d", questionId);
     }
 
-    private void hasPermission(HttpSession session, Answer answer) {
+    private Result isValid(HttpSession session, Answer answer) {
         if (!HttpSessionUtils.isLoginUser(session)) {
-            throw new IllegalStateException("You need login");
+            return Result.fail("You need login");
         }
         User user = HttpSessionUtils.getSessionedUser(session);
         if (!user.isSameWriterOfAnswer(answer)) {
-            throw new IllegalStateException("You can't update,delete another user's answer");
+            return Result.fail("You can't update,delete another user's answer");
         }
+        return Result.ok();
     }
 }

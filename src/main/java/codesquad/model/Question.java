@@ -21,24 +21,14 @@ public class Question {
     @Column(nullable = false, length = 64)
     private String title;
 
+    @Lob
     private String content;
+
     private Timestamp date;
 
     @OneToMany(mappedBy = "question")
     @OrderBy
     private List<Answer> answers;
-
-    public void setDate(Timestamp date) {
-        this.date = date;
-    }
-
-    public List<Answer> getAnswers() {
-        return answers;
-    }
-
-    public void setAnswers(List<Answer> answers) {
-        this.answers = answers;
-    }
 
     public Question() {
         LocalDateTime dateTime = LocalDateTime.now();
@@ -79,6 +69,18 @@ public class Question {
 
     public Long getQuestionId() {
         return questionId;
+    }
+
+    public void setDate(Timestamp date) {
+        this.date = date;
+    }
+
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
     }
 
     public boolean authorAndUserIdMatch(User user) {

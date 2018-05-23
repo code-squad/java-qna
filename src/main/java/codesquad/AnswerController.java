@@ -10,12 +10,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpSession;
 
 import static codesquad.HttpSessionUtils.*;
 
 @Controller
+@RequestMapping("/questions/{questionId}")
 public class AnswerController {
     private static final Logger logger = LoggerFactory.getLogger(AnswerController.class);
 
@@ -25,7 +27,7 @@ public class AnswerController {
     @Autowired
     QuestionRepository questionRepository;
 
-    @PutMapping("/questions/{questionId}/submitAnswer")
+    @PutMapping("submitAnswer")
     public String submitAnswer(HttpSession session, Answer answer, @PathVariable Long questionId) {
         try {
             User user = getUserFromSession(session);
@@ -41,7 +43,7 @@ public class AnswerController {
         }
     }
 
-    @DeleteMapping("/questions/{questionId}/answers/{id}/delete")
+    @DeleteMapping("answers/{id}/delete")
     public String deleteAnswer(HttpSession session, @PathVariable Long id) {
         try {
             User user = getUserFromSession(session);

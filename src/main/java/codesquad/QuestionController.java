@@ -8,16 +8,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
 import static codesquad.HttpSessionUtils.*;
 
 @Controller
+@RequestMapping("/questions")
 public class QuestionController {
     private static final Logger logger = LoggerFactory.getLogger(QuestionController.class);
 
@@ -33,7 +31,7 @@ public class QuestionController {
         return "index";
     }
 
-    @GetMapping("/questions/{questionId}")
+    @GetMapping("/{questionId}")
     public String getQuestion(@PathVariable Long questionId, Model model) {
         Question question = questionRepository.findOne(questionId);
         model.addAttribute("question", question);
@@ -67,7 +65,7 @@ public class QuestionController {
         }
     }
 
-    @GetMapping("/questions/{questionId}/edit")
+    @GetMapping("/{questionId}/edit")
     public String editQuestion(HttpSession session, @PathVariable Long questionId, Model model) {
         try {
             User user = getUserFromSession(session);
@@ -85,7 +83,7 @@ public class QuestionController {
         }
     }
 
-    @PutMapping("/questions/{questionId}/update")
+    @PutMapping("/{questionId}/update")
     public String updateQuestion(HttpSession session, Question updated, @PathVariable Long questionId) {
         try {
             User user = getUserFromSession(session);
@@ -103,7 +101,7 @@ public class QuestionController {
         }
     }
 
-    @DeleteMapping("/questions/{questionId}/delete")
+    @DeleteMapping("/{questionId}/delete")
     public String deleteQuestion(HttpSession session, @PathVariable Long questionId) {
         try {
             User user = getUserFromSession(session);

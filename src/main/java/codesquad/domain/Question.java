@@ -11,12 +11,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class Question {
-    @Id
-    @GeneratedValue
-    @JsonProperty
-    private Long id;
-
+public class Question extends AbstractEntity {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     @JsonProperty
@@ -30,17 +25,13 @@ public class Question {
     private String contents;
     // Lob이라는 어노테이션을 추가하면 255이상으로 작성이 가능하다.
 
-    @JsonProperty
-    private LocalDateTime createDate;
-    // JPA에서는 매핑을 할때 인자를 받는 생성자와 기본 생성자를 같이 만들어야한다.
-
     @JsonIgnore
     @OneToMany(mappedBy = "question")
     @OrderBy("id DESC")
     private List<Answer> answers;
 
     @JsonProperty
-    private Integer countOfAnswer;
+    private Integer countOfAnswer = 0;
 
     public Question() {}
 
@@ -49,13 +40,6 @@ public class Question {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-        this.createDate = LocalDateTime.now();
-    }
-
-    public String getFormattedCreateDate() {
-        if (createDate == null)
-            return "";
-        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
     }
 
     public void addAnswer() {
@@ -65,10 +49,6 @@ public class Question {
 
     public void deleteAnswer() {
         this.countOfAnswer -= 1;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public User getWriter() {
@@ -93,10 +73,6 @@ public class Question {
 
     public void setWriter(User writer) {
         this.writer = writer;
-    }
-
-    public LocalDateTime getCreateDate() {
-        return createDate;
     }
 
     public void setTitle(String title) {

@@ -30,7 +30,8 @@ function onSuccess(data, status) {
     var answerTemplate = $("#answerTemplate").html();
     var template = answerTemplate.format(data.user.userId, data.date, data.content, data.question.questionId, data.id);
     $(".qna-comment-slipp-articles").prepend(template);
-    console.log("Complete!");
+
+    $(".answer-write textarea[name=content]").val('');
 }
 
 String.prototype.format = function () {

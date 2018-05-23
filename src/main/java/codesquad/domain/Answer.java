@@ -63,4 +63,13 @@ public class Answer {
     public boolean isMatchedWriter(String userId) {
         return this.writer.isMatchedUserId(userId);
     }
+
+    public boolean update(Answer updateAnswer) {
+        if (updateAnswer == null) {
+            return false;
+        }
+
+        this.comment = updateAnswer.comment;
+        return true;
+    }
 }

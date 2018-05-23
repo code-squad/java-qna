@@ -37,10 +37,27 @@ public class AnswerController {
         return "redirect:/questions/{questionId}";
     }
 
-//    @GetMapping("/questions/{questionId}/answers/{answerId}/form")
-//    public String update(@PathVariable Long answerId, Answer updateAnswer, HttpSession session) {
-//
-//    }
+    @PutMapping("/questions/{questionId}/answers/{answerId}")
+    public String update(@PathVariable Long questionId, @PathVariable Long answerId, String comment, HttpSession session) {
+        User updateUser = SessionUtils.getUserFromSession(session);
+        Answer oldAnswer = answerRepository.findOne(answerId);
+        Question question = questionRepository.findOne(questionId);
+        Answer updateAnswer = new Answer(updateUser, question, comment);
+
+        if (!SessionUtils.isLoginUser(session)) {
+            return "/users/loginForm";
+        }
+        if (!updateUser.isMatchedUserId(oldAnswer)) {
+            throw new IllegalStateException("question.id.mismatch");
+        }
+        if (!oldAnswer.update(updateAnswer)) {
+            throw new IllegalStateException("");
+        }
+        answerRepository.save(oldAnswer);
+
+        return "redirect:/questions/{questionId}";
+    }
+
 
     @DeleteMapping("/questions/{questionId}/answers/{answerId}")
     public String delete(@PathVariable Long answerId, HttpSession session) {
@@ -57,4 +74,25 @@ public class AnswerController {
         answerRepository.delete(answerId);
         return "redirect:/questions/{questionId}";
     }
+
+    @GetMapping("/questions/{questionId}/answers/{answerId}/form")
+    public String updateForm(@PathVariable Long questionId, @PathVariable Long answerId, HttpSession session, Model model) {
+        User updateUser = SessionUtils.getUserFromSession(session);
+        Answer updateAnswer = answerRepository.findOne(answerId);
+
+        if (!SessionUtils.isLoginUser(session)) {
+            return "/users/loginForm";
+        }
+        if (!updateUser.isMatchedUserId(updateAnswer)) {
+            throw new IllegalStateException("question.id.mismatch");
+        }
+
+        model.addAttribute("question", questionRepository.findOne(questionId));
+        model.addAttribute("answers", answerRepository.findByQuestionId(questionId));
+        model.addAttribute("answersCount", answerRepository.findByQuestionId(questionId).size());
+
+        return "/qna/answerUpdateForm";
+    }
+
+
 }

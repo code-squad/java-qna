@@ -4,7 +4,6 @@ import codesquad.domain.model.Question;
 import codesquad.domain.repository.AnswerRepository;
 import codesquad.domain.repository.QuestionRepository;
 import codesquad.domain.model.User;
-import codesquad.domain.utils.HttpSessionUtils;
 import codesquad.domain.utils.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
-import java.util.Optional;
-
 import static codesquad.domain.utils.HttpSessionUtils.USER_SESSION_KEY;
-import static codesquad.domain.utils.HttpSessionUtils.isLoginUser;
 
 @Controller
 @RequestMapping("/questions")

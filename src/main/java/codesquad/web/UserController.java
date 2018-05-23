@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 
 import static codesquad.domain.utils.HttpSessionUtils.USER_SESSION_KEY;
-import static codesquad.domain.utils.HttpSessionUtils.isLoginUser;
 
 @Controller
 @RequestMapping("/users")

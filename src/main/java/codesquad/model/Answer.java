@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 
 @Entity
@@ -30,11 +31,11 @@ public class Answer {
     private String content;
 
     @JsonProperty
-    private Timestamp date;
+    private String date;
 
     public Answer() {
-        LocalDateTime dateTime = LocalDateTime.now();
-        this.date = Timestamp.valueOf(dateTime);
+        Timestamp dateTime = Timestamp.valueOf(LocalDateTime.now());
+        this.date = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z").format(dateTime);
     }
 
     public Long getId() {
@@ -69,11 +70,11 @@ public class Answer {
         this.content = content;
     }
 
-    public Timestamp getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Timestamp date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

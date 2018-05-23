@@ -1,11 +1,14 @@
 package codesquad.model;
 
 import codesquad.exceptions.UnauthorizedRequestException;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.core.annotation.Order;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,16 +28,15 @@ public class Question {
     @Lob
     private String content;
 
-    private Timestamp date;
+    private String date;
 
     @OneToMany(mappedBy = "question")
-    @OrderBy
-    @JsonIgnoreProperties("question")
+    @OrderBy("id DESC")
     private List<Answer> answers;
 
     public Question() {
-        LocalDateTime dateTime = LocalDateTime.now();
-        this.date = Timestamp.valueOf(dateTime);
+        Timestamp dateTime = Timestamp.valueOf(LocalDateTime.now());
+        this.date = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z").format(dateTime);
     }
 
     public User getAuthor() {
@@ -73,7 +75,7 @@ public class Question {
         return questionId;
     }
 
-    public void setDate(Timestamp date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

@@ -1,5 +1,6 @@
 package codesquad.web;
 
+import codesquad.domain.AnswerRepository;
 import codesquad.domain.Question;
 import codesquad.domain.QuestionRepository;
 import codesquad.domain.User;
@@ -19,6 +20,9 @@ public class QuestionController {
 
     @Autowired
     QuestionRepository questionRepository;
+
+    @Autowired
+    AnswerRepository answerRepository;
 
     @PostMapping()
     public String questions(String title, String contents, HttpSession session) {
@@ -45,8 +49,10 @@ public class QuestionController {
 
     @GetMapping("/{id}")
     public String showQuestion(@PathVariable Long id, Model model) {
-        model.addAttribute("question", questionRepository.findOne(id));
 
+        model.addAttribute("question", questionRepository.findOne(id));
+        model.addAttribute("answers", answerRepository.findByQuestionId(id));
+        model.addAttribute("answersCount", answerRepository.findByQuestionId(id).size());
         return "/qna/show";
     }
 

@@ -8,14 +8,6 @@ public class Question {
     @GeneratedValue
     private Long id;
 
-    public User getWriter() {
-        return writer;
-    }
-
-    public void setWriter(User writer) {
-        this.writer = writer;
-    }
-
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_id"))
     private User writer;
@@ -31,8 +23,8 @@ public class Question {
     public Question() {
     }
 
-    public Question(User user, String title, String contents) {
-        writer = user;
+    public Question(User writer, String title, String contents) {
+        this.writer = writer;
         this.title = title;
         this.contents = contents;
     }
@@ -53,6 +45,10 @@ public class Question {
         this.contents = contents;
     }
 
+    public void setWriter(User writer) {
+        this.writer = writer;
+    }
+
     public Long getId() {
         return id;
     }
@@ -68,6 +64,12 @@ public class Question {
     public String getTag() {
         return tag;
     }
+
+    public User getWriter() {
+        return writer;
+    }
+
+
 
     @Override
     public String toString() {

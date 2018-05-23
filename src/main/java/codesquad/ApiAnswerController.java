@@ -7,19 +7,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
 import static codesquad.HttpSessionUtils.*;
 
-@Controller
-@RequestMapping("/questions/{questionId}")
-public class AnswerController {
-    private static final Logger logger = LoggerFactory.getLogger(AnswerController.class);
+@RestController
+@RequestMapping("/api/questions/{questionId}")
+public class ApiAnswerController {
+    private static final Logger logger = LoggerFactory.getLogger(ApiAnswerController.class);
 
     @Autowired
     AnswerRepository answerRepository;
@@ -28,18 +25,17 @@ public class AnswerController {
     QuestionRepository questionRepository;
 
     @PutMapping("submitAnswer")
-    public String submitAnswer(HttpSession session, Answer answer, @PathVariable Long questionId) {
+    public Answer submitAnswer(HttpSession session, Answer answer, @PathVariable Long questionId) {
         try {
             User user = getUserFromSession(session);
             answer.setUser(user);
             Question question = questionRepository.findQuestionByQuestionId(questionId);
             answer.setQuestion(question);
-            answerRepository.save(answer);
-            logger.debug("Answer posted: {}", answer);
-            return "redirect:/questions/{questionId}";
+            return answerRepository.save(answer);
         } catch (NoSessionedUserException e) {
             logger.debug(e.getMessage());
-            return "redirect:/users/loginForm";
+            return null;
+            //return "redirect:/users/loginForm";
         }
     }
 

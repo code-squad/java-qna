@@ -1,6 +1,7 @@
 package codesquad.model;
 
 import codesquad.exceptions.PasswordMismatchException;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Email;
 
 import javax.persistence.Column;
@@ -13,6 +14,7 @@ import javax.validation.constraints.Size;
 public class User {
     @Id
     @GeneratedValue
+    @JsonIgnore
     private Long id;
 
     @Size(min = 3, max = 20)
@@ -21,14 +23,17 @@ public class User {
 
     @Size(min = 6, max = 20)
     @Column(nullable = false, length = 32)
+    @JsonIgnore
     private String password;
 
     @Size(min = 3, max = 20)
     @Column(nullable = false, length = 64)
+    @JsonIgnore
     private String name;
 
     @Email
     @Column(nullable = false)
+    @JsonIgnore
     private String email;
 
     public Long getId() {

@@ -1,6 +1,8 @@
 package codesquad.model;
 
 import codesquad.exceptions.UnauthorizedRequestException;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -10,19 +12,24 @@ import java.time.LocalDateTime;
 public class Answer {
     @Id
     @GeneratedValue
+    @JsonProperty
     private Long id;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
+    @JsonIgnoreProperties("answers")
     private Question question;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_user"))
+    @JsonProperty
     private User user;
 
     @Column(nullable = false, length = 62)
+    @JsonProperty
     private String content;
 
+    @JsonProperty
     private Timestamp date;
 
     public Answer() {

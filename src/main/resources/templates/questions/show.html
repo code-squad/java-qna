@@ -124,12 +124,12 @@
                                     <!--</ul>-->
                                 <!--</div>-->
                             <!--</article>-->
-                            <form class="answer-write" method="POST" action="/questions/{{question.questionId}}/submitAnswer">
+                            <form class="answer-write" method="POST" action="/api/questions/{{question.questionId}}/submitAnswer">
                                 <input type="hidden" name="_method" value="PUT" />
                                 <div class="form-group" style="padding:14px;">
-                                    <textarea name="content" class="form-control" placeholder="Update your status"></textarea>
+                                    <textarea name="content" class="form-control" placeholder="Write your comment.."></textarea>
                                 </div>
-                                <button class="btn btn-success pull-right" type="submit">답변하기</button>
+                                <input class="btn btn-success pull-right" type="button" value="답변하기" >
                                 <div class="clearfix"/>
                             </form>
                         </div>

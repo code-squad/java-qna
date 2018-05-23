@@ -1,6 +1,7 @@
 package codesquad.model;
 
 import codesquad.exceptions.UnauthorizedRequestException;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.core.annotation.Order;
 
 import javax.persistence.*;
@@ -28,6 +29,7 @@ public class Question {
 
     @OneToMany(mappedBy = "question")
     @OrderBy
+    @JsonIgnoreProperties("question")
     private List<Answer> answers;
 
     public Question() {

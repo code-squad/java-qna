@@ -1,3 +1,12 @@
+String.prototype.format = function() {
+    var args = arguments;
+    return this.replace(/{(\d+)}/g, function(match, number) {
+        return typeof args[number] != 'undefined'
+            ? args[number]
+            : match
+            ;
+    });
+};
 
 // 답변기능
 $(".answer-write input[type=submit]").click(addAnswer);
@@ -37,21 +46,17 @@ function onSuccess(data, status) {
     $("textarea[name=contents]").val("");
 }
 
-
 // 삭제기능
-// $("a.delete-answer").click(deleteAnswer);
-$("button.link-delete-article").click(deleteAnswer);
+$("form.link-delete-form").on("click", ".link-delete-comment[type='submit']", deleteAnswer);
 function deleteAnswer(e) {
-    console.log("delete button")
+    console.log("delte버튼 클릭");
     e.preventDefault();
-    // evenet를 막는다. 다른 url로 가지 못하도록
 
-    var deleteBtn = $(this);
-    var url = deleteBtn.attr("href");
-    // 현재 클릭한 이벤트에 대해서 href의 값을 가져온다.
-    console.log("url : " + url);
-    
-    $.ajax({
+    var deleteBtn = $("form.link-delete-form");
+    var url = deleteBtn.attr("action");
+    console.log("url is " + url);
+
+        $.ajax({
         type : 'delete',
         url : url,
         dataType : 'json',
@@ -67,14 +72,5 @@ function deleteAnswer(e) {
             }
         }
     });
-}
 
-String.prototype.format = function() {
-    var args = arguments;
-    return this.replace(/{(\d+)}/g, function(match, number) {
-        return typeof args[number] != 'undefined'
-            ? args[number]
-            : match
-            ;
-    });
-};
+}

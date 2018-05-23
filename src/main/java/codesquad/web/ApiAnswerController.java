@@ -50,8 +50,8 @@ public class ApiAnswerController {
         return Result.ok();
     }
 
-    @GetMapping("{id}")
-    public String get(@PathVariable Long id) {
-        return "redirect:/";
-    }
+//    @GetMapping("{id}")
+//    public String get(@PathVariable Long id) {
+//        return "redirect:/";
+//    }
 }

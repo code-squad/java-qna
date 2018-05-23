@@ -39,6 +39,9 @@ public class Question {
     @OrderBy("id DESC")
     private List<Answer> answers;
 
+    @JsonProperty
+    private Integer countOfAnswer;
+
     public Question() {}
 
     public Question(User writer, String title, String contents) {
@@ -53,6 +56,15 @@ public class Question {
         if (createDate == null)
             return "";
         return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
+    }
+
+    public void addAnswer() {
+        this.countOfAnswer += 1;
+
+    }
+
+    public void deleteAnswer() {
+        this.countOfAnswer -= 1;
     }
 
     public Long getId() {
@@ -73,6 +85,10 @@ public class Question {
 
     public String getContents() {
         return contents;
+    }
+
+    public Integer getCountOfAnswer() {
+        return countOfAnswer;
     }
 
     public void setWriter(User writer) {
@@ -111,4 +127,6 @@ public class Question {
                 ", contents='" + contents + '\'' +
                 '}';
     }
+
+
 }

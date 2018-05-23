@@ -31,6 +31,7 @@ public class ApiAnswerController {
         User loginUser = HttpSessionUtils.getUserFromSession(session);
         Question question = questionRepository.findOne(questionId);
         Answer answer = new Answer(loginUser, question, contents);
+        question.addAnswer();
         return answerRepository.save(answer);
     }
 
@@ -46,7 +47,9 @@ public class ApiAnswerController {
             return Result.fail("자신의 글만 삭제할 수 있습니다.");
         logger.debug("예외처리 패스 id는 {}", id);
         answerRepository.delete(id);
-        logger.debug("삭제성공");
+        Question question = questionRepository.findOne(questionId);
+        question.deleteAnswer();
+        questionRepository.save(question);
         return Result.ok();
     }
 

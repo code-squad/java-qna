@@ -64,22 +64,10 @@ public class QuestionController {
         return "qna/show";
     }
 
-//    @GetMapping("/{id}/form")
-//    public String showQuestionUpdatePage(@PathVariable("id") Long id, Model model, HttpSession session) {
-//        Question question = questionRepository.findById(id).get();
-//        Result result = Result.valid(session, question);
-//        if (!result.isValid()) {
-//            model.addAttribute("errorMessage", result.getErrorMessage());
-//            return "user/login";
-//        }
-//        model.addAttribute("question", question);
-//        return "qna/updateForm";
-//    }
-
     @GetMapping("/{id}/form")
     public String showQuestionUpdatePage(@PathVariable("id") Long id, Model model, HttpSession session) {
         Question question = questionRepository.findById(id).get();
-        Result result = Result.vv(session, question, q -> q.matchWriter(getUserFromSession(session)));
+        Result result = Result.valid(session, question, q -> q.matchWriter(getUserFromSession(session)));
         if (!result.isValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());
             return "user/login";
@@ -91,7 +79,7 @@ public class QuestionController {
     @PutMapping("/{id}")
     public String updateQuestion(@PathVariable("id") Long id, Question updateQuestion, HttpSession session, Model model) {
         Question question = questionRepository.findById(id).get();
-        Result result = Result.valid(session, question);
+        Result result = Result.valid(session, question, q -> q.matchWriter(getUserFromSession(session)));
         if (!result.isValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());
             return "user/login";
@@ -104,7 +92,7 @@ public class QuestionController {
     @DeleteMapping("/{id}")
     public String deleteQuestion(@PathVariable("id") Long id, HttpSession session, Model model) {
         Result result = questionRepository.findById(id)
-                .map(q -> Result.valid(session, q))
+                .map(question -> Result.valid(session, question, q -> q.matchWriter(getUserFromSession(session))))
                 .orElseThrow(() -> new RuntimeException("해당하는 id의 질문이 없습니다."));
         if (!result.isValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());

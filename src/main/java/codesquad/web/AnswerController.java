@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpSession;
 
 import static codesquad.domain.utils.HttpSessionUtils.USER_SESSION_KEY;
+import static codesquad.domain.utils.HttpSessionUtils.getUserFromSession;
 
 @Controller
 @RequestMapping("/questions/{questionId}/answers")
@@ -35,7 +36,7 @@ public class AnswerController {
     @PostMapping("")
     public String createAnswer(@PathVariable("questionId") Long id, String contents, HttpSession session, Model model) {
         Question question = questionRepository.findById(id).get();
-        Result result = Result.valid(session, question);
+        Result result = Result.valid(session, question, q -> q.matchWriter(getUserFromSession(session)));
         if (!result.isValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());
             return "user/login";
@@ -50,7 +51,7 @@ public class AnswerController {
     public String deleteAnswer(@PathVariable("questionId") Long qId, @PathVariable("answerId") Long aId, HttpSession session, Model model) {
         log.debug("답변 삭제");
         Answer answer = answerRepository.findById(aId).get();
-        Result result = Result.valid(session, answer);
+        Result result = Result.valid(session, answer, a -> a.matchWriter(getUserFromSession(session)));
         if (!result.isValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());
             return "user/login";

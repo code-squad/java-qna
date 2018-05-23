@@ -1,4 +1,4 @@
-$(".answer-write input[type=button]").click(addAnswer);
+$(".answer-write input[type=button]").on('click', addAnswer);
 
 function addAnswer(e) {
     e.preventDefault();
@@ -11,12 +11,12 @@ function addAnswer(e) {
     console.log("url : " + url);
 
     $.ajax({
-        type : 'put',
-        url : url,
-        data : queryString,
-        dataType : 'json',
-        error : onError,
-        success : onSuccess
+        type: 'put',
+        url: url,
+        data: queryString,
+        dataType: 'json',
+        error: onError,
+        success: onSuccess
     });
 }
 
@@ -45,24 +45,31 @@ String.prototype.format = function () {
     });
 };
 
-$(".qna-comment a[link-delete-article]").click(deleteAnswer);
+$(".qna-comment-slipp-articles").on("click", "a.link-delete-article", deleteAnswer);
 
-function deleteAnswer(e){
+function deleteAnswer(e) {
     console.log("Deleting...");
     e.preventDefault();
 
     var url = $(this).attr("href");
     console.log("url : " + url);
 
+    var deleteBtn = $(this);
+
     $.ajax({
-        type : 'delete',
-        url : url,
-        datatype : 'json',
+        type: 'delete',
+        url: url,
+        datatype: 'json',
         error: function (xhr, status) {
             console.log("Error");
         },
-        success: function (xhr, status) {
-            console.log("Success!");
+        success: function (data, status) {
+            console.log("Success: " + data);
+            if (data.success) {
+                deleteBtn.closest("article").remove();
+            } else {
+                alert("Error..");
+            }
         }
     });
 }

@@ -3,8 +3,6 @@ package codesquad.model;
 import codesquad.exceptions.UnauthorizedRequestException;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.annotations.ResultCheckStyle;
-import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -83,12 +81,13 @@ public class Answer {
         this.date = date;
     }
 
-    public void flagDeleted(AnswerRepository repository, User user) {
-        if (!this.user.userIdsMatch(user) && !this.question.authorAndUserIdMatch(user)) {
+    public Result flagDeleted(AnswerRepository repository, User user) {
+        if (!(this.user.userIdsMatch(user) || this.question.authorAndUserIdMatch(user))) {
             throw new UnauthorizedRequestException("Question.userId.mismatch");
         }
         this.deleted = true;
         repository.save(this);
+        return Result.ofSuccess();
     }
 
     @Override

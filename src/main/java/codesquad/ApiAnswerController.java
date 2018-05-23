@@ -40,19 +40,18 @@ public class ApiAnswerController {
     }
 
     @DeleteMapping("answers/{id}/delete")
-    public String deleteAnswer(HttpSession session, @PathVariable Long questionId, @PathVariable Long id) {
+    public Result deleteAnswer(HttpSession session, @PathVariable Long id) {
         try {
             User user = getUserFromSession(session);
-            Answer answer = answerRepository.findOne(id);
-            answer.flagDeleted(answerRepository, user);
-            logger.debug("Answer deleted!");
-            return "redirect:/questions/{questionId}";
+            return answerRepository.findOne(id).flagDeleted(answerRepository, user);
         } catch (NoSessionedUserException e) {
             logger.debug(e.getMessage());
-            return "redirect:/users/loginForm";
+            return Result.ofFailure();
+//            return "redirect:/users/loginForm";
         } catch (UnauthorizedRequestException e) {
             logger.debug(e.getMessage());
-            return "redirect:/questions/{questionId}";
+            return Result.ofFailure();
+//            return "redirect:/questions/{questionId}";
         }
     }
 }

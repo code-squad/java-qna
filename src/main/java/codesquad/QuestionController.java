@@ -25,12 +25,6 @@ public class QuestionController {
     @Autowired
     AnswerRepository answerRepository;
 
-    @GetMapping("/")
-    public String showMainPage(Model model) {
-        model.addAttribute("questions", questionRepository.findAllByOrderByQuestionIdDesc());
-        return "index";
-    }
-
     @GetMapping("/{questionId}")
     public String getQuestion(@PathVariable Long questionId, Model model) {
         Question question = questionRepository.findOne(questionId);

@@ -1,5 +1,7 @@
 package codesquad.controller;
 
+import codesquad.domain.exception.CustomException;
+import codesquad.domain.exception.ForbiddenRequestException;
 import codesquad.domain.exception.UnAuthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,11 +17,11 @@ import org.springframework.web.servlet.ModelAndView;
 public class ErrorController {
     private static final Logger log = LoggerFactory.getLogger(ErrorController.class);
 
-    @ExceptionHandler(UnAuthorizedException.class)
-    public ModelAndView handleUnAuthorizeRequest(UnAuthorizedException e) {
-        log.error(" ERROR OCCUR : { } ", e.getMessage());
+    @ExceptionHandler({UnAuthorizedException.class, ForbiddenRequestException.class})
+    public ModelAndView handleException(CustomException e) {
+        log.error(" ERROR OCCUR : {} ", e.getMessage());
         ModelAndView modelAndView = new ModelAndView("/error/err.html");
-        modelAndView.setStatus(HttpStatus.UNAUTHORIZED);
+        modelAndView.setStatus(e.getStatus());
         return modelAndView;
     }
 }

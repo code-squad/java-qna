@@ -1,5 +1,6 @@
 package codesquad.controller;
 
+import codesquad.domain.exception.ForbiddenRequestException;
 import codesquad.domain.exception.UnAuthorizedException;
 import codesquad.domain.question.Question;
 import codesquad.domain.question.QuestionRepository;
@@ -39,7 +40,11 @@ public class QuestionController {
 
     @GetMapping("/{id}")
     public String show(Model model, @PathVariable("id") Long id) {
-        model.addAttribute("question", questionRepo.findById(id).get());
+        Question question = questionRepo.findById(id).get();
+        if (question.isDelete()) {
+            throw new ForbiddenRequestException("question.delete.state");
+        }
+        model.addAttribute("question", question);
         return "/question/show";
     }
 
@@ -64,10 +69,8 @@ public class QuestionController {
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") Long id, HttpSession session) {
         Question question = questionRepo.findById(id).get();
-        if (!question.isMatch(HttpSessionUtils.getUserFromSession(session).get())) {
-            throw new UnAuthorizedException("user.mismatch.sessionuser");
-        }
-        questionRepo.delete(question);
+        question.delete(HttpSessionUtils.getUserFromSession(session).get(), id);
+        questionRepo.save(question);
         return "redirect:/";
     }
 }

@@ -27,9 +27,6 @@ public class AnswerController {
 
     @PostMapping
     public String create(@PathVariable("questionId") Long questionId, String contents, HttpSession session) {
-        if (!HttpSessionUtils.isLogin(session)) {
-            return "redirect:/users/login";
-        }
         User user = HttpSessionUtils.getUserFromSession(session).get();
         Question question = questionRepo.findById(questionId).get();
         Answer answer = Answer.builder().user(user).question(question).contents(contents).build();
@@ -50,8 +47,11 @@ public class AnswerController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable("id") Long id) {
-
-        return null;
+    public String delete(@PathVariable("id") Long id, HttpSession session) {
+        User sessionUser = HttpSessionUtils.getUserFromSession(session).get();
+        Answer answer = answerRepo.findById(id).get();
+        answer.delete(sessionUser);
+        answerRepo.save(answer);
+        return "redirect:/questions/{questionId}";
     }
 }

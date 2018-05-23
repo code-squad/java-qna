@@ -1,5 +1,6 @@
 package codesquad.controller;
 
+import codesquad.domain.answer.Answer;
 import codesquad.domain.exception.ForbiddenRequestException;
 import codesquad.domain.exception.UnAuthorizedException;
 import codesquad.domain.question.Question;
@@ -14,7 +15,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 import java.util.Optional;
+
+import static java.util.stream.Collectors.toList;
 
 @Controller
 @RequestMapping("/questions")
@@ -44,7 +48,8 @@ public class QuestionController {
         if (!maybeQuestion.isPresent() || maybeQuestion.get().isDeleted()) {
             throw new ForbiddenRequestException("question.not.exist");
         }
-        model.addAttribute("question", maybeQuestion.get());
+        Question question = maybeQuestion.get();
+        model.addAttribute("question", question);
         return "/question/show";
     }
 
@@ -54,7 +59,7 @@ public class QuestionController {
         if (!question.isMatch(HttpSessionUtils.getUserFromSession(session).get())) {
             throw new UnAuthorizedException("user.mismatch.sessionuser");
         }
-        model.addAttribute("question", questionRepo.findById(id).get());
+        model.addAttribute("question", question);
         return "/question/edit";
     }
 

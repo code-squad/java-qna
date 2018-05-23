@@ -54,7 +54,7 @@
                       <p class="qna-comment-count"><strong>{{question.answers.size}}</strong>개의 의견</p>
                       <div class="qna-comment-slipp-articles">
 
-                          {{#question.answers}}
+                          {{#question.validAnswers}}
                           <article class="article" id="answer-1405">
                               <div class="article-header">
                                   <div class="article-header-thumb">
@@ -68,21 +68,23 @@
                               <div class="article-doc comment-doc">
                                   <p>{{contents}}</p>
                               </div>
+
                               <div class="article-util">
                                   <ul class="article-util-list">
                                       <li>
-                                          <a class="link-modify-article" href="/questions/{{questions.id}}/answers/{{id}}/edit">수정</a>
+                                          <a class="link-modify-article" href="/questions/{{question.id}}/answers/{{id}}/edit">수정</a>
                                       </li>
                                       <li>
-                                          <form class="delete-answer-form" action="/questions/{{questions.id}}/answers/{{id}}" method="POST">
+                                          <form class="delete-answer-form" action="/questions/{{question.id}}/answers/{{id}}" method="POST">
                                               <input type="hidden" name="_method" value="DELETE">
                                               <button type="submit" class="delete-answer-button">삭제</button>
                                           </form>
                                       </li>
                                   </ul>
                               </div>
+
                           </article>
-                          {{/question.answers}}
+                          {{/question.validAnswers}}
 
 
                           <form class="submit-write" action="/questions/{{question.id}}/answers" method="post">

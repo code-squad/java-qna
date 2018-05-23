@@ -10,6 +10,8 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
+
 @NoArgsConstructor
 @Getter
 @Setter
@@ -69,5 +71,9 @@ public class Question extends TimeEntity {
 
     public boolean isMatch(User other) {
         return user.equals(other);
+    }
+
+    public List<Answer> getValidAnswers() {
+        return answers.stream().filter(answer -> !answer.isDeleted()).collect(toList());
     }
 }

@@ -41,13 +41,24 @@ public class Answer extends TimeEntity {
     }
 
     public void delete(Question requestQuestion) {
+        validateDelete();
         if (!requestQuestion.isMatch(user)) {
             throw new UnAuthorizedException("answer.user.mismatch.request.user");
         }
+        deleted = true;
+    }
 
+    public void delete(User sessionUser) {
+        validateDelete();
+        if (!user.equals(sessionUser)) {
+            throw new UnAuthorizedException("answer.user.mismatch.request.user");
+        }
+        deleted = true;
+    }
+
+    private void validateDelete() {
         if (deleted) {
             throw new ForbiddenRequestException("answer.not.exist");
         }
-        deleted = true;
     }
 }

@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@SQLDelete(sql = "UPDATE question SET state = 'DELETED' WHERE id = ?", check = ResultCheckStyle.COUNT)
 public class Question {
     @Id
     @GeneratedValue
@@ -38,6 +37,8 @@ public class Question {
     @OneToMany(mappedBy = "question")
     @OrderBy("id DESC")
     private List<Answer> answers;
+
+    private boolean deleted;
 
     public Question() {
         Timestamp dateTime = Timestamp.valueOf(LocalDateTime.now());
@@ -104,12 +105,15 @@ public class Question {
         repository.save(this);
     }
 
-    public void deleteQuestion(QuestionRepository questionRepo, AnswerRepository answerRepo, User user) throws UnauthorizedRequestException {
+    public void flagDeleted(QuestionRepository questionRepo, AnswerRepository answerRepo, User user) throws UnauthorizedRequestException {
         if (!this.authorAndUserIdMatch(user)) {
             throw new UnauthorizedRequestException("Question.userId.mismatch");
         }
-        questionRepo.delete(this);
-        answerRepo.delete(answers);
+        this.deleted = true;
+        questionRepo.save(this);
+        for (Answer answer : answers) {
+            answer.flagDeleted(answerRepo, user);
+        }
     }
 
     @Override

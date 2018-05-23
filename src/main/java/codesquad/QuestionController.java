@@ -99,7 +99,7 @@ public class QuestionController {
         try {
             User user = getUserFromSession(session);
             Question question = questionRepository.findQuestionByQuestionId(questionId);
-            question.deleteQuestion(questionRepository, answerRepository, user);
+            question.flagDeleted(questionRepository, answerRepository, user);
             logger.debug("Question flagged deleted: {}", question);
             return "redirect:/";
         } catch (NoSessionedUserException e) {

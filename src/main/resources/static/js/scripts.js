@@ -45,7 +45,7 @@ String.prototype.format = function () {
     });
 };
 
-$(".link-delete-article").click(deleteAnswer);
+$(".qna-comment a[link-delete-article]").click(deleteAnswer);
 
 function deleteAnswer(e){
     console.log("Deleting...");

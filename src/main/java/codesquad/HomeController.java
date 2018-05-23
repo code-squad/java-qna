@@ -14,7 +14,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String showHome(Model model) {
-        model.addAttribute("questions", questionRepository.findAllByOrderByQuestionIdDesc());
+        model.addAttribute("questions", questionRepository.findQuestionsByDeletedFalseOrderByQuestionIdDesc());
         return "index";
     }
 }

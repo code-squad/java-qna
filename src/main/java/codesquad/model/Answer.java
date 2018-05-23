@@ -12,7 +12,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 
 @Entity
-@SQLDelete(sql = "UPDATE answer SET state = 'DELETED' WHERE id = ?", check = ResultCheckStyle.COUNT)
 public class Answer {
     @Id
     @GeneratedValue
@@ -36,6 +35,8 @@ public class Answer {
     @Column(nullable = false)
     @JsonProperty
     private String date;
+
+    private boolean deleted;
 
     public Answer() {
         Timestamp dateTime = Timestamp.valueOf(LocalDateTime.now());
@@ -86,7 +87,8 @@ public class Answer {
         if (!this.user.userIdsMatch(user) && !this.question.authorAndUserIdMatch(user)) {
             throw new UnauthorizedRequestException("Question.userId.mismatch");
         }
-        repository.delete(this);
+        this.deleted = true;
+        repository.save(this);
     }
 
     @Override

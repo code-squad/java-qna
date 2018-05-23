@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 
 import static codesquad.domain.utils.HttpSessionUtils.USER_SESSION_KEY;
+import static codesquad.domain.utils.HttpSessionUtils.getUserFromSession;
 
 @Controller
 @RequestMapping("/questions")
@@ -63,10 +64,22 @@ public class QuestionController {
         return "qna/show";
     }
 
+//    @GetMapping("/{id}/form")
+//    public String showQuestionUpdatePage(@PathVariable("id") Long id, Model model, HttpSession session) {
+//        Question question = questionRepository.findById(id).get();
+//        Result result = Result.valid(session, question);
+//        if (!result.isValid()) {
+//            model.addAttribute("errorMessage", result.getErrorMessage());
+//            return "user/login";
+//        }
+//        model.addAttribute("question", question);
+//        return "qna/updateForm";
+//    }
+
     @GetMapping("/{id}/form")
     public String showQuestionUpdatePage(@PathVariable("id") Long id, Model model, HttpSession session) {
         Question question = questionRepository.findById(id).get();
-        Result result = Result.valid(session, question);
+        Result result = Result.vv(session, question, q -> q.matchWriter(getUserFromSession(session)));
         if (!result.isValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());
             return "user/login";
@@ -100,4 +113,6 @@ public class QuestionController {
         questionRepository.deleteById(id);
         return "redirect:/";
     }
+
+
 }

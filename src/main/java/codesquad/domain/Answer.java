@@ -1,5 +1,6 @@
 package codesquad.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
@@ -29,6 +30,7 @@ public class Answer {
     @JsonProperty
     private String contents;
 
+    @JsonProperty
     private LocalDateTime createDate;
 
     public Answer() {}
@@ -44,6 +46,10 @@ public class Answer {
         if (createDate == null)
             return "";
         return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
+    }
+
+    public boolean isSameWriter(User loginUser) {
+        return loginUser.equals(this.writer);
     }
 
     @Override
@@ -85,4 +91,6 @@ public class Answer {
     public String getContents() {
         return contents;
     }
+
+
 }

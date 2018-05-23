@@ -1,5 +1,7 @@
 package codesquad.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
@@ -28,9 +30,11 @@ public class Question {
     private String contents;
     // Lob이라는 어노테이션을 추가하면 255이상으로 작성이 가능하다.
 
+    @JsonProperty
     private LocalDateTime createDate;
     // JPA에서는 매핑을 할때 인자를 받는 생성자와 기본 생성자를 같이 만들어야한다.
 
+    @JsonIgnore
     @OneToMany(mappedBy = "question")
     @OrderBy("id DESC")
     private List<Answer> answers;

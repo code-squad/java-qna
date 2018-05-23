@@ -1,6 +1,7 @@
 package codesquad.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Column;
@@ -19,10 +20,13 @@ public class User {
     @Column(nullable = false, length = 20, unique=true)
     @JsonProperty
     private String userId;
+
     @JsonIgnore
     private String password;
+
     @JsonProperty
     private String name;
+
     @JsonProperty
     private String email;
 

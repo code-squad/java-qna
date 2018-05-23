@@ -29,47 +29,45 @@ public class Question {
         this.contents = contents;
     }
 
-    public void setTag(String tag) {
-        this.tag = tag;
+    public Long getId() {
+        return id;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setContents(String contents) {
-        this.contents = contents;
+    public User getWriter() {
+        return writer;
     }
 
     public void setWriter(User writer) {
         this.writer = writer;
     }
 
-    public Long getId() {
-        return id;
-    }
-
     public String getTitle() {
         return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getContents() {
         return contents;
     }
 
+    public void setContents(String contents) {
+        this.contents = contents;
+    }
+
     public String getTag() {
         return tag;
     }
 
-    public User getWriter() {
-        return writer;
+    public void setTag(String tag) {
+        this.tag = tag;
     }
-
-
 
     @Override
     public String toString() {
@@ -77,14 +75,13 @@ public class Question {
     }
 
     public boolean isMatchedWriter(String userId) {
-        return writer.equals(userId);
+        return writer.isMatchedUserId(userId);
     }
 
     public boolean update(Question updateQuestion) {
         if (updateQuestion.title == null) {
             return false;
         }
-
         this.title = updateQuestion.title;
         this.contents = updateQuestion.contents;
 

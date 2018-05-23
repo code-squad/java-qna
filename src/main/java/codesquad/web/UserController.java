@@ -61,7 +61,7 @@ public class UserController {
         return "user/updateForm";
     }
 
-    @PutMapping("/{id}/update")
+    @PutMapping("/{id}")
     public String updateUserData(@PathVariable Long id, User updateUser, String newPassword, HttpSession session) {
         log.debug("updateUser : {}", updateUser);
 

@@ -16,7 +16,7 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
-    private static final Logger log =  LoggerFactory.getLogger(QuestionController.class);
+    private static final Logger log = LoggerFactory.getLogger(QuestionController.class);
 
     @Autowired
     QuestionRepository questionRepository;
@@ -49,43 +49,24 @@ public class QuestionController {
 
     @GetMapping("/{id}")
     public String showQuestion(@PathVariable Long id, Model model) {
-
         model.addAttribute("question", questionRepository.findOne(id));
         model.addAttribute("answers", answerRepository.findByQuestionId(id));
         model.addAttribute("answersCount", answerRepository.findByQuestionId(id).size());
+
         return "/qna/show";
     }
 
     @GetMapping("/{id}/form")
     public String updateForm(@PathVariable Long id, HttpSession session, Model model) {
-        // 글쓴이랑 현재 수정하려고 접근한 세션 유저의 아이디랑 일치해야 한다.
         User editingUser = SessionUtils.getUserFromSession(session);
         Question updateQuestion = questionRepository.findOne(id);
 
         if (!editingUser.isMatchedUserId(updateQuestion)) {
             throw new IllegalStateException("question.id.mismatch");
         }
-        model.addAttribute("editedQuestion", updateQuestion);
-        //일치하면 수정 페이지로 들어가자.
+        model.addAttribute("updateQuestion", updateQuestion);
+
         return "/qna/updateForm";
-    }
-
-    @PutMapping("/{id}/update")
-    public String update(@PathVariable Long id, Question updateQuestion, HttpSession session) {
-        User editingUser = SessionUtils.getUserFromSession(session);
-        Question oldQuestion = questionRepository.findOne(id);
-
-        log.debug("updateQuestion : {}", updateQuestion);
-        if (!editingUser.isMatchedUserId(updateQuestion)) {
-            throw new IllegalStateException("question.id.mismatch");
-        }
-        if (!oldQuestion.update(updateQuestion)) {
-            throw new IllegalStateException("question.update.fail");
-        }
-
-        questionRepository.save(oldQuestion);
-
-        return "redirect:/questions/{id}";
     }
 
     @DeleteMapping("/{id}/form")
@@ -102,5 +83,24 @@ public class QuestionController {
         questionRepository.delete(id);
 
         return "redirect:/";
+    }
+
+    @PutMapping("/{id}")
+    public String update(@PathVariable Long id, Question updateQuestion, HttpSession session, Model model) {
+        log.debug("update user : {}", updateQuestion);
+        User updateUser = SessionUtils.getUserFromSession(session);
+        Question oldQuestion = questionRepository.findOne(id);
+        // updateUser를 set하지 않고 updateQuestion생성시 바로 set하는 방법 찾기
+        updateQuestion.setWriter(updateUser);
+
+        if (!updateUser.isMatchedUserId(updateQuestion)) {
+            throw new IllegalStateException("question.id.mismatch");
+        }
+        if (!oldQuestion.update(updateQuestion)) {
+            throw new IllegalStateException("question.update.fail");
+        }
+        questionRepository.save(oldQuestion);
+
+        return "redirect:/questions/{id}";
     }
 }

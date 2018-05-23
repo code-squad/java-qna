@@ -103,4 +103,21 @@ public class User {
         }
         return editedQuestion.isMatchedWriter(userId);
     }
+
+    public boolean isMatchedUserId(Answer deletedAnswer) {
+        if (deletedAnswer == null) {
+            return false;
+        }
+
+        return deletedAnswer.isMatchedWriter(userId);
+    }
+
+    public boolean isMatchedUserId(String userId) {
+        if (userId == null) {
+            return false;
+        }
+        return this.userId.equals(userId);
+    }
+
+
 }

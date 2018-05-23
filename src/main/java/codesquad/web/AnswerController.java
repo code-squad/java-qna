@@ -7,8 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -35,9 +34,27 @@ public class AnswerController {
         Answer newAnswer = new Answer(writer, question, comment);
 
         answerRepository.save(newAnswer);
-//        List<Answer> answers = answerRepository.findByQuestionId(questionId);
-//        log.debug("answers : {}", Arrays.toString(answers.toArray()));
-//        model.addAttribute("answers", answerRepository.findByQuestionId(questionId));
+        return "redirect:/questions/{questionId}";
+    }
+
+//    @GetMapping("/questions/{questionId}/answers/{answerId}/form")
+//    public String update(@PathVariable Long answerId, Answer updateAnswer, HttpSession session) {
+//
+//    }
+
+    @DeleteMapping("/questions/{questionId}/answers/{answerId}")
+    public String delete(@PathVariable Long answerId, HttpSession session) {
+        User deleteUser = SessionUtils.getUserFromSession(session);
+        Answer deleteAnswer = answerRepository.findOne(answerId);
+
+        if (!SessionUtils.isLoginUser(session)) {
+            return "/users/loginForm";
+        }
+        if (!deleteUser.isMatchedUserId(deleteAnswer)) {
+            throw new IllegalStateException("question.id.mismatch");
+        }
+
+        answerRepository.delete(answerId);
         return "redirect:/questions/{questionId}";
     }
 }

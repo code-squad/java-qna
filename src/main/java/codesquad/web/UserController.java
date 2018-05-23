@@ -67,7 +67,6 @@ public class UserController {
 
     @GetMapping("/{id}/form")
     public String getUpdateForm(@PathVariable Long id, Model model, HttpSession session) {
-        // session에 없는 user이면 수정을 진행할 수 없다.
         if (!SessionUtils.isLoginUser(session)) {
             return "redirect:/users/loginForm";
         }
@@ -101,7 +100,6 @@ public class UserController {
         }
 
         log.debug("Login success !!");
-        // 동시에 서버에 접속하여 세션을 부여 받는 경우 세션 풀에 sessionedUser가 중복되지 않는가?
         session.setAttribute(USER_SESSION_KEY, user);
 
         return "redirect:/";

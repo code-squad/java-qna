@@ -23,8 +23,6 @@ public class AnswerController {
 
     @PostMapping("/questions/{questionId}/answers")
     public String answer(@PathVariable Long questionId, String comment, HttpSession session, Model model) {
-        // 만약 클래스의 멤버변수로 다른 클래스의 객체라면? 어떻게 처리할 것인가?
-        // 지금은 매개변수로 그냥 나열하지만, 스그니처가 길어지면 가독성 저하된다.
         if (!SessionUtils.isLoginUser(session)) {
             return "/users/loginForm";
         }

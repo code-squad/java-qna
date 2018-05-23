@@ -84,7 +84,6 @@ public class User {
             return false;
         }
 
-        // newPassword.equals() VS password.equals()
         return newPassword.equals(password);
     }
 
@@ -97,7 +96,6 @@ public class User {
     }
 
     public boolean isMatchedUserId(Question editedQuestion) {
-        // 밖에서 데이터를 꺼내쓰기 싫어서 이렇게 구현했는데, 오히려 커플링이 강력해진 것 아닌가?
         if (editedQuestion == null) {
             return false;
         }

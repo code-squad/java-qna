@@ -77,7 +77,6 @@ public class QuestionController {
         log.debug("update user : {}", updateQuestion);
         User updateUser = SessionUtils.getUserFromSession(session);
         Question oldQuestion = questionRepository.findOne(id);
-        // updateUser를 set하지 않고 updateQuestion생성시 바로 set하는 방법 찾기
         updateQuestion.setWriter(updateUser);
 
         if (!updateUser.isMatchedUserId(updateQuestion)) {

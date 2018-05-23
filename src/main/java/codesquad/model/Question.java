@@ -4,6 +4,8 @@ import codesquad.exceptions.UnauthorizedRequestException;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.ResultCheckStyle;
+import org.hibernate.annotations.SQLDelete;
 import org.springframework.core.annotation.Order;
 
 import javax.persistence.*;
@@ -13,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@SQLDelete(sql = "UPDATE question SET state = 'DELETED' WHERE id = ?", check = ResultCheckStyle.COUNT)
 public class Question {
     @Id
     @GeneratedValue
@@ -26,8 +29,10 @@ public class Question {
     private String title;
 
     @Lob
+    @Column(nullable = false)
     private String content;
 
+    @Column(nullable = false)
     private String date;
 
     @OneToMany(mappedBy = "question")
@@ -91,11 +96,20 @@ public class Question {
         return author.userIdsMatch(user);
     }
 
-    public void updateQuestion(Question updated, User user) throws UnauthorizedRequestException {
+    public void updateQuestion(QuestionRepository repository, Question updated, User user) throws UnauthorizedRequestException {
         if (!authorAndUserIdMatch(user)) {
             throw new UnauthorizedRequestException("Question.userId.mismatch");
         }
         this.content = updated.content;
+        repository.save(this);
+    }
+
+    public void deleteQuestion(QuestionRepository questionRepo, AnswerRepository answerRepo, User user) throws UnauthorizedRequestException {
+        if (!this.authorAndUserIdMatch(user)) {
+            throw new UnauthorizedRequestException("Question.userId.mismatch");
+        }
+        questionRepo.delete(this);
+        answerRepo.delete(answers);
     }
 
     @Override

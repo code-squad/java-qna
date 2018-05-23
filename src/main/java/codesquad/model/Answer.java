@@ -3,6 +3,8 @@ package codesquad.model;
 import codesquad.exceptions.UnauthorizedRequestException;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.ResultCheckStyle;
+import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -10,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 
 @Entity
+@SQLDelete(sql = "UPDATE answer SET state = 'DELETED' WHERE id = ?", check = ResultCheckStyle.COUNT)
 public class Answer {
     @Id
     @GeneratedValue
@@ -30,6 +33,7 @@ public class Answer {
     @JsonProperty
     private String content;
 
+    @Column(nullable = false)
     @JsonProperty
     private String date;
 
@@ -78,11 +82,11 @@ public class Answer {
         this.date = date;
     }
 
-    public void validateUser(User user) {
-        if (this.user.userIdsMatch(user)) {
-            return;
+    public void flagDeleted(AnswerRepository repository, User user) {
+        if (!this.user.userIdsMatch(user) && !this.question.authorAndUserIdMatch(user)) {
+            throw new UnauthorizedRequestException("Question.userId.mismatch");
         }
-        throw new UnauthorizedRequestException("Question.userId.mismatch");
+        repository.delete(this);
     }
 
     @Override

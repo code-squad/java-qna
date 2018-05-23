@@ -40,12 +40,11 @@ public class ApiAnswerController {
     }
 
     @DeleteMapping("answers/{id}/delete")
-    public String deleteAnswer(HttpSession session, @PathVariable Long id) {
+    public String deleteAnswer(HttpSession session, @PathVariable Long questionId, @PathVariable Long id) {
         try {
             User user = getUserFromSession(session);
             Answer answer = answerRepository.findOne(id);
-            answer.validateUser(user);
-            answerRepository.delete(answer);
+            answer.flagDeleted(answerRepository, user);
             logger.debug("Answer deleted!");
             return "redirect:/questions/{questionId}";
         } catch (NoSessionedUserException e) {

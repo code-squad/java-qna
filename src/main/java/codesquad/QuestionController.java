@@ -82,8 +82,7 @@ public class QuestionController {
         try {
             User user = getUserFromSession(session);
             Question question = questionRepository.findQuestionByQuestionId(questionId);
-            question.updateQuestion(updated, user);
-            questionRepository.save(question);
+            question.updateQuestion(questionRepository, updated, user);
             logger.debug("Question updated!");
             return "redirect:/questions/" + questionId;
         } catch (NoSessionedUserException e) {
@@ -100,11 +99,8 @@ public class QuestionController {
         try {
             User user = getUserFromSession(session);
             Question question = questionRepository.findQuestionByQuestionId(questionId);
-            if (question.authorAndUserIdMatch(user)) {
-                throw new UnauthorizedRequestException("question.userId.mismatch");
-            }
-            questionRepository.delete(question);
-            logger.debug("Question deleted: {}", question);
+            question.deleteQuestion(questionRepository, answerRepository, user);
+            logger.debug("Question flagged deleted: {}", question);
             return "redirect:/";
         } catch (NoSessionedUserException e) {
             logger.debug(e.getMessage());

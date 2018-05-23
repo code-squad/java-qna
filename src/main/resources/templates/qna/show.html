@@ -22,7 +22,7 @@
                       <div class="article-header-text">
                           <a href="/users/profile/{{writer.userId}}" class="article-author-name">{{writer.userId}}</a>
                           <a href="/questions/413" class="article-header-time" title="퍼머링크">
-                              2015-12-30 01:47
+                              {{formattedCreatedDate}}
                               <i class="icon-link"></i>
                           </a>
                       </div>
@@ -53,7 +53,7 @@
                   <div class="qna-comment-slipp">
                       <p class="qna-comment-count"><strong>{{answersLength}}</strong>개의 의견</p>
                       <div class="qna-comment-slipp-articles">
-                          {{#answers}}
+                          {{#question.answers}}
                           <article class="article" id="answer-1406">
                               <div class="article-header">
                                   <div class="article-header-thumb">
@@ -62,7 +62,7 @@
                                   <div class="article-header-text">
                                       <a href="/users/profile/{{writer.userId}}" class="article-author-name">{{writer.userId}}</a>
                                       <a href="#answer-1434" class="article-header-time" title="퍼머링크">
-                                          2016-01-12 14:06
+                                          {{formattedCreatedDate}}
                                       </a>
                                   </div>
                               </div>
@@ -83,7 +83,7 @@
                                   </ul>
                               </div>
                           </article>
-                          {{/answers}}
+                          {{/question.answers}}
                           {{#question}}
                           <form class="submit-write" action="/questions/{{id}}/answers" method="post">
                               <div class="form-group" style="padding:14px;">

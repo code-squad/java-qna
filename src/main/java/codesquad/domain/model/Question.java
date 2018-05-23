@@ -1,15 +1,17 @@
 package codesquad.domain.model;
 
+import codesquad.domain.utils.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Question {
+public class Question extends BaseTimeEntity {
 
     @Id
     @GeneratedValue
@@ -22,10 +24,11 @@ public class Question {
     @Column(nullable = false, length = 50)
     private String title;
 
-    @Column(nullable = true, length = 200)
+    @Lob
     private String contents;
 
     @OneToMany(mappedBy = "question", orphanRemoval = true)
+    @OrderBy("id ASC")
     private List<Answer> answers;
 
     @Builder

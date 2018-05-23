@@ -23,6 +23,10 @@ repositories {
     mavenCentral()
 }
 
+//Spring Boot Overriding
+ext['hibernate.version'] = '5.2.11.Final'
+
+
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('org.springframework.boot:spring-boot-starter-web')

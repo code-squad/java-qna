@@ -40,11 +40,11 @@ public class QuestionController {
 
     @GetMapping("/{id}")
     public String show(Model model, @PathVariable("id") Long id) {
-        Question question = questionRepo.findById(id).get();
-        if (question.isDeleted()) {
-            throw new ForbiddenRequestException("question.delete.state");
+        Optional<Question> maybeQuestion = questionRepo.findById(id);
+        if (!maybeQuestion.isPresent() || maybeQuestion.get().isDeleted()) {
+            throw new ForbiddenRequestException("question.not.exist");
         }
-        model.addAttribute("question", question);
+        model.addAttribute("question", maybeQuestion.get());
         return "/question/show";
     }
 

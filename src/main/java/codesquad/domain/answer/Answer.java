@@ -1,6 +1,8 @@
 package codesquad.domain.answer;
 
 import codesquad.domain.TimeEntity;
+import codesquad.domain.exception.ForbiddenRequestException;
+import codesquad.domain.exception.UnAuthorizedException;
 import codesquad.domain.question.Question;
 import codesquad.domain.user.User;
 import lombok.*;
@@ -28,10 +30,24 @@ public class Answer extends TimeEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String contents;
 
+    @Column(nullable = false)
+    private boolean deleted = false;
+
     @Builder
     public Answer(User user, Question question, String contents) {
         this.user = user;
         this.question = question;
         this.contents = contents;
+    }
+
+    public void delete(Question requestQuestion) {
+        if (!requestQuestion.isMatch(user)) {
+            throw new UnAuthorizedException("answer.user.mismatch.request.user");
+        }
+
+        if (deleted) {
+            throw new ForbiddenRequestException("answer.not.exist");
+        }
+        deleted = true;
     }
 }

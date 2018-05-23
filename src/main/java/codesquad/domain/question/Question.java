@@ -6,7 +6,6 @@ import codesquad.domain.exception.ForbiddenRequestException;
 import codesquad.domain.exception.UnAuthorizedException;
 import codesquad.domain.user.User;
 import lombok.*;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.List;
@@ -35,7 +34,6 @@ public class Question extends TimeEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String contents;
 
-    /*@Type(type = "org.hibernate.type.NumericBooleanType")*/
     @Column(nullable = false)
     private boolean deleted = false;
 
@@ -54,10 +52,6 @@ public class Question extends TimeEntity {
     }
 
     public void delete(User sessionUser, Long pathId) {
-        if (hasAnswer()) {
-            throw new UnAuthorizedException("question.have.answer");
-        }
-
         if (!isMatch(sessionUser) || !id.equals(pathId)) {
             throw new UnAuthorizedException("user.mismatch.sessionuser");
         }
@@ -66,13 +60,14 @@ public class Question extends TimeEntity {
             throw new ForbiddenRequestException("question.delete.state");
         }
         deleted = true;
+        deleteAnswers();
     }
 
-    public boolean isMatch(User sessionUser) {
-        return user.equals(sessionUser);
+    private void deleteAnswers() {
+        answers.forEach(answer -> answer.delete(this));
     }
 
-    private boolean hasAnswer() {
-        return answers.size() != 0;
+    public boolean isMatch(User other) {
+        return user.equals(other);
     }
 }

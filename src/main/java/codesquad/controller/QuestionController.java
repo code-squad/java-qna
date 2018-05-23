@@ -41,7 +41,7 @@ public class QuestionController {
     @GetMapping("/{id}")
     public String show(Model model, @PathVariable("id") Long id) {
         Question question = questionRepo.findById(id).get();
-        if (question.isDelete()) {
+        if (question.isDeleted()) {
             throw new ForbiddenRequestException("question.delete.state");
         }
         model.addAttribute("question", question);

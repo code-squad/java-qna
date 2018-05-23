@@ -5,8 +5,8 @@ import codesquad.domain.answer.Answer;
 import codesquad.domain.exception.ForbiddenRequestException;
 import codesquad.domain.exception.UnAuthorizedException;
 import codesquad.domain.user.User;
-import codesquad.util.BooleanToYNConverter;
 import lombok.*;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.List;
@@ -35,10 +35,9 @@ public class Question extends TimeEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String contents;
 
-    @Setter(AccessLevel.NONE)
+    /*@Type(type = "org.hibernate.type.NumericBooleanType")*/
     @Column(nullable = false)
-    @Convert(converter = BooleanToYNConverter.class)
-    private boolean isDelete = false;
+    private boolean deleted = false;
 
     @Builder
     public Question(String title, String contents) {
@@ -63,10 +62,10 @@ public class Question extends TimeEntity {
             throw new UnAuthorizedException("user.mismatch.sessionuser");
         }
 
-        if (isDelete) {
+        if (deleted) {
             throw new ForbiddenRequestException("question.delete.state");
         }
-        isDelete = true;
+        deleted = true;
     }
 
     public boolean isMatch(User sessionUser) {

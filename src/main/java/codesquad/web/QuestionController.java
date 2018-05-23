@@ -56,20 +56,7 @@ public class QuestionController {
         return "/qna/show";
     }
 
-    @GetMapping("/{id}/form")
-    public String updateForm(@PathVariable Long id, HttpSession session, Model model) {
-        User editingUser = SessionUtils.getUserFromSession(session);
-        Question updateQuestion = questionRepository.findOne(id);
-
-        if (!editingUser.isMatchedUserId(updateQuestion)) {
-            throw new IllegalStateException("question.id.mismatch");
-        }
-        model.addAttribute("updateQuestion", updateQuestion);
-
-        return "/qna/updateForm";
-    }
-
-    @DeleteMapping("/{id}/form")
+    @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id, HttpSession session) {
         User deletingUser = SessionUtils.getUserFromSession(session);
         Question deleteQuestion = questionRepository.findOne(id);
@@ -102,5 +89,18 @@ public class QuestionController {
         questionRepository.save(oldQuestion);
 
         return "redirect:/questions/{id}";
+    }
+
+    @GetMapping("/{id}/form")
+    public String updateForm(@PathVariable Long id, HttpSession session, Model model) {
+        User editingUser = SessionUtils.getUserFromSession(session);
+        Question updateQuestion = questionRepository.findOne(id);
+
+        if (!editingUser.isMatchedUserId(updateQuestion)) {
+            throw new IllegalStateException("question.id.mismatch");
+        }
+        model.addAttribute("updateQuestion", updateQuestion);
+
+        return "/qna/updateForm";
     }
 }

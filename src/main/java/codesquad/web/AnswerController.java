@@ -58,7 +58,6 @@ public class AnswerController {
         return "redirect:/questions/{questionId}";
     }
 
-
     @DeleteMapping("/questions/{questionId}/answers/{answerId}")
     public String delete(@PathVariable Long answerId, HttpSession session) {
         User deleteUser = SessionUtils.getUserFromSession(session);
@@ -93,6 +92,4 @@ public class AnswerController {
 
         return "/qna/answerUpdateForm";
     }
-
-
 }

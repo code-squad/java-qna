@@ -3,7 +3,6 @@ package codesquad.web;
 
 import codesquad.domain.User;
 import codesquad.domain.UserRepository;
-import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +17,8 @@ import static codesquad.web.SessionUtils.USER_SESSION_KEY;
 @Controller
 @RequestMapping("/users")
 public class UserController {
-    private static final Logger log =  LoggerFactory.getLogger(UserController.class);
-    
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
+
     @Autowired
     UserRepository userRepository;
 
@@ -44,23 +43,6 @@ public class UserController {
         return "profile";
     }
 
-
-    @GetMapping("/{id}/form")
-    public String getUpdateForm(@PathVariable Long id, Model model, HttpSession session) {
-        // session에 없는 user이면 수정을 진행할 수 없다.
-        if (!SessionUtils.isLoginUser(session)) {
-            return "redirect:/users/loginForm";
-        }
-
-        User sessionedUser = SessionUtils.getUserFromSession(session);
-        if (!sessionedUser.isMatchedId(id)) {
-            throw new IllegalStateException("You can't update : 자신의 정보만 수정할 수 있습니다.");
-        }
-        model.addAttribute("user", userRepository.findOne(id));
-
-        return "user/updateForm";
-    }
-
     @PutMapping("/{id}")
     public String updateUserData(@PathVariable Long id, User updateUser, String newPassword, HttpSession session) {
         log.debug("updateUser : {}", updateUser);
@@ -81,6 +63,22 @@ public class UserController {
         userRepository.save(user);
 
         return "redirect:/users";
+    }
+
+    @GetMapping("/{id}/form")
+    public String getUpdateForm(@PathVariable Long id, Model model, HttpSession session) {
+        // session에 없는 user이면 수정을 진행할 수 없다.
+        if (!SessionUtils.isLoginUser(session)) {
+            return "redirect:/users/loginForm";
+        }
+
+        User sessionedUser = SessionUtils.getUserFromSession(session);
+        if (!sessionedUser.isMatchedId(id)) {
+            throw new IllegalStateException("You can't update : 자신의 정보만 수정할 수 있습니다.");
+        }
+        model.addAttribute("user", userRepository.findOne(id));
+
+        return "user/updateForm";
     }
 
     @GetMapping("/loginForm")

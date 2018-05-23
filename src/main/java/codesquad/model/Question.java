@@ -1,6 +1,7 @@
 package codesquad.model;
 
 import codesquad.exceptions.UnauthorizedRequestException;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -29,6 +30,7 @@ public class Question {
     private String date;
 
     @OneToMany(mappedBy = "question")
+    @Where(clause = "deleted = false")
     @OrderBy("id DESC")
     private List<Answer> answers;
 

@@ -28,7 +28,7 @@ public class Question extends BaseTimeEntity {
     private String contents;
 
     @OneToMany(mappedBy = "question", orphanRemoval = true)
-    @OrderBy("id ASC")
+    @OrderBy("id DESC")
     private List<Answer> answers;
 
     @Builder

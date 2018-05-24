@@ -1,6 +1,7 @@
 package codesquad.domain.model;
 
 import codesquad.domain.utils.BaseTimeEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -17,6 +18,7 @@ public class Answer extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_question"))
     private Question question;
 
@@ -32,10 +34,6 @@ public class Answer extends BaseTimeEntity {
         this.question = question;
         this.writer = writer;
         this.contents = contents;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public boolean matchWriter(User user) {

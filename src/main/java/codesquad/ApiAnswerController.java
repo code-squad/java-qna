@@ -43,7 +43,10 @@ public class ApiAnswerController {
         try {
             User user = getUserFromSession(session);
             Answer answer = answerRepository.findOne(id);
-            return answer.flagDeleted(user);
+            questionRepository.findByAnswersContaining(answer).decreaseAnswerCount();
+            Result result = answer.flagDeleted(user);
+            logger.debug("Answer Deleted!");
+            return result;
         } catch (NoSessionedUserException | UnauthorizedRequestException e) {
             logger.debug(e.getMessage());
             return Result.ofFailure();

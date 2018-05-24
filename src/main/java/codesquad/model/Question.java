@@ -32,8 +32,7 @@ public class Question {
     private Answers answers;
 
     private boolean deleted;
-
-    private Integer answerCount = 0;
+    private Integer countOfAnswers = 0;
 
     public Question() {
         Timestamp dateTime = Timestamp.valueOf(LocalDateTime.now());
@@ -105,8 +104,15 @@ public class Question {
             throw new UnauthorizedRequestException("Question.userId.mismatch");
         }
         this.deleted = true;
-        ;
         answers.flagDeleted(user);
+    }
+
+    public void increaseAnswerCount() {
+        this.countOfAnswers++;
+    }
+
+    public void decreaseAnswerCount() {
+        this.countOfAnswers--;
     }
 
     @Override
@@ -117,9 +123,5 @@ public class Question {
                 ", title='" + title + '\'' +
                 ", date=" + date +
                 '}';
-    }
-
-    public void increaseAnswerCount() {
-        this.answerCount++;
     }
 }

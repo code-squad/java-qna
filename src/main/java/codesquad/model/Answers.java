@@ -1,5 +1,6 @@
 package codesquad.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.Embeddable;

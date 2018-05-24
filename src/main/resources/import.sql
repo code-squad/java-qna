@@ -1,4 +1,4 @@
 INSERT INTO USER (USER_ID, PASSWORD, NAME, EMAIL) VALUES ('krapeaj', '1234', 'Jae Park', 'krapeaj@hi.com');
 INSERT INTO USER (USER_ID, PASSWORD, NAME, EMAIL) VALUES ('pobi', 'asdf', '포비', 'pobi@hi.com');
 
--- INSERT INTO QUESTION (AUTHOR, TITLE, CONTENT) VALUES ('krapeaj', 'hi', 'hihi');
+INSERT INTO QUESTION (QUESTION_ID, COUNT_OF_ANSWERS, AUTHOR_ID, TITLE, CONTENT, DATE, DELETED) VALUES (1, 0, 1, 'hi', 'hihi', '2018-04-30', false);

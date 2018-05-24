@@ -32,10 +32,6 @@ public class Answer extends AbstractEntity {
         this.contents = contents;
     }
 
-    public String getFormattedCreateDate() {
-        return "TEST";
-    }
-
     private boolean matchUser(User user) {
         return writer.equals(user);
     }

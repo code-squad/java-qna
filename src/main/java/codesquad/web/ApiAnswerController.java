@@ -41,20 +41,24 @@ public class ApiAnswerController {
         }
         User user = (User) session.getAttribute(USER_SESSION_KEY);
         Answer answer = new Answer(question, user, contents);
+        question.addAnswer();
         return answerRepository.save(answer);
     }
 
     @DeleteMapping("/{answerId}")
-    public String deleteAnswer(@PathVariable("questionId") Long qId, @PathVariable("answerId") Long aId, HttpSession session, Model model) {
+    public Result deleteAnswer(@PathVariable("questionId") Long qId, @PathVariable("answerId") Long aId, HttpSession session, Model model) {
         log.debug("답변 삭제");
         Answer answer = answerRepository.findById(aId).get();
         Result result = Result.valid(session, answer, a -> a.matchWriter(getUserFromSession(session)));
         if (!result.isValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());
-            return "user/login";
+            return result;
         }
         answerRepository.deleteById(aId);
-        return String.format("redirect:/questions/%d", qId);
+        Question question = questionRepository.findById(qId).get();
+        question.deleteAnswer();
+        questionRepository.save(question);
+        return result;
 
     }
 

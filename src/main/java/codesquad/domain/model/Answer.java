@@ -18,7 +18,6 @@ public class Answer extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_question"))
     private Question question;
 

@@ -60,7 +60,6 @@ public class QuestionController {
     @GetMapping("/{id}")
     public String showQuestion(@PathVariable("id") Long id, Model model) {
         model.addAttribute("question", questionRepository.findOne(id));
-        model.addAttribute("answersLength", answerRepository.findAllByQuestionId(id).size());
         return "qna/show";
     }
 

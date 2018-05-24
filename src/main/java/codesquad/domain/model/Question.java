@@ -1,6 +1,8 @@
 package codesquad.domain.model;
 
 import codesquad.domain.utils.BaseTimeEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
@@ -29,7 +31,11 @@ public class Question extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "question", orphanRemoval = true)
     @OrderBy("id DESC")
+    @JsonIgnore
     private List<Answer> answers;
+
+    @JsonProperty
+    private Integer countOfAnswer = 0;
 
     @Builder
     public Question(User writer, String title, String contents) {
@@ -54,5 +60,13 @@ public class Question extends BaseTimeEntity {
 
     public boolean matchWriter(User user) {
         return this.writer.equals(user);
+    }
+
+    public void addAnswer() {
+        this.countOfAnswer++;
+    }
+
+    public void deleteAnswer() {
+        this.countOfAnswer--;
     }
 }

@@ -67,26 +67,18 @@
                                 <div class="article-util">
                                     <ul class="article-util-list">
                                         <li>
-                                            <form class="modify-answer-form"
-                                                  action="/questions/{{writer.id}}/answers/{{id}}"
-                                                  method="POST">
-                                                <input type="hidden" name="_method" value="PUT">
-                                                <button type="submit" class="modify-answer-button">수정</button>
-                                            </form>
+                                            <a class="link-modify-article"
+                                               href="/api/questions/{{question.id}}/answers">수정</a>
                                         </li>
                                         <li>
-                                            <form class="delete-answer-form"
-                                                  action="/questions/{{writer.id}}/answers/{{id}}"
-                                                  method="POST">
-                                                <input type="hidden" name="_method" value="DELETE">
-                                                <button type="submit" class="delete-answer-button">삭제</button>
-                                            </form>
+                                            <a class="link-delete-article"
+                                               href="/api/questions/{{question.id}}/answers/{{id}}">삭제</a>
                                         </li>
                                     </ul>
                                 </div>
                             </article>
                             {{/question.answers}}
-                            <form class="submit-write" method="POST" action="/questions/{{question.id}}/answers">
+                            <form class="answer-write" method="POST" action="/api/questions/{{question.id}}/answers">
                                 <div class="form-group" style="padding:14px;">
                                     <textarea class="form-control" placeholder="Update your status"
                                               name="contents"></textarea>
@@ -119,13 +111,10 @@
         <div class="article-util">
             <ul class="article-util-list">
                 <li>
-                    <a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
+                    <a class="link-modify-article" href="/api/questions/{3}/answers">수정</a>
                 </li>
                 <li>
-                    <form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
-                        <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit" class="delete-answer-button">삭제</button>
-                    </form>
+                    <a class="link-delete-article" href="/api/questions/{3}/answers/{4}">삭제</a>
                 </li>
             </ul>
         </div>

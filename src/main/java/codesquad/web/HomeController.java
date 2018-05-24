@@ -20,6 +20,8 @@ public class HomeController {
         log.info("홈에 들어옴");
 
         model.addAttribute("questions", questionsRepository.findAll());
+        //log.debug(questionsRepository.toString());
+        log.debug(questionsRepository.findAll().toString());
 
         return "index";
     }

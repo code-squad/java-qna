@@ -74,16 +74,29 @@ public class Question {
         return writer + " " + title + " " + contents;
     }
 
-    public boolean isMatchedWriter(String userId) {
-        return writer.isMatchedUserId(userId);
-    }
+//    public boolean isMatchedWriter(String userId) {
+//        return writer.isMatchedUserId(userId);
+//    }
 
-    public boolean update(Question updateQuestion) {
-        if (updateQuestion.title == null) {
+    public boolean update(Question updateQuestion, User otherUser) {
+        if (updateQuestion.title == null || otherUser == null) {
             return false;
         }
+        isMatchedUserId(otherUser);
+
         this.title = updateQuestion.title;
         this.contents = updateQuestion.contents;
+
+        return true;
+    }
+
+    public boolean isMatchedUserId(User otherUser) {
+        if (otherUser == null) {
+            throw new NullPointerException("other user is null");
+        }
+        if (!writer.equals(otherUser)) {
+            throw new IllegalStateException("question.id.mismatch");
+        }
 
         return true;
     }

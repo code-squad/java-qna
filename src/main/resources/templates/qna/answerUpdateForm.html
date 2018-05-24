@@ -96,7 +96,8 @@
                                     </ul>
                                 </div>
                             </article>
-
+                            {{/answers}}
+                            {{#editingAnswer}}
                             <form class="submit-write" method="post" action="/questions/{{question.id}}/answers/{{id}}">
                                 <input type="hidden" name="_method" value="PUT">
                                 <div class="form-group" style="padding:14px;">
@@ -105,7 +106,7 @@
                                 <button class="btn btn-success pull-right" type="submit">수정하기</button>
                                 <div class="clearfix"/>
                             </form>
-                            {{/answers}}
+                            {{/editingAnswer}}
                         </div>
                     </div>
                 </div>

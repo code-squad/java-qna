@@ -60,20 +60,24 @@ public class Answer {
         this.comment = comment;
     }
 
-    public boolean isMatchedWriter(String userId) {
-        return this.writer.isMatchedUserId(userId);
-    }
+//    public boolean isMatchedWriter(String userId) {
+//        return this.writer.isMatchedUserId(userId);
+//    }
 
     public boolean update(Answer updateAnswer, User updateUser) {
         if (updateAnswer == null) {
             return false;
         }
 
-        if (!writer.equals(updateUser)) {
+        if (!isMatchedUserId(updateUser)) {
             return false;
         }
 
         this.comment = updateAnswer.comment;
         return true;
+    }
+
+    public boolean isMatchedUserId(User otherUser) {
+        return writer.equals(otherUser);
     }
 }

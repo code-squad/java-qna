@@ -30,8 +30,8 @@ public class QuestionController {
             return "/users/loginForm";
         }
 
-        User sessoinUser = SessionUtils.getUserFromSession(session);
-        Question newQuestion = new Question(sessoinUser, title, contents);
+        User sessionUser = SessionUtils.getUserFromSession(session);
+        Question newQuestion = new Question(sessionUser, title, contents);
         questionRepository.save(newQuestion);
 
         return "redirect:/";
@@ -64,9 +64,7 @@ public class QuestionController {
         if (!SessionUtils.isLoginUser(session)) {
             return "/users/loginForm";
         }
-        if (!deletingUser.isMatchedUserId(deleteQuestion)) {
-            throw new IllegalStateException("question.id.mismatch");
-        }
+        deleteQuestion.isMatchedUserId(deletingUser);
         questionRepository.delete(id);
 
         return "redirect:/";
@@ -79,12 +77,7 @@ public class QuestionController {
         Question oldQuestion = questionRepository.findOne(id);
         updateQuestion.setWriter(updateUser);
 
-        if (!updateUser.isMatchedUserId(updateQuestion)) {
-            throw new IllegalStateException("question.id.mismatch");
-        }
-        if (!oldQuestion.update(updateQuestion)) {
-            throw new IllegalStateException("question.update.fail");
-        }
+        oldQuestion.update(updateQuestion, updateUser);
         questionRepository.save(oldQuestion);
 
         return "redirect:/questions/{id}";
@@ -92,12 +85,10 @@ public class QuestionController {
 
     @GetMapping("/{id}/form")
     public String updateForm(@PathVariable Long id, HttpSession session, Model model) {
-        User editingUser = SessionUtils.getUserFromSession(session);
+        User updateUser = SessionUtils.getUserFromSession(session);
         Question updateQuestion = questionRepository.findOne(id);
+        updateQuestion.isMatchedUserId(updateUser);
 
-        if (!editingUser.isMatchedUserId(updateQuestion)) {
-            throw new IllegalStateException("question.id.mismatch");
-        }
         model.addAttribute("updateQuestion", updateQuestion);
 
         return "/qna/updateForm";

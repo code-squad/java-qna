@@ -46,21 +46,15 @@ public class UserController {
     @PutMapping("/{id}")
     public String updateUserData(@PathVariable Long id, User updateUser, String newPassword, HttpSession session) {
         log.debug("updateUser : {}", updateUser);
-
         if (!SessionUtils.isLoginUser(session)) {
             return "redirect:/users/loginForm";
         }
 
         User sessionUser = SessionUtils.getUserFromSession(session);
-        if (!sessionUser.isMatchedId(id)) {
-            throw new IllegalStateException("자신의 정보만 수정할 수 있습니다.");
-        }
-
-        User user = userRepository.findOne(id);
-        if (!user.update(updateUser, newPassword)) {
-            return "/passwordError";
-        }
-        userRepository.save(user);
+        sessionUser.isMatchedUserId(updateUser);
+        User oldUser = userRepository.findOne(id);
+        oldUser.update(updateUser, newPassword);
+        userRepository.save(oldUser);
 
         return "redirect:/users";
     }
@@ -71,10 +65,8 @@ public class UserController {
             return "redirect:/users/loginForm";
         }
 
-        User sessionedUser = SessionUtils.getUserFromSession(session);
-        if (!sessionedUser.isMatchedId(id)) {
-            throw new IllegalStateException("You can't update : 자신의 정보만 수정할 수 있습니다.");
-        }
+        User sessionUser = SessionUtils.getUserFromSession(session);
+        sessionUser.isMatchedUserId(SessionUtils.getUserFromSession(session));
         model.addAttribute("user", userRepository.findOne(id));
 
         return "user/updateForm";

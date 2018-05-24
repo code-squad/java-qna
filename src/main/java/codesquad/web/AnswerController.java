@@ -61,7 +61,7 @@ public class AnswerController {
         if (!SessionUtils.isLoginUser(session)) {
             return "/users/loginForm";
         }
-        if (!deleteUser.isMatchedUserId(deleteAnswer)) {
+        if (!deleteAnswer.isMatchedUserId(deleteUser)) {
             throw new IllegalStateException("question.id.mismatch");
         }
 
@@ -77,12 +77,13 @@ public class AnswerController {
         if (!SessionUtils.isLoginUser(session)) {
             return "/users/loginForm";
         }
-        if (!updateUser.isMatchedUserId(updateAnswer)) {
+        if (!updateAnswer.isMatchedUserId(updateUser)) {
             throw new IllegalStateException("question.id.mismatch");
         }
 
         model.addAttribute("question", questionRepository.findOne(questionId));
         model.addAttribute("answers", answerRepository.findByQuestionId(questionId));
+        model.addAttribute("editingAnswer", answerRepository.findOne(answerId));
         model.addAttribute("answersCount", answerRepository.findByQuestionId(questionId).size());
 
         return "/qna/answerUpdateForm";

@@ -23,6 +23,9 @@ function addAnswer(e) {
 function onError(data, status) {
     console.log("Error!");
     console.log(data);
+    alert("로그인한 후에 답변을 달 수 있습니다.");
+    console.log("Redirecting...");
+    window.location.href = "/users/loginForm";
 }
 
 function onSuccess(data, status) {

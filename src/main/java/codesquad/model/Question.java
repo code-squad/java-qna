@@ -14,7 +14,7 @@ public class Question {
     @GeneratedValue
     private Long questionId;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_author"))
     private User author;
 
@@ -91,12 +91,11 @@ public class Question {
         return author.userIdsMatch(user);
     }
 
-    public void updateQuestion(QuestionRepository repository, Question updated, User user) throws UnauthorizedRequestException {
+    public void updateQuestion(Question updated, User user) throws UnauthorizedRequestException {
         if (!authorAndUserIdMatch(user)) {
             throw new UnauthorizedRequestException("Question.userId.mismatch");
         }
         this.content = updated.content;
-        repository.save(this);
     }
 
     public void flagDeleted(User user) throws UnauthorizedRequestException {

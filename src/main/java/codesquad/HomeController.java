@@ -1,5 +1,6 @@
 package codesquad;
 
+import codesquad.exceptions.UnauthorizedRequestException;
 import codesquad.model.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,7 +15,8 @@ public class HomeController {
 
     @GetMapping("/")
     public String showHome(Model model) {
-        model.addAttribute("questions", questionRepository.findQuestionsByDeletedFalseOrderByQuestionIdDesc());
-        return "index";
+        throw new UnauthorizedRequestException("error message");
+        //model.addAttribute("questions", questionRepository.findQuestionsByDeletedFalseOrderByQuestionIdDesc());
+        //return "index";
     }
 }

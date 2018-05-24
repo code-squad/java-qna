@@ -82,7 +82,8 @@ public class QuestionController {
         try {
             User user = getUserFromSession(session);
             Question question = questionRepository.findOne(questionId);
-            question.updateQuestion(questionRepository, updated, user);
+            question.updateQuestion(updated, user);
+            questionRepository.save(question);
             logger.debug("Question updated!");
             return "redirect:/questions/" + questionId;
         } catch (NoSessionedUserException e) {

@@ -72,4 +72,5 @@ function deleteAnswer(e) {
             }
         }
     });
+
 }

@@ -1,7 +1,5 @@
 package codesquad;
 
-import codesquad.exceptions.NoSessionedUserException;
-import codesquad.exceptions.UnauthorizedRequestException;
 import codesquad.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +25,7 @@ public class QuestionController {
 
     @GetMapping("/{questionId}")
     public String getQuestion(@PathVariable Long questionId, Model model) {
+        //TODO: No such question exception
         Question question = questionRepository.findOne(questionId);
         model.addAttribute("question", question);
         return "questions/show";
@@ -34,82 +33,51 @@ public class QuestionController {
 
     @GetMapping("/questionForm")
     public String getQuestionForm(HttpSession session, Model model) {
-        try {
-            User user = getUserFromSession(session);
-            model.addAttribute("user", user);
-            return "/questions/form";
-        } catch (NoSessionedUserException e) {
-            logger.debug(e.getMessage());
-            return "redirect:/users/loginForm";
-        }
-
+        User user = getUserFromSession(session);
+        model.addAttribute("user", user);
+        return "/questions/form";
     }
 
     @PutMapping("/submit")
     public String submitQuestion(HttpSession session, Question question) {
-        try {
-            User user = getUserFromSession(session);
-            question.setAuthor(user);
-            questionRepository.save(question);
-            logger.debug("Question added: {}", question);
-            return "redirect:/";
-        } catch (NoSessionedUserException e) {
-            logger.debug(e.getMessage());
-            return "/users/login";
-        }
+        User user = getUserFromSession(session);
+        question.setAuthor(user);
+        questionRepository.save(question);
+        logger.debug("Question added: {}", question);
+        return "redirect:/";
     }
 
     @GetMapping("/{questionId}/edit")
     public String editQuestion(HttpSession session, @PathVariable Long questionId, Model model) {
-        try {
-            User user = getUserFromSession(session);
-            Question question = questionRepository.findOne(questionId);
-            model.addAttribute("question", question);
-            model.addAttribute("user", user);
-            logger.debug("Redirecting to /question/edit...");
-            return "/questions/edit";
-        } catch (NoSessionedUserException e) {
-            logger.debug(e.getMessage());
-            return "redirect:/users/loginForm";
-        } catch (UnauthorizedRequestException e) {
-            logger.debug(e.getMessage());
-            return "/questions/error";
-        }
+        User user = getUserFromSession(session);
+        //TODO: No such question exception
+        Question question = questionRepository.findOne(questionId);
+        model.addAttribute("question", question);
+        model.addAttribute("user", user);
+        logger.debug("Redirecting to /question/edit...");
+        return "/questions/edit";
     }
 
     @PutMapping("/{questionId}/update")
     public String updateQuestion(HttpSession session, Question updated, @PathVariable Long questionId) {
-        try {
-            User user = getUserFromSession(session);
-            Question question = questionRepository.findOne(questionId);
-            question.updateQuestion(updated, user);
-            questionRepository.save(question);
-            logger.debug("Question updated!");
-            return "redirect:/questions/" + questionId;
-        } catch (NoSessionedUserException e) {
-            logger.debug(e.getMessage());
-            return "redirect:/users/loginForm";
-        } catch (UnauthorizedRequestException e) {
-            logger.debug(e.getMessage());
-            return "/questions/error";
-        }
+        User user = getUserFromSession(session);
+        //TODO: No such question exception
+        Question question = questionRepository.findOne(questionId);
+        question.updateQuestion(updated, user);
+        questionRepository.save(question);
+        logger.debug("Question updated!");
+        return "redirect:/questions/" + questionId;
     }
 
     @DeleteMapping("/{questionId}/delete")
     public String deleteQuestion(HttpSession session, @PathVariable Long questionId) {
-        try {
-            User user = getUserFromSession(session);
-            Question question = questionRepository.findOne(questionId);
-            question.flagDeleted(user);
-            questionRepository.save(question);
-            logger.debug("Question flagged deleted: {}", question);
-            return "redirect:/";
-        } catch (NoSessionedUserException e) {
-            logger.debug(e.getMessage());
-            return "redirect:/users/loginForm";
-        } catch (UnauthorizedRequestException e) {
-            logger.debug(e.getMessage());
-            return "/questions/error";
-        }
+        User user = getUserFromSession(session);
+        //TODO: No such question exception
+        //TODO: Prevent unwanted delete/put requests by uri??
+        Question question = questionRepository.findOne(questionId);
+        question.flagDeleted(user);
+        questionRepository.save(question);
+        logger.debug("Question flagged deleted: {}", question);
+        return "redirect:/";
     }
 }

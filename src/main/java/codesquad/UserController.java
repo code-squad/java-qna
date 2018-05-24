@@ -1,6 +1,5 @@
 package codesquad;
 
-import codesquad.exceptions.NoSessionedUserException;
 import codesquad.exceptions.PasswordMismatchException;
 import codesquad.model.User;
 import codesquad.model.UserRepository;
@@ -33,27 +32,18 @@ public class UserController {
             logger.debug("User with userId: {} is not present in User DB.", userId);
             return "redirect:/users/loginFailed";
         }
-        try {
-            User user = maybeUser
-                    .filter(u -> u.passwordsMatch(password))
-                    .orElseThrow(PasswordMismatchException::new);
-            session.setAttribute(HTTP_SESSION_KEY, user);
-            logger.debug("User login for User: {}", user);
-            return "redirect:/";
-        } catch (PasswordMismatchException e) {
-            logger.debug(e.getMessage());
-            return "redirect:/users/loginFailed";
-        }
+        User user = maybeUser
+                .filter(u -> u.passwordsMatch(password))
+                .orElseThrow(PasswordMismatchException::new);
+        session.setAttribute(HTTP_SESSION_KEY, user);
+        logger.debug("User login for User: {}", user);
+        return "redirect:/";
     }
 
     @GetMapping("/logout")
     public String logoutUser(HttpSession session) {
-        try {
-            endSession(session);
-            logger.debug("User Logout for User: {}", getUserFromSession(session));
-        } catch (NoSessionedUserException e) {
-            logger.debug(e.getMessage());
-        }
+        endSession(session);
+        logger.debug("User Logout for User: {}", getUserFromSession(session));
         return "/";
     }
 
@@ -79,30 +69,17 @@ public class UserController {
 
     @GetMapping("/{userId}/form")
     public String getUpdateForm(Model model, HttpSession session) {
-        try {
-            User user = getUserFromSession(session);
-            model.addAttribute(USER, user);
-            return "/users/updateForm";
-        } catch (NoSessionedUserException e) {
-            logger.debug(e.getMessage());
-            return "redirect:/users/loginForm";
-        }
+        User user = getUserFromSession(session);
+        model.addAttribute(USER, user);
+        return "/users/updateForm";
     }
 
     @PutMapping("/{userId}/update")
     public String updateUser(HttpSession session, User newUser, String oldPassword) {
-        try {
-            User user = getUserFromSession(session);
-            user.updateUserInfo(newUser, oldPassword);
-            userRepository.save(user);
-            logger.info("User information update complete for User: {}", user);
-            return "redirect:/";
-        } catch (NoSessionedUserException e) {
-            logger.debug(e.getMessage());
-            return "redirect:/users/loginForm";
-        } catch (PasswordMismatchException e) {
-            logger.debug(e.getMessage());
-            return "redirect:/";
-        }
+        User user = getUserFromSession(session);
+        user.updateUserInfo(newUser, oldPassword);
+        userRepository.save(user);
+        logger.info("User information update complete for User: {}", user);
+        return "redirect:/";
     }
 }

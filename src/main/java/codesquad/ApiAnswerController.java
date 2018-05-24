@@ -30,7 +30,7 @@ public class ApiAnswerController {
             answer.setUser(user);
             Question question = questionRepository.findOne(questionId);
             answer.setQuestion(question);
-            question.increaseAnswerCount();
+            logger.debug("Adding Answer...");
             return answerRepository.save(answer);
         } catch (NoSessionedUserException e) {
             logger.debug(e.getMessage());
@@ -43,8 +43,8 @@ public class ApiAnswerController {
         try {
             User user = getUserFromSession(session);
             Answer answer = answerRepository.findOne(id);
-            questionRepository.findByAnswersContaining(answer).decreaseAnswerCount();
             Result result = answer.flagDeleted(user);
+            answerRepository.save(answer);
             logger.debug("Answer Deleted!");
             return result;
         } catch (NoSessionedUserException | UnauthorizedRequestException e) {

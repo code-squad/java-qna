@@ -54,6 +54,7 @@ public class Answer {
     }
 
     public void setQuestion(Question question) {
+        question.increaseAnswerCount();
         this.question = question;
     }
 
@@ -86,6 +87,7 @@ public class Answer {
             throw new UnauthorizedRequestException("Question.userId.mismatch");
         }
         this.deleted = true;
+        question.decreaseAnswerCount();
         return Result.ofSuccess();
     }
 

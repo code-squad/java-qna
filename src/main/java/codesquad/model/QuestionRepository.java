@@ -9,5 +9,5 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     List<Question> findQuestionsByDeletedFalseOrderByQuestionIdDesc();
 
-    Question findByAnswersContaining(Answer answer);
+    Question findQuestionByAnswersContaining(Answer answer);
 }

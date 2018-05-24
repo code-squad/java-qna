@@ -1,5 +1,9 @@
 package codesquad.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -7,25 +11,27 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class Question {
-    @Id
-    @GeneratedValue
-    private Long id;
-
+public class Question extends AbstractEntity {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    @JsonProperty
     private User writer;
+
+    @JsonProperty
     private String title;
+
     @Lob
+    @JsonProperty
     private String contents;
     // Lob이라는 어노테이션을 추가하면 255이상으로 작성이 가능하다.
 
-    private LocalDateTime createDate;
-    // JPA에서는 매핑을 할때 인자를 받는 생성자와 기본 생성자를 같이 만들어야한다.
-
+    @JsonIgnore
     @OneToMany(mappedBy = "question")
-    @OrderBy("id ASC")
+    @OrderBy("id DESC")
     private List<Answer> answers;
+
+    @JsonProperty
+    private Integer countOfAnswer = 0;
 
     public Question() {}
 
@@ -34,17 +40,15 @@ public class Question {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-        this.createDate = LocalDateTime.now();
     }
 
-    public String getFormattedCreateDate() {
-        if (createDate == null)
-            return "";
-        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
+    public void addAnswer() {
+        this.countOfAnswer += 1;
+
     }
 
-    public Long getId() {
-        return id;
+    public void deleteAnswer() {
+        this.countOfAnswer -= 1;
     }
 
     public User getWriter() {
@@ -63,12 +67,12 @@ public class Question {
         return contents;
     }
 
-    public void setWriter(User writer) {
-        this.writer = writer;
+    public Integer getCountOfAnswer() {
+        return countOfAnswer;
     }
 
-    public LocalDateTime getCreateDate() {
-        return createDate;
+    public void setWriter(User writer) {
+        this.writer = writer;
     }
 
     public void setTitle(String title) {
@@ -99,4 +103,6 @@ public class Question {
                 ", contents='" + contents + '\'' +
                 '}';
     }
+
+
 }

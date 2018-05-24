@@ -30,6 +30,8 @@ dependencies {
     compile group: 'org.webjars', name: 'bootstrap', version: '3.3.7-1'
     compile group: 'org.webjars.bower', name: 'jquery', version: '3.2.1'
     compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.9.1'
+    compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.0.1'
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.0.2'
     runtime('com.h2database:h2')
     runtime('net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.1.0')
     testCompile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'

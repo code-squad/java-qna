@@ -48,8 +48,14 @@ public class AnswerController {
 
     @PutMapping("/{id}")
     public String update(@PathVariable Long questionId, @PathVariable Long id, HttpSession session, Model model, String contents) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            Result result = Result.fail("You need login");
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return "/user/login";
+        }
         Answer answer = answerRepository.findOne(id);
-        Result result = answer.update(session, contents);
+        User loginedUser = HttpSessionUtils.getSessionedUser(session);
+        Result result = answer.update(loginedUser, contents);
         if (!result.isValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());
             return "/user/login";

@@ -33,7 +33,6 @@ public class QuestionController {
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/";
         }
-
         User user = HttpSessionUtils.getSessionedUser(session);
         question.setWriter(user);
         questionRepository.save(question);
@@ -63,12 +62,20 @@ public class QuestionController {
     @PutMapping("/{id}/form")
     public String updateQuestion(@PathVariable Long id, Question question, HttpSession session, Model model) {
         log.debug("Question new {}", question);
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            Result result = Result.fail("You can't update, Please Login");
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return "/user/login";
+        }
+
         Question beforeQuestion = questionRepository.findOne(id);
-        Result result = beforeQuestion.update(question, session);
+        User loginedUser = HttpSessionUtils.getSessionedUser(session);
+        Result result = beforeQuestion.update(question, loginedUser);
         if (!result.isValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());
             return "/user/login";
         }
+
         questionRepository.save(beforeQuestion);
         log.debug("Question Update{}", beforeQuestion);
         return "redirect:/";

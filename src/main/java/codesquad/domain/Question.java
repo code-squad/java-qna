@@ -29,22 +29,23 @@ public class Question {
 
     private LocalDateTime updateDate;
 
+    private LocalDateTime createDate;
+
     public Question() {
-        this.updateDate = LocalDateTime.now();
+        this.createDate = LocalDateTime.now();
     }
 
     public String getFormattedCreateDate() {
-        if (updateDate == null) {
+        if (createDate == null) {
             return "";
         }
-        return updateDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
+        if (updateDate != null){
+            return updateDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
+        }
+        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
     }
 
-    public Result update(Question question, HttpSession session) {
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            return Result.fail("You can't update, Please Login");
-        }
-        User loginedUser = HttpSessionUtils.getSessionedUser(session);
+    public Result update(Question question, User loginedUser) {
         if (!loginedUser.isSameWriter(question)) {
             return Result.fail("You can't update another user's Question");
         }

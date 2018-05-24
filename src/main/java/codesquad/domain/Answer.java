@@ -22,13 +22,15 @@ public class Answer {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
     private Question question;
 
-    private LocalDateTime updateDate = LocalDateTime.now();
+    private LocalDateTime createDate;
 
-    public Result update(HttpSession session, String contents) {
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            return Result.fail("You need login");
-        }
-        User loginedUser = HttpSessionUtils.getSessionedUser(session);
+    private LocalDateTime updateDate;
+
+    public Answer() {
+        this.createDate = LocalDateTime.now();
+    }
+
+    public Result update(User loginedUser, String contents) {
         if (!loginedUser.equals(writer)) {
             return Result.fail("You can't update,delete another user's answer");
         }
@@ -74,10 +76,13 @@ public class Answer {
     }
 
     public String getFormattedCreateDate() {
-        if (updateDate == null) {
+        if (createDate == null) {
             return "";
         }
-        return updateDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
+        if (updateDate != null){
+            return updateDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
+        }
+        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
     }
 
     @Override

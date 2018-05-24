@@ -8,6 +8,7 @@
 
     <logger name="example.logback.level.grandparents" level="TRACE"/>
     <logger name="example.logback.level.grandparents.parents.children" level="INFO"/>
+    <logger name="javax.persistence" level="INFO"/>
     <root level="DEBUG">
     <!--<root level="INFO">-->
         <appender-ref ref="STDOUT"/>

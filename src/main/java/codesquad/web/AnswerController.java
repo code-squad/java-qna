@@ -45,10 +45,7 @@ public class AnswerController {
         if (!SessionUtils.isLoginUser(session)) {
             return "/users/loginForm";
         }
-        if (!updateUser.isMatchedUserId(oldAnswer)) {
-            throw new IllegalStateException("question.id.mismatch");
-        }
-        if (!oldAnswer.update(updateAnswer)) {
+        if (!oldAnswer.update(updateAnswer, updateUser)) {
             throw new IllegalStateException("");
         }
         answerRepository.save(oldAnswer);

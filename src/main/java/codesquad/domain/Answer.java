@@ -9,7 +9,7 @@ public class Answer {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_id"))
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_id"))
     private User writer;
 
     @ManyToOne
@@ -64,8 +64,12 @@ public class Answer {
         return this.writer.isMatchedUserId(userId);
     }
 
-    public boolean update(Answer updateAnswer) {
+    public boolean update(Answer updateAnswer, User updateUser) {
         if (updateAnswer == null) {
+            return false;
+        }
+
+        if (!writer.equals(updateUser)) {
             return false;
         }
 

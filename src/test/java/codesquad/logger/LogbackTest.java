@@ -1,6 +1,6 @@
 package codesquad.logger;
 
-import codesquad.domain.Question;
+import codesquad.domain.question.Question;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +10,6 @@ public class LogbackTest {
 
     @Test
     public void print() {
-        log.info("INFO : {}", Question.builder().title("test title").contents("test content").writer("colin").build());
+        log.info("INFO : {}", Question.builder().title("test title").contents("test content").build());
     }
 }

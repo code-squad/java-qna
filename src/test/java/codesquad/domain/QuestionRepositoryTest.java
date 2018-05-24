@@ -1,5 +1,7 @@
 package codesquad.domain;
 
+import codesquad.domain.question.Question;
+import codesquad.domain.question.QuestionRepository;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +30,6 @@ public class QuestionRepositoryTest {
         LocalDateTime now = LocalDateTime.now();
         questionRepo.save(
                 Question.builder()
-                        .writer("colin")
                         .title("첫 글")
                         .contents("안녕하세요")
                         .build()

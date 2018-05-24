@@ -21,12 +21,12 @@
                           </strong>
                           <div class="auth-info">
                               <i class="icon-add-comment"></i>
-                              <span class="time">{{date}}</span>
-                              <a href="/user/profile.html" class="author">{{writer}}</a>
+                              <span class="time">{{modifiedDate}}</span>
+                              <a href="/users/{{user.id}}" class="author">{{user.name}}</a>
                           </div>
                           <div class="reply" title="댓글">
                               <i class="icon-reply"></i>
-                              <span class="point">0</span>
+                              <span class="point">{{answers.size}}</span>
                           </div>
                       </div>
                   </div>
@@ -48,7 +48,7 @@
                 </ul>
               </div>
               <div class="col-md-3 qna-write">
-                  <a href="/question/form" class="btn btn-primary pull-right" role="button">질문하기</a>
+                  <a href="/questions/form" class="btn btn-primary pull-right" role="button">질문하기</a>
               </div>
           </div>
         </div>

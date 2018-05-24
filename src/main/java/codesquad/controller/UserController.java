@@ -1,7 +1,8 @@
 package codesquad.controller;
 
-import codesquad.domain.User;
-import codesquad.domain.UserRepository;
+import codesquad.domain.user.User;
+import codesquad.domain.user.UserRepository;
+import codesquad.util.HttpSessionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 @Controller
@@ -27,37 +29,54 @@ public class UserController {
             return "redirect:/users";
         } catch (DataAccessException e) {
             logger.error("ERROR {} ", e.getMessage());
-            return "redirect:/err";
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
     @GetMapping
     public String show(Model model) {
         model.addAttribute("users", userRepo.findAll());
-        return "/user/list";
+        return "/users/list";
+    }
+
+    @PostMapping("/login")
+    public String logining(String userId, String passwd, HttpSession session) {
+        if (HttpSessionUtils.isLogin(session)) {
+            return "redirect:/";
+        }
+        Optional<User> maybeUser = userRepo.findByUserId(userId);
+        return maybeUser.filter(userInfo -> userInfo.isMatch(passwd))
+                        .map(u -> {
+                            session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, maybeUser.get());
+                            return "redirect:/";
+                        })
+                        .orElse("redirect:/users/loginFail");
     }
 
     @GetMapping("/{id}")
     public String get(Model model, @PathVariable("id") Long id) {
         model.addAttribute("user", userRepo.findById(id).get());
-        return "/user/profile";
+        return "/users/profile";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        HttpSessionUtils.logout(session);
+        return "redirect:/";
     }
 
     @GetMapping("/{id}/edit")
-    public String edit(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("user", userRepo.findById(id).get());
-        return "/user/edit";
+    public String edit(@PathVariable("id") Long id, Model model, HttpSession session) {
+        User sessionUser = HttpSessionUtils.getUserFromSession(session, id).get();
+        model.addAttribute("user", sessionUser);
+        return "/users/edit";
     }
 
     @PutMapping("/{id}")
-    public String update(@PathVariable("id") Long id, String currentPasswd, User updateInfo) {
-        try {
-            User user = userRepo.findById(id).get();
-            user.changeInfo(currentPasswd, updateInfo);
-            userRepo.save(user);
-            return "redirect:/users/" + id;
-        } catch (DataAccessException | IllegalArgumentException e) {
-            return "redirect:/error";
-        }
+    public String update(@PathVariable("id") Long id, String currentPasswd, User updateInfo, HttpSession session) {
+        User user = userRepo.findById(id).get();
+        user.update(HttpSessionUtils.getUserFromSession(session), currentPasswd, updateInfo);
+        userRepo.save(user);
+        return "redirect:/users/" + id;
     }
 }

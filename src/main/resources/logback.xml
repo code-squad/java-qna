@@ -5,7 +5,7 @@
         </encoder>
     </appender>
 
-    <logger name="codesquad" level="INFO" />
+    <logger name="codesquad" level="DEBUG" />
 
     <root level="WARN">
         <appender-ref ref="STDOUT" />

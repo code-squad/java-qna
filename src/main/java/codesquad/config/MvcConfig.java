@@ -1,7 +1,9 @@
 package codesquad.config;
 
+import codesquad.util.SessionInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -12,12 +14,16 @@ public class MvcConfig implements WebMvcConfigurer {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
 
-        registry.addViewController("/user/form").setViewName("/user/form");
-        registry.addViewController("/user/login").setViewName("/user/login");
-
-        registry.addViewController("/question/form").setViewName("/question/form");
+        registry.addViewController("/users/form").setViewName("/users/form");
+        registry.addViewController("/users/loginForm").setViewName("/users/login");
+        registry.addViewController("/users/loginFail").setViewName("/users/login_failed");
         registry.addViewController("/question/show").setViewName("/question/show");
+    }
 
-        registry.addViewController("/error").setViewName("/error/show");
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new SessionInterceptor())
+                .addPathPatterns("/questions/**", "/users/**")
+                .excludePathPatterns("/", "/test/**", "/users/loginForm", "/users/loginFail", "/users/login", "/users/form");
     }
 }

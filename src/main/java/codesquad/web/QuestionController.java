@@ -63,7 +63,7 @@ public class QuestionController {
             return Result.fail("자신이 쓴 글만 수정, 삭제가 가능합니다.");
         return Result.ok();
     }
-    
+
     @PutMapping("/{id}")
     public String editPost(@PathVariable Long id, String title, String contents ,HttpSession session, Model model) {
         Question question = qnaRepository.findOne(id);

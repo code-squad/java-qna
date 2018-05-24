@@ -1,11 +1,13 @@
 package codesquad.domain.question;
 
 import codesquad.domain.answer.Answer;
+import codesquad.domain.answer.Answers;
 import codesquad.domain.exception.ForbiddenRequestException;
 import codesquad.domain.exception.UnAuthorizedException;
 import codesquad.domain.user.User;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.Collections;
 
@@ -52,7 +54,7 @@ public class QuestionTest {
         User answerUser = new User();
         answerUser.setId(1L);
         answer.setUser(answerUser);
-        question.setAnswers(Collections.singletonList(answer));
+        question.setAnswers((new Answers(answer)));
         question.delete(sessionUser, question.getId());
     }
 
@@ -61,7 +63,7 @@ public class QuestionTest {
         User answerUser = new User();
         answerUser.setId(2L);
         answer.setUser(answerUser);
-        question.setAnswers(Collections.singletonList(answer));
+        question.setAnswers(new Answers(answer));
         question.delete(sessionUser, question.getId());
     }
 
@@ -70,7 +72,7 @@ public class QuestionTest {
         User answerUser = new User();
         answerUser.setId(1L);
         answer.setUser(answerUser);
-        question.setAnswers(Collections.singletonList(answer));
+        question.setAnswers((new Answers(answer)));
         question.delete(sessionUser, question.getId());
         question.delete(sessionUser, question.getId());
     }

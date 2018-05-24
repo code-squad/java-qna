@@ -1,6 +1,5 @@
 package codesquad.controller;
 
-import codesquad.domain.answer.Answer;
 import codesquad.domain.exception.ForbiddenRequestException;
 import codesquad.domain.exception.UnAuthorizedException;
 import codesquad.domain.question.Question;
@@ -15,10 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 import java.util.Optional;
-
-import static java.util.stream.Collectors.toList;
 
 @Controller
 @RequestMapping("/questions")

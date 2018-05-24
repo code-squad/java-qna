@@ -54,7 +54,7 @@
                       <p class="qna-comment-count"><strong>{{question.answers.size}}</strong>개의 의견</p>
                       <div class="qna-comment-slipp-articles">
 
-                          {{#question.validAnswers}}
+                          {{#question.answers.answers}}
                           <article class="article" id="answer-1405">
                               <div class="article-header">
                                   <div class="article-header-thumb">
@@ -84,7 +84,7 @@
                               </div>
 
                           </article>
-                          {{/question.validAnswers}}
+                          {{/question.answers.answers}}
 
 
                           <form class="submit-write" action="/questions/{{question.id}}/answers" method="post">

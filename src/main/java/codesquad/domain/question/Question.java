@@ -2,6 +2,7 @@ package codesquad.domain.question;
 
 import codesquad.domain.TimeEntity;
 import codesquad.domain.answer.Answer;
+import codesquad.domain.answer.Answers;
 import codesquad.domain.exception.ForbiddenRequestException;
 import codesquad.domain.exception.UnAuthorizedException;
 import codesquad.domain.user.User;
@@ -26,9 +27,8 @@ public class Question extends TimeEntity {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_user"))
     private User user;
 
-    @OneToMany(mappedBy = "question")
-    @OrderBy("id ASC")
-    private List<Answer> answers;
+    @Embedded
+    private Answers answers;
 
     @Column(nullable = false, length = 100)
     private String title;
@@ -62,18 +62,10 @@ public class Question extends TimeEntity {
             throw new ForbiddenRequestException("question.delete.state");
         }
         deleted = true;
-        deleteAnswers();
-    }
-
-    private void deleteAnswers() {
-        answers.forEach(answer -> answer.delete(this));
+        answers.delete(this);
     }
 
     public boolean isMatch(User other) {
         return user.equals(other);
-    }
-
-    public List<Answer> getValidAnswers() {
-        return answers.stream().filter(answer -> !answer.isDeleted()).collect(toList());
     }
 }

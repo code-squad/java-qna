@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -17,7 +18,7 @@ public class QuestionTest {
     private Question question;
     private Question updateInfo;
     private User user;
-    private User sessionUser;
+    private Optional<User> sessionUser;
     private Answer answer;
 
     @Before
@@ -33,19 +34,19 @@ public class QuestionTest {
 
         updateInfo = new Question();
         updateInfo.setId(1L);
-        sessionUser = new User();
-        sessionUser.setId(1L);
+        sessionUser = Optional.of(new User());
+        sessionUser.get().setId(1L);
     }
 
     @Test
     public void update() {
-        sessionUser.setId(1L);
+        sessionUser.get().setId(1L);
         question.update(sessionUser, updateInfo);
     }
 
     @Test(expected = UnAuthorizedException.class)
     public void invalid_update() {
-        sessionUser.setId(2L);
+        sessionUser.get().setId(2L);
         question.update(sessionUser, updateInfo);
     }
 

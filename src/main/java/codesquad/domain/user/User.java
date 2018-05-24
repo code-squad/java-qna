@@ -7,6 +7,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
+import java.util.Optional;
 
 @NoArgsConstructor
 @Getter
@@ -43,11 +44,8 @@ public class User {
         this.email = email;
     }
 
-    public void update(User sessionUser, String currentPasswd, User userInfo) {
-        if (!equals(sessionUser)) {
-            throw new UnAuthorizedException("user.mismatch.sessionuser");
-        }
-
+    public void update(Optional<User> maybeSessionUser, String currentPasswd, User userInfo) {
+        maybeSessionUser.filter(this::equals).orElseThrow(() -> new UnAuthorizedException("user.mismatch.sessionuser"));
         if (!isMatch(currentPasswd)) {
             throw new UnAuthorizedException("user.mismatch.password");
         }

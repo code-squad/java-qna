@@ -45,11 +45,12 @@ public class UserController {
             return "redirect:/";
         }
         Optional<User> maybeUser = userRepo.findByUserId(userId);
-        if (!maybeUser.isPresent() || !maybeUser.filter(userInfo -> userInfo.isMatch(passwd)).isPresent()) {
-            return "redirect:/users/loginFail";
-        }
-        session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, maybeUser.get());
-        return "redirect:/";
+        return maybeUser.filter(userInfo -> userInfo.isMatch(passwd))
+                        .map(u -> {
+                            session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, maybeUser.get());
+                            return "redirect:/";
+                        })
+                        .orElse("redirect:/users/loginFail");
     }
 
     @GetMapping("/{id}")
@@ -73,9 +74,8 @@ public class UserController {
 
     @PutMapping("/{id}")
     public String update(@PathVariable("id") Long id, String currentPasswd, User updateInfo, HttpSession session) {
-        User sessionUser = HttpSessionUtils.getUserFromSession(session).get();
         User user = userRepo.findById(id).get();
-        user.update(sessionUser, currentPasswd, updateInfo);
+        user.update(HttpSessionUtils.getUserFromSession(session), currentPasswd, updateInfo);
         userRepo.save(user);
         return "redirect:/users/" + id;
     }

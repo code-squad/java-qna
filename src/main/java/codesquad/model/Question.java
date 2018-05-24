@@ -87,6 +87,14 @@ public class Question {
         this.answers.setAnswers(answers);
     }
 
+    public Integer getCountOfAnswers() {
+        return countOfAnswers;
+    }
+
+    public void setCountOfAnswers(Integer countOfAnswers) {
+        this.countOfAnswers = countOfAnswers;
+    }
+
     public boolean authorAndUserIdMatch(User user) {
         return author.userIdsMatch(user);
     }

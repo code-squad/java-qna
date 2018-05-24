@@ -10,11 +10,11 @@ public class Result {
         this.errorMessage = errorMessage;
     }
 
-    public boolean isValid() {
+    public boolean isValid(){
         return valid;
     }
 
-    public String getErrorMessage() {
+    public String getErrorMessage(){
         return errorMessage;
     }
 

@@ -1,6 +1,9 @@
 package codesquad.domain;
 
+import codesquad.web.HttpSessionUtils;
+
 import javax.persistence.*;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -19,11 +22,19 @@ public class Answer {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
     private Question question;
 
-    private LocalDateTime createDate = LocalDateTime.now();
+    private LocalDateTime updateDate = LocalDateTime.now();
 
-    public void update(String contents) {
+    public Result update(HttpSession session, String contents) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return Result.fail("You need login");
+        }
+        User loginedUser = HttpSessionUtils.getSessionedUser(session);
+        if (!loginedUser.equals(writer)) {
+            return Result.fail("You can't update,delete another user's answer");
+        }
         this.contents = contents;
-        this.createDate = LocalDateTime.now();
+        this.updateDate = LocalDateTime.now();
+        return Result.ok();
     }
 
     public Long getId() {
@@ -63,10 +74,10 @@ public class Answer {
     }
 
     public String getFormattedCreateDate() {
-        if (createDate == null) {
+        if (updateDate == null) {
             return "";
         }
-        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
+        return updateDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
     }
 
     @Override

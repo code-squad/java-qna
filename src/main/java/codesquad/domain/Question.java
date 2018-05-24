@@ -1,6 +1,9 @@
 package codesquad.domain;
 
+import codesquad.web.HttpSessionUtils;
+
 import javax.persistence.*;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -24,26 +27,30 @@ public class Question {
     @Lob
     private String contents;
 
-    private LocalDateTime createDate;
+    private LocalDateTime updateDate;
 
     public Question() {
-        this.createDate = LocalDateTime.now();
+        this.updateDate = LocalDateTime.now();
     }
 
     public String getFormattedCreateDate() {
-        if (createDate == null) {
+        if (updateDate == null) {
             return "";
         }
-        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
+        return updateDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
     }
 
-    public Result update(Question question, User user) {
-        if (!user.isSameWriter(question)) {
+    public Result update(Question question, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return Result.fail("You can't update, Please Login");
+        }
+        User loginedUser = HttpSessionUtils.getSessionedUser(session);
+        if (!loginedUser.isSameWriter(question)) {
             return Result.fail("You can't update another user's Question");
         }
         this.title = question.title;
         this.contents = question.contents;
-        this.createDate = LocalDateTime.now();
+        this.updateDate = LocalDateTime.now();
         return Result.ok();
     }
 

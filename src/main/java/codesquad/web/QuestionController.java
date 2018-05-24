@@ -63,14 +63,8 @@ public class QuestionController {
     @PutMapping("/{id}/form")
     public String updateQuestion(@PathVariable Long id, Question question, HttpSession session, Model model) {
         log.debug("Question new {}", question);
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            Result result = Result.fail("You can't update, Please Login");
-            model.addAttribute("errorMessage", result.getErrorMessage());
-            return "/user/login";
-        }
-        User user = HttpSessionUtils.getSessionedUser(session);
         Question beforeQuestion = questionRepository.findOne(id);
-        Result result = beforeQuestion.update(question, user);
+        Result result = beforeQuestion.update(question, session);
         if (!result.isValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());
             return "/user/login";

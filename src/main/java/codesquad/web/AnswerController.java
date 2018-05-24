@@ -49,12 +49,11 @@ public class AnswerController {
     @PutMapping("/{id}")
     public String update(@PathVariable Long questionId, @PathVariable Long id, HttpSession session, Model model, String contents) {
         Answer answer = answerRepository.findOne(id);
-        Result result = isValid(session, answer);
+        Result result = answer.update(session, contents);
         if (!result.isValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());
             return "/user/login";
         }
-        answer.update(contents);
         answerRepository.save(answer);
         return String.format("redirect:/questions/%d", questionId);
     }

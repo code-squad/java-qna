@@ -1,5 +1,7 @@
 package codesquad.web;
 
+import codesquad.domain.User;
+
 import javax.servlet.http.HttpSession;
 
 public class HttpSessionUtils {
@@ -18,6 +20,6 @@ public class HttpSessionUtils {
         if (!isLoginUser(session)) {
             return null;
         }
-        return (User)session.getAttribute(USER_SESSION_KEY);
+        return (User) session.getAttribute(USER_SESSION_KEY);
     }
 }

@@ -1,6 +1,11 @@
-package codesquad.web;
+package codesquad.domain;
+
+import codesquad.web.HttpSessionUtils;
 
 import javax.persistence.*;
+import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Answer {
@@ -11,13 +16,27 @@ public class Answer {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
     private User writer;
+    @Lob
     private String contents;
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
     private Question question;
 
-    public void update(String contents) {
+    private LocalDateTime createDate;
+
+    private LocalDateTime updateDate;
+
+    public Answer() {
+        this.createDate = LocalDateTime.now();
+    }
+
+    public Result update(User loginedUser, String contents) {
+        if (!loginedUser.equals(writer)) {
+            return Result.fail("You can't update,delete another user's answer");
+        }
         this.contents = contents;
+        this.updateDate = LocalDateTime.now();
+        return Result.ok();
     }
 
     public Long getId() {
@@ -52,8 +71,18 @@ public class Answer {
         this.writer = writer;
     }
 
-    public Long getIdOfQuestion(){
+    public Long getIdOfQuestion() {
         return question.getId();
+    }
+
+    public String getFormattedCreateDate() {
+        if (createDate == null) {
+            return "";
+        }
+        if (updateDate != null){
+            return updateDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
+        }
+        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
     }
 
     @Override
@@ -65,5 +94,4 @@ public class Answer {
                 ", question=" + question +
                 '}';
     }
-
 }

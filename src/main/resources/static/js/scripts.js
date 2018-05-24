@@ -64,11 +64,11 @@ function deleteAnswer(e) {
             console.log("Error");
         },
         success: function (data, status) {
-            console.log("Success: " + data);
+            console.log("Success: " + data.success);
             if (data.success) {
                 deleteBtn.closest("article").remove();
             } else {
-                alert("Error..");
+                alert("Error: " + data.message);
             }
         }
     });

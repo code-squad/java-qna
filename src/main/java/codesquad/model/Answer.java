@@ -81,12 +81,11 @@ public class Answer {
         this.date = date;
     }
 
-    public Result flagDeleted(AnswerRepository repository, User user) {
+    public Result flagDeleted(User user) throws UnauthorizedRequestException {
         if (!(this.user.userIdsMatch(user) || this.question.authorAndUserIdMatch(user))) {
             throw new UnauthorizedRequestException("Question.userId.mismatch");
         }
         this.deleted = true;
-        repository.save(this);
         return Result.ofSuccess();
     }
 

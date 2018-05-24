@@ -1,7 +1,6 @@
 package codesquad.model;
 
 import codesquad.exceptions.UnauthorizedRequestException;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -29,12 +28,12 @@ public class Question {
     @Column(nullable = false)
     private String date;
 
-    @OneToMany(mappedBy = "question")
-    @Where(clause = "deleted = false")
-    @OrderBy("id DESC")
-    private List<Answer> answers;
+    @Embedded
+    private Answers answers;
 
     private boolean deleted;
+
+    private Integer answerCount = 0;
 
     public Question() {
         Timestamp dateTime = Timestamp.valueOf(LocalDateTime.now());
@@ -82,11 +81,11 @@ public class Question {
     }
 
     public List<Answer> getAnswers() {
-        return answers;
+        return answers.getAnswers();
     }
 
     public void setAnswers(List<Answer> answers) {
-        this.answers = answers;
+        this.answers.setAnswers(answers);
     }
 
     public boolean authorAndUserIdMatch(User user) {
@@ -101,15 +100,13 @@ public class Question {
         repository.save(this);
     }
 
-    public void flagDeleted(QuestionRepository questionRepo, AnswerRepository answerRepo, User user) throws UnauthorizedRequestException {
+    public void flagDeleted(User user) throws UnauthorizedRequestException {
         if (!this.authorAndUserIdMatch(user)) {
             throw new UnauthorizedRequestException("Question.userId.mismatch");
         }
         this.deleted = true;
-        questionRepo.save(this);
-        for (Answer answer : answers) {
-            answer.flagDeleted(answerRepo, user);
-        }
+        ;
+        answers.flagDeleted(user);
     }
 
     @Override
@@ -120,5 +117,9 @@ public class Question {
                 ", title='" + title + '\'' +
                 ", date=" + date +
                 '}';
+    }
+
+    public void increaseAnswerCount() {
+        this.answerCount++;
     }
 }

@@ -6,7 +6,6 @@ import codesquad.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -29,13 +28,13 @@ public class ApiAnswerController {
         try {
             User user = getUserFromSession(session);
             answer.setUser(user);
-            Question question = questionRepository.findQuestionByQuestionId(questionId);
+            Question question = questionRepository.findOne(questionId);
             answer.setQuestion(question);
+            question.increaseAnswerCount();
             return answerRepository.save(answer);
         } catch (NoSessionedUserException e) {
             logger.debug(e.getMessage());
             return null;
-            //return "redirect:/users/loginForm";
         }
     }
 
@@ -43,15 +42,11 @@ public class ApiAnswerController {
     public Result deleteAnswer(HttpSession session, @PathVariable Long id) {
         try {
             User user = getUserFromSession(session);
-            return answerRepository.findOne(id).flagDeleted(answerRepository, user);
-        } catch (NoSessionedUserException e) {
+            Answer answer = answerRepository.findOne(id);
+            return answer.flagDeleted(user);
+        } catch (NoSessionedUserException | UnauthorizedRequestException e) {
             logger.debug(e.getMessage());
             return Result.ofFailure();
-//            return "redirect:/users/loginForm";
-        } catch (UnauthorizedRequestException e) {
-            logger.debug(e.getMessage());
-            return Result.ofFailure();
-//            return "redirect:/questions/{questionId}";
         }
     }
 }

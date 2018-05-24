@@ -63,7 +63,7 @@ public class QuestionController {
     public String editQuestion(HttpSession session, @PathVariable Long questionId, Model model) {
         try {
             User user = getUserFromSession(session);
-            Question question = questionRepository.findQuestionByQuestionId(questionId);
+            Question question = questionRepository.findOne(questionId);
             model.addAttribute("question", question);
             model.addAttribute("user", user);
             logger.debug("Redirecting to /question/edit...");
@@ -81,7 +81,7 @@ public class QuestionController {
     public String updateQuestion(HttpSession session, Question updated, @PathVariable Long questionId) {
         try {
             User user = getUserFromSession(session);
-            Question question = questionRepository.findQuestionByQuestionId(questionId);
+            Question question = questionRepository.findOne(questionId);
             question.updateQuestion(questionRepository, updated, user);
             logger.debug("Question updated!");
             return "redirect:/questions/" + questionId;
@@ -98,8 +98,9 @@ public class QuestionController {
     public String deleteQuestion(HttpSession session, @PathVariable Long questionId) {
         try {
             User user = getUserFromSession(session);
-            Question question = questionRepository.findQuestionByQuestionId(questionId);
-            question.flagDeleted(questionRepository, answerRepository, user);
+            Question question = questionRepository.findOne(questionId);
+            question.flagDeleted(user);
+            questionRepository.save(question);
             logger.debug("Question flagged deleted: {}", question);
             return "redirect:/";
         } catch (NoSessionedUserException e) {

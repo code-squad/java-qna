@@ -27,30 +27,15 @@ public class AnswerController {
 
     @PostMapping
     public String create(@PathVariable("questionId") Long questionId, String contents, HttpSession session) {
-        User user = HttpSessionUtils.getUserFromSession(session).get();
-        Question question = questionRepo.findById(questionId).get();
-        Answer answer = Answer.builder().user(user).question(question).contents(contents).build();
+        Answer answer = Answer.builder().user(HttpSessionUtils.getUserFromSession(session).get()).question(questionRepo.findById(questionId).get()).contents(contents).build();
         answerRepo.save(answer);
         return "redirect:/questions/{questionId}";
     }
 
-    @GetMapping("/{id}/edit")
-    public String edit(@PathVariable("id") Long id) {
-
-        return null;
-    }
-
-    @PutMapping("/{id}")
-    public String update(@PathVariable("id") Long id) {
-
-        return null;
-    }
-
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") Long id, HttpSession session) {
-        User sessionUser = HttpSessionUtils.getUserFromSession(session).get();
         Answer answer = answerRepo.findById(id).get();
-        answer.delete(sessionUser);
+        answer.delete(HttpSessionUtils.getUserFromSession(session));
         answerRepo.save(answer);
         return "redirect:/questions/{questionId}";
     }

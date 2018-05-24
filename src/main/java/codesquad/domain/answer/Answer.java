@@ -49,11 +49,9 @@ public class Answer extends TimeEntity {
         deleted = true;
     }
 
-    public void delete(User sessionUser) {
+    public void delete(Optional<User> maybeSessionUser) {
         validateDelete();
-        if (!user.equals(sessionUser)) {
-            throw new UnAuthorizedException("answer.user.mismatch.request.user");
-        }
+        maybeSessionUser.filter(sessionUser -> user.equals(sessionUser)).orElseThrow(() -> new UnAuthorizedException("answer.user.mismatch.request.user"));
         deleted = true;
     }
 

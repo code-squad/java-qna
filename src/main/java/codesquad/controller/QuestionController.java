@@ -32,8 +32,7 @@ public class QuestionController {
 
     @PostMapping
     public String create(Question question, HttpSession session) {
-        Optional<User> maybeUser = HttpSessionUtils.getUserFromSession(session);
-        question.setUser(maybeUser.get());
+        question.setUser(HttpSessionUtils.getUserFromSession(session).get());
         questionRepo.save(question);
         return "redirect:/";
     }
@@ -41,20 +40,17 @@ public class QuestionController {
     @GetMapping("/{id}")
     public String show(Model model, @PathVariable("id") Long id) {
         Optional<Question> maybeQuestion = questionRepo.findById(id);
-        if (!maybeQuestion.isPresent() || maybeQuestion.get().isDeleted()) {
-            throw new ForbiddenRequestException("question.not.exist");
-        }
-        Question question = maybeQuestion.get();
+        Question question = maybeQuestion.filter(q -> !q.isDeleted())
+                                         .orElseThrow(() -> new ForbiddenRequestException("question.not.exist"));
         model.addAttribute("question", question);
         return "/question/show";
     }
 
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable("id") Long id, Model model, HttpSession session) {
-        Question question = questionRepo.findById(id).get();
-        if (!question.isMatch(HttpSessionUtils.getUserFromSession(session).get())) {
-            throw new UnAuthorizedException("user.mismatch.sessionuser");
-        }
+        Optional<Question> maybeQuestion = questionRepo.findById(id);
+        Question question = maybeQuestion.filter(q -> q.isMatch(HttpSessionUtils.getUserFromSession(session)))
+                                         .orElseThrow(() -> new UnAuthorizedException("user.mismatch.sessionuser"));
         model.addAttribute("question", question);
         return "/question/edit";
     }
@@ -62,7 +58,7 @@ public class QuestionController {
     @PutMapping("/{id}")
     public String update(@PathVariable("id") Long id, Question updateQuestion, HttpSession session) {
         Question question = questionRepo.findById(id).get();
-        question.update(HttpSessionUtils.getUserFromSession(session).get(), updateQuestion);
+        question.update(HttpSessionUtils.getUserFromSession(session), updateQuestion);
         questionRepo.save(question);
         return "redirect:/questions/" + id;
     }
@@ -70,7 +66,7 @@ public class QuestionController {
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") Long id, HttpSession session) {
         Question question = questionRepo.findById(id).get();
-        question.delete(HttpSessionUtils.getUserFromSession(session).get(), id);
+        question.delete(HttpSessionUtils.getUserFromSession(session), id);
         questionRepo.save(question);
         return "redirect:/";
     }

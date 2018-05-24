@@ -9,7 +9,9 @@ import codesquad.domain.user.User;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
@@ -45,16 +47,16 @@ public class Question extends TimeEntity {
         this.contents = contents;
     }
 
-    public void update(User sessionUser, Question updateQuestion) {
-        if (!user.equals(sessionUser)) {
+    public void update(Optional<User> maybeSessionUser, Question updateQuestion) {
+        if (!user.equals(maybeSessionUser.get())) {
             throw new UnAuthorizedException("user.mismatch.sessionuser");
         }
         this.title = updateQuestion.title;
         this.contents = updateQuestion.contents;
     }
 
-    public void delete(User sessionUser, Long pathId) {
-        if (!isMatch(sessionUser) || !id.equals(pathId)) {
+    public void delete(Optional<User> maybeSessionUser, Long pathId) {
+        if (!isMatch(maybeSessionUser) || !id.equals(pathId)) {
             throw new UnAuthorizedException("user.mismatch.sessionuser");
         }
 
@@ -65,7 +67,10 @@ public class Question extends TimeEntity {
         answers.delete(this);
     }
 
-    public boolean isMatch(User other) {
-        return user.equals(other);
+    public boolean isMatch(Optional<User> maybeOther) {
+        if (!maybeOther.isPresent()) {
+            throw new UnAuthorizedException("user.not.exist");
+        }
+        return user.equals(maybeOther.get());
     }
 }

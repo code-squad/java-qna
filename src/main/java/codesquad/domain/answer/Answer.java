@@ -8,6 +8,7 @@ import codesquad.domain.user.User;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Optional;
 
 @NoArgsConstructor
 @Getter
@@ -42,7 +43,7 @@ public class Answer extends TimeEntity {
 
     public void delete(Question requestQuestion) {
         validateDelete();
-        if (!requestQuestion.isMatch(user)) {
+        if (!requestQuestion.isMatch(Optional.of(user))) {
             throw new UnAuthorizedException("answer.user.mismatch.request.user");
         }
         deleted = true;

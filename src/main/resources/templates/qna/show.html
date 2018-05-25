@@ -68,13 +68,14 @@
                                       </a>
                                   </div>
                               </div>
-                              <div class="article-doc comment-doc">
+                              <div class="comment-doc" id="comment_{{id}}">
                                   <p>{{contents}}</p>
                               </div>
                               <div class="article-util">
                                   <ul class="article-util-list">
                                       <li>
-                                          <a class="link-modify-article" href="/questions/{{question.id}}/answers/{{id}}/form">수정</a>
+                                          <a class="link-modify-article" id="modify-article"
+                                             href="/api/questions/{{question.id}}/answers/{{id}}/form">수정</a>
                                       </li>
                                       <li>
                                           <a class="link-delete-article" href="/api/questions/{{question.id}}/answers/{{id}}">삭제</a>
@@ -111,13 +112,13 @@
 				<div class="article-header-time">{1}</div>
 			</div>
 		</div>
-		<div class="article-doc comment-doc">
+		<div class="comment-doc" id="comment_{4}">
 			{2}
 		</div>
 		<div class="article-util">
 		<ul class="article-util-list">
 			<li>
-				<a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
+				<a class="link-modify-article" href="/api/questions/{3}/answers/{4}/form">수정</a>
 			</li>
 			<li>
                 <a class="link-delete-article" href="/api/questions/{3}/answers/{4}">삭제</a>

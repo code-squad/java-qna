@@ -34,7 +34,6 @@ public class Question extends AbstractEntity {
             throw new UnauthorizedRequestException("Question.userId.mismatch");
         }
         this.content = updated.content;
-
     }
 
     public void flagDeleted(User user) throws UnauthorizedRequestException {

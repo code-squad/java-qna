@@ -48,7 +48,7 @@ public class QuestionController {
         return "redirect:/";
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/edit")
     public String editQuestion(HttpSession session, @PathVariable Long id, Model model) {
         User user = getUserFromSession(session);
         Question question = getValidQuestion(id);

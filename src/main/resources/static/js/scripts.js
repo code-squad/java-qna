@@ -1,15 +1,10 @@
-// $(".answer-write input[type=submit]").click(addAnswer);
 $(".answer-write input[type='submit']").on("click", addAnswer);
 
 function addAnswer(e) {
     e.preventDefault();
-    console.log("click!!");
 
     var queryString = $(".answer-write").serialize();
-    console.log("query : " + queryString);
-
     var url = $(".answer-write").attr("action");
-    console.log("url : " + url);
 
     $.ajax({
         type: 'post',
@@ -26,7 +21,6 @@ function onError() {
 }
 
 function onSuccess(data, status) {
-    console.log(data);
     var answerTemplate = $("#answerTemplate").html();
     var template = answerTemplate.format(data.writer.userId, data.formattedCreateDate, data.contents, data.question.id, data.id);
     $(".qna-comment-slipp-articles").append(template);
@@ -34,7 +28,6 @@ function onSuccess(data, status) {
     $("textarea[name=contents]").val("");
 }
 
-// $("a.link-delete-article").click(deleteAnswer);
 $(".qna-comment-slipp-articles").on("click", "a.link-delete-article", deleteAnswer);
 
 function deleteAnswer(e) {
@@ -44,7 +37,6 @@ function deleteAnswer(e) {
 
     // this - 호출 주체
     var url = $(this).attr("href");
-    console.log("url : " + url);
 
     $.ajax({
         type: 'delete',
@@ -54,7 +46,6 @@ function deleteAnswer(e) {
             console.log("error");
         },
         success: function (data, status) {
-            console.log(data);
             if (data.valid) {
                 deleteBtn.closest("article").remove();
             } else {

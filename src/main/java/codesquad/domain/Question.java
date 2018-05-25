@@ -1,11 +1,9 @@
 package codesquad.domain;
 
-import codesquad.web.HttpSessionUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Entity
@@ -76,22 +74,13 @@ public class Question extends AbstractEntity {
         return writer.equals(user);
     }
 
-    public void update(Question updatedQuestion, HttpSession session) {
-        if (!checkEqualSession(session)) {
+    public void update(Question updatedQuestion, User user) {
+        if (!matchUser(user)) {
             throw new IllegalStateException("update error");
         }
 
         this.title = updatedQuestion.getTitle();
         this.contents = updatedQuestion.getContents();
-    }
-
-    public boolean checkEqualSession(HttpSession session) {
-        User userFromSession = HttpSessionUtils.getUserFromSession(session);
-        if (!matchUser(userFromSession)) {
-            return false;
-        }
-
-        return true;
     }
 
     public void addAnswer() {

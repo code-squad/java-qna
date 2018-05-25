@@ -1,10 +1,8 @@
 package codesquad.domain;
 
-import codesquad.web.HttpSessionUtils;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
-import javax.servlet.http.HttpSession;
 
 @Entity
 public class Answer extends AbstractEntity {
@@ -60,9 +58,8 @@ public class Answer extends AbstractEntity {
         this.contents = contents;
     }
 
-    public boolean checkEqualSession(HttpSession session) {
-        User userFromSession = HttpSessionUtils.getUserFromSession(session);
-        return matchUser(userFromSession);
+    public boolean checkValidUser(User user) {
+        return matchUser(user);
     }
 
     @Override

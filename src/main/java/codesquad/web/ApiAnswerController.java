@@ -31,13 +31,19 @@ public class ApiAnswerController {
             return null;
         }
 
+        Answer answer = createAnswerProc(questionId, contents, session);
+
+        // save 먼저?
+        return answerRepository.save(answer);
+    }
+
+    private Answer createAnswerProc(Long questionId, String contents, HttpSession session) {
         User loginUser = HttpSessionUtils.getUserFromSession(session);
         Question question = questionRepository.findOne(questionId);
         Answer answer = new Answer(loginUser, question, contents);
         question.addAnswer();
 
-        // save 먼저?
-        return answerRepository.save(answer);
+        return answer;
     }
 
     @DeleteMapping("/{id}")
@@ -46,19 +52,26 @@ public class ApiAnswerController {
             return Result.fail("로그인 해야 합니다.");
         }
 
-        // TODO 삭제하려는 답변의 작성자와 현재 세션의 작성자가 같은지 확인
+        if (!checkValidSession(id, session)) return Result.fail("자신의 글만 삭제할 수 있습니다.");
 
-        Answer answer = answerRepository.getOne(id);
-        if (!answer.checkEqualSession(session)) {
-            return Result.fail("자신의 글만 삭제할 수 있습니다.");
-        }
-
-        answerRepository.delete(id);
-        Question question = questionRepository.findOne(questionId);
-        question.deleteAnswer();
+        Question question = deleteAnswerProc(questionId, id);
         questionRepository.save(question);
 
         return Result.ok();
+    }
+
+    private boolean checkValidSession(@PathVariable Long id, HttpSession session) {
+        // 삭제하려는 답변의 작성자와 현재 세션의 작성자가 같은지 확인
+        Answer answer = answerRepository.getOne(id);
+        User user = HttpSessionUtils.getUserFromSession(session);
+        return answer.checkValidUser(user);
+    }
+
+    private Question deleteAnswerProc(@PathVariable Long questionId, @PathVariable Long id) {
+        answerRepository.delete(id);
+        Question question = questionRepository.findOne(questionId);
+        question.deleteAnswer();
+        return question;
     }
 
     @PutMapping("/{id}")
@@ -67,10 +80,8 @@ public class ApiAnswerController {
             return Result.fail("로그인 해야 합니다.");
         }
 
-        Answer answer = answerRepository.getOne(id);
-        if (!answer.checkEqualSession(session)) {
-            throw new IllegalStateException("modify error");
-        }
+        // 수정하려는 답변의 작성자와 현재 세션의 작성자가 같은지 확인
+        if (!checkValidSession(id, session)) throw new IllegalStateException("modify error");
 
         // TODO 답변 수정 구현
 

@@ -42,7 +42,7 @@ public class QuestionController {
 
         User sessionUser = HttpSessionUtils.getUserFromSession(session);
         Question question = new Question(sessionUser, title, contents);
-        if (!question.checkEqualSession(session)) {
+        if (!question.matchUser(sessionUser)) {
             throw new IllegalStateException("InputQuestion error");
         }
 
@@ -82,7 +82,8 @@ public class QuestionController {
         }
 
         Question question = getQuestionFromRepo(id);
-        if (!question.checkEqualSession(session)) {
+        User user = HttpSessionUtils.getUserFromSession(session);
+        if (!question.matchUser(user)) {
             return Result.fail("자신이 쓴 글만 수정, 삭제가 가능합니다");
         }
 
@@ -102,7 +103,8 @@ public class QuestionController {
         }
 
         Question question = questionsRepository.getOne(id);
-        question.update(updatedQuestion, session);
+        User user = HttpSessionUtils.getUserFromSession(session);
+        question.update(updatedQuestion, user);
 
         questionsRepository.save(question);
 
@@ -118,6 +120,7 @@ public class QuestionController {
             return USER_LOGIN;
         }
 
+        // TODO 질문 삭제시 답글까지 같이 삭제하는 기능?
         questionsRepository.delete(id);
 
         return "redirect:/";

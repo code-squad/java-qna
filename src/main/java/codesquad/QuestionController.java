@@ -1,5 +1,6 @@
 package codesquad;
 
+import codesquad.exceptions.PageNotFoundException;
 import codesquad.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+
+import java.util.Optional;
 
 import static codesquad.HttpSessionUtils.*;
 
@@ -25,9 +28,7 @@ public class QuestionController {
 
     @GetMapping("/{id}")
     public String getQuestion(@PathVariable Long id, Model model) {
-        //TODO: No such question exception
-        Question question = questionRepository.findOne(id);
-        model.addAttribute("question", question);
+        model.addAttribute("question", getValidQuestion(id));
         return "questions/show";
     }
 
@@ -50,8 +51,7 @@ public class QuestionController {
     @GetMapping("/{id}/edit")
     public String editQuestion(HttpSession session, @PathVariable Long id, Model model) {
         User user = getUserFromSession(session);
-        //TODO: No such question exception
-        Question question = questionRepository.findOne(id);
+        Question question = getValidQuestion(id);
         model.addAttribute("question", question);
         model.addAttribute("user", user);
         logger.debug("Redirecting to /question/edit...");
@@ -61,8 +61,7 @@ public class QuestionController {
     @PutMapping("/{id}/update")
     public String updateQuestion(HttpSession session, Question updated, @PathVariable Long id) {
         User user = getUserFromSession(session);
-        //TODO: No such question exception
-        Question question = questionRepository.findOne(id);
+        Question question = getValidQuestion(id);
         question.updateQuestion(updated, user);
         questionRepository.save(question);
         logger.debug("Question updated!");
@@ -72,12 +71,19 @@ public class QuestionController {
     @DeleteMapping("/{id}/delete")
     public String deleteQuestion(HttpSession session, @PathVariable Long id) {
         User user = getUserFromSession(session);
-        //TODO: No such question exception
         //TODO: Prevent unwanted delete/put requests by uri??
-        Question question = questionRepository.findOne(id);
+        Question question = getValidQuestion(id);
         question.flagDeleted(user);
         questionRepository.save(question);
         logger.debug("Question flagged deleted: {}", question);
         return "redirect:/";
+    }
+
+    private Question getValidQuestion(Long id) throws PageNotFoundException {
+        Optional<Question> maybeQuestion = questionRepository.findQuestionById(id);
+        if (!maybeQuestion.isPresent()) {
+            throw new PageNotFoundException("404: Page Not Found");
+        }
+        return maybeQuestion.get();
     }
 }

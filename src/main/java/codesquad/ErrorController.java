@@ -1,6 +1,7 @@
 package codesquad;
 
 import codesquad.exceptions.NoSessionedUserException;
+import codesquad.exceptions.PageNotFoundException;
 import codesquad.exceptions.PasswordMismatchException;
 import codesquad.exceptions.UnauthorizedRequestException;
 import org.slf4j.Logger;
@@ -15,9 +16,9 @@ import javax.validation.ConstraintViolationException;
 public class ErrorController {
     private static final Logger logger = LoggerFactory.getLogger(ErrorController.class);
 
-    @ExceptionHandler(UnauthorizedRequestException.class)
+    @ExceptionHandler({UnauthorizedRequestException.class, PageNotFoundException.class})
     public String handleUnauthorizedException(Model model, Throwable e) {
-        logger.debug("User has made an unauthorized request: " + e.getMessage());
+        logger.debug(e.getMessage());
         model.addAttribute("errorMessage", e.getMessage());
         return "/error";
     }
@@ -35,7 +36,7 @@ public class ErrorController {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public String handleConstraintViolatioinException(Throwable e) {
+    public String handleConstraintViolationException() {
         logger.debug("Failed to create User instance");
         return "/users/login";
     }

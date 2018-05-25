@@ -88,14 +88,6 @@ public class User {
         return newPassword.equals(password);
     }
 
-//    public boolean isMatchedId(Long newId) {
-//        if (newId == null) {
-//            return false;
-//        }
-//
-//        return newId.equals(id);
-//    }
-
     public boolean isMatchedUserId(User otherUser) {
         if (otherUser == null) {
             return false;
@@ -119,28 +111,4 @@ public class User {
     public int hashCode() {
         return Objects.hash(id);
     }
-
-//    public boolean isMatchedUserId(Question editedQuestion) {
-//        if (editedQuestion == null) {
-//            return false;
-//        }
-//        return editedQuestion.isMatchedWriter(userId);
-//    }
-//
-//    public boolean isMatchedUserId(Answer deletedAnswer) {
-//        if (deletedAnswer == null) {
-//            return false;
-//        }
-//
-//        return deletedAnswer.isMatchedWriter(userId);
-//    }
-//
-//    public boolean isMatchedUserId(String userId) {
-//        if (userId == null) {
-//            return false;
-//        }
-//        return this.userId.equals(userId);
-//    }
-
-
 }

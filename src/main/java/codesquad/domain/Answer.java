@@ -60,17 +60,13 @@ public class Answer {
         this.comment = comment;
     }
 
-//    public boolean isMatchedWriter(String userId) {
-//        return this.writer.isMatchedUserId(userId);
-//    }
-
     public boolean update(Answer updateAnswer, User updateUser) {
         if (updateAnswer == null) {
-            return false;
+            throw new NullPointerException("answer.null");
         }
 
         if (!isMatchedUserId(updateUser)) {
-            return false;
+            throw new IllegalArgumentException("Question.id.mismatch");
         }
 
         this.comment = updateAnswer.comment;
@@ -78,6 +74,6 @@ public class Answer {
     }
 
     public boolean isMatchedUserId(User otherUser) {
-        return writer.equals(otherUser);
+        return writer.isMatchedUserId(otherUser);
     }
 }

@@ -29,6 +29,7 @@ public class AnswerController {
 
         User writer = SessionUtils.getUserFromSession(session);
         Question question = questionRepository.getOne(questionId);
+        question.increaseAnswersCount();
         Answer newAnswer = new Answer(writer, question, comment);
 
         answerRepository.save(newAnswer);
@@ -37,33 +38,31 @@ public class AnswerController {
 
     @PutMapping("/questions/{questionId}/answers/{answerId}")
     public String update(@PathVariable Long questionId, @PathVariable Long answerId, String comment, HttpSession session) {
+        if (!SessionUtils.isLoginUser(session)) {
+            return "/users/loginForm";
+        }
+
         User updateUser = SessionUtils.getUserFromSession(session);
         Answer oldAnswer = answerRepository.findOne(answerId);
         Question question = questionRepository.findOne(questionId);
         Answer updateAnswer = new Answer(updateUser, question, comment);
-
-        if (!SessionUtils.isLoginUser(session)) {
-            return "/users/loginForm";
-        }
-        if (!oldAnswer.update(updateAnswer, updateUser)) {
-            throw new IllegalStateException("");
-        }
+        oldAnswer.update(updateAnswer, updateUser);
         answerRepository.save(oldAnswer);
 
         return "redirect:/questions/{questionId}";
     }
 
     @DeleteMapping("/questions/{questionId}/answers/{answerId}")
-    public String delete(@PathVariable Long answerId, HttpSession session) {
-        User deleteUser = SessionUtils.getUserFromSession(session);
-        Answer deleteAnswer = answerRepository.findOne(answerId);
-
+    public String delete(@PathVariable Long questionId, @PathVariable Long answerId, HttpSession session) {
         if (!SessionUtils.isLoginUser(session)) {
             return "/users/loginForm";
         }
-        if (!deleteAnswer.isMatchedUserId(deleteUser)) {
-            throw new IllegalStateException("question.id.mismatch");
-        }
+
+        User deleteUser = SessionUtils.getUserFromSession(session);
+        Answer deleteAnswer = answerRepository.findOne(answerId);
+        Question question = questionRepository.findOne(questionId);
+        question.decreaseAnswersCount();
+        deleteAnswer.isMatchedUserId(deleteUser);
 
         answerRepository.delete(answerId);
         return "redirect:/questions/{questionId}";
@@ -71,20 +70,18 @@ public class AnswerController {
 
     @GetMapping("/questions/{questionId}/answers/{answerId}/form")
     public String updateForm(@PathVariable Long questionId, @PathVariable Long answerId, HttpSession session, Model model) {
-        User updateUser = SessionUtils.getUserFromSession(session);
-        Answer updateAnswer = answerRepository.findOne(answerId);
-
         if (!SessionUtils.isLoginUser(session)) {
             return "/users/loginForm";
         }
-        if (!updateAnswer.isMatchedUserId(updateUser)) {
-            throw new IllegalStateException("question.id.mismatch");
-        }
 
-        model.addAttribute("question", questionRepository.findOne(questionId));
-        model.addAttribute("answers", answerRepository.findByQuestionId(questionId));
+        User updateUser = SessionUtils.getUserFromSession(session);
+        Answer updateAnswer = answerRepository.findOne(answerId);
+        updateAnswer.isMatchedUserId(updateUser);
+        Question question = questionRepository.findOne(questionId);
+        question.setAnswers(answerRepository.findByQuestionId(questionId));
+
+        model.addAttribute("question", question);
         model.addAttribute("editingAnswer", answerRepository.findOne(answerId));
-        model.addAttribute("answersCount", answerRepository.findByQuestionId(questionId).size());
 
         return "/qna/answerUpdateForm";
     }

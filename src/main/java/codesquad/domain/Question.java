@@ -1,6 +1,7 @@
 package codesquad.domain;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Question {
@@ -16,7 +17,11 @@ public class Question {
     private String title;
 
     private String contents;
-
+    // answersCount를 만들자니 인스턴스 변수가 늘어난다.
+    // helper class를 만드는 방법을 익히자.
+    @OneToMany(mappedBy = "question")
+    private List<Answer> answers;
+    private int answersCount;
     private String tag;
 
 
@@ -61,6 +66,22 @@ public class Question {
         this.contents = contents;
     }
 
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
+    }
+
+    public int getAnswersCount() {
+        return answersCount;
+    }
+
+    public void setAnswersCount(int answersCount) {
+        this.answersCount = answersCount;
+    }
+
     public String getTag() {
         return tag;
     }
@@ -69,14 +90,21 @@ public class Question {
         this.tag = tag;
     }
 
+    public boolean isMatchedUserId(User otherUser) {
+        if (otherUser == null) {
+            throw new NullPointerException("other user is null");
+        }
+        if (!writer.equals(otherUser)) {
+            throw new IllegalStateException("question.id.mismatch");
+        }
+
+        return true;
+    }
+
     @Override
     public String toString() {
         return writer + " " + title + " " + contents;
     }
-
-//    public boolean isMatchedWriter(String userId) {
-//        return writer.isMatchedUserId(userId);
-//    }
 
     public boolean update(Question updateQuestion, User otherUser) {
         if (updateQuestion.title == null || otherUser == null) {
@@ -90,14 +118,15 @@ public class Question {
         return true;
     }
 
-    public boolean isMatchedUserId(User otherUser) {
-        if (otherUser == null) {
-            throw new NullPointerException("other user is null");
-        }
-        if (!writer.equals(otherUser)) {
-            throw new IllegalStateException("question.id.mismatch");
-        }
+    public void increaseAnswersCount() {
+        answersCount++;
+    }
 
-        return true;
+    public void decreaseAnswersCount() {
+        if (answersCount > 0) {
+           answersCount--;
+           return;
+        }
+        throw new IllegalStateException("question.answer.count");
     }
 }

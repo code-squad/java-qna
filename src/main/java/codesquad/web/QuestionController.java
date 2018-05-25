@@ -49,21 +49,23 @@ public class QuestionController {
 
     @GetMapping("/{id}")
     public String showQuestion(@PathVariable Long id, Model model) {
-        model.addAttribute("question", questionRepository.findOne(id));
-        model.addAttribute("answers", answerRepository.findByQuestionId(id));
-        model.addAttribute("answersCount", answerRepository.findByQuestionId(id).size());
+        Question question = questionRepository.findOne(id);
+        question.setAnswers(answerRepository.findByQuestionId(id));
+
+        model.addAttribute("question", question);
 
         return "/qna/show";
     }
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id, HttpSession session) {
-        User deletingUser = SessionUtils.getUserFromSession(session);
-        Question deleteQuestion = questionRepository.findOne(id);
-
         if (!SessionUtils.isLoginUser(session)) {
             return "/users/loginForm";
         }
+
+        User deletingUser = SessionUtils.getUserFromSession(session);
+        Question deleteQuestion = questionRepository.findOne(id);
+
         deleteQuestion.isMatchedUserId(deletingUser);
         questionRepository.delete(id);
 

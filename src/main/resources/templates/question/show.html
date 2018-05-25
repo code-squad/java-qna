@@ -62,7 +62,7 @@
                                   </div>
                                   <div class="article-header-text">
                                       <a href="/users/{{user.id}}" class="article-author-name">{{user.name}}</a>
-                                      <a href="#answer-1434" class="article-header-time" title="퍼머링크"></a>
+                                      <div class="article-header-time">{{modifiedDate}}</div>
                                   </div>
                               </div>
                               <div class="article-doc comment-doc">
@@ -87,13 +87,14 @@
                           {{/question.answers.answers}}
 
 
-                          <form class="submit-write" action="/questions/{{question.id}}/answers" method="post">
+                          <form class="submit-write" id="submit-answer" action="/api/questions/{{question.id}}/answers" method="post">
                               <div class="form-group" style="padding:14px;">
-                                  <textarea class="form-control" placeholder="Update your status" name="contents"></textarea>
+                                  <textarea id="answer-editor" class="form-control" placeholder="Update your status" name="contents"></textarea>
                               </div>
-                              <input type="submit" class="btn btn-success pull-right">답변하기</input>
+                              <button class="btn btn-success pull-right" type="button" onclick="answerWrite()">답변달기</button>
                               <div class="clearfix" />
                           </form>
+
                       </div>
                   </div>
               </div>
@@ -122,7 +123,7 @@
 				<a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
 			</li>
 			<li>
-				<form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
+				<form class="delete-answer-form" action="/api/questions/{4}/answers/{5}" method="POST">
 					<input type="hidden" name="_method" value="DELETE">
                      <button type="submit" class="delete-answer-button">삭제</button>
 				</form>

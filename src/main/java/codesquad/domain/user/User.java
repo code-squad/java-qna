@@ -2,6 +2,7 @@ package codesquad.domain.user;
 
 import codesquad.domain.exception.UnAuthorizedException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
@@ -22,6 +23,7 @@ public class User {
 
     @Size(min = 3, max = 15)
     @Column(nullable = false, length = 15, unique = true, updatable = false)
+    @JsonIgnore
     private String userId;
 
     @Size(min = 3, max = 15)
@@ -34,6 +36,7 @@ public class User {
 
     @Email
     @Column(nullable = false, length = 30)
+    @JsonIgnore
     private String email;
 
     @Builder

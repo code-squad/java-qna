@@ -5,6 +5,8 @@ import codesquad.domain.exception.ForbiddenRequestException;
 import codesquad.domain.exception.UnAuthorizedException;
 import codesquad.domain.question.Question;
 import codesquad.domain.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
@@ -32,6 +34,7 @@ public class Answer extends TimeEntity {
     private String contents;
 
     @Column(nullable = false)
+    @JsonIgnore
     private boolean deleted = false;
 
     @Builder

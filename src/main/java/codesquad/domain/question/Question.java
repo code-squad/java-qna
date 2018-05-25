@@ -6,6 +6,8 @@ import codesquad.domain.answer.Answers;
 import codesquad.domain.exception.ForbiddenRequestException;
 import codesquad.domain.exception.UnAuthorizedException;
 import codesquad.domain.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
@@ -27,18 +29,23 @@ public class Question extends TimeEntity {
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_user"))
+    @JsonIgnore
     private User user;
 
     @Embedded
+    @JsonIgnore
     private Answers answers;
 
     @Column(nullable = false, length = 100)
+    @JsonIgnore
     private String title;
 
     @Column(nullable = false, columnDefinition = "TEXT")
+    @JsonIgnore
     private String contents;
 
     @Column(nullable = false)
+    @JsonIgnore
     private boolean deleted = false;
 
     @Builder

@@ -1,5 +1,7 @@
 package codesquad.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -15,8 +17,10 @@ import java.time.LocalDateTime;
 public abstract class TimeEntity {
 
     @CreatedDate
+    @JsonIgnore
     private LocalDateTime createdDate;
 
     @LastModifiedDate
+    @JsonProperty
     private LocalDateTime modifiedDate;
 }

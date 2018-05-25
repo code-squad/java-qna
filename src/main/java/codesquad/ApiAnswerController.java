@@ -25,31 +25,21 @@ public class ApiAnswerController {
 
     @PutMapping("submitAnswer")
     public Answer submitAnswer(HttpSession session, Answer answer, @PathVariable Long questionId) {
-        try {
-            User user = getUserFromSession(session);
-            answer.setUser(user);
-            Question question = questionRepository.findOne(questionId);
-            answer.setQuestion(question);
-            logger.debug("Adding Answer...");
-            return answerRepository.save(answer);
-        } catch (NoSessionedUserException e) {
-            logger.debug(e.getMessage());
-            return null;
-        }
+        User user = getUserFromSession(session);
+        answer.setUser(user);
+        Question question = questionRepository.findOne(questionId);
+        answer.setQuestion(question);
+        logger.debug("Adding Answer...");
+        return answerRepository.save(answer);
     }
 
     @DeleteMapping("answers/{id}/delete")
     public Result deleteAnswer(HttpSession session, @PathVariable Long id) {
-        try {
-            User user = getUserFromSession(session);
-            Answer answer = answerRepository.findOne(id);
-            Result result = answer.flagDeleted(user);
-            answerRepository.save(answer);
-            logger.debug("Answer Deleted!");
-            return result;
-        } catch (NoSessionedUserException | UnauthorizedRequestException e) {
-            logger.debug(e.getMessage());
-            return Result.ofFailure();
-        }
+        User user = getUserFromSession(session);
+        Answer answer = answerRepository.findOne(id);
+        Result result = answer.flagDeleted(user);
+        answerRepository.save(answer);
+        logger.debug("Answer Deleted!");
+        return result;
     }
 }

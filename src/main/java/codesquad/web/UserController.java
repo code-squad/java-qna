@@ -90,6 +90,7 @@ public class UserController {
                 .filter(u -> u.isMatch(password))
                 .map(u -> {
                     session.setAttribute(USER_SESSION_KEY, u);
+//                    session.setMaxInactiveInterval(30);
                     return "redirect:/";
                 })
                 .orElse("redirect:/users/loginForm");

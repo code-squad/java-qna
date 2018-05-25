@@ -34,7 +34,7 @@ public class ApiAnswerController {
     public Answer createAnswer(@PathVariable("questionId") Long id, String contents, HttpSession session, Model model) {
         log.debug("contents : {}", contents);
         Question question = questionRepository.findById(id).get();
-        Result result = Result.valid(session, question, q -> q.matchWriter(getUserFromSession(session)));
+        Result result = Result.valid(session);
         if (!result.isValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());
             return null;

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
 
     @Autowired
-    QuestionRepository questionRepository;
+    private QuestionRepository questionRepository;
 
     @GetMapping("/")
     public String showHome(Model model) {

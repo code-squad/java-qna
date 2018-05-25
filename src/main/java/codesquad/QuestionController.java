@@ -21,10 +21,10 @@ public class QuestionController {
     private static final Logger logger = LoggerFactory.getLogger(QuestionController.class);
 
     @Autowired
-    QuestionRepository questionRepository;
+    private QuestionRepository questionRepository;
 
     @Autowired
-    AnswerRepository answerRepository;
+    private AnswerRepository answerRepository;
 
     @GetMapping("/{id}")
     public String getQuestion(@PathVariable Long id, Model model) {
@@ -48,7 +48,7 @@ public class QuestionController {
         return "redirect:/";
     }
 
-    @GetMapping("/{id}/edit")
+    @GetMapping("/{id}")
     public String editQuestion(HttpSession session, @PathVariable Long id, Model model) {
         User user = getUserFromSession(session);
         Question question = getValidQuestion(id);
@@ -58,7 +58,7 @@ public class QuestionController {
         return "/questions/edit";
     }
 
-    @PutMapping("/{id}/update")
+    @PutMapping("/{id}")
     public String updateQuestion(HttpSession session, Question updated, @PathVariable Long id) {
         User user = getUserFromSession(session);
         Question question = getValidQuestion(id);
@@ -68,7 +68,7 @@ public class QuestionController {
         return "redirect:/questions/" + id;
     }
 
-    @DeleteMapping("/{id}/delete")
+    @DeleteMapping("/{id}")
     public String deleteQuestion(HttpSession session, @PathVariable Long id) {
         User user = getUserFromSession(session);
         //TODO: Prevent unwanted delete/put requests by uri??

@@ -18,10 +18,10 @@ public class ApiAnswerController {
     private static final Logger logger = LoggerFactory.getLogger(ApiAnswerController.class);
 
     @Autowired
-    AnswerRepository answerRepository;
+    private AnswerRepository answerRepository;
 
     @Autowired
-    QuestionRepository questionRepository;
+    private QuestionRepository questionRepository;
 
     @PutMapping("submitAnswer")
     public Answer submitAnswer(HttpSession session, Answer answer, @PathVariable Long questionId) {

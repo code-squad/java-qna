@@ -1,31 +1,25 @@
 package codesquad.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import java.util.Objects;
 
 @Entity
-public class User {
-    @Id
-    @GeneratedValue
-    private Long id;
-
+public class User extends AbstractEntity {
     @Column(nullable = false, length = 20, unique = true)
+    @JsonProperty
     private String userId;
 
+    @JsonIgnore
     private String password;
+
+    @JsonProperty
     private String name;
+
+    @JsonProperty
     private String email;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getUserId() {
         return userId;
@@ -78,28 +72,8 @@ public class User {
             return false;
         }
 
-        return newId.equals(id);
+        return newId.equals(getId());
     }
 
-    public boolean matchUserId(String userId) {
-        if (userId == null) {
-            return false;
-        }
 
-        return userId.equals(this.userId);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(userId, user.userId);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(userId);
-    }
 }

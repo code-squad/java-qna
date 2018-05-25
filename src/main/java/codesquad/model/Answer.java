@@ -5,16 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 
 @Entity
-public class Answer {
-    @Id
-    @GeneratedValue
-    @JsonProperty
-    private Long id;
+public class Answer extends AbstractEntity {
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
@@ -30,23 +23,15 @@ public class Answer {
     @JsonProperty
     private String content;
 
-    @Column(nullable = false)
-    @JsonProperty
-    private String date;
-
     private boolean deleted;
 
-    public Answer() {
-        Timestamp dateTime = Timestamp.valueOf(LocalDateTime.now());
-        this.date = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z").format(dateTime);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public Result flagDeleted(User user) throws UnauthorizedRequestException {
+        if (!(this.user.equals(user) || this.question.authorAndUserIdMatch(user))) {
+            throw new UnauthorizedRequestException("Question.userId.mismatch");
+        }
+        this.deleted = true;
+        question.decreaseAnswerCount();
+        return Result.ofSuccess();
     }
 
     public Question getQuestion() {
@@ -74,31 +59,15 @@ public class Answer {
         this.content = content;
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public Result flagDeleted(User user) throws UnauthorizedRequestException {
-        if (!(this.user.userIdsMatch(user) || this.question.authorAndUserIdMatch(user))) {
-            throw new UnauthorizedRequestException("Question.userId.mismatch");
-        }
-        this.deleted = true;
-        question.decreaseAnswerCount();
-        return Result.ofSuccess();
-    }
-
     @Override
     public String toString() {
         return "Answer{" +
-                "id=" + id +
+                "id=" + getId() +
                 ", question=" + question +
                 ", user=" + user +
                 ", content='" + content + '\'' +
-                ", date=" + date +
+                ", created=" + getDateCreated() +
+                ", lastModified=" + getDateLastModified() +
                 '}';
     }
 }

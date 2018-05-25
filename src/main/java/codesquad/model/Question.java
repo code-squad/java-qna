@@ -3,20 +3,14 @@ package codesquad.model;
 import codesquad.exceptions.UnauthorizedRequestException;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-public class Question {
-    @Id
-    @GeneratedValue
-    private Long questionId;
+public class Question extends AbstractEntity {
 
     @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_author"))
-    private User author;
+    private User user;
 
     @Column(nullable = false, length = 64)
     private String title;
@@ -25,26 +19,47 @@ public class Question {
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
-    private String date;
-
     @Embedded
     private Answers answers;
 
     private boolean deleted;
     private Integer countOfAnswers = 0;
 
-    public Question() {
-        Timestamp dateTime = Timestamp.valueOf(LocalDateTime.now());
-        this.date = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z").format(dateTime);
+    public boolean authorAndUserIdMatch(User user) {
+        return this.user.equals(user);
     }
 
-    public User getAuthor() {
-        return author;
+    public void updateQuestion(Question updated, User user) throws UnauthorizedRequestException {
+        if (!authorAndUserIdMatch(user)) {
+            throw new UnauthorizedRequestException("Question.userId.mismatch");
+        }
+        this.content = updated.content;
+
     }
 
-    public void setAuthor(User user) {
-        this.author = user;
+    public void flagDeleted(User user) throws UnauthorizedRequestException {
+        if (!this.authorAndUserIdMatch(user)) {
+            throw new UnauthorizedRequestException("Question.userId.mismatch");
+        }
+        this.deleted = true;
+        answers.flagDeleted(user);
+        setDateLastModified(assignDateTime());
+    }
+
+    public void increaseAnswerCount() {
+        this.countOfAnswers++;
+    }
+
+    public void decreaseAnswerCount() {
+        this.countOfAnswers--;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getTitle() {
@@ -63,22 +78,6 @@ public class Question {
         this.content = content;
     }
 
-    public String getDate() {
-        return date.toString();
-    }
-
-    public void setQuestionId(Long id) {
-        this.questionId = id;
-    }
-
-    public Long getQuestionId() {
-        return questionId;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
     public List<Answer> getAnswers() {
         return answers.getAnswers();
     }
@@ -95,40 +94,14 @@ public class Question {
         this.countOfAnswers = countOfAnswers;
     }
 
-    public boolean authorAndUserIdMatch(User user) {
-        return author.userIdsMatch(user);
-    }
-
-    public void updateQuestion(Question updated, User user) throws UnauthorizedRequestException {
-        if (!authorAndUserIdMatch(user)) {
-            throw new UnauthorizedRequestException("Question.userId.mismatch");
-        }
-        this.content = updated.content;
-    }
-
-    public void flagDeleted(User user) throws UnauthorizedRequestException {
-        if (!this.authorAndUserIdMatch(user)) {
-            throw new UnauthorizedRequestException("Question.userId.mismatch");
-        }
-        this.deleted = true;
-        answers.flagDeleted(user);
-    }
-
-    public void increaseAnswerCount() {
-        this.countOfAnswers++;
-    }
-
-    public void decreaseAnswerCount() {
-        this.countOfAnswers--;
-    }
-
     @Override
     public String toString() {
         return "Question{" +
-                "id=" + questionId +
-                ", author='" + author + '\'' +
+                "id=" + getId() +
+                ", user='" + user + '\'' +
                 ", title='" + title + '\'' +
-                ", date=" + date +
+                ", created=" + getDateCreated() +
+                ", lastModified=" + getDateLastModified() +
                 '}';
     }
 }

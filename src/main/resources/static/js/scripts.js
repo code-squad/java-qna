@@ -31,7 +31,7 @@ function onError(data, status) {
 function onSuccess(data, status) {
     console.log(data);
     var answerTemplate = $("#answerTemplate").html();
-    var template = answerTemplate.format(data.user.userId, data.date, data.content, data.question.questionId, data.id);
+    var template = answerTemplate.format(data.user.userId, data.dateCreated, data.content, data.question.id, data.id);
     $(".qna-comment-slipp-articles").prepend(template);
     $(".answer-write textarea[name=content]").val('');
     console.log("Success!");

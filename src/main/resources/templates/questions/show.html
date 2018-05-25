@@ -22,9 +22,9 @@
                                  class="article-author-thumb" alt="">
                         </div>
                         <div class="article-header-text">
-                            <a href="/users/{{author.userId}}/profile" class="article-author-name">{{author.userId}}</a>
-                            <a href="/questions/{{questionId}}" class="article-header-time" title="퍼머링크">
-                                {{date}}
+                            <a href="/users/{{user.id}}/profile" class="article-author-name">{{user.userId}}</a>
+                            <a href="/questions/{{id}}" class="article-header-time" title="퍼머링크">
+                                {{dateCreated}}
                                 <i class="icon-link"></i>
                             </a>
                         </div>
@@ -36,10 +36,10 @@
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
-                                <a class="link-modify-article" href="/questions/{{questionId}}/edit">수정</a>
+                                <a class="link-modify-article" href="/questions/{{id}}/edit">수정</a>
                             </li>
                             <li>
-                                <form class="form-delete" action="/questions/{{questionId}}/delete" method="POST">
+                                <form class="form-delete" action="/questions/{{id}}/delete" method="POST">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <button class="link-delete-article" type="submit">삭제</button>
                                 </form>
@@ -66,9 +66,9 @@
                                              class="article-author-thumb" alt="">
                                     </div>
                                     <div class="article-header-text">
-                                        <a href="/users/{{user.userId}}/profile" class="article-author-name">{{user.userId}}</a>
+                                        <a href="/users/{{user.id}}/profile" class="article-author-name">{{user.userId}}</a>
                                         <a href="#answer-1434" class="article-header-time" title="퍼머링크">
-                                            {{date}}
+                                            {{dateCreated}}
                                         </a>
                                     </div>
                                 </div>
@@ -82,11 +82,11 @@
                                                href="#">수정</a>
                                         </li>
                                         <li>
-                                            <form class="delete-answer-form" action="/api/questions/{{questionId}}/answers/{{id}}/delete"
+                                            <form class="delete-answer-form" action="/api/questions/{{question.id}}/answers/{{id}}/delete"
                                                   method="POST">
                                                 <input type="hidden" name="_method" value="DELETE">
                                                 <!--<button class="link-delete-article" type="button">삭제</button>-->
-                                                <a class="link-delete-article" href="/api/questions/{{questionId}}/answers/{{id}}/delete">삭제</a>
+                                                <a class="link-delete-article" href="/api/questions/{{question.id}}/answers/{{id}}/delete">삭제</a>
                                             </form>
                                         </li>
                                     </ul>
@@ -95,7 +95,7 @@
                             {{/question.answers}}
 
 
-                            <form class="answer-write" method="POST" action="/api/questions/{{question.questionId}}/submitAnswer">
+                            <form class="answer-write" method="POST" action="/api/questions/{{question.id}}/submitAnswer">
                                 <input type="hidden" name="_method" value="PUT" />
                                 <div class="form-group" style="padding:14px;">
                                     <textarea name="content" class="form-control" placeholder="Write your comment.."></textarea>

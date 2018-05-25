@@ -23,10 +23,10 @@ public class QuestionController {
     @Autowired
     AnswerRepository answerRepository;
 
-    @GetMapping("/{questionId}")
-    public String getQuestion(@PathVariable Long questionId, Model model) {
+    @GetMapping("/{id}")
+    public String getQuestion(@PathVariable Long id, Model model) {
         //TODO: No such question exception
-        Question question = questionRepository.findOne(questionId);
+        Question question = questionRepository.findOne(id);
         model.addAttribute("question", question);
         return "questions/show";
     }
@@ -41,40 +41,40 @@ public class QuestionController {
     @PutMapping("/submit")
     public String submitQuestion(HttpSession session, Question question) {
         User user = getUserFromSession(session);
-        question.setAuthor(user);
+        question.setUser(user);
         questionRepository.save(question);
         logger.debug("Question added: {}", question);
         return "redirect:/";
     }
 
-    @GetMapping("/{questionId}/edit")
-    public String editQuestion(HttpSession session, @PathVariable Long questionId, Model model) {
+    @GetMapping("/{id}/edit")
+    public String editQuestion(HttpSession session, @PathVariable Long id, Model model) {
         User user = getUserFromSession(session);
         //TODO: No such question exception
-        Question question = questionRepository.findOne(questionId);
+        Question question = questionRepository.findOne(id);
         model.addAttribute("question", question);
         model.addAttribute("user", user);
         logger.debug("Redirecting to /question/edit...");
         return "/questions/edit";
     }
 
-    @PutMapping("/{questionId}/update")
-    public String updateQuestion(HttpSession session, Question updated, @PathVariable Long questionId) {
+    @PutMapping("/{id}/update")
+    public String updateQuestion(HttpSession session, Question updated, @PathVariable Long id) {
         User user = getUserFromSession(session);
         //TODO: No such question exception
-        Question question = questionRepository.findOne(questionId);
+        Question question = questionRepository.findOne(id);
         question.updateQuestion(updated, user);
         questionRepository.save(question);
         logger.debug("Question updated!");
-        return "redirect:/questions/" + questionId;
+        return "redirect:/questions/" + id;
     }
 
-    @DeleteMapping("/{questionId}/delete")
-    public String deleteQuestion(HttpSession session, @PathVariable Long questionId) {
+    @DeleteMapping("/{id}/delete")
+    public String deleteQuestion(HttpSession session, @PathVariable Long id) {
         User user = getUserFromSession(session);
         //TODO: No such question exception
         //TODO: Prevent unwanted delete/put requests by uri??
-        Question question = questionRepository.findOne(questionId);
+        Question question = questionRepository.findOne(id);
         question.flagDeleted(user);
         questionRepository.save(question);
         logger.debug("Question flagged deleted: {}", question);

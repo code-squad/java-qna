@@ -9,6 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.validation.ConstraintViolationException;
+
 @ControllerAdvice
 public class ErrorController {
     private static final Logger logger = LoggerFactory.getLogger(ErrorController.class);
@@ -29,6 +31,12 @@ public class ErrorController {
     @ExceptionHandler(NoSessionedUserException.class)
     public String handleNoSessionedUserException(Throwable e) {
         logger.debug("User is not logged in: " + e.getMessage());
+        return "/users/login";
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public String handleConstraintViolatioinException(Throwable e) {
+        logger.debug("Failed to create User instance");
         return "/users/login";
     }
 }

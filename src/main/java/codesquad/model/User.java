@@ -6,16 +6,10 @@ import org.hibernate.validator.constraints.Email;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.validation.constraints.Size;
 
 @Entity
-public class User {
-    @Id
-    @GeneratedValue
-    @JsonIgnore
-    private Long id;
+public class User extends AbstractEntity {
 
     @Size(min = 3, max = 20)
     @Column(nullable = false, length = 32, unique = true)
@@ -36,8 +30,18 @@ public class User {
     @JsonIgnore
     private String email;
 
-    public Long getId() {
-        return id;
+    public void updateUserInfo(User newUser, String password) throws PasswordMismatchException {
+        if (!passwordsMatch(password)) {
+            throw new PasswordMismatchException("User.password.mismatch");
+        }
+        this.password = newUser.password;
+        this.name = newUser.name;
+        this.email = newUser.email;
+        setDateLastModified(assignDateTime());
+    }
+
+    public boolean passwordsMatch(String password) {
+        return this.password.equals(password);
     }
 
     public String getUserId() {
@@ -72,31 +76,16 @@ public class User {
         this.email = email;
     }
 
-    public void updateUserInfo(User newUser, String password) throws PasswordMismatchException {
-        if (!passwordsMatch(password)) {
-            throw new PasswordMismatchException("User.password.mismatch");
-        }
-        this.password = newUser.password;
-        this.name = newUser.name;
-        this.email = newUser.email;
-    }
-
-    public boolean passwordsMatch(String password) {
-        return this.password.equals(password);
-    }
-
-    public boolean userIdsMatch(User user) {
-        return this.userId.equals(user.userId);
-    }
-
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "id=" + getId() +
                 ", userId='" + userId + '\'' +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
+                ", created=" + getDateCreated() +
+                ", lastModified=" + getDateLastModified() +
                 '}';
     }
 }

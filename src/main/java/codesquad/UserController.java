@@ -60,21 +60,21 @@ public class UserController {
         return "/users/list";
     }
 
-    @GetMapping("/{userId}/profile")
-    public String getProfile(@PathVariable String userId, Model model) {
-        User user = userRepository.getUserByUserId(userId);
+    @GetMapping("/{id}/profile")
+    public String getProfile(@PathVariable Long id, Model model) {
+        User user = userRepository.findOne(id);
         model.addAttribute(USER, user);
         return "/users/profile";
     }
 
-    @GetMapping("/{userId}/form")
+    @GetMapping("/{id}/form")
     public String getUpdateForm(Model model, HttpSession session) {
         User user = getUserFromSession(session);
         model.addAttribute(USER, user);
         return "/users/updateForm";
     }
 
-    @PutMapping("/{userId}/update")
+    @PutMapping("/{id}/update")
     public String updateUser(HttpSession session, User newUser, String oldPassword) {
         User user = getUserFromSession(session);
         user.updateUserInfo(newUser, oldPassword);

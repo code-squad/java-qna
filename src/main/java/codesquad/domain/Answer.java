@@ -1,14 +1,9 @@
 package codesquad.domain;
 
-import codesquad.web.HttpSessionUtils;
-
 import javax.persistence.*;
-import javax.servlet.http.HttpSession;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Entity
-public class Answer extends AbstratEntity {
+public class Answer extends AbstractEntity {
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))

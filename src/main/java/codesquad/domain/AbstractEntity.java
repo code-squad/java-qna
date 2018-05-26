@@ -11,7 +11,7 @@ import java.util.Objects;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public class AbstratEntity {
+public class AbstractEntity {
 
     @Id
     @GeneratedValue
@@ -63,7 +63,7 @@ public class AbstratEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AbstratEntity that = (AbstratEntity) o;
+        AbstractEntity that = (AbstractEntity) o;
         return Objects.equals(id, that.id);
     }
 
@@ -74,7 +74,7 @@ public class AbstratEntity {
 
     @Override
     public String toString() {
-        return "AbstratEntity{" +
+        return "AbstractEntity{" +
                 "id=" + id +
                 ", createDate=" + createDate +
                 ", updateDate=" + updateDate +

@@ -2,12 +2,9 @@ package codesquad.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import java.util.Objects;
 
 @Entity
-public class User extends AbstratEntity {
+public class User extends AbstractEntity {
 
     @Column(nullable = false, length = 20, unique = true)
     private String userId;

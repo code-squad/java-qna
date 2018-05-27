@@ -7,7 +7,6 @@ import codesquad.domain.question.Question;
 import codesquad.domain.result.Result;
 import codesquad.domain.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;

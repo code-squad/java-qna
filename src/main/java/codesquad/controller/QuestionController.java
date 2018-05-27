@@ -40,7 +40,7 @@ public class QuestionController {
     public String show(Model model, @PathVariable("id") Long id) {
         Optional<Question> maybeQuestion = questionRepo.findById(id);
         Question question = maybeQuestion.filter(q -> !q.isDeleted())
-                                         .orElseThrow(() -> new ForbiddenRequestException("question.not.exist"));
+                .orElseThrow(() -> new ForbiddenRequestException("question.not.exist"));
         model.addAttribute("question", question);
         return "/question/show";
     }
@@ -49,7 +49,7 @@ public class QuestionController {
     public String edit(@PathVariable("id") Long id, Model model, HttpSession session) {
         Optional<Question> maybeQuestion = questionRepo.findById(id);
         Question question = maybeQuestion.filter(q -> q.isMatch(HttpSessionUtils.getUserFromSession(session)))
-                                         .orElseThrow(() -> new UnAuthorizedException("user.mismatch.sessionuser"));
+                .orElseThrow(() -> new UnAuthorizedException("user.mismatch.sessionuser"));
         model.addAttribute("question", question);
         return "/question/edit";
     }

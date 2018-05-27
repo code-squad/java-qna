@@ -1,21 +1,15 @@
 package codesquad.domain.question;
 
 import codesquad.domain.TimeEntity;
-import codesquad.domain.answer.Answer;
 import codesquad.domain.answer.Answers;
 import codesquad.domain.exception.ForbiddenRequestException;
 import codesquad.domain.exception.UnAuthorizedException;
 import codesquad.domain.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.swing.text.html.Option;
-import java.util.List;
 import java.util.Optional;
-
-import static java.util.stream.Collectors.toList;
 
 @NoArgsConstructor
 @Getter

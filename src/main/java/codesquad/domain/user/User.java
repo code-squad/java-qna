@@ -2,7 +2,6 @@ package codesquad.domain.user;
 
 import codesquad.domain.exception.UnAuthorizedException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;

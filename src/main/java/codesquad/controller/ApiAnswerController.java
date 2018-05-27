@@ -2,7 +2,6 @@ package codesquad.controller;
 
 import codesquad.domain.answer.Answer;
 import codesquad.domain.answer.AnswerRepository;
-import codesquad.domain.exception.UnAuthorizedException;
 import codesquad.domain.question.QuestionRepository;
 import codesquad.domain.result.Result;
 import codesquad.util.HttpSessionUtils;

@@ -7,7 +7,9 @@ import java.util.Optional;
 
 public interface QuestionRepository extends JpaRepository<Question, Long> {
 
-    List<Question> findAllByOrderByQuestionIdDesc();
+    Optional<Question> findQuestionById(Long id);
 
-    Question findQuestionByQuestionId(Long questionId);
+    List<Question> findQuestionsByDeletedFalseOrderByIdDesc();
+
+    Question findQuestionByAnswersContaining(Answer answer);
 }

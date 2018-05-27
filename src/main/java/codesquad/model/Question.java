@@ -1,56 +1,64 @@
 package codesquad.model;
 
 import codesquad.exceptions.UnauthorizedRequestException;
-import org.springframework.core.annotation.Order;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-public class Question {
-    @Id
-    @GeneratedValue
-    private Long questionId;
+public class Question extends AbstractEntity {
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_author"))
-    private User author;
+    private User user;
 
     @Column(nullable = false, length = 64)
     private String title;
 
+    @Lob
+    @Column(nullable = false)
     private String content;
-    private Timestamp date;
 
-    @OneToMany(mappedBy = "question")
-    @OrderBy
-    private List<Answer> answers;
+    @Embedded
+    private Answers answers;
 
-    public void setDate(Timestamp date) {
-        this.date = date;
+    private boolean deleted;
+    private Integer countOfAnswers = 0;
+
+    public boolean authorAndUserIdMatch(User user) {
+        return this.user.equals(user);
     }
 
-    public List<Answer> getAnswers() {
-        return answers;
+    public void updateQuestion(Question updated, User user) throws UnauthorizedRequestException {
+        if (!authorAndUserIdMatch(user)) {
+            throw new UnauthorizedRequestException("Question.userId.mismatch");
+        }
+        this.content = updated.content;
     }
 
-    public void setAnswers(List<Answer> answers) {
-        this.answers = answers;
+    public void flagDeleted(User user) throws UnauthorizedRequestException {
+        if (!this.authorAndUserIdMatch(user)) {
+            throw new UnauthorizedRequestException("Question.userId.mismatch");
+        }
+        this.deleted = true;
+        answers.flagDeleted(user);
+        setDateLastModified(assignDateTime());
     }
 
-    public Question() {
-        LocalDateTime dateTime = LocalDateTime.now();
-        this.date = Timestamp.valueOf(dateTime);
+    public void increaseAnswerCount() {
+        this.countOfAnswers++;
     }
 
-    public User getAuthor() {
-        return author;
+    public void decreaseAnswerCount() {
+        this.countOfAnswers--;
     }
 
-    public void setAuthor(User user) {
-        this.author = user;
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getTitle() {
@@ -69,36 +77,30 @@ public class Question {
         this.content = content;
     }
 
-    public String getDate() {
-        return date.toString();
+    public List<Answer> getAnswers() {
+        return answers.getAnswers();
     }
 
-    public void setQuestionId(Long id) {
-        this.questionId = id;
+    public void setAnswers(List<Answer> answers) {
+        this.answers.setAnswers(answers);
     }
 
-    public Long getQuestionId() {
-        return questionId;
+    public Integer getCountOfAnswers() {
+        return countOfAnswers;
     }
 
-    public boolean authorAndUserIdMatch(User user) {
-        return author.userIdsMatch(user);
-    }
-
-    public void updateQuestion(Question updated, User user) throws UnauthorizedRequestException {
-        if (!authorAndUserIdMatch(user)) {
-            throw new UnauthorizedRequestException("Question.userId.mismatch");
-        }
-        this.content = updated.content;
+    public void setCountOfAnswers(Integer countOfAnswers) {
+        this.countOfAnswers = countOfAnswers;
     }
 
     @Override
     public String toString() {
         return "Question{" +
-                "id=" + questionId +
-                ", author='" + author + '\'' +
+                "id=" + getId() +
+                ", user='" + user + '\'' +
                 ", title='" + title + '\'' +
-                ", date=" + date +
+                ", created=" + getDateCreated() +
+                ", lastModified=" + getDateLastModified() +
                 '}';
     }
 }

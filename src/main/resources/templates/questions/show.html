@@ -22,9 +22,9 @@
                                  class="article-author-thumb" alt="">
                         </div>
                         <div class="article-header-text">
-                            <a href="/users/{{author.userId}}/profile" class="article-author-name">{{author.userId}}</a>
-                            <a href="/questions/{{questionId}}" class="article-header-time" title="퍼머링크">
-                                {{date}}
+                            <a href="/users/{{user.id}}/profile" class="article-author-name">{{user.userId}}</a>
+                            <a href="/questions/{{id}}" class="article-header-time" title="퍼머링크">
+                                {{dateCreated}}
                                 <i class="icon-link"></i>
                             </a>
                         </div>
@@ -36,10 +36,10 @@
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
-                                <a class="link-modify-article" href="/questions/{{questionId}}/edit">수정</a>
+                                <a class="link-modify-article" href="/questions/{{id}}/edit">수정</a>
                             </li>
                             <li>
-                                <form class="form-delete" action="/questions/{{questionId}}/delete" method="POST">
+                                <form class="form-delete" action="/questions/{{id}}" method="POST">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <button class="link-delete-article" type="submit">삭제</button>
                                 </form>
@@ -66,9 +66,9 @@
                                              class="article-author-thumb" alt="">
                                     </div>
                                     <div class="article-header-text">
-                                        <a href="/users/{{user.userId}}/profile" class="article-author-name">{{user.userId}}</a>
+                                        <a href="/users/{{user.id}}/profile" class="article-author-name">{{user.userId}}</a>
                                         <a href="#answer-1434" class="article-header-time" title="퍼머링크">
-                                            {{date}}
+                                            {{dateCreated}}
                                         </a>
                                     </div>
                                 </div>
@@ -82,54 +82,25 @@
                                                href="#">수정</a>
                                         </li>
                                         <li>
-                                            <form class="delete-answer-form" action="/questions/{{questionId}}/answers/{{id}}/delete"
+                                            <form class="delete-answer-form" action="/api/questions/{{question.id}}/answers/{{id}}/delete"
                                                   method="POST">
                                                 <input type="hidden" name="_method" value="DELETE">
-                                                <button type="submit" class="delete-answer-button">삭제</button>
+                                                <!--<button class="link-delete-article" type="button">삭제</button>-->
+                                                <a class="link-delete-article" href="/api/questions/{{question.id}}/answers/{{id}}/delete">삭제</a>
                                             </form>
                                         </li>
                                     </ul>
                                 </div>
                             </article>
                             {{/question.answers}}
-                            <!--<article class="article" id="answer-1406">-->
-                                <!--<div class="article-header">-->
-                                    <!--<div class="article-header-thumb">-->
-                                        <!--<img src="https://graph.facebook.com/v2.3/1324855987/picture"-->
-                                             <!--class="article-author-thumb" alt="">-->
-                                    <!--</div>-->
-                                    <!--<div class="article-header-text">-->
-                                        <!--<a href="/users/1/자바지기" class="article-author-name">자바지기</a>-->
-                                        <!--<a href="#answer-1434" class="article-header-time" title="퍼머링크">-->
-                                            <!--2016-01-12 14:06-->
-                                        <!--</a>-->
-                                    <!--</div>-->
-                                <!--</div>-->
-                                <!--<div class="article-doc comment-doc">-->
-                                    <!--<p>이 글만으로는 원인 파악하기 힘들겠다. 소스 코드와 설정을 단순화해서 공유해 주면 같이 디버깅해줄 수도 있겠다.</p>-->
-                                <!--</div>-->
-                                <!--<div class="article-util">-->
-                                    <!--<ul class="article-util-list">-->
-                                        <!--<li>-->
-                                            <!--<a class="link-modify-article"-->
-                                               <!--href="/questions/413/answers/1405/form">수정</a>-->
-                                        <!--</li>-->
-                                        <!--<li>-->
-                                            <!--<form class="form-delete" action="/questions/413/answers/1405"-->
-                                                  <!--method="POST">-->
-                                                <!--<input type="hidden" name="_method" value="DELETE">-->
-                                                <!--<button type="submit" class="delete-answer-button">삭제</button>-->
-                                            <!--</form>-->
-                                        <!--</li>-->
-                                    <!--</ul>-->
-                                <!--</div>-->
-                            <!--</article>-->
-                            <form class="submit-write" method="POST" action="/questions/{{question.questionId}}/submitAnswer">
+
+
+                            <form class="answer-write" method="POST" action="/api/questions/{{question.id}}/submitAnswer">
                                 <input type="hidden" name="_method" value="PUT" />
                                 <div class="form-group" style="padding:14px;">
-                                    <textarea name="content" class="form-control" placeholder="Update your status"></textarea>
+                                    <textarea name="content" class="form-control" placeholder="Write your comment.."></textarea>
                                 </div>
-                                <button class="btn btn-success pull-right" type="submit">답변하기</button>
+                                <input class="btn btn-success pull-right" type="button" value="답변하기" >
                                 <div class="clearfix"/>
                             </form>
                         </div>
@@ -147,7 +118,7 @@
                 <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
             </div>
             <div class="article-header-text">
-                <a href="#" class="article-author-name">{0}</a>
+                <a href="/users/{0}/profile" class="article-author-name">{0}</a>
                 <div class="article-header-time">{1}</div>
             </div>
         </div>
@@ -157,18 +128,20 @@
         <div class="article-util">
             <ul class="article-util-list">
                 <li>
-                    <a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
+                    <a class="link-modify-article" href="/api/questions/{3}/answers/{4}/update">수정</a>
                 </li>
                 <li>
-                    <form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
+                    <form class="delete-answer-form" action="/api/questions/{3}/answers/{4}/delete" method="POST">
                         <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit" class="delete-answer-button">삭제</button>
+                        <!--<button class="link-delete-article" type="button">삭제</button>-->
+                        <a class="link-delete-article" href="/api/questions/{3}/answers/{4}/delete">삭제</a>
                     </form>
                 </li>
             </ul>
         </div>
     </article>
 </script>
+
 
 <!-- script references -->
 {{> includes/decoration}}

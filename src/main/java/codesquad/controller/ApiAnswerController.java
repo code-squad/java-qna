@@ -2,6 +2,7 @@ package codesquad.controller;
 
 import codesquad.domain.answer.Answer;
 import codesquad.domain.answer.AnswerRepository;
+import codesquad.domain.question.Question;
 import codesquad.domain.question.QuestionRepository;
 import codesquad.domain.result.Result;
 import codesquad.util.HttpSessionUtils;
@@ -24,17 +25,22 @@ public class ApiAnswerController {
     private QuestionRepository questionRepo;
 
     @PostMapping
-    public Answer create(@PathVariable("questionId") Long questionId, String contents, HttpSession session) {
+    public Answer create(@PathVariable Long questionId, String contents, HttpSession session) {
         log.info("answer contents : {}", contents);
-        Answer answer = Answer.builder().user(HttpSessionUtils.getUserFromSession(session).get()).question(questionRepo.findById(questionId).get()).contents(contents).build();
+        Question question = questionRepo.findById(questionId).get();
+        Answer answer = Answer.builder().user(HttpSessionUtils.getUserFromSession(session).get()).question(question).contents(contents).build();
+        question.addAnswer();
         return answerRepo.save(answer);
     }
 
     @DeleteMapping("/{id}")
-    public Result delete(@PathVariable("id") Long id, HttpSession session) {
+    public Result delete(@PathVariable Long questionId,  @PathVariable Long id, HttpSession session) {
         Answer answer = answerRepo.findById(id).get();
         Result result = answer.delete(HttpSessionUtils.getUserFromSession(session));
         answerRepo.save(answer);
+        Question question = questionRepo.findById(questionId).get();
+        question.deleteAnswer();
+        questionRepo.save(question);
         return result;
     }
 }

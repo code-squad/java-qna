@@ -14,8 +14,7 @@ public class Result {
     public static Result ok() {
         return SUCCESS;
     }
-
-    public static Result fail(String errorMessage) {
+public static Result fail(String errorMessage) {
         return new Result(false, errorMessage);
     }
 

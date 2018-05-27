@@ -6,6 +6,7 @@ import codesquad.domain.exception.ForbiddenRequestException;
 import codesquad.domain.exception.UnAuthorizedException;
 import codesquad.domain.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
@@ -42,6 +43,9 @@ public class Question extends TimeEntity {
     @JsonIgnore
     private boolean deleted = false;
 
+    @JsonProperty
+    private Integer countOfAnswer = 0;
+
     @Builder
     public Question(String title, String contents) {
         this.title = title;
@@ -73,5 +77,13 @@ public class Question extends TimeEntity {
             throw new UnAuthorizedException("user.not.exist");
         }
         return user.equals(maybeOther.get());
+    }
+
+    public void addAnswer() {
+        countOfAnswer++;
+    }
+
+    public void deleteAnswer() {
+        countOfAnswer--;
     }
 }

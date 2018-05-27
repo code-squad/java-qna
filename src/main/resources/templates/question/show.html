@@ -22,7 +22,7 @@
                       <div class="article-header-text">
                           <a href="/users/{{question.user.id}}" class="article-author-name">{{question.user.name}}</a>
                           <a href="/questions/{{question.id}}" class="article-header-time" title="퍼머링크">
-                              {{question.modifiedDate}}
+                              {{question.formattedDate}}
                               <i class="icon-link"></i>
                           </a>
                       </div>
@@ -62,7 +62,7 @@
                                   </div>
                                   <div class="article-header-text">
                                       <a href="/users/{{user.id}}" class="article-author-name">{{user.name}}</a>
-                                      <div class="article-header-time">{{modifiedDate}}</div>
+                                      <div class="article-header-time">{{formattedDate}}</div>
                                   </div>
                               </div>
                               <div class="article-doc comment-doc">

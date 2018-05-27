@@ -1,10 +1,12 @@
 package codesquad.domain.user;
 
+import codesquad.domain.BaseEntity;
 import codesquad.domain.exception.UnAuthorizedException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 import java.util.Optional;
@@ -14,12 +16,8 @@ import java.util.Optional;
 @Setter
 @ToString
 @Entity
-@EqualsAndHashCode(exclude = {"userId", "passwd", "name", "email"})
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+@EqualsAndHashCode(callSuper = true)
+public class User extends BaseEntity {
     @Size(min = 3, max = 15)
     @Column(nullable = false, length = 15, unique = true, updatable = false)
     @JsonIgnore
@@ -61,12 +59,5 @@ public class User {
             return false;
         }
         return this.passwd.equals(passwd);
-    }
-
-    public boolean isMatch(Long id) {
-        if (id == null) {
-            return false;
-        }
-        return this.id.equals(id);
     }
 }

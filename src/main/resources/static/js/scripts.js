@@ -25,7 +25,7 @@ function writeHandle(req) {
         return;
     }
     var data = JSON.parse(req.responseText);
-    var template = document.getElementById('answerTemplate').innerHTML.format(data.user.name, data.modifiedDate, data.contents, data.id, data.question.id, data.id);
+    var template = document.getElementById('answerTemplate').innerHTML.format(data.user.name, data.formattedDate, data.contents, data.id, data.question.id, data.id);
     var contents = document.createElement('div');
     contents.innerHTML = template;
     contents = contents.firstElementChild;

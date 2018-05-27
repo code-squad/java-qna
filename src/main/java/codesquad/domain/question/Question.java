@@ -1,6 +1,6 @@
 package codesquad.domain.question;
 
-import codesquad.domain.TimeEntity;
+import codesquad.domain.BaseEntity;
 import codesquad.domain.answer.Answers;
 import codesquad.domain.exception.ForbiddenRequestException;
 import codesquad.domain.exception.UnAuthorizedException;
@@ -17,11 +17,7 @@ import java.util.Optional;
 @Setter
 @ToString
 @Entity
-public class Question extends TimeEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Question extends BaseEntity {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_user"))
     @JsonIgnore
@@ -61,7 +57,7 @@ public class Question extends TimeEntity {
     }
 
     public void delete(Optional<User> maybeSessionUser, Long pathId) {
-        if (!isMatch(maybeSessionUser) || !id.equals(pathId)) {
+        if (!isMatch(maybeSessionUser) || !isMatch(pathId)) {
             throw new UnAuthorizedException("user.mismatch.sessionuser");
         }
 

@@ -2,7 +2,9 @@ package codesquad.controller;
 
 import codesquad.domain.answer.Answer;
 import codesquad.domain.answer.AnswerRepository;
+import codesquad.domain.exception.UnAuthorizedException;
 import codesquad.domain.question.QuestionRepository;
+import codesquad.domain.result.Result;
 import codesquad.util.HttpSessionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +16,7 @@ import javax.servlet.http.HttpSession;
 @RestController
 @RequestMapping("/api/questions/{questionId}/answers")
 public class ApiAnswerController {
-    private static final Logger log = LoggerFactory.getLogger(AnswerController.class);
+    private static final Logger log = LoggerFactory.getLogger(ApiAnswerController.class);
 
     @Autowired
     private AnswerRepository answerRepo;
@@ -30,11 +32,10 @@ public class ApiAnswerController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable("id") Long id, HttpSession session) {
-        //아직 구현중
+    public Result delete(@PathVariable("id") Long id, HttpSession session) {
         Answer answer = answerRepo.findById(id).get();
-        answer.delete(HttpSessionUtils.getUserFromSession(session));
+        Result result = answer.delete(HttpSessionUtils.getUserFromSession(session));
         answerRepo.save(answer);
-        return "delete!";
+        return result;
     }
 }

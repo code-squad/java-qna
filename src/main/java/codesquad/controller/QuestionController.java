@@ -4,7 +4,6 @@ import codesquad.domain.exception.ForbiddenRequestException;
 import codesquad.domain.exception.UnAuthorizedException;
 import codesquad.domain.question.Question;
 import codesquad.domain.question.QuestionRepository;
-import codesquad.domain.user.User;
 import codesquad.util.HttpSessionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

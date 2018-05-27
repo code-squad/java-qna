@@ -4,6 +4,7 @@ import codesquad.domain.TimeEntity;
 import codesquad.domain.exception.ForbiddenRequestException;
 import codesquad.domain.exception.UnAuthorizedException;
 import codesquad.domain.question.Question;
+import codesquad.domain.result.Result;
 import codesquad.domain.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -52,10 +53,12 @@ public class Answer extends TimeEntity {
         deleted = true;
     }
 
-    public void delete(Optional<User> maybeSessionUser) {
+    public Result delete(Optional<User> maybeSessionUser) {
         validateDelete();
-        maybeSessionUser.filter(sessionUser -> user.equals(sessionUser)).orElseThrow(() -> new UnAuthorizedException("answer.user.mismatch.request.user"));
-        deleted = true;
+        return maybeSessionUser.filter(sessionUser -> user.equals(sessionUser)).map(user -> {
+            deleted = true;
+            return Result.ok();
+        }).orElse(Result.fail("답변 삭제 못함"));
     }
 
     private void validateDelete() {

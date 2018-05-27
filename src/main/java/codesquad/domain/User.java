@@ -2,15 +2,9 @@ package codesquad.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import java.util.Objects;
 
 @Entity
-public class User {
-    @Id
-    @GeneratedValue
-    private Long id;
+public class User extends AbstractEntity {
 
     @Column(nullable = false, length = 20, unique = true)
     private String userId;
@@ -20,10 +14,6 @@ public class User {
 
     public boolean match(String userId) {
         return this.userId.equals(userId);
-    }
-
-    public boolean matchId(Long id) {
-        return this.id == id;
     }
 
     public boolean matchPassword(String password){
@@ -46,10 +36,6 @@ public class User {
         }
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public void setUserId(String userId) {
         this.userId = userId;
     }
@@ -64,10 +50,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public String getUserId() {
@@ -89,24 +71,11 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "id='" + id + '\'' +
+                super.toString() + '\'' +
                 "userId='" + userId + '\'' +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return this.id==user.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 }

@@ -1,49 +1,24 @@
 package codesquad.domain;
 
-import codesquad.web.HttpSessionUtils;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import javax.servlet.http.HttpSession;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Entity
-public class Question {
-
-    @Id
-    @GeneratedValue
-    private Long id;
+public class Question extends AbstractEntity {
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     private User writer;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "question", cascade = CascadeType.REMOVE)
-    @OrderBy
-    private List<Answer> answers;
+    @Embedded
+    @JsonIgnore
+    private Answers answers;
 
     private String title;
     @Lob
     private String contents;
-
-    private LocalDateTime updateDate;
-
-    private LocalDateTime createDate;
-
-    public Question() {
-        this.createDate = LocalDateTime.now();
-    }
-
-    public String getFormattedCreateDate() {
-        if (createDate == null) {
-            return "";
-        }
-        if (updateDate != null){
-            return updateDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
-        }
-        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
-    }
 
     public Result update(Question question, User loginedUser) {
         if (!loginedUser.isSameWriter(question)) {
@@ -51,12 +26,7 @@ public class Question {
         }
         this.title = question.title;
         this.contents = question.contents;
-        this.updateDate = LocalDateTime.now();
         return Result.ok();
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public User getWriter() {
@@ -75,10 +45,6 @@ public class Question {
         this.contents = contents;
     }
 
-    public Long getId() {
-        return id;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -88,21 +54,21 @@ public class Question {
     }
 
     public List<Answer> getAnswers() {
-        return answers;
+        return answers.getAnswers();
     }
 
     public void setAnswers(List<Answer> answers) {
-        this.answers = answers;
+        this.answers.setAnswers(answers);
     }
 
     public int getNumberOfAnswer() {
-        return answers.size();
+        return answers.getSizeOfAnswers();
     }
 
     @Override
     public String toString() {
         return "Question{" +
-                "id=" + id +
+               super.toString() +
                 ", writer=" + writer +
                 ", answers=" + answers +
                 ", title='" + title + '\'' +

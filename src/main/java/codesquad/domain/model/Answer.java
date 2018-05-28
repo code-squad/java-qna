@@ -1,6 +1,7 @@
 package codesquad.domain.model;
 
 import codesquad.domain.utils.BaseTimeEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -34,11 +35,11 @@ public class Answer extends BaseTimeEntity {
         this.contents = contents;
     }
 
-    public Long getId() {
-        return id;
-    }
-
     public boolean matchWriter(User user) {
         return this.writer.equals(user);
+    }
+
+    public void update(String contents) {
+        this.contents = contents;
     }
 }

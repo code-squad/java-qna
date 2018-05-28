@@ -2,22 +2,22 @@ package codesquad.controller;
 
 import codesquad.domain.answer.Answer;
 import codesquad.domain.answer.AnswerRepository;
-import codesquad.domain.question.Question;
+import codesquad.domain.exception.UnAuthorizedException;
 import codesquad.domain.question.QuestionRepository;
-import codesquad.domain.user.User;
+import codesquad.domain.result.Result;
 import codesquad.util.HttpSessionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/questions/{questionId}/answers")
 public class AnswerController {
-    private static final Logger log = LoggerFactory.getLogger(AnswerController.class);
 
     @Autowired
     private AnswerRepository answerRepo;
@@ -35,7 +35,10 @@ public class AnswerController {
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") Long id, HttpSession session) {
         Answer answer = answerRepo.findById(id).get();
-        answer.delete(HttpSessionUtils.getUserFromSession(session));
+        Result result = answer.delete(HttpSessionUtils.getUserFromSession(session));
+        if (!result.isValid()) {
+            throw new UnAuthorizedException("answer.user.mismatch.request.user");
+        }
         answerRepo.save(answer);
         return "redirect:/questions/{questionId}";
     }

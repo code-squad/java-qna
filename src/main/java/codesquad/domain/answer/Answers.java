@@ -14,7 +14,7 @@ public class Answers {
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.PERSIST)
     @Where(clause = "deleted = false")
-    @OrderBy("id ASC")
+    @OrderBy("id DESC")
     private List<Answer> answers;
 
     public Answers() {

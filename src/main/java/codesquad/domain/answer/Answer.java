@@ -1,10 +1,12 @@
 package codesquad.domain.answer;
 
-import codesquad.domain.TimeEntity;
+import codesquad.domain.BaseEntity;
 import codesquad.domain.exception.ForbiddenRequestException;
 import codesquad.domain.exception.UnAuthorizedException;
 import codesquad.domain.question.Question;
+import codesquad.domain.result.Result;
 import codesquad.domain.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -15,11 +17,7 @@ import java.util.Optional;
 @Setter
 @ToString
 @Entity
-public class Answer extends TimeEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Answer extends BaseEntity {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_user"))
     private User user;
@@ -32,6 +30,7 @@ public class Answer extends TimeEntity {
     private String contents;
 
     @Column(nullable = false)
+    @JsonIgnore
     private boolean deleted = false;
 
     @Builder
@@ -49,10 +48,12 @@ public class Answer extends TimeEntity {
         deleted = true;
     }
 
-    public void delete(Optional<User> maybeSessionUser) {
+    public Result delete(Optional<User> maybeSessionUser) {
         validateDelete();
-        maybeSessionUser.filter(sessionUser -> user.equals(sessionUser)).orElseThrow(() -> new UnAuthorizedException("answer.user.mismatch.request.user"));
-        deleted = true;
+        return maybeSessionUser.filter(sessionUser -> user.equals(sessionUser)).map(user -> {
+            deleted = true;
+            return Result.ok();
+        }).orElse(Result.fail("답변 삭제 못함"));
     }
 
     private void validateDelete() {

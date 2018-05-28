@@ -22,7 +22,7 @@
                       <div class="article-header-text">
                           <a href="/users/{{question.user.id}}" class="article-author-name">{{question.user.name}}</a>
                           <a href="/questions/{{question.id}}" class="article-header-time" title="퍼머링크">
-                              {{question.modifiedDate}}
+                              {{question.formattedDate}}
                               <i class="icon-link"></i>
                           </a>
                       </div>
@@ -62,7 +62,7 @@
                                   </div>
                                   <div class="article-header-text">
                                       <a href="/users/{{user.id}}" class="article-author-name">{{user.name}}</a>
-                                      <a href="#answer-1434" class="article-header-time" title="퍼머링크"></a>
+                                      <div class="article-header-time">{{formattedDate}}</div>
                                   </div>
                               </div>
                               <div class="article-doc comment-doc">
@@ -75,9 +75,9 @@
                                           <a class="link-modify-article" href="/questions/{{question.id}}/answers/{{id}}/edit">수정</a>
                                       </li>
                                       <li>
-                                          <form class="delete-answer-form" action="/questions/{{question.id}}/answers/{{id}}" method="POST">
+                                          <form class="delete-answer-form" action="/api/questions/{{question.id}}/answers/{{id}}" method="POST">
                                               <input type="hidden" name="_method" value="DELETE">
-                                              <button type="submit" class="delete-answer-button">삭제</button>
+                                              <button type="button" class="delete-answer-button">삭제</button>
                                           </form>
                                       </li>
                                   </ul>
@@ -87,13 +87,14 @@
                           {{/question.answers.answers}}
 
 
-                          <form class="submit-write" action="/questions/{{question.id}}/answers" method="post">
+                          <form class="answer-write" id="submit-answer" action="/api/questions/{{question.id}}/answers" method="post">
                               <div class="form-group" style="padding:14px;">
-                                  <textarea class="form-control" placeholder="Update your status" name="contents"></textarea>
+                                  <textarea id="answer-editor" class="form-control" placeholder="Update your status" name="contents"></textarea>
                               </div>
-                              <input type="submit" class="btn btn-success pull-right">답변하기</input>
+                              <button class="btn btn-success pull-right" type="button">답변달기</button>
                               <div class="clearfix" />
                           </form>
+
                       </div>
                   </div>
               </div>
@@ -122,9 +123,8 @@
 				<a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
 			</li>
 			<li>
-				<form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
-					<input type="hidden" name="_method" value="DELETE">
-                     <button type="submit" class="delete-answer-button">삭제</button>
+				<form class="delete-answer-form" action="/api/questions/{4}/answers/{5}" method="POST">
+                    <button type="button" class="delete-answer-button" onclick="answerDelete(this)">삭제</button>
 				</form>
 			</li>
 		</ul>

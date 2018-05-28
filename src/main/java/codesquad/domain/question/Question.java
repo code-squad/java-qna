@@ -1,45 +1,46 @@
 package codesquad.domain.question;
 
-import codesquad.domain.TimeEntity;
-import codesquad.domain.answer.Answer;
+import codesquad.domain.BaseEntity;
 import codesquad.domain.answer.Answers;
 import codesquad.domain.exception.ForbiddenRequestException;
 import codesquad.domain.exception.UnAuthorizedException;
 import codesquad.domain.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.swing.text.html.Option;
-import java.util.List;
 import java.util.Optional;
-
-import static java.util.stream.Collectors.toList;
 
 @NoArgsConstructor
 @Getter
 @Setter
 @ToString
 @Entity
-public class Question extends TimeEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Question extends BaseEntity {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_user"))
+    @JsonIgnore
     private User user;
 
     @Embedded
+    @JsonIgnore
     private Answers answers;
 
     @Column(nullable = false, length = 100)
+    @JsonIgnore
     private String title;
 
     @Column(nullable = false, columnDefinition = "TEXT")
+    @JsonIgnore
     private String contents;
 
     @Column(nullable = false)
+    @JsonIgnore
     private boolean deleted = false;
+
+    @JsonProperty
+    private Integer countOfAnswer = 0;
 
     @Builder
     public Question(String title, String contents) {
@@ -56,7 +57,7 @@ public class Question extends TimeEntity {
     }
 
     public void delete(Optional<User> maybeSessionUser, Long pathId) {
-        if (!isMatch(maybeSessionUser) || !id.equals(pathId)) {
+        if (!isMatch(maybeSessionUser) || !isMatch(pathId)) {
             throw new UnAuthorizedException("user.mismatch.sessionuser");
         }
 
@@ -72,5 +73,13 @@ public class Question extends TimeEntity {
             throw new UnAuthorizedException("user.not.exist");
         }
         return user.equals(maybeOther.get());
+    }
+
+    public void addAnswer() {
+        countOfAnswer++;
+    }
+
+    public void deleteAnswer() {
+        countOfAnswer--;
     }
 }

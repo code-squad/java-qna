@@ -22,6 +22,7 @@ public class User {
         this.email = email;
     }
 
+
     public boolean matchUser(String userId){
         return this.userId.equals(userId);
     }
@@ -33,6 +34,7 @@ public class User {
             email = updater.email;
         }
     }
+
     @Override
     public String toString() {
         return "User{" +

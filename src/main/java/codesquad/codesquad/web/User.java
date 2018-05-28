@@ -22,6 +22,19 @@ public class User {
         this.email = email;
     }
 
+
+    public boolean matchUser(String userId){
+        return this.userId.equals(userId);
+    }
+
+    public void updateInformation(User updater, String passwordCheck) {
+        if(this.password.equals(passwordCheck)){
+            password = updater.password;
+            name = updater.name;
+            email = updater.email;
+        }
+    }
+
     @Override
     public String toString() {
         return "User{" +

@@ -77,7 +77,7 @@
                                       <li>
                                           <form class="delete-answer-form" action="/api/questions/{{question.id}}/answers/{{id}}" method="POST">
                                               <input type="hidden" name="_method" value="DELETE">
-                                              <button type="button" class="delete-answer-button" onclick="answerDelete(this)">삭제</button>
+                                              <button type="button" class="delete-answer-button">삭제</button>
                                           </form>
                                       </li>
                                   </ul>
@@ -87,11 +87,11 @@
                           {{/question.answers.answers}}
 
 
-                          <form class="submit-write" id="submit-answer" action="/api/questions/{{question.id}}/answers" method="post">
+                          <form class="answer-write" id="submit-answer" action="/api/questions/{{question.id}}/answers" method="post">
                               <div class="form-group" style="padding:14px;">
                                   <textarea id="answer-editor" class="form-control" placeholder="Update your status" name="contents"></textarea>
                               </div>
-                              <button class="btn btn-success pull-right" type="button" onclick="answerWrite()">답변달기</button>
+                              <button class="btn btn-success pull-right" type="button">답변달기</button>
                               <div class="clearfix" />
                           </form>
 

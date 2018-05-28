@@ -8,8 +8,10 @@ String.prototype.format = function() {
     });
 };
 
+document.querySelector('.answer-write button').addEventListener('click', answerWrite, true);
+
 function answerWrite() {
-    var form = document.getElementById("submit-answer");
+    var form = document.getElementById('submit-answer');
     var req = new XMLHttpRequest();
     req.addEventListener('load', function() {
         writeHandle(req);
@@ -29,12 +31,19 @@ function writeHandle(req) {
     var contents = document.createElement('div');
     contents.innerHTML = template;
     contents = contents.firstElementChild;
-    document.querySelector(".qna-comment-slipp-articles").prepend(contents);
+    document.querySelector('.qna-comment-slipp-articles').prepend(contents);
     document.getElementById('answer-editor').value = '';
 }
 
+
+document.querySelector(".qna-comment-slipp-articles").addEventListener('click', answerDelete, true);
+
 function answerDelete(e) {
-    var form = e.parentElement;
+    var target = e.target;
+    if (target.className !== "delete-answer-button") {
+        return;
+    }
+    var form = target.parentNode;
     var req = new XMLHttpRequest();
     req.addEventListener('load', function() {
         deleteHandle(req, form.closest('article'));
@@ -46,7 +55,6 @@ function answerDelete(e) {
 
 function deleteHandle(req, article) {
     var data = JSON.parse(req.responseText);
-    console.log(data);
     if (data.valid) {
         article.remove();
         return;

@@ -1,5 +1,6 @@
 package codesquad.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,9 +23,11 @@ public class BaseEntity {
     private Long id;
 
     @CreatedDate
+    @JsonIgnore
     private LocalDateTime createdDate;
 
     @LastModifiedDate
+    @JsonIgnore
     private LocalDateTime modifiedDate;
 
     public boolean isMatch(Long id) {

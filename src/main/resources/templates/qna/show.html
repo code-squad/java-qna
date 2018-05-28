@@ -56,7 +56,7 @@
                       {{/question}}
                       <div class="qna-comment-slipp-articles">
                           {{#question.answers}}
-                          <article class="article" id="answer-1406">
+                          <article class="article" id="answer-{{id}}">
                               <div class="article-header">
                                   <div class="article-header-thumb">
                                       <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
@@ -72,9 +72,9 @@
                                   <p>{{contents}}</p>
                               </div>
                               <div class="article-util">
-                                  <ul class="article-util-list">
+                                  <ul class="article-util-list" id="article-btns-{{id}}">
                                       <li>
-                                          <a class="link-modify-article" id="modify-article"
+                                          <a class="link-modify-article" id="modify-article-{{id}}"
                                              href="/api/questions/{{question.id}}/answers/{{id}}/form">수정</a>
                                       </li>
                                       <li>
@@ -102,7 +102,7 @@
 </div>
 
 <script type="text/template" id="answerTemplate">
-	<article class="article">
+	<article class="article" id="answer-{4}">
 		<div class="article-header">
 			<div class="article-header-thumb">
 				<img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
@@ -116,9 +116,9 @@
 			{2}
 		</div>
 		<div class="article-util">
-		<ul class="article-util-list">
+		<ul class="article-util-list" id="article-btns-{4}">
 			<li>
-				<a class="link-modify-article" href="/api/questions/{3}/answers/{4}/form">수정</a>
+				<a class="link-modify-article" id="modify-article-{4}" href="/api/questions/{3}/answers/{4}/form">수정</a>
 			</li>
 			<li>
                 <a class="link-delete-article" href="/api/questions/{3}/answers/{4}">삭제</a>

@@ -9,7 +9,6 @@ import codesquad.domain.utils.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,8 +58,31 @@ public class ApiAnswerController {
         question.deleteAnswer();
         questionRepository.save(question);
         return result;
-
     }
 
+    @GetMapping("/{answerId}/form")
+    public Result checkPossibilityOfmodifyAnswer(@PathVariable("questionId") Long qId, @PathVariable("answerId") Long aId, HttpSession session, Model model) {
+        log.debug("답변 삭제");
+        Answer answer = answerRepository.findById(aId).get();
+        Result result = Result.valid(session, answer, a -> a.matchWriter(getUserFromSession(session)));
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return null;
+        }
+        return result;
+    }
+
+    @PutMapping("/{answerId}/formm")
+    public Answer modifyAnswer(@PathVariable("questionId") Long qId, @PathVariable("answerId") Long aId, String contents, HttpSession session, Model model) {
+        log.debug("답변 삭제");
+        Answer answer = answerRepository.findById(aId).get();
+        Result result = Result.valid(session, answer, a -> a.matchWriter(getUserFromSession(session)));
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return null;
+        }
+        answer.update(contents);
+        return answerRepository.save(answer);
+    }
 
 }

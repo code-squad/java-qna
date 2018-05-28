@@ -10,7 +10,24 @@
           <form name="question" method="post" action="/users">
               <div class="form-group">
                   <label for="userId">사용자 아이디</label>
+                  <em id="message"></em>
                   <input class="form-control" id="userId" name="userId" placeholder="User ID">
+                  <script>
+                      var MIN_USER_NAME_LENGTH = 5;
+                      var elem = document.getElementById('userId');
+                      var msg = document.getElementById('message');
+
+                      function checkUserNameLength(n) {
+                          if (elem.value.length < n) {
+                              msg.innerHTML = '아이디는 ' + n + '자 이상이어야 합니다';
+                          } else {
+                              msg.innerHTML = '';
+                          }
+                      }
+                      elem.addEventListener('blur', function ()  {
+                          checkUserNameLength(MIN_USER_NAME_LENGTH);
+                      });
+                  </script>
               </div>
               <div class="form-group">
                   <label for="password">비밀번호</label>

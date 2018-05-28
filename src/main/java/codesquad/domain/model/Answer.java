@@ -38,4 +38,8 @@ public class Answer extends BaseTimeEntity {
     public boolean matchWriter(User user) {
         return this.writer.equals(user);
     }
+
+    public void update(String contents) {
+        this.contents = contents;
+    }
 }

@@ -1,17 +1,17 @@
 package codesquad.codesquad.web;
 
 public class Question {
-    private int index;
+    private int id;
     private String writer;
     private String title;
     private String contents;
 
-    public int getIndex() {
-        return index;
+    public int getId() {
+        return id;
     }
 
-    public void setIndex(int index) {
-        this.index = index;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getWriter() {
@@ -41,7 +41,7 @@ public class Question {
     @Override
     public String toString() {
         return "Question{" +
-                "index=" + index +
+                "id=" + id +
                 ", writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +

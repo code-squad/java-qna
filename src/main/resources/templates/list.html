@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="kr">
-{{>header}}
+{{>includes/header}}
 <body>
-{{>naviBar}}
+{{>includes/naviBar}}
 
 <div class="container" id="main">
    <div class="col-md-10 col-md-offset-1">
@@ -20,7 +20,7 @@
                     <td><a href="users/{{userId}}">{{userId}}</a></td>
                     <td>{{name}}</td>
                     <td>{{email}}</td>
-                    <td><a href="#" class="btn btn-success" role="button">수정</a></td>
+                    <td><a href="/users/{{userId}}/form" class="btn btn-success" role="button">수정</a></td>
                 </tr>
                 {{/users}}
               </tbody>
@@ -29,6 +29,6 @@
     </div>
 </div>
 
-{{>footer}}
+{{>includes/footer}}
 	</body>
 </html>

@@ -51,7 +51,7 @@ public class UserController {
         }
 
         User sessionUser = SessionUtils.getUserFromSession(session);
-        sessionUser.isMatchedUserId(updateUser);
+        sessionUser.isMatchedUser(updateUser);
         User oldUser = userRepository.findOne(id);
         oldUser.update(updateUser, newPassword);
         userRepository.save(oldUser);
@@ -66,7 +66,7 @@ public class UserController {
         }
 
         User sessionUser = SessionUtils.getUserFromSession(session);
-        sessionUser.isMatchedUserId(SessionUtils.getUserFromSession(session));
+        sessionUser.isMatchedUser(SessionUtils.getUserFromSession(session));
         model.addAttribute("user", userRepository.findOne(id));
 
         return "user/updateForm";

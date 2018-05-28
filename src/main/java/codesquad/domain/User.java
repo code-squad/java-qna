@@ -1,5 +1,8 @@
 package codesquad.domain;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,6 +11,8 @@ import java.util.Objects;
 
 @Entity
 public class User {
+    private static final Logger log = LoggerFactory.getLogger(User.class);
+
     @Id
     @GeneratedValue
     private Long id;
@@ -64,11 +69,11 @@ public class User {
         return userId + " " + password + " " + name + " " + email;
     }
 
-    public boolean update(User newUser, String newPassword) {
-        if (isMatchedPassword(newUser)) {
-            this.name = newUser.name;
-            this.email = newUser.email;
-            if (!newPassword.isEmpty()) {
+    public boolean update(User updateUser, String newPassword) {
+        if (isMatchedPassword(updateUser)) {
+            this.name = updateUser.name;
+            this.email = updateUser.email;
+            if (!newPassword.isEmpty() && newPassword.length() > 3) {
                 this.password = newPassword;
             }
             return true;
@@ -76,19 +81,24 @@ public class User {
         return false;
     }
 
-    public boolean isMatchedPassword(User newUser) {
-        return isMatchedPassword(newUser.password);
+    public boolean isMatchedPassword(User updateUser) {
+        return isMatchedPassword(updateUser.password);
     }
 
-    public boolean isMatchedPassword(String newPassword) {
-        if (newPassword == null) {
-            return false;
+    public boolean isMatchedPassword(String password) {
+        if (password.isEmpty()) {
+            log.debug("password is : {}", password);
+            throw new NullPointerException("password.null");
+        }
+        if (password.length() < 3) {
+            log.debug("password length is : {}", password.length());
+            throw new IllegalStateException("password.length");
         }
 
-        return newPassword.equals(password);
+        return password.equals(this.password);
     }
 
-    public boolean isMatchedUserId(User otherUser) {
+    public boolean isMatchedUser(User otherUser) {
         if (otherUser == null) {
             return false;
         }

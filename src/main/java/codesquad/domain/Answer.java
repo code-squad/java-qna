@@ -64,16 +64,13 @@ public class Answer {
         if (updateAnswer == null) {
             throw new NullPointerException("answer.null");
         }
-
-        if (!isMatchedUserId(updateUser)) {
-            throw new IllegalArgumentException("Question.id.mismatch");
-        }
+        isMatchedUserId(updateUser);
 
         this.comment = updateAnswer.comment;
         return true;
     }
 
     public boolean isMatchedUserId(User otherUser) {
-        return writer.isMatchedUserId(otherUser);
+        return writer.isMatchedUser(otherUser);
     }
 }

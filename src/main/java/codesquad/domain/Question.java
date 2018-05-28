@@ -92,11 +92,9 @@ public class Question {
 
     public boolean isMatchedUserId(User otherUser) {
         if (otherUser == null) {
-            throw new NullPointerException("other user is null");
+            throw new NullPointerException("user.null");
         }
-        if (!writer.equals(otherUser)) {
-            throw new IllegalStateException("question.id.mismatch");
-        }
+        writer.equals(otherUser);
 
         return true;
     }

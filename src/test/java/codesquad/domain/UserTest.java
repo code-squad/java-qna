@@ -5,6 +5,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.validation.constraints.Null;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -29,27 +31,20 @@ public class UserTest {
     }
 
     @Test
-    public void update_hasnotNewPassword() {
+    public void update_hasNotNewPassword() {
         user.update(newUser, "");
-        assertThat(user.getEmail(), is(newUser.getEmail()));
+        assertThat(user.isMatchedPassword("1234"),is(true));
     }
 
     @Test
     public void update_hasNewPassword() {
-        User newPasswordUser = new User();
-        newPasswordUser.setPassword("4321");
-        user.update(newUser, "4321");
-        assertThat(user.isMatchedPassword(newPasswordUser), is(true));
+        String newPassword = "4321";
+        user.update(user, newPassword);
+        assertThat(user.isMatchedPassword(newPassword), is(true));
     }
 
     @Test
-    public void isSamePassword_pass() {
-        // 1234.equals(1234)
-        assertThat(user.isMatchedPassword(newUser), is(true));
-    }
-
-    @Test
-    public void isSamePassword_fail() {
+    public void isMatchedPassword_fail() {
         newUser.setPassword("4321");
         // 1234.equals(4321)
         assertThat(user.isMatchedPassword(newUser), is(false));

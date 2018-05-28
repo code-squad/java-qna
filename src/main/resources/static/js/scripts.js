@@ -83,7 +83,7 @@ function showModifyAnswer(e) {
                 var editableText = $('<textarea class="form-control" id="answer-contents-' + strings[5] + '"' + ' name="contents"></textarea>').val(content);
                 $("#comment_" + strings[5]).replaceWith(editableText);
 
-                var str = '<button class="link-modify-submit-article" id="answer-modify-submit" href="/api/questions/' + strings[3] + '/answers/' + strings[5] + '/formm">수정 후 등록</button>';
+                var str = '<button class="link-modify-submit-article" id="answer-modify-submit" href="/api/questions/' + strings[3] + '/answers/' + strings[5] + '/form">수정 후 등록</button>';
                 $('#modify-article-' + strings[5]).replaceWith(str);
             } else {
                 alert(data.errorMessage);

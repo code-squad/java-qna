@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpSession;
 
 import static codesquad.domain.utils.HttpSessionUtils.USER_SESSION_KEY;
@@ -61,20 +60,15 @@ public class ApiAnswerController {
     }
 
     @GetMapping("/{answerId}/form")
-    public Result checkPossibilityOfmodifyAnswer(@PathVariable("questionId") Long qId, @PathVariable("answerId") Long aId, HttpSession session, Model model) {
-        log.debug("답변 삭제");
+    public Result checkPossibilityOfModifyAnswer(@PathVariable("questionId") Long qId, @PathVariable("answerId") Long aId, HttpSession session, Model model) {
         Answer answer = answerRepository.findById(aId).get();
         Result result = Result.valid(session, answer, a -> a.matchWriter(getUserFromSession(session)));
-        if (!result.isValid()) {
-            model.addAttribute("errorMessage", result.getErrorMessage());
-            return null;
-        }
         return result;
     }
 
-    @PutMapping("/{answerId}/formm")
+    @PutMapping("/{answerId}/form")
     public Answer modifyAnswer(@PathVariable("questionId") Long qId, @PathVariable("answerId") Long aId, String contents, HttpSession session, Model model) {
-        log.debug("답변 삭제");
+
         Answer answer = answerRepository.findById(aId).get();
         Result result = Result.valid(session, answer, a -> a.matchWriter(getUserFromSession(session)));
         if (!result.isValid()) {

@@ -1,38 +1,98 @@
 package codesquad.web;
 
+import codesquad.domain.AnswerRepository;
 import codesquad.domain.Question;
 import codesquad.domain.QuestionRepository;
+import codesquad.domain.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
 
 @Controller
+@RequestMapping("/questions")
 public class QuestionController {
+    private static final Logger log = LoggerFactory.getLogger(QuestionController.class);
+
     @Autowired
     QuestionRepository questionRepository;
 
-    @PostMapping("/questions")
-    public String questions(Question question) {
-        questionRepository.save(question);
+    @Autowired
+    AnswerRepository answerRepository;
+
+    @PostMapping()
+    public String questions(String title, String contents, HttpSession session) {
+        if (!SessionUtils.isLoginUser(session)) {
+            return "/users/loginForm";
+        }
+
+        User sessionUser = SessionUtils.getUserFromSession(session);
+        Question newQuestion = new Question(sessionUser, title, contents);
+        questionRepository.save(newQuestion);
 
         return "redirect:/";
     }
 
-    @GetMapping("/questions/{id}")
-    public String viewDetail(@PathVariable Long id, Model model) {
-        model.addAttribute("question", questionRepository.findOne(id));
+    @GetMapping("/form")
+    public String form(HttpSession session) {
+        if (!SessionUtils.isLoginUser(session)) {
+            return "/users/loginForm";
+        }
 
-        return "qna/show";
+        log.debug("/questions/form/success");
+        return "/qna/form";
     }
 
-    @GetMapping({"/", "/index"})
-    public String welcome(Model model) {
-        model.addAttribute("posts", questionRepository.findAll(new Sort(Sort.Direction.DESC, "id")));
+    @GetMapping("/{id}")
+    public String showQuestion(@PathVariable Long id, Model model) {
+        Question question = questionRepository.findOne(id);
+        question.setAnswers(answerRepository.findByQuestionId(id));
 
-        return "index";
+        model.addAttribute("question", question);
+
+        return "/qna/show";
+    }
+
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable Long id, HttpSession session) {
+        if (!SessionUtils.isLoginUser(session)) {
+            return "/users/loginForm";
+        }
+
+        User deletingUser = SessionUtils.getUserFromSession(session);
+        Question deleteQuestion = questionRepository.findOne(id);
+
+        deleteQuestion.isMatchedUserId(deletingUser);
+        questionRepository.delete(id);
+
+        return "redirect:/";
+    }
+
+    @PutMapping("/{id}")
+    public String update(@PathVariable Long id, Question updateQuestion, HttpSession session, Model model) {
+        log.debug("update user : {}", updateQuestion);
+        User updateUser = SessionUtils.getUserFromSession(session);
+        Question oldQuestion = questionRepository.findOne(id);
+        updateQuestion.setWriter(updateUser);
+
+        oldQuestion.update(updateQuestion, updateUser);
+        questionRepository.save(oldQuestion);
+
+        return "redirect:/questions/{id}";
+    }
+
+    @GetMapping("/{id}/form")
+    public String updateForm(@PathVariable Long id, HttpSession session, Model model) {
+        User updateUser = SessionUtils.getUserFromSession(session);
+        Question updateQuestion = questionRepository.findOne(id);
+        updateQuestion.isMatchedUserId(updateUser);
+
+        model.addAttribute("updateQuestion", updateQuestion);
+
+        return "/qna/updateForm";
     }
 }

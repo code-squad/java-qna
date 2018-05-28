@@ -63,7 +63,7 @@
                     <div class="qna-comment-slipp">
                         <p class="qna-comment-count"><strong>{{answersCount}}</strong>개의 의견</p>
                         <div class="qna-comment-slipp-articles">
-                            {{#each answers}}
+                            {{#answers}}
                             <article class="article" id="answer-14066">
                                 <div class="article-header">
                                     <div class="article-header-thumb">
@@ -84,7 +84,7 @@
                                     <ul class="article-util-list">
                                         <li>
                                             <a class="link-modify-article"
-                                               href="/questions/{{question.id}}/answers/{{id}}/form">수정</a>
+                                               href="/questions/413/answers/1405/form">수정</a>
                                         </li>
                                         <li>
                                             <form class="form-delete" action="/questions/{{question.id}}/answers/{{id}}"
@@ -96,16 +96,17 @@
                                     </ul>
                                 </div>
                             </article>
-                            {{/each}}
-                            <form class="submit-write" method="post" action="/questions/{{question.id}}/answers">
+                            {{/answers}}
+                            {{#editingAnswer}}
+                            <form class="submit-write" method="post" action="/questions/{{question.id}}/answers/{{id}}">
+                                <input type="hidden" name="_method" value="PUT">
                                 <div class="form-group" style="padding:14px;">
-                                    <textarea class="form-control" name="comment"
-                                              placeholder="Update your status"></textarea>
+                                    <textarea class="form-control" name="comment" placeholder="Update your status">{{comment}}</textarea>
                                 </div>
-                                <button class="btn btn-success pull-right" type="submit">답변하기</button>
+                                <button class="btn btn-success pull-right" type="submit">수정하기</button>
                                 <div class="clearfix"/>
                             </form>
-
+                            {{/editingAnswer}}
                         </div>
                     </div>
                 </div>

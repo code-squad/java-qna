@@ -1,6 +1,8 @@
 package codesquad.domain;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Entity
@@ -21,9 +23,9 @@ public class Question {
     // helper class를 만드는 방법을 익히자.
     @OneToMany(mappedBy = "question")
     private List<Answer> answers;
+    private LocalDateTime createDate;
     private int answersCount;
     private String tag;
-
 
     public Question() {
     }
@@ -32,6 +34,7 @@ public class Question {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
+        this.createDate = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -122,9 +125,16 @@ public class Question {
 
     public void decreaseAnswersCount() {
         if (answersCount > 0) {
-           answersCount--;
-           return;
+            answersCount--;
+            return;
         }
         throw new IllegalStateException("question.answer.count");
+    }
+
+    public String getFormattedCreateDate() {
+        if (createDate == null) {
+            return "";
+        }
+        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd. HH:mm:ss"));
     }
 }

@@ -33,35 +33,25 @@ public class UserController {
         return "list";
     }
 
-    @GetMapping("/{userId}")
-    public String profile(@PathVariable String userId ,Model model){
-        for (User user:userRepository.findAll()) {
-            if (user.getUserId().equals(userId)){
-                model.addAttribute("user", userRepository.findAll());
-            }
-        }
+    @GetMapping("/{id}")
+    public String profile(@PathVariable Long id ,Model model){
+        User user = userRepository.findById(id).get();
+        model.addAttribute("user", user);
         return "profile";
     }
 
-    @GetMapping("/{userId}/form")
-    public String update(@PathVariable String userId, Model model) {
-        for (User user:userRepository.findAll()) {
-            if (user.getUserId().equals(userId)){
-                model.addAttribute("users", userRepository.findAll());
-            }
-        }
+    @GetMapping("/{id}/form")
+    public String update(@PathVariable Long id, Model model) {
+        model.addAttribute("users", userRepository.findById(id).get());
         return "/user/updateForm";
     }
 
-    @PutMapping("/{userId}/update")
-    public String update(@PathVariable String userId, User editor) {
-        List<User> users = userRepository.findAll();
-        for (User user: users) {
-            if (user.matchUser(userId)){
-                user.updateInformation(editor, user.getPassword());
+    @PutMapping("/{id}/update")
+    public String update(@PathVariable Long id, User editor) {
+        User user = userRepository.findById(id).get();
+        if (user.matchUser(user.getUserId())){
+            user.updateInformation(editor, user.getPassword());
                 userRepository.save(user);
-                break;
-            }
         }
         return "redirect:/users/list";
     }

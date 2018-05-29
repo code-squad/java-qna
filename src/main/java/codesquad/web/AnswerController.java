@@ -85,4 +85,18 @@ public class AnswerController {
 
         return "/qna/answerUpdateForm";
     }
+
+    public boolean hasPermission(HttpSession session, Answer answer) {
+        if (!SessionUtils.isLoginUser(session)) {
+            throw new IllegalStateException("로그인이 필요합니다.");
+        }
+
+        User sessionUser = SessionUtils.getUserFromSession(session);
+        log.debug("session user is : {}", sessionUser);
+        if (!answer.isMatchedUserId(sessionUser)) {
+            throw new IllegalStateException("글 작성자와 일치하지 않습니다.");
+        }
+
+        return true;
+    }
 }

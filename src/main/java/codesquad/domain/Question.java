@@ -97,9 +97,8 @@ public class Question {
         if (otherUser == null) {
             throw new NullPointerException("user.null");
         }
-        writer.equals(otherUser);
 
-        return true;
+        return writer.equals(otherUser);
     }
 
     @Override

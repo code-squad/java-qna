@@ -5,7 +5,14 @@
 # * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
 # * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
 
-POST http://localhost:8080/user/create
+### user register
+POST http://localhost:8080/users
 Content-Type: application/x-www-form-urlencoded
 
 userId=htw&password=9229&name=taewonHwang&email=hardLearner@gmail.com11
+
+### user login
+POST http://localhost:8080/users/login
+Content-Type: application/x-www-form-urlencoded
+
+userId=htw&password=9229

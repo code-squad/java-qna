@@ -1,6 +1,8 @@
 package codesquad.domain;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Answer {
@@ -18,6 +20,8 @@ public class Answer {
 
     @Column(nullable = false)
     private String comment;
+
+    private LocalDateTime createDate;
 
     public Answer() {
     }
@@ -72,5 +76,12 @@ public class Answer {
 
     public boolean isMatchedUserId(User otherUser) {
         return writer.isMatchedUser(otherUser);
+    }
+
+    public String getFormattedCreateDate() {
+        if (createDate == null) {
+            return "";
+        }
+        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd. HH:mm:ss"));
     }
 }

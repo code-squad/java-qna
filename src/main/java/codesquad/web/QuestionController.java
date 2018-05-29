@@ -1,17 +1,19 @@
-package codesquad.codesquad.web;
+package codesquad.web;
 
+import codesquad.domain.Question;
+import codesquad.domain.QuestionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Controller
 public class QuestionController {
-    private List<Question> questions = new ArrayList<>();
+
+    @Autowired
+    private QuestionRepository questionRepository;
 
     @GetMapping("/questions/form")
     public String form(Question question) {
@@ -20,22 +22,20 @@ public class QuestionController {
 
     @PostMapping("/questions")
     public String question(Question question){
-        question.setId(questions.size()+1);
-        questions.add(question);
-        System.out.println("post questions");
+        question.setIndex(questionRepository.findAll().size()+1);
+        questionRepository.save(question);
         return "redirect:/";
     }
 
     @GetMapping("/")
     public String getBackToIndex(Model model){
-        model.addAttribute("questions", questions);
-        System.out.println("get questions");
+        model.addAttribute("questions", questionRepository.findAll());
         return "index";
     }
 
-    @GetMapping("/questions/{id}")
-    public String getBackToIndex(@PathVariable int id, Model model){
-        model.addAttribute("question", questions.get(id-1));
+    @GetMapping("/questions/{index}")
+    public String getBackToIndex(@PathVariable Long index, Model model){
+        model.addAttribute("question", questionRepository.findById(index));
         return "show";
     }
 }

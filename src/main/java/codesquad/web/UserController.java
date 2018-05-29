@@ -1,20 +1,20 @@
-package codesquad.codesquad.web;
+package codesquad.web;
 
+import codesquad.domain.User;
+import codesquad.domain.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 @RequestMapping("/users")
 public class UserController {
 
-    private List<User> users = new ArrayList<>();
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/join")
     public String join() {
@@ -23,22 +23,21 @@ public class UserController {
 
     @PostMapping("/create")
     public String create(User user){
-        System.out.println("user: " + user);
-        users.add(user);
+        userRepository.save(user);
         return "redirect:/users/list";
     }
 
     @GetMapping("/list")
     public String list(Model model) {
-        model.addAttribute("users", users);
+        model.addAttribute("users", userRepository.findAll());
         return "list";
     }
 
     @GetMapping("/{userId}")
     public String profile(@PathVariable String userId ,Model model){
-        for (User user:users) {
+        for (User user:userRepository.findAll()) {
             if (user.getUserId().equals(userId)){
-                model.addAttribute("user", user);
+                model.addAttribute("user", userRepository.findAll());
             }
         }
         return "profile";
@@ -46,19 +45,21 @@ public class UserController {
 
     @GetMapping("/{userId}/form")
     public String update(@PathVariable String userId, Model model) {
-        for (User user:users) {
+        for (User user:userRepository.findAll()) {
             if (user.getUserId().equals(userId)){
-                model.addAttribute("users", users);
+                model.addAttribute("users", userRepository.findAll());
             }
         }
         return "/user/updateForm";
     }
 
-    @PostMapping("/{userId}/update")
+    @PutMapping("/{userId}/update")
     public String update(@PathVariable String userId, User editor) {
-        for (User user:users) {
+        List<User> users = userRepository.findAll();
+        for (User user: users) {
             if (user.matchUser(userId)){
                 user.updateInformation(editor, user.getPassword());
+                userRepository.save(user);
                 break;
             }
         }

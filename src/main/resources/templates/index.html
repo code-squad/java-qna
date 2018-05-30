@@ -20,6 +20,9 @@
         <div class="panel panel-default qna-list">
             <ul class="list">
                 {{#posts}}
+                {{#if deleted}}
+
+                {{else}}
                 <li>
                     <div class="wrap">
                         <div class="main">
@@ -38,6 +41,7 @@
                         </div>
                     </div>
                 </li>
+                {{/if}}
                 {{/posts}}
             </ul>
             <div class="row">

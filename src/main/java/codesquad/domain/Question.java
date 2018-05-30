@@ -25,7 +25,7 @@ public class Question {
     private List<Answer> answers;
     private LocalDateTime createDate;
     private int answersCount;
-    private String tag;
+    private boolean deleted = false;
 
     public Question() {
     }
@@ -85,12 +85,20 @@ public class Question {
         this.answersCount = answersCount;
     }
 
-    public String getTag() {
-        return tag;
+    public boolean isDeleted() {
+        return deleted;
     }
 
-    public void setTag(String tag) {
-        this.tag = tag;
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public void delete() {
+        this.deleted = true;
+    }
+
+    public void restore() {
+        this.deleted = false;
     }
 
     public boolean isMatchedUserId(User otherUser) {

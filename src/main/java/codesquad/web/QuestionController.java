@@ -81,7 +81,9 @@ public class QuestionController {
         try {
             Question deleteQuestion = questionRepository.findOne(id);
             hasPermission(session, deleteQuestion);
-            questionRepository.delete(id);
+            deleteQuestion.delete();
+            questionRepository.save(deleteQuestion);
+//            questionRepository.delete(id);
             return "redirect:/";
         } catch (IllegalStateException e) {
             model.addAttribute("errorMessage", e.getMessage());

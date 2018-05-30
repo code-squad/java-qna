@@ -1,6 +1,8 @@
 package codesquad.web;
 
+import codesquad.domain.CustomHelper;
 import codesquad.domain.QuestionRepository;
+import com.github.jknack.handlebars.Handlebars;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,10 @@ public class HomeController {
 
     @GetMapping({"/", "index"})
     public String home(Model model) {
+        Handlebars handlebars = new Handlebars();
+
+        handlebars.registerHelpers(new CustomHelper());
+
         model.addAttribute("posts", questionRepository.findAll(new Sort(Sort.Direction.DESC, "id")));
         log.debug("/index/success");
         return "index";

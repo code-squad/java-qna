@@ -19,8 +19,7 @@ public class Question {
     private String title;
 
     private String contents;
-    // answersCount를 만들자니 인스턴스 변수가 늘어난다.
-    // helper class를 만드는 방법을 익히자.
+    // answersCount를 인스턴스 변수를 쓰지 않고 나타낼 방법은 없는가?
     @OneToMany(mappedBy = "question")
     private List<Answer> answers;
     private LocalDateTime createDate;

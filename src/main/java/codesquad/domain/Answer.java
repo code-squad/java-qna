@@ -22,6 +22,7 @@ public class Answer {
     private String comment;
 
     private LocalDateTime createDate;
+    private boolean deleted = false;
 
     public Answer() {
     }
@@ -83,5 +84,21 @@ public class Answer {
             return "";
         }
         return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd. HH:mm:ss"));
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public void delete() {
+        this.deleted = true;
+    }
+
+    public void restore() {
+        this.deleted = false;
     }
 }

@@ -103,7 +103,7 @@ public class User {
             return false;
         }
         if (!this.equals(otherUser)) {
-            throw new IllegalStateException("user.id.mismatch");
+            return false;
         }
 
         return true;

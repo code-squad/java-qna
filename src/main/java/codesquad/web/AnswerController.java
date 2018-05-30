@@ -66,7 +66,9 @@ public class AnswerController {
         Question question = questionRepository.findOne(questionId);
         question.decreaseAnswersCount();
 
-        answerRepository.delete(answerId);
+        deleteAnswer.delete();
+        answerRepository.save(deleteAnswer);
+//        answerRepository.delete(answerId);
         return "redirect:/questions/{questionId}";
     }
 

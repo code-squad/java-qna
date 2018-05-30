@@ -93,6 +93,10 @@ public class Question {
     }
 
     public void delete() {
+        if (hasOtherUserAnswers()) {
+            throw new IllegalStateException("다른 사용자가 작성한 답변이 포함된 글은 삭제할 수 없습니다.");
+        }
+        deleteAllAnswers();
         this.deleted = true;
     }
 
@@ -142,5 +146,26 @@ public class Question {
             return "";
         }
         return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd. HH:mm:ss"));
+    }
+
+    public boolean hasOtherUserAnswers() {
+        for (Answer answer : answers) {
+            if (answer.isDeleted()) {
+                continue;
+            }
+            if (!answer.isMatchedUserId(writer)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void deleteAllAnswers() {
+        for (Answer answer : answers) {
+            if (answer.isDeleted()) {
+                continue;
+            }
+            answer.delete();
+        }
     }
 }

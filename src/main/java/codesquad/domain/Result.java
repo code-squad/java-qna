@@ -2,8 +2,8 @@ package codesquad.domain;
 
 public enum Result {
     SUCCESS(0, true, null),
-    NEED_LOGIN(1, false, "로그인이 필요합니다ㅏㅏ"),
-    MISMATH_USER(2, false, "작성자와 일치하지 않습니다ㅏㅏ");
+    NEED_LOGIN(1, false, "로그인이 필요합니다."),
+    MISMATCH_USER(2, false, "작성자와 일치하지 않습니다.");
 
     int code;
     boolean valid;

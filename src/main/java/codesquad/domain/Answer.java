@@ -31,6 +31,7 @@ public class Answer {
         this.writer = writer;
         this.question = question;
         this.comment = comment;
+        this.createDate = LocalDateTime.now();
     }
 
     public Long getId() {

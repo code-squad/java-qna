@@ -24,7 +24,8 @@ public class AnswerController {
     @PostMapping("/questions/{questionId}/answers")
     public String answer(@PathVariable Long questionId, String comment, HttpSession session, Model model) {
         if (!SessionUtils.isLoginUser(session)) {
-            return "/users/loginForm";
+            throw new IllegalStateException("need login");
+//            return "/users/loginForm";
         }
 
         User writer = SessionUtils.getUserFromSession(session);
@@ -98,7 +99,7 @@ public class AnswerController {
         User sessionUser = SessionUtils.getUserFromSession(session);
         log.debug("session user is : {}", sessionUser);
         if (!answer.isMatchedUserId(sessionUser)) {
-            return Result.MISMATH_USER;
+            return Result.MISMATCH_USER;
         }
 
         return Result.SUCCESS;

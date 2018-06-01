@@ -33,17 +33,6 @@ public class QuestionController {
         Question newQuestion = new Question(sessionUser, title, contents);
         questionRepository.save(newQuestion);
         return "redirect:/";
-
-//        try {
-//            User sessionUser = SessionUtils.getUserFromSession(session);
-//            Question newQuestion = new Question(sessionUser, title, contents);
-//            hasPermission(session, newQuestion);
-//            questionRepository.save(newQuestion);
-//            return "redirect:/";
-//        } catch (IllegalStateException e) {
-//            model.addAttribute("errorMessage", e.getMessage());
-//            return "/user/login";
-//        }
     }
 
     private Result valid(HttpSession session) {
@@ -67,38 +56,14 @@ public class QuestionController {
         return Result.SUCCESS;
     }
 
-    private boolean hasPermission(HttpSession session, Question question) {
-        hasPermission(session);
-
-        User sessionUser = SessionUtils.getUserFromSession(session);
-        log.debug("session user is : {}", sessionUser);
-        if (!question.isMatchedUserId(sessionUser)) {
-            throw new IllegalStateException("글 작성자와 일치하지 않습니다.");
-        }
-
-        return true;
-    }
-
-    private boolean hasPermission(HttpSession session) {
-        if (!SessionUtils.isLoginUser(session)) {
-            throw new IllegalStateException("로그인이 필요합니다.");
-        }
-
-        return true;
-    }
-
     @GetMapping("/form")
     public String form(HttpSession session, Model model) {
-        try {
-            // question 객체를 생성해야 hasPermission에서 null예외가 나지 않는다. 일단 중복 허용
-            if (!SessionUtils.isLoginUser(session)) {
-                throw new IllegalStateException("로그인이 필요합니다.");
-            }
-        } catch (IllegalStateException e) {
-            model.addAttribute("errorMessage", e.getMessage());
+        Result result = valid(session);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getMessage());
             return "/user/login";
         }
-        log.debug("/questions/form/success");
+
         return "/qna/form";
     }
 
@@ -113,45 +78,47 @@ public class QuestionController {
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id, HttpSession session, Model model) {
-        try {
-            Question deleteQuestion = questionRepository.findOne(id);
-            hasPermission(session, deleteQuestion);
-            deleteQuestion.delete();
-            questionRepository.save(deleteQuestion);
-            return "redirect:/";
-        } catch (IllegalStateException e) {
-            model.addAttribute("errorMessage", e.getMessage());
+        Result result = valid(session);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getMessage());
             return "/user/login";
         }
+
+        Question deleteQuestion = questionRepository.findOne(id);
+        deleteQuestion.delete();
+        questionRepository.save(deleteQuestion);
+        return "redirect:/";
     }
 
     @PutMapping("/{id}")
     public String update(@PathVariable Long id, Question updateQuestion, HttpSession session, Model model) {
+        User updateUser = SessionUtils.getUserFromSession(session);
+        updateQuestion.setWriter(updateUser);
         log.debug("update question : {}", updateQuestion);
-        try {
-            Question oldQuestion = questionRepository.findOne(id);
-            User updateUser = SessionUtils.getUserFromSession(session);
-            updateQuestion.setWriter(updateUser);
-            hasPermission(session, updateQuestion);
-            oldQuestion.update(updateQuestion, updateUser);
-            questionRepository.save(oldQuestion);
-            return "redirect:/questions/{id}";
-        } catch (IllegalStateException e) {
-            model.addAttribute("errorMessage", e.getMessage());
+
+        Result result = valid(session, updateQuestion);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getMessage());
             return "/user/login";
         }
+
+        Question oldQuestion = questionRepository.findOne(id);
+        oldQuestion.update(updateQuestion, updateUser);
+        questionRepository.save(oldQuestion);
+
+        return "redirect:/questions/{id}";
     }
 
     @GetMapping("/{id}/form")
     public String updateForm(@PathVariable Long id, HttpSession session, Model model) {
-        try {
-            Question updateQuestion = questionRepository.findOne(id);
-            hasPermission(session, updateQuestion);
-            model.addAttribute("updateQuestion", updateQuestion);
-            return "/qna/updateForm";
-        } catch (IllegalStateException e) {
-            model.addAttribute("errorMessage", e.getMessage());
+        Result result = valid(session);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getMessage());
             return "/user/login";
         }
+
+        Question updateQuestion = questionRepository.findOne(id);
+        model.addAttribute("updateQuestion", updateQuestion);
+        return "/qna/updateForm";
     }
 }

@@ -12,10 +12,16 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new HttpInterceptor())
                 .addPathPatterns("/*/*")
-                .excludePathPatterns("/users/login")
-                .excludePathPatterns("/questions/*")
+                // home
                 .excludePathPatterns("/index")
-                .excludePathPatterns("/");
+                .excludePathPatterns("/")
+                // login
+                .excludePathPatterns("/user/login.html")
+                .excludePathPatterns("/users/loginForm")
+                .excludePathPatterns("/users/login")
+                // question show
+                .excludePathPatterns("/questions/*")
+                ;
     }
 
     @Override

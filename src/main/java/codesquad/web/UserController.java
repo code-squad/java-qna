@@ -1,16 +1,21 @@
 package codesquad.web;
 
 
+import codesquad.domain.Result;
 import codesquad.domain.User;
 import codesquad.domain.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import java.util.Optional;
 
 import static codesquad.web.SessionUtils.USER_SESSION_KEY;
 
@@ -61,36 +66,40 @@ public class UserController {
 
     @GetMapping("/{id}/form")
     public String getUpdateForm(@PathVariable Long id, Model model, HttpSession session) {
-        if (!SessionUtils.isLoginUser(session)) {
-            return "redirect:/users/loginForm";
+        Result result = valid(session);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getMessage());
+            return "/user/login";
         }
 
+        User user = userRepository.findOne(id);
         User sessionUser = SessionUtils.getUserFromSession(session);
-        sessionUser.isMatchedUser(SessionUtils.getUserFromSession(session));
-        model.addAttribute("user", userRepository.findOne(id));
+        user.isMatchedUser(sessionUser);
+        model.addAttribute("user", user);
 
         return "user/updateForm";
     }
 
     @GetMapping("/loginForm")
-    public String loginForm() {
+    public String loginForm(HttpServletRequest request, Model model) {
+        String errorMessage = (String)request.getAttribute("errorMessage");
+        log.debug("errorMessage : {}", errorMessage);
+        model.addAttribute("errorMessage", Optional.ofNullable(errorMessage).orElse(""));
         return "/user/login";
     }
 
     @PostMapping("/login")
-    public String login(String userId, String password, HttpSession session) {
+    public String login(String userId, String password, HttpSession session, Model model) {
         User user = userRepository.findByUserId(userId);
 
         if (user == null) {
-            log.debug("Login Failure : user null");
-            return "redirect:/users/loginForm";
+            model.addAttribute("errorMessage", Result.MISMATCH_ID.getMessage());
+            return "/user/login";
         }
-
         if (!user.isMatchedPassword(password)) {
-            log.debug("Login Failure : password mismatch");
-            return "redirect:/users/loginForm";
+            model.addAttribute("errorMessage", Result.MISMATCH_PWD.getMessage());
+            return "/user/login";
         }
-
         log.debug("Login success !!");
         session.setAttribute(USER_SESSION_KEY, user);
 
@@ -101,5 +110,26 @@ public class UserController {
     public String logout(HttpSession session) {
         session.removeAttribute(USER_SESSION_KEY);
         return "redirect:/";
+    }
+
+    private Result valid(HttpSession session) {
+        if (!SessionUtils.isLoginUser(session)) {
+            return Result.NEED_LOGIN;
+        }
+        return Result.SUCCESS;
+    }
+
+    private Result valid(HttpSession session, User user) {
+        Result result = valid(session);
+        if (!result.isValid()) {
+            return result;
+        }
+
+        User sessionUser = SessionUtils.getUserFromSession(session);
+        if (!user.isMatchedPassword(sessionUser)) {
+            return Result.MISMATCH_USER;
+        }
+
+        return result;
     }
 }

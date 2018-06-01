@@ -23,17 +23,18 @@ public class AnswerController {
 
     @PostMapping("/questions/{questionId}/answers")
     public String answer(@PathVariable Long questionId, String comment, HttpSession session, Model model) {
-        if (!SessionUtils.isLoginUser(session)) {
-            throw new IllegalStateException("need login");
-//            return "/users/loginForm";
+        Result result = valid(session);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getMessage());
+            return "/user/login";
         }
 
         User writer = SessionUtils.getUserFromSession(session);
         Question question = questionRepository.getOne(questionId);
         question.increaseAnswersCount();
         Answer newAnswer = new Answer(writer, question, comment);
-
         answerRepository.save(newAnswer);
+
         return "redirect:/questions/{questionId}";
     }
 
@@ -90,9 +91,17 @@ public class AnswerController {
         return "/qna/answerUpdateForm";
     }
 
-    public Result valid(HttpSession session, Answer answer) {
+    private Result valid(HttpSession session) {
         if (!SessionUtils.isLoginUser(session)) {
             return Result.NEED_LOGIN;
+        }
+        return Result.SUCCESS;
+    }
+
+    private Result valid(HttpSession session, Answer answer) {
+        Result result = valid(session);
+        if (!result.isValid()) {
+            return result;
         }
 
         User sessionUser = SessionUtils.getUserFromSession(session);
@@ -101,6 +110,6 @@ public class AnswerController {
             return Result.MISMATCH_USER;
         }
 
-        return Result.SUCCESS;
+        return result;
     }
 }

@@ -45,7 +45,7 @@ public class QuestionController {
     private Result valid(HttpSession session, Question question) {
         Result result = valid(session);
         if (!result.isValid()) {
-            return Result.NEED_LOGIN;
+            return result;
         }
 
         User sessionUser = SessionUtils.getUserFromSession(session);

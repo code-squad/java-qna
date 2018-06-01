@@ -69,7 +69,6 @@ public class AnswerController {
 
         deleteAnswer.delete();
         answerRepository.save(deleteAnswer);
-//        answerRepository.delete(answerId);
         return "redirect:/questions/{questionId}";
     }
 

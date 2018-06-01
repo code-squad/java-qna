@@ -1,9 +1,6 @@
 package codesquad.web;
 
-import codesquad.domain.AnswerRepository;
-import codesquad.domain.Question;
-import codesquad.domain.QuestionRepository;
-import codesquad.domain.User;
+import codesquad.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,27 +23,65 @@ public class QuestionController {
 
     @PostMapping()
     public String questions(String title, String contents, HttpSession session, Model model) {
-        try {
-            User sessionUser = SessionUtils.getUserFromSession(session);
-            Question newQuestion = new Question(sessionUser, title, contents);
-            hasPermission(session, newQuestion);
-            questionRepository.save(newQuestion);
-            return "redirect:/";
-        } catch (IllegalStateException e) {
-            model.addAttribute("errorMessage", e.getMessage());
+        Result result = valid(session);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getMessage());
             return "/user/login";
         }
+
+        User sessionUser = SessionUtils.getUserFromSession(session);
+        Question newQuestion = new Question(sessionUser, title, contents);
+        questionRepository.save(newQuestion);
+        return "redirect:/";
+
+//        try {
+//            User sessionUser = SessionUtils.getUserFromSession(session);
+//            Question newQuestion = new Question(sessionUser, title, contents);
+//            hasPermission(session, newQuestion);
+//            questionRepository.save(newQuestion);
+//            return "redirect:/";
+//        } catch (IllegalStateException e) {
+//            model.addAttribute("errorMessage", e.getMessage());
+//            return "/user/login";
+//        }
     }
 
-    public boolean hasPermission(HttpSession session, Question question) {
+    private Result valid(HttpSession session) {
         if (!SessionUtils.isLoginUser(session)) {
-            throw new IllegalStateException("로그인이 필요합니다.");
+            return Result.NEED_LOGIN;
         }
+        return Result.SUCCESS;
+    }
+
+    private Result valid(HttpSession session, Question question) {
+        Result result = valid(session);
+        if (!result.isValid()) {
+            return Result.NEED_LOGIN;
+        }
+
+        User sessionUser = SessionUtils.getUserFromSession(session);
+        if (!question.isMatchedUserId(sessionUser)) {
+            return Result.MISMATCH_USER;
+        }
+
+        return Result.SUCCESS;
+    }
+
+    private boolean hasPermission(HttpSession session, Question question) {
+        hasPermission(session);
 
         User sessionUser = SessionUtils.getUserFromSession(session);
         log.debug("session user is : {}", sessionUser);
         if (!question.isMatchedUserId(sessionUser)) {
             throw new IllegalStateException("글 작성자와 일치하지 않습니다.");
+        }
+
+        return true;
+    }
+
+    private boolean hasPermission(HttpSession session) {
+        if (!SessionUtils.isLoginUser(session)) {
+            throw new IllegalStateException("로그인이 필요합니다.");
         }
 
         return true;

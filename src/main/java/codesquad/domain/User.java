@@ -26,6 +26,21 @@ public class User {
         this.password = password;
     }
 
+    public boolean matchId(Long newId) {
+        if (newId == null) {
+            return false;
+        }
+        return newId.equals(id);
+    }
+
+    public boolean matchPassword(String newPassword) {
+        if (newPassword == null) {
+            return false;
+        }
+
+        return newPassword.equals(password);
+    }
+
     public void setName(String name) {
         this.name = name;
     }

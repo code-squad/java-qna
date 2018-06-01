@@ -2,8 +2,6 @@ package codesquad.web;
 
 import codesquad.domain.User;
 import codesquad.domain.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,8 +12,6 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/users")
 public class UserController {
-    
-    private static final Logger log = LoggerFactory.getLogger(UserController.class);
     
     @Autowired
     private UserRepository userRepository;
@@ -28,30 +24,36 @@ public class UserController {
     @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
 
+
         User user = userRepository.findByUserId(userId);
 
         if (user == null) {
-            log.debug("login failed by user name");
             return "redirect:/users/loginForm";
         }
 
         if (!password.equals(user.getPassword())) {
-            log.debug("login failed by password");
             return "redirect:/users/loginForm";
         }
 
-        log.debug("login success!");
-        session.setAttribute("user", user);
+        session.setAttribute("sessionedUser", user);
 
-        return "redirect:/users/";
+        return "redirect:/";
     }
 
-    @GetMapping("/")
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+
+        session.removeAttribute("sessionedUser");
+
+        return "redirect:/";
+    }
+
+    @GetMapping("")
     public String home() {
         return "index";
     }
 
-    @GetMapping("/join")
+    @GetMapping("/form")
     public String join() {
         return "/user/form";
     }
@@ -76,13 +78,33 @@ public class UserController {
     }
 
     @GetMapping("/{id}/form")
-    public String update(@PathVariable Long id, Model model) {
+    public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
+        Object tempUser = session.getAttribute("sessionedUser");
+        if (tempUser == null) {
+            return "redirect:/users/loginForm";
+        }
+
+        User sessionedUser = (User)tempUser;
+        if (!id.equals(sessionedUser.getId())) {
+            throw new IllegalStateException("You can't update the other user");
+        }
+
         model.addAttribute("users", userRepository.findById(id).get());
         return "/user/updateForm";
     }
 
     @PutMapping("/{id}/update")
-    public String update(@PathVariable Long id, User editor) {
+    public String update(@PathVariable Long id, User editor, HttpSession session) {
+        Object tempUser = session.getAttribute("sessionedUser");
+        if (tempUser == null) {
+            return "redirect:/users/loginForm";
+        }
+
+        User sessionedUser = (User)tempUser;
+        if (!id.equals(sessionedUser.getId())) {
+            throw new IllegalStateException("You can't update the other user");
+        }
+
         User user = userRepository.findById(id).get();
         if (user.matchUser(user.getUserId())){
             user.updateInformation(editor, user.getPassword());

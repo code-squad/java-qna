@@ -23,7 +23,6 @@ public class HttpInterceptor extends HandlerInterceptorAdapter {
         HttpSession session = request.getSession();
         if (!SessionUtils.isLoginUser(session)) {
             request.setAttribute("errorMessage", Result.NEED_LOGIN.getMessage());
-//            response.sendRedirect("/users/loginForm");
             RequestDispatcher rd = request.getRequestDispatcher("/users/loginForm");
             rd.forward(request, response);
             return false;

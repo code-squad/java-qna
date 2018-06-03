@@ -35,34 +35,13 @@ public class QuestionController {
         return "redirect:/";
     }
 
-    private Result valid(HttpSession session) {
-        if (!SessionUtils.isLoginUser(session)) {
-            return Result.NEED_LOGIN;
-        }
-        return Result.SUCCESS;
-    }
-
-    private Result valid(HttpSession session, Question question) {
-        Result result = valid(session);
-        if (!result.isValid()) {
-            return result;
-        }
-
-        User sessionUser = SessionUtils.getUserFromSession(session);
-        if (!question.isMatchedUserId(sessionUser)) {
-            return Result.MISMATCH_USER;
-        }
-
-        return Result.SUCCESS;
-    }
-
     @GetMapping("/form")
     public String form(HttpSession session, Model model) {
-        Result result = valid(session);
-        if (!result.isValid()) {
-            model.addAttribute("errorMessage", result.getMessage());
-            return "/user/login";
-        }
+//        Result result = valid(session);
+//        if (!result.isValid()) {
+//            model.addAttribute("errorMessage", result.getMessage());
+//            return "/user/login";
+//        }
 
         return "/qna/form";
     }
@@ -120,5 +99,26 @@ public class QuestionController {
         Question updateQuestion = questionRepository.findOne(id);
         model.addAttribute("updateQuestion", updateQuestion);
         return "/qna/updateForm";
+    }
+
+    private Result valid(HttpSession session) {
+        if (!SessionUtils.isLoginUser(session)) {
+            return Result.NEED_LOGIN;
+        }
+        return Result.SUCCESS;
+    }
+
+    private Result valid(HttpSession session, Question question) {
+        Result result = valid(session);
+        if (!result.isValid()) {
+            return result;
+        }
+
+        User sessionUser = SessionUtils.getUserFromSession(session);
+        if (!question.isMatchedUserId(sessionUser)) {
+            return Result.MISMATCH_USER;
+        }
+
+        return Result.SUCCESS;
     }
 }

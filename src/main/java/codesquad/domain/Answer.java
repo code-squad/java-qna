@@ -70,7 +70,9 @@ public class Answer {
         if (updateAnswer == null) {
             throw new NullPointerException("answer.null");
         }
-        isMatchedUserId(updateUser);
+        if (!isMatchedUserId(updateUser)) {
+            return false;
+        }
 
         this.comment = updateAnswer.comment;
         return true;

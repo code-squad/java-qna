@@ -30,10 +30,9 @@ public class AnswerTest {
         assertThat(answer1.getComment(), is("질문 1번 수정된 첫 번째 답변"));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void update_fail() {
         Answer editedAnswer = new Answer(user1, question1, "질문 1번 수정된 첫 번째 답변");
-        answer1.update(editedAnswer, user2);
-        assertThat(answer1.getComment(), is("질문 1번 수정된 첫 번째 답변"));
+        assertThat(answer1.update(editedAnswer, user2), is(false));
     }
 }

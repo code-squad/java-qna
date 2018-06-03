@@ -63,11 +63,6 @@ public class UserController {
 
     @GetMapping("/{id}/form")
     public String getUpdateForm(@PathVariable Long id, Model model, HttpSession session) {
-//        Result result = valid(session);
-//        if (!result.isValid()) {
-//            model.addAttribute("errorMessage", result.getMessage());
-//            return "/user/login";
-//        }
 
         User user = userRepository.findOne(id);
         User sessionUser = SessionUtils.getUserFromSession(session);

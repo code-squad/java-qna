@@ -36,13 +36,7 @@ public class QuestionController {
     }
 
     @GetMapping("/form")
-    public String form(HttpSession session, Model model) {
-//        Result result = valid(session);
-//        if (!result.isValid()) {
-//            model.addAttribute("errorMessage", result.getMessage());
-//            return "/user/login";
-//        }
-
+    public String form() {
         return "/qna/form";
     }
 

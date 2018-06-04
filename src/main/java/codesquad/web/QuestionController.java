@@ -45,9 +45,9 @@ public class QuestionController {
         return "index";
     }
 
-    @GetMapping("/questions/{index}")
-    public String getBackToIndex(@PathVariable Long index, Model model){
-        model.addAttribute("question", questionRepository.findById(index));
+    @GetMapping("/questions/{id}")
+    public String getBackToIndex(@PathVariable Long id, Model model) {
+        model.addAttribute("question", questionRepository.findById(id).get());
         return "show";
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 
 @Controller
+@RequestMapping("/questions/{questionId}/answers")
 public class AnswerController {
     private static final Logger log = LoggerFactory.getLogger(AnswerController.class);
 
@@ -21,24 +22,24 @@ public class AnswerController {
     @Autowired
     QuestionRepository questionRepository;
 
-//    @PostMapping("/questions/{questionId}/answers")
-//    public String answer(@PathVariable Long questionId, String comment, HttpSession session, Model model) {
-//        Result result = valid(session);
-//        if (!result.isValid()) {
-//            model.addAttribute("errorMessage", result.getMessage());
-//            return "/user/login";
-//        }
-//
-//        User writer = SessionUtils.getUserFromSession(session);
-//        Question question = questionRepository.getOne(questionId);
-//        question.increaseAnswersCount();
-//        Answer newAnswer = new Answer(writer, question, comment);
-//        answerRepository.save(newAnswer);
-//
-//        return "redirect:/questions/{questionId}";
-//    }
+    @PostMapping()
+    public String answer(@PathVariable Long questionId, String comment, HttpSession session, Model model) {
+        Result result = valid(session);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getMessage());
+            return "/user/login";
+        }
 
-    @PutMapping("/questions/{questionId}/answers/{answerId}")
+        User writer = SessionUtils.getUserFromSession(session);
+        Question question = questionRepository.getOne(questionId);
+        question.increaseAnswersCount();
+        Answer newAnswer = new Answer(writer, question, comment);
+        answerRepository.save(newAnswer);
+
+        return "redirect:/questions/{questionId}";
+    }
+
+    @PutMapping("/{answerId}")
     public String update(@PathVariable Long questionId, @PathVariable Long answerId, String comment, HttpSession session, Model model) {
         Answer oldAnswer = answerRepository.findOne(answerId);
         Result result = valid(session, oldAnswer);
@@ -56,7 +57,7 @@ public class AnswerController {
         return "redirect:/questions/{questionId}";
     }
 
-    @DeleteMapping("/questions/{questionId}/answers/{answerId}")
+    @DeleteMapping("/{answerId}")
     public String delete(@PathVariable Long questionId, @PathVariable Long answerId, HttpSession session, Model model) {
         Answer deleteAnswer = answerRepository.findOne(answerId);
         Result result = valid(session, deleteAnswer);
@@ -73,7 +74,7 @@ public class AnswerController {
         return "redirect:/questions/{questionId}";
     }
 
-    @GetMapping("/questions/{questionId}/answers/{answerId}/form")
+    @GetMapping("/{answerId}/form")
     public String updateForm(@PathVariable Long questionId, @PathVariable Long answerId, HttpSession session, Model model) {
         Answer updateAnswer = answerRepository.findOne(answerId);
         Result result = valid(session, updateAnswer);

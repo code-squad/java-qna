@@ -21,22 +21,22 @@ public class AnswerController {
     @Autowired
     QuestionRepository questionRepository;
 
-    @PostMapping("/questions/{questionId}/answers")
-    public String answer(@PathVariable Long questionId, String comment, HttpSession session, Model model) {
-        Result result = valid(session);
-        if (!result.isValid()) {
-            model.addAttribute("errorMessage", result.getMessage());
-            return "/user/login";
-        }
-
-        User writer = SessionUtils.getUserFromSession(session);
-        Question question = questionRepository.getOne(questionId);
-        question.increaseAnswersCount();
-        Answer newAnswer = new Answer(writer, question, comment);
-        answerRepository.save(newAnswer);
-
-        return "redirect:/questions/{questionId}";
-    }
+//    @PostMapping("/questions/{questionId}/answers")
+//    public String answer(@PathVariable Long questionId, String comment, HttpSession session, Model model) {
+//        Result result = valid(session);
+//        if (!result.isValid()) {
+//            model.addAttribute("errorMessage", result.getMessage());
+//            return "/user/login";
+//        }
+//
+//        User writer = SessionUtils.getUserFromSession(session);
+//        Question question = questionRepository.getOne(questionId);
+//        question.increaseAnswersCount();
+//        Answer newAnswer = new Answer(writer, question, comment);
+//        answerRepository.save(newAnswer);
+//
+//        return "redirect:/questions/{questionId}";
+//    }
 
     @PutMapping("/questions/{questionId}/answers/{answerId}")
     public String update(@PathVariable Long questionId, @PathVariable Long answerId, String comment, HttpSession session, Model model) {

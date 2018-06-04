@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 
 @Controller
+@RequestMapping("/questions/{questionId}/answers")
 public class AnswerController {
     private static final Logger log = LoggerFactory.getLogger(AnswerController.class);
 
@@ -21,29 +22,33 @@ public class AnswerController {
     @Autowired
     QuestionRepository questionRepository;
 
-    @PostMapping("/questions/{questionId}/answers")
+    @PostMapping()
     public String answer(@PathVariable Long questionId, String comment, HttpSession session, Model model) {
-        if (!SessionUtils.isLoginUser(session)) {
-            return "/users/loginForm";
+        Result result = valid(session);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getMessage());
+            return "/user/login";
         }
 
         User writer = SessionUtils.getUserFromSession(session);
         Question question = questionRepository.getOne(questionId);
         question.increaseAnswersCount();
         Answer newAnswer = new Answer(writer, question, comment);
-
         answerRepository.save(newAnswer);
+
         return "redirect:/questions/{questionId}";
     }
 
-    @PutMapping("/questions/{questionId}/answers/{answerId}")
-    public String update(@PathVariable Long questionId, @PathVariable Long answerId, String comment, HttpSession session) {
-        if (!SessionUtils.isLoginUser(session)) {
-            return "/users/loginForm";
+    @PutMapping("/{answerId}")
+    public String update(@PathVariable Long questionId, @PathVariable Long answerId, String comment, HttpSession session, Model model) {
+        Answer oldAnswer = answerRepository.findOne(answerId);
+        Result result = valid(session, oldAnswer);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getMessage());
+            return "/user/login";
         }
 
         User updateUser = SessionUtils.getUserFromSession(session);
-        Answer oldAnswer = answerRepository.findOne(answerId);
         Question question = questionRepository.findOne(questionId);
         Answer updateAnswer = new Answer(updateUser, question, comment);
         oldAnswer.update(updateAnswer, updateUser);
@@ -52,31 +57,32 @@ public class AnswerController {
         return "redirect:/questions/{questionId}";
     }
 
-    @DeleteMapping("/questions/{questionId}/answers/{answerId}")
-    public String delete(@PathVariable Long questionId, @PathVariable Long answerId, HttpSession session) {
-        if (!SessionUtils.isLoginUser(session)) {
-            return "/users/loginForm";
+    @DeleteMapping("/{answerId}")
+    public String delete(@PathVariable Long questionId, @PathVariable Long answerId, HttpSession session, Model model) {
+        Answer deleteAnswer = answerRepository.findOne(answerId);
+        Result result = valid(session, deleteAnswer);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getMessage());
+            return "/user/login";
         }
 
-        User deleteUser = SessionUtils.getUserFromSession(session);
-        Answer deleteAnswer = answerRepository.findOne(answerId);
         Question question = questionRepository.findOne(questionId);
         question.decreaseAnswersCount();
-        deleteAnswer.isMatchedUserId(deleteUser);
 
-        answerRepository.delete(answerId);
+        deleteAnswer.delete();
+        answerRepository.save(deleteAnswer);
         return "redirect:/questions/{questionId}";
     }
 
-    @GetMapping("/questions/{questionId}/answers/{answerId}/form")
+    @GetMapping("/{answerId}/form")
     public String updateForm(@PathVariable Long questionId, @PathVariable Long answerId, HttpSession session, Model model) {
-        if (!SessionUtils.isLoginUser(session)) {
-            return "/users/loginForm";
+        Answer updateAnswer = answerRepository.findOne(answerId);
+        Result result = valid(session, updateAnswer);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getMessage());
+            return "/user/login";
         }
 
-        User updateUser = SessionUtils.getUserFromSession(session);
-        Answer updateAnswer = answerRepository.findOne(answerId);
-        updateAnswer.isMatchedUserId(updateUser);
         Question question = questionRepository.findOne(questionId);
         question.setAnswers(answerRepository.findByQuestionId(questionId));
 
@@ -84,5 +90,27 @@ public class AnswerController {
         model.addAttribute("editingAnswer", answerRepository.findOne(answerId));
 
         return "/qna/answerUpdateForm";
+    }
+
+    private Result valid(HttpSession session) {
+        if (!SessionUtils.isLoginUser(session)) {
+            return Result.NEED_LOGIN;
+        }
+        return Result.SUCCESS;
+    }
+
+    private Result valid(HttpSession session, Answer answer) {
+        Result result = valid(session);
+        if (!result.isValid()) {
+            return result;
+        }
+
+        User sessionUser = SessionUtils.getUserFromSession(session);
+        log.debug("session user is : {}", sessionUser);
+        if (!answer.isMatchedUserId(sessionUser)) {
+            return Result.MISMATCH_USER;
+        }
+
+        return result;
     }
 }

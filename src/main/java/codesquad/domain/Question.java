@@ -1,6 +1,8 @@
 package codesquad.domain;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Entity
@@ -17,13 +19,12 @@ public class Question {
     private String title;
 
     private String contents;
-    // answersCount를 만들자니 인스턴스 변수가 늘어난다.
-    // helper class를 만드는 방법을 익히자.
+    // answersCount를 인스턴스 변수를 쓰지 않고 나타낼 방법은 없는가?
     @OneToMany(mappedBy = "question")
     private List<Answer> answers;
+    private LocalDateTime createDate;
     private int answersCount;
-    private String tag;
-
+    private boolean deleted = false;
 
     public Question() {
     }
@@ -32,6 +33,7 @@ public class Question {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
+        this.createDate = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -82,21 +84,32 @@ public class Question {
         this.answersCount = answersCount;
     }
 
-    public String getTag() {
-        return tag;
+    public boolean isDeleted() {
+        return deleted;
     }
 
-    public void setTag(String tag) {
-        this.tag = tag;
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public void delete() {
+        if (hasOtherUserAnswers()) {
+            throw new IllegalStateException("다른 사용자가 작성한 답변이 포함된 글은 삭제할 수 없습니다.");
+        }
+        deleteAllAnswers();
+        this.deleted = true;
+    }
+
+    public void restore() {
+        this.deleted = false;
     }
 
     public boolean isMatchedUserId(User otherUser) {
         if (otherUser == null) {
             throw new NullPointerException("user.null");
         }
-        writer.equals(otherUser);
 
-        return true;
+        return writer.equals(otherUser);
     }
 
     @Override
@@ -122,9 +135,37 @@ public class Question {
 
     public void decreaseAnswersCount() {
         if (answersCount > 0) {
-           answersCount--;
-           return;
+            answersCount--;
+            return;
         }
         throw new IllegalStateException("question.answer.count");
+    }
+
+    public String getFormattedCreateDate() {
+        if (createDate == null) {
+            return "";
+        }
+        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd. HH:mm:ss"));
+    }
+
+    public boolean hasOtherUserAnswers() {
+        for (Answer answer : answers) {
+            if (answer.isDeleted()) {
+                continue;
+            }
+            if (!answer.isMatchedUserId(writer)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void deleteAllAnswers() {
+        for (Answer answer : answers) {
+            if (answer.isDeleted()) {
+                continue;
+            }
+            answer.delete();
+        }
     }
 }

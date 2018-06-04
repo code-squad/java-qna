@@ -31,7 +31,7 @@
                         <div class="article-header-text">
                             <a href="/users/{{writer.id}}" class="article-author-name">{{writer.userId}}</a>
                             <a href="/questions/413" class="article-header-time" title="퍼머링크">
-                                2015-12-30 01:47
+                                {{formattedCreateDate}}
                                 <i class="icon-link"></i>
                             </a>
                         </div>
@@ -64,6 +64,8 @@
                         <p class="qna-comment-count"><strong>{{answersCount}}</strong>개의 의견</p>
                         <div class="qna-comment-slipp-articles">
                             {{#each answers}}
+                            {{#if deleted}}
+                            {{else}}
                             <article class="article" id="answer-14066">
                                 <div class="article-header">
                                     <div class="article-header-thumb">
@@ -73,7 +75,7 @@
                                     <div class="article-header-text">
                                         <a href="/users/1/자바지기" class="article-author-name">{{writer.userId}}</a>
                                         <a href="#answer-1434" class="article-header-time" title="퍼머링크">
-                                            2016-01-12 14:06
+                                            {{formattedCreateDate}}
                                         </a>
                                     </div>
                                 </div>
@@ -96,6 +98,7 @@
                                     </ul>
                                 </div>
                             </article>
+                            {{/if}}
                             {{/each}}
                             <form class="submit-write" method="post" action="/questions/{{question.id}}/answers">
                                 <div class="form-group" style="padding:14px;">

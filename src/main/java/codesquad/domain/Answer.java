@@ -1,6 +1,8 @@
 package codesquad.domain;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Answer {
@@ -19,6 +21,9 @@ public class Answer {
     @Column(nullable = false)
     private String comment;
 
+    private LocalDateTime createDate;
+    private boolean deleted = false;
+
     public Answer() {
     }
 
@@ -26,6 +31,7 @@ public class Answer {
         this.writer = writer;
         this.question = question;
         this.comment = comment;
+        this.createDate = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -64,7 +70,9 @@ public class Answer {
         if (updateAnswer == null) {
             throw new NullPointerException("answer.null");
         }
-        isMatchedUserId(updateUser);
+        if (!isMatchedUserId(updateUser)) {
+            return false;
+        }
 
         this.comment = updateAnswer.comment;
         return true;
@@ -72,5 +80,28 @@ public class Answer {
 
     public boolean isMatchedUserId(User otherUser) {
         return writer.isMatchedUser(otherUser);
+    }
+
+    public String getFormattedCreateDate() {
+        if (createDate == null) {
+            return "";
+        }
+        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd. HH:mm:ss"));
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public void delete() {
+        this.deleted = true;
+    }
+
+    public void restore() {
+        this.deleted = false;
     }
 }

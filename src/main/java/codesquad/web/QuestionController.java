@@ -1,9 +1,6 @@
 package codesquad.web;
 
-import codesquad.domain.AnswerRepository;
-import codesquad.domain.Question;
-import codesquad.domain.QuestionRepository;
-import codesquad.domain.User;
+import codesquad.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,25 +22,21 @@ public class QuestionController {
     AnswerRepository answerRepository;
 
     @PostMapping()
-    public String questions(String title, String contents, HttpSession session) {
-        if (!SessionUtils.isLoginUser(session)) {
-            return "/users/loginForm";
+    public String questions(String title, String contents, HttpSession session, Model model) {
+        Result result = valid(session);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getMessage());
+            return "/user/login";
         }
 
         User sessionUser = SessionUtils.getUserFromSession(session);
         Question newQuestion = new Question(sessionUser, title, contents);
         questionRepository.save(newQuestion);
-
         return "redirect:/";
     }
 
     @GetMapping("/form")
-    public String form(HttpSession session) {
-        if (!SessionUtils.isLoginUser(session)) {
-            return "/users/loginForm";
-        }
-
-        log.debug("/questions/form/success");
+    public String form() {
         return "/qna/form";
     }
 
@@ -51,34 +44,38 @@ public class QuestionController {
     public String showQuestion(@PathVariable Long id, Model model) {
         Question question = questionRepository.findOne(id);
         question.setAnswers(answerRepository.findByQuestionId(id));
-
         model.addAttribute("question", question);
 
         return "/qna/show";
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id, HttpSession session) {
-        if (!SessionUtils.isLoginUser(session)) {
-            return "/users/loginForm";
+    public String delete(@PathVariable Long id, HttpSession session, Model model) {
+        Result result = valid(session);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getMessage());
+            return "/user/login";
         }
 
-        User deletingUser = SessionUtils.getUserFromSession(session);
         Question deleteQuestion = questionRepository.findOne(id);
-
-        deleteQuestion.isMatchedUserId(deletingUser);
-        questionRepository.delete(id);
-
+        deleteQuestion.delete();
+        questionRepository.save(deleteQuestion);
         return "redirect:/";
     }
 
     @PutMapping("/{id}")
     public String update(@PathVariable Long id, Question updateQuestion, HttpSession session, Model model) {
-        log.debug("update user : {}", updateQuestion);
         User updateUser = SessionUtils.getUserFromSession(session);
-        Question oldQuestion = questionRepository.findOne(id);
         updateQuestion.setWriter(updateUser);
+        log.debug("update question : {}", updateQuestion);
 
+        Result result = valid(session, updateQuestion);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getMessage());
+            return "/user/login";
+        }
+
+        Question oldQuestion = questionRepository.findOne(id);
         oldQuestion.update(updateQuestion, updateUser);
         questionRepository.save(oldQuestion);
 
@@ -87,12 +84,35 @@ public class QuestionController {
 
     @GetMapping("/{id}/form")
     public String updateForm(@PathVariable Long id, HttpSession session, Model model) {
-        User updateUser = SessionUtils.getUserFromSession(session);
+        Result result = valid(session);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getMessage());
+            return "/user/login";
+        }
+
         Question updateQuestion = questionRepository.findOne(id);
-        updateQuestion.isMatchedUserId(updateUser);
-
         model.addAttribute("updateQuestion", updateQuestion);
-
         return "/qna/updateForm";
+    }
+
+    private Result valid(HttpSession session) {
+        if (!SessionUtils.isLoginUser(session)) {
+            return Result.NEED_LOGIN;
+        }
+        return Result.SUCCESS;
+    }
+
+    private Result valid(HttpSession session, Question question) {
+        Result result = valid(session);
+        if (!result.isValid()) {
+            return result;
+        }
+
+        User sessionUser = SessionUtils.getUserFromSession(session);
+        if (!question.isMatchedUserId(sessionUser)) {
+            return Result.MISMATCH_USER;
+        }
+
+        return Result.SUCCESS;
     }
 }

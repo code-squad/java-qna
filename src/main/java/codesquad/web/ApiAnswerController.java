@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
-@Controller
-@RequestMapping("/questions/{questionId}/answers")
-public class AnswerController {
-    private static final Logger log = LoggerFactory.getLogger(AnswerController.class);
+@RestController
+@RequestMapping("/api/questions/{questionId}/answers")
+public class ApiAnswerController {
+    private static final Logger log = LoggerFactory.getLogger(ApiAnswerController.class);
 
     @Autowired
     AnswerRepository answerRepository;
@@ -22,22 +22,20 @@ public class AnswerController {
     @Autowired
     QuestionRepository questionRepository;
 
-//    @PostMapping()
-//    public String answer(@PathVariable Long questionId, String comment, HttpSession session, Model model) {
-//        Result result = valid(session);
-//        if (!result.isValid()) {
-//            model.addAttribute("errorMessage", result.getMessage());
-//            return "/user/login";
-//        }
-//
-//        User writer = SessionUtils.getUserFromSession(session);
-//        Question question = questionRepository.getOne(questionId);
-//        question.increaseAnswersCount();
-//        Answer newAnswer = new Answer(writer, question, comment);
-//        answerRepository.save(newAnswer);
-//
-//        return "redirect:/questions/{questionId}";
-//    }
+    @PostMapping()
+    public Answer answer(@PathVariable Long questionId, String comment, HttpSession session, Model model) {
+        Result result = valid(session);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getMessage());
+            return null;
+        }
+
+        User writer = SessionUtils.getUserFromSession(session);
+        Question question = questionRepository.getOne(questionId);
+        question.increaseAnswersCount();
+        Answer newAnswer = new Answer(writer, question, comment);
+        return answerRepository.save(newAnswer);
+    }
 
     @PutMapping("/{answerId}")
     public String update(@PathVariable Long questionId, @PathVariable Long answerId, String comment, HttpSession session, Model model) {

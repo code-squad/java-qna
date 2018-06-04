@@ -3,6 +3,7 @@ package codesquad.domain;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 @Entity
 public class Question {
@@ -78,6 +79,15 @@ public class Question {
         return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd. HH:mm:ss"));
     }
 
+    public void update(String title, String contents) {
+        this.title = title;
+        this.contents = contents;
+    }
+
+    public boolean isSameWriter(User loginUser) {
+        return this.writer.equals(loginUser);
+    }
+
     @Override
     public String toString() {
         return "Question{" +
@@ -87,10 +97,5 @@ public class Question {
                 ", contents='" + contents + '\'' +
                 ", index=" + index +
                 '}';
-    }
-
-    public void update(String title, String contents) {
-        this.title = title;
-        this.contents = contents;
     }
 }

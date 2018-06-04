@@ -1,9 +1,6 @@
 package codesquad.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Question {
@@ -11,19 +8,27 @@ public class Question {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false, length = 20)
-    private String writer;
-
-    private int index;
-    private String title;
-    private String contents;
-
-    public int getIndex() {
-        return index;
+    public Question() {
     }
 
-    public void setIndex(int id) {
-        this.index = id;
+    public Question(String writer, String title, String contents) {
+        this.writer = writer;
+        this.title = title;
+        this.contents = contents;
+    }
+
+    private String writer;
+
+    private String title;
+    private String contents;
+    private int index;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getWriter() {
@@ -50,13 +55,22 @@ public class Question {
         this.contents = contents;
     }
 
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
     @Override
     public String toString() {
         return "Question{" +
-                "index=" + index +
+                "id=" + id +
                 ", writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
+                ", index=" + index +
                 '}';
     }
 }

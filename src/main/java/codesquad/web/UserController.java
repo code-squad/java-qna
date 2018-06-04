@@ -98,8 +98,8 @@ public class UserController {
         }
 
         User sessionedUser = (User)HttpSessionUtils.getUserFromSession(session);
-        if (!!sessionedUser.matchId(id)) {
-            throw new IllegalStateException("You can't update the other user");
+        if (!sessionedUser.matchId(id)) {
+            throw new IllegalStateException("You can't update another user");
         }
 
         User user = userRepository.findById(id).get();

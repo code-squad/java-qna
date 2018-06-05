@@ -21,7 +21,6 @@ public class Answer extends AbstractEntiry {
     @JsonProperty
     private String comment;
 
-//    private LocalDateTime createDate;
     private boolean deleted = false;
 
     public Answer() {

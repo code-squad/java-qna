@@ -1,5 +1,8 @@
 package codesquad.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum Result {
     SUCCESS(0, true, null),
     NEED_LOGIN(1, false, "로그인이 필요합니다."),
@@ -26,6 +29,10 @@ public enum Result {
     }
 
     public boolean isValid() {
+        return this.valid;
+    }
+
+    public boolean getValid() {
         return this.valid;
     }
 

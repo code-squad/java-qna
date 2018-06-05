@@ -5,7 +5,6 @@ import codesquad.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +21,7 @@ public class ApiAnswerController {
     @Autowired
     QuestionRepository questionRepository;
 
-    @PostMapping()
+    @PostMapping("")
     public Answer answer(@PathVariable Long questionId, String comment, HttpSession session, Model model) {
         Result result = valid(session);
         if (!result.isValid()) {
@@ -56,12 +55,12 @@ public class ApiAnswerController {
     }
 
     @DeleteMapping("/{answerId}")
-    public String delete(@PathVariable Long questionId, @PathVariable Long answerId, HttpSession session, Model model) {
+    public Result delete(@PathVariable Long questionId, @PathVariable Long answerId, HttpSession session, Model model) {
         Answer deleteAnswer = answerRepository.findOne(answerId);
         Result result = valid(session, deleteAnswer);
         if (!result.isValid()) {
             model.addAttribute("errorMessage", result.getMessage());
-            return "/user/login";
+            return result;
         }
 
         Question question = questionRepository.findOne(questionId);
@@ -69,7 +68,7 @@ public class ApiAnswerController {
 
         deleteAnswer.delete();
         answerRepository.save(deleteAnswer);
-        return "redirect:/questions/{questionId}";
+        return Result.SUCCESS;
     }
 
     @GetMapping("/{answerId}/form")

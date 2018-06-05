@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.Arrays;
 
 @Controller
 @RequestMapping("/questions")
@@ -43,6 +44,7 @@ public class QuestionController {
     @GetMapping("/{id}")
     public String showQuestion(@PathVariable Long id, Model model) {
         Question question = questionRepository.findOne(id);
+        log.debug("this is answers : {}", Arrays.toString(answerRepository.findByQuestionId(id).toArray()));
         question.setAnswers(answerRepository.findByQuestionId(id));
         model.addAttribute("question", question);
 

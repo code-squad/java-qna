@@ -1,5 +1,7 @@
 package codesquad.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,13 +17,20 @@ public class User {
 
     @Id
     @GeneratedValue
+    @JsonProperty
     private Long id;
 
     @Column(nullable = false)
+    @JsonProperty
     private String userId;
 
+    @JsonIgnore
     private String password;
+
+    @JsonProperty
     private String name;
+
+    @JsonProperty
     private String email;
 
     public User() {

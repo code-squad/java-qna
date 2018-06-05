@@ -1,27 +1,38 @@
 package codesquad.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Question {
     @Id
     @GeneratedValue
+    @JsonProperty
     private Long id;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_id"))
+    @JsonProperty
     private User writer;
 
+    @JsonProperty
     @Column(nullable = false)
     private String title;
 
+    @JsonProperty
     private String contents;
     // answersCount를 인스턴스 변수를 쓰지 않고 나타낼 방법은 없는가?
     @OneToMany(mappedBy = "question")
+    @JsonIgnore
     private List<Answer> answers;
+
     private LocalDateTime createDate;
     private int answersCount;
     private boolean deleted = false;
@@ -91,6 +102,8 @@ public class Question {
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }
+
+
 
     public void delete() {
         if (hasOtherUserAnswers()) {

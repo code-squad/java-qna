@@ -1,24 +1,32 @@
 package codesquad.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Entity
+
 public class Answer {
     @Id
     @GeneratedValue
+    @JsonProperty
     private Long id;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_id"))
+    @JsonProperty
     private User writer;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
+    @JsonProperty
     private Question question;
 
     @Column(nullable = false)
+    @JsonProperty
     private String comment;
 
     private LocalDateTime createDate;
@@ -65,6 +73,8 @@ public class Answer {
     public void setComment(String comment) {
         this.comment = comment;
     }
+
+
 
     public boolean update(Answer updateAnswer, User updateUser) {
         if (updateAnswer == null) {

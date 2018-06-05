@@ -7,9 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import java.util.Objects;
 
 @Entity
 public class User extends AbstractEntiry {
@@ -32,11 +29,16 @@ public class User extends AbstractEntiry {
     public User() {
     }
 
-    public User(String userId, String password, String name, String email) {
+    public User(String id, String userId, String password, String name, String email) {
+        super(Long.valueOf(id));
         this.userId = userId;
         this.password = password;
         this.name = name;
         this.email = email;
+    }
+
+    public User(String userId, String password, String name, String email) {
+        this(null, userId, password, name, email);
     }
 
     public void setUserId(String userId) {

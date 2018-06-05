@@ -63,10 +63,12 @@ public class UserController {
 
     @GetMapping("/{id}/form")
     public String getUpdateForm(@PathVariable Long id, Model model, HttpSession session) {
-
         User user = userRepository.findOne(id);
         User sessionUser = SessionUtils.getUserFromSession(session);
-        user.isMatchedUser(sessionUser);
+        if (!user.isMatchedUser(sessionUser)) {
+            model.addAttribute("errorMessage", Result.MISMATCH_USER.getMessage());
+            return "/user/login";
+        }
         model.addAttribute("user", user);
 
         return "user/updateForm";

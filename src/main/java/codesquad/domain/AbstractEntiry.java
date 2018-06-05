@@ -29,7 +29,9 @@ abstract public class AbstractEntiry {
     @LastModifiedDate
     private LocalDateTime modifiedDate;
 
-    public void setId(Long id) {
+    protected AbstractEntiry() {}
+
+    protected AbstractEntiry(Long id) {
         this.id = id;
     }
 

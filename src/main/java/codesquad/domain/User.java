@@ -12,13 +12,8 @@ import javax.persistence.Id;
 import java.util.Objects;
 
 @Entity
-public class User {
+public class User extends AbstractEntiry {
     private static final Logger log = LoggerFactory.getLogger(User.class);
-
-    @Id
-    @GeneratedValue
-    @JsonProperty
-    private Long id;
 
     @Column(nullable = false)
     @JsonProperty
@@ -41,14 +36,6 @@ public class User {
         this.password = password;
         this.name = name;
         this.email = email;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setUserId(String userId) {
@@ -81,11 +68,6 @@ public class User {
 
     public String getEmail() {
         return email;
-    }
-
-    @Override
-    public String toString() {
-        return userId + " " + password + " " + name + " " + email;
     }
 
     public boolean update(User updateUser, String newPassword) {
@@ -129,15 +111,13 @@ public class User {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
+    public String toString() {
+        return "User{" +
+                "Id='" + getId() + '\'' +
+                ", userId='" + userId + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

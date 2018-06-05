@@ -107,7 +107,7 @@ public class AnswerController {
 
         User sessionUser = SessionUtils.getUserFromSession(session);
         log.debug("session user is : {}", sessionUser);
-        if (!answer.isMatchedUserId(sessionUser)) {
+        if (!answer.isMatchedUser(sessionUser)) {
             return Result.MISMATCH_USER;
         }
 

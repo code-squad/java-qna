@@ -15,7 +15,7 @@ public class AnswerTest {
     @Before
     public void setUp() {
         user1 = new User();
-        user1.setId((long) 1);
+        user1.setId((long)1);
         user2 = new User();
         user2.setId((long) 2);
 

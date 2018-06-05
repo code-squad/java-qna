@@ -111,7 +111,7 @@ public class QuestionController {
         }
 
         User sessionUser = SessionUtils.getUserFromSession(session);
-        if (!question.isMatchedUserId(sessionUser)) {
+        if (!question.isMatchedUser(sessionUser)) {
             return Result.MISMATCH_USER;
         }
 

@@ -5,18 +5,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Question {
-    @Id
-    @GeneratedValue
-    @JsonProperty
-    private Long id;
-
+public class Question extends AbstractEntiry {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_id"))
     @JsonProperty
@@ -33,8 +26,8 @@ public class Question {
     @JsonIgnore
     private List<Answer> answers;
 
-    private LocalDateTime createDate;
-    private int answersCount;
+    @JsonProperty
+    private Integer answersCount = 0;
     private boolean deleted = false;
 
     public Question() {
@@ -44,15 +37,6 @@ public class Question {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-        this.createDate = LocalDateTime.now();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public User getWriter() {
@@ -103,8 +87,6 @@ public class Question {
         this.deleted = deleted;
     }
 
-
-
     public void delete() {
         if (hasOtherUserAnswers()) {
             throw new IllegalStateException("다른 사용자가 작성한 답변이 포함된 글은 삭제할 수 없습니다.");
@@ -117,7 +99,8 @@ public class Question {
         this.deleted = false;
     }
 
-    public boolean isMatchedUserId(User otherUser) {
+    @Override
+    public boolean isMatchedUser(User otherUser) {
         if (otherUser == null) {
             throw new NullPointerException("user.null");
         }
@@ -134,7 +117,7 @@ public class Question {
         if (updateQuestion.title == null || otherUser == null) {
             return false;
         }
-        isMatchedUserId(otherUser);
+        isMatchedUser(otherUser);
 
         this.title = updateQuestion.title;
         this.contents = updateQuestion.contents;
@@ -154,19 +137,12 @@ public class Question {
         throw new IllegalStateException("question.answer.count");
     }
 
-    public String getFormattedCreateDate() {
-        if (createDate == null) {
-            return "";
-        }
-        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd. HH:mm:ss"));
-    }
-
     public boolean hasOtherUserAnswers() {
         for (Answer answer : answers) {
             if (answer.isDeleted()) {
                 continue;
             }
-            if (!answer.isMatchedUserId(writer)) {
+            if (!answer.isMatchedUser(writer)) {
                 return true;
             }
         }

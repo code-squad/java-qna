@@ -52,7 +52,7 @@ public class QuestionTest {
     public void isMatchUserId() {
         User editingUser = new User();
         editingUser.setId((long) 1);
-        assertThat(question1.isMatchedUserId(editingUser), is(true));
+        assertThat(question1.isMatchedUser(editingUser), is(true));
     }
 
     @Test(expected = IllegalStateException.class)

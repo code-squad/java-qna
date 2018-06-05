@@ -17,10 +17,10 @@ public class QuestionController {
     private static final Logger log = LoggerFactory.getLogger(QuestionController.class);
 
     @Autowired
-    QuestionRepository questionRepository;
+    private QuestionRepository questionRepository;
 
     @Autowired
-    AnswerRepository answerRepository;
+    private AnswerRepository answerRepository;
 
     @PostMapping()
     public String questions(String title, String contents, HttpSession session, Model model) {
@@ -45,7 +45,6 @@ public class QuestionController {
     public String showQuestion(@PathVariable Long id, Model model) {
         Question question = questionRepository.findOne(id);
         log.debug("this is answers : {}", Arrays.toString(answerRepository.findByQuestionId(id).toArray()));
-        question.setAnswers(answerRepository.findByQuestionId(id));
         model.addAttribute("question", question);
 
         return "/qna/show";

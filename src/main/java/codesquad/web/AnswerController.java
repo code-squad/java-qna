@@ -17,27 +17,10 @@ public class AnswerController {
     private static final Logger log = LoggerFactory.getLogger(AnswerController.class);
 
     @Autowired
-    AnswerRepository answerRepository;
+    private AnswerRepository answerRepository;
 
     @Autowired
-    QuestionRepository questionRepository;
-
-//    @PostMapping()
-//    public String answer(@PathVariable Long questionId, String comment, HttpSession session, Model model) {
-//        Result result = valid(session);
-//        if (!result.isValid()) {
-//            model.addAttribute("errorMessage", result.getMessage());
-//            return "/user/login";
-//        }
-//
-//        User writer = SessionUtils.getUserFromSession(session);
-//        Question question = questionRepository.getOne(questionId);
-//        question.increaseAnswersCount();
-//        Answer newAnswer = new Answer(writer, question, comment);
-//        answerRepository.save(newAnswer);
-//
-//        return "redirect:/questions/{questionId}";
-//    }
+    private QuestionRepository questionRepository;
 
     @PutMapping("/{answerId}")
     public String update(@PathVariable Long questionId, @PathVariable Long answerId, String comment, HttpSession session, Model model) {

@@ -20,6 +20,7 @@ public class User extends AbstractEntiry {
     private String userId;
 
     @JsonIgnore
+    @Column(nullable = false, length = 30)
     private String password;
 
     @JsonProperty

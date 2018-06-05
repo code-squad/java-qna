@@ -16,10 +16,10 @@ public class ApiAnswerController {
     private static final Logger log = LoggerFactory.getLogger(ApiAnswerController.class);
 
     @Autowired
-    AnswerRepository answerRepository;
+    private AnswerRepository answerRepository;
 
     @Autowired
-    QuestionRepository questionRepository;
+    private QuestionRepository questionRepository;
 
     @PostMapping("")
     public Answer answer(@PathVariable Long questionId, String comment, HttpSession session, Model model) {

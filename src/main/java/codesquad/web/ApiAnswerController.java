@@ -36,24 +36,6 @@ public class ApiAnswerController {
         return answerRepository.save(newAnswer);
     }
 
-    @PutMapping("/{answerId}")
-    public String update(@PathVariable Long questionId, @PathVariable Long answerId, String comment, HttpSession session, Model model) {
-        Answer oldAnswer = answerRepository.findOne(answerId);
-        Result result = valid(session, oldAnswer);
-        if (!result.isValid()) {
-            model.addAttribute("errorMessage", result.getMessage());
-            return "/user/login";
-        }
-
-        User updateUser = SessionUtils.getUserFromSession(session);
-        Question question = questionRepository.findOne(questionId);
-        Answer updateAnswer = new Answer(updateUser, question, comment);
-        oldAnswer.update(updateAnswer, updateUser);
-        answerRepository.save(oldAnswer);
-
-        return "redirect:/questions/{questionId}";
-    }
-
     @DeleteMapping("/{answerId}")
     public Result delete(@PathVariable Long questionId, @PathVariable Long answerId, HttpSession session, Model model) {
         Answer deleteAnswer = answerRepository.findOne(answerId);
@@ -69,24 +51,6 @@ public class ApiAnswerController {
         deleteAnswer.delete();
         answerRepository.save(deleteAnswer);
         return Result.SUCCESS;
-    }
-
-    @GetMapping("/{answerId}/form")
-    public String updateForm(@PathVariable Long questionId, @PathVariable Long answerId, HttpSession session, Model model) {
-        Answer updateAnswer = answerRepository.findOne(answerId);
-        Result result = valid(session, updateAnswer);
-        if (!result.isValid()) {
-            model.addAttribute("errorMessage", result.getMessage());
-            return "/user/login";
-        }
-
-        Question question = questionRepository.findOne(questionId);
-        question.setAnswers(answerRepository.findByQuestionId(questionId));
-
-        model.addAttribute("question", question);
-        model.addAttribute("editingAnswer", answerRepository.findOne(answerId));
-
-        return "/qna/answerUpdateForm";
     }
 
     private Result valid(HttpSession session) {

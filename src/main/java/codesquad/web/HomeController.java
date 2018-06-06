@@ -21,6 +21,7 @@ public class HomeController {
 
     @GetMapping({"/", "index"})
     public String home(Model model, QuestionPageable questionPageable) {
+//    public String home(Model model, Pageable pageable) {
 //        model.addAttribute("posts", questionRepository.findAll(new Sort(Sort.Direction.DESC, "id")));
         model.addAttribute("posts", questionRepository.findAll(questionPageable));
         log.debug("/index/success");

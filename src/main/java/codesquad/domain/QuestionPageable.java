@@ -4,14 +4,25 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 public class QuestionPageable implements Pageable {
+    private int pageNumber = 0;
+    private int pageSize = 15;
+
+    public void setPageNumber(int pageNumber) {
+        this.pageNumber = pageNumber;
+    }
+
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
+
     @Override
     public int getPageNumber() {
-        return 0;
+        return this.pageNumber;
     }
 
     @Override
     public int getPageSize() {
-        return 15;
+        return this.pageSize;
     }
 
     @Override
@@ -21,7 +32,7 @@ public class QuestionPageable implements Pageable {
 
     @Override
     public Sort getSort() {
-        return null;
+        return new Sort(Sort.Direction.DESC, "id");
     }
 
     @Override

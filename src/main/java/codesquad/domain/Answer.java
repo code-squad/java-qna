@@ -1,27 +1,26 @@
 package codesquad.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Entity
-public class Answer {
-    @Id
-    @GeneratedValue
-    private Long id;
 
+public class Answer extends AbstractEntiry {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_id"))
+    @JsonProperty
     private User writer;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
+    @JsonProperty
     private Question question;
 
     @Column(nullable = false)
+    @JsonProperty
     private String comment;
 
-    private LocalDateTime createDate;
     private boolean deleted = false;
 
     public Answer() {
@@ -31,15 +30,6 @@ public class Answer {
         this.writer = writer;
         this.question = question;
         this.comment = comment;
-        this.createDate = LocalDateTime.now();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Question getQuestion() {
@@ -70,23 +60,12 @@ public class Answer {
         if (updateAnswer == null) {
             throw new NullPointerException("answer.null");
         }
-        if (!isMatchedUserId(updateUser)) {
+        if (!isMatchedUser(updateUser)) {
             return false;
         }
 
         this.comment = updateAnswer.comment;
         return true;
-    }
-
-    public boolean isMatchedUserId(User otherUser) {
-        return writer.isMatchedUser(otherUser);
-    }
-
-    public String getFormattedCreateDate() {
-        if (createDate == null) {
-            return "";
-        }
-        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd. HH:mm:ss"));
     }
 
     public boolean isDeleted() {
@@ -103,5 +82,9 @@ public class Answer {
 
     public void restore() {
         this.deleted = false;
+    }
+
+    public boolean isMatchedUser(User otherUser) {
+        return writer.isMatchedUser(otherUser);
     }
 }

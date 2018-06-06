@@ -17,17 +17,8 @@ public class UserTest {
 
     @Before
     public void setUp() {
-        user = new User();
-        user.setId((long)1);
-        user.setName("황태원");
-        user.setPassword("1234");
-        user.setEmail("learner@gmail.com");
-
-        newUser = new User();
-        newUser.setId((long)2);
-        newUser.setName("황태원");
-        newUser.setPassword("1234");
-        newUser.setEmail("hardLearner@gmail.com");
+        user = new User("1", "learner", "1234", "황태원", "learner@gmail.com");
+        newUser = new User("2", "learner", "1234", "황태원", "hardLearner@gmail.com");
     }
 
     @Test

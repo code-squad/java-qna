@@ -15,7 +15,7 @@ public class HomeController {
     private static final Logger log =  LoggerFactory.getLogger(HomeController.class);
     
     @Autowired
-    QuestionRepository questionRepository;
+    private QuestionRepository questionRepository;
 
     @GetMapping({"/", "index"})
     public String home(Model model) {

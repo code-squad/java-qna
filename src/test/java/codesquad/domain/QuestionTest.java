@@ -19,10 +19,8 @@ public class QuestionTest {
 
     @Before
     public void setUp() {
-        user1 = new User("learner", "9229", "황태원", "learner@gmail.com");
-        user1.setId((long) 1);
-        user2 = new User("pobi", "9229", "박재성", "pobi@gmail.com");
-        user2.setId((long) 2);
+        user1 = new User("1", "learner", "9229", "황태원", "learner@gmail.com");
+        user2 = new User("2", "pobi", "9229", "박재성", "pobi@gmail.com");
 
         question1 = new Question(user1, "질문 1번 제목", "질문 1번 내용");
         question2 = new Question(user2, "질문 2번 제목", "질문 2번 내용");
@@ -50,9 +48,8 @@ public class QuestionTest {
 
     @Test
     public void isMatchUserId() {
-        User editingUser = new User();
-        editingUser.setId((long) 1);
-        assertThat(question1.isMatchedUserId(editingUser), is(true));
+        User editingUser = new User("1", "learner", "9229", "황태원", "learner@gmail.com");
+        assertThat(question1.isMatchedUser(editingUser), is(true));
     }
 
     @Test(expected = IllegalStateException.class)

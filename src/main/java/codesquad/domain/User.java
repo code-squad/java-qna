@@ -1,45 +1,44 @@
 package codesquad.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import java.util.Objects;
 
 @Entity
-public class User {
+public class User extends AbstractEntiry {
     private static final Logger log = LoggerFactory.getLogger(User.class);
 
-    @Id
-    @GeneratedValue
-    private Long id;
-
     @Column(nullable = false)
+    @JsonProperty
     private String userId;
 
+    @JsonIgnore
+    @Column(nullable = false, length = 30)
     private String password;
+
+    @JsonProperty
     private String name;
+
+    @JsonProperty
     private String email;
 
     public User() {
     }
 
-    public User(String userId, String password, String name, String email) {
+    public User(String id, String userId, String password, String name, String email) {
+        super(Long.valueOf(id));
         this.userId = userId;
         this.password = password;
         this.name = name;
         this.email = email;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public User(String userId, String password, String name, String email) {
+        this(null, userId, password, name, email);
     }
 
     public void setUserId(String userId) {
@@ -72,11 +71,6 @@ public class User {
 
     public String getEmail() {
         return email;
-    }
-
-    @Override
-    public String toString() {
-        return userId + " " + password + " " + name + " " + email;
     }
 
     public boolean update(User updateUser, String newPassword) {
@@ -120,15 +114,13 @@ public class User {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
+    public String toString() {
+        return "User{" +
+                "Id='" + getId() + '\'' +
+                ", userId='" + userId + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

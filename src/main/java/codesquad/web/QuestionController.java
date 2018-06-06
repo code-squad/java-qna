@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.Arrays;
 
 @Controller
 @RequestMapping("/questions")
@@ -16,10 +17,10 @@ public class QuestionController {
     private static final Logger log = LoggerFactory.getLogger(QuestionController.class);
 
     @Autowired
-    QuestionRepository questionRepository;
+    private QuestionRepository questionRepository;
 
     @Autowired
-    AnswerRepository answerRepository;
+    private AnswerRepository answerRepository;
 
     @PostMapping()
     public String questions(String title, String contents, HttpSession session, Model model) {
@@ -43,7 +44,7 @@ public class QuestionController {
     @GetMapping("/{id}")
     public String showQuestion(@PathVariable Long id, Model model) {
         Question question = questionRepository.findOne(id);
-        question.setAnswers(answerRepository.findByQuestionId(id));
+        log.debug("this is answers : {}", Arrays.toString(answerRepository.findByQuestionId(id).toArray()));
         model.addAttribute("question", question);
 
         return "/qna/show";
@@ -109,7 +110,7 @@ public class QuestionController {
         }
 
         User sessionUser = SessionUtils.getUserFromSession(session);
-        if (!question.isMatchedUserId(sessionUser)) {
+        if (!question.isMatchedUser(sessionUser)) {
             return Result.MISMATCH_USER;
         }
 

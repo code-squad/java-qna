@@ -14,10 +14,8 @@ public class AnswerTest {
 
     @Before
     public void setUp() {
-        user1 = new User();
-        user1.setId((long) 1);
-        user2 = new User();
-        user2.setId((long) 2);
+        user1 = new User("1", "pobi", "9229", "jaesung", "pobi@gmail.com");
+        user2 = new User("2", "jk", "9229", "jung", "jk@gmail.com");
 
         question1 = new Question(user1, "질문 1번 제목", "질문 1번 내용");
         answer1 = new Answer(user1, question1, "질문 1번 첫 번째 답변");

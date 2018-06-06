@@ -30,7 +30,7 @@ public class User extends AbstractEntiry {
     }
 
     public User(String id, String userId, String password, String name, String email) {
-        super(Long.valueOf(id));
+        super(id);
         this.userId = userId;
         this.password = password;
         this.name = name;

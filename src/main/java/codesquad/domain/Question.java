@@ -16,6 +16,14 @@ public class Question {
     @OrderBy("id ASC")
     private List<Answer> answers;
 
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
+    }
+
     public Question() {
     }
 

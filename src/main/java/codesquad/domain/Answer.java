@@ -3,46 +3,33 @@ package codesquad.domain;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class Question {
+public class Answer {
     @Id
     @GeneratedValue
     private Long id;
 
-    @OneToMany(mappedBy="question")
-    @OrderBy("id ASC")
-    private List<Answer> answers;
-
     @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
     private User writer;
 
-    public List<Answer> getAnswers() {
-        return answers;
-    }
-
-    public void setAnswers(List<Answer> answers) {
-        this.answers = answers;
-    }
-
-    private String title;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
+    private Question question;
 
     @Lob
     private String contents;
 
     private LocalDateTime createDate;
 
-    private int index;
-
-    public Question() {
+    public Answer() {
     }
 
-    public Question(User writer, String title, String contents) {
+    public Answer(User writer, Question question, String contents) {
         this.writer = writer;
-        this.title = title;
+        this.question = question;
         this.contents = contents;
         this.createDate = LocalDateTime.now();
     }
@@ -52,15 +39,6 @@ public class Question {
             return "";
         }
         return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd. HH:mm:ss"));
-    }
-
-    public void update(String title, String contents) {
-        this.title = title;
-        this.contents = contents;
-    }
-
-    public boolean isSameWriter(User loginUser) {
-        return this.writer.equals(loginUser);
     }
 
     public Long getId() {
@@ -79,12 +57,12 @@ public class Question {
         this.writer = writer;
     }
 
-    public String getTitle() {
-        return title;
+    public Question getQuestion() {
+        return question;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setQuestion(Question question) {
+        this.question = question;
     }
 
     public String getContents() {
@@ -95,22 +73,35 @@ public class Question {
         this.contents = contents;
     }
 
-    public int getIndex() {
-        return index;
+    public LocalDateTime getCreateDate() {
+        return createDate;
     }
 
-    public void setIndex(int index) {
-        this.index = index;
+    public void setCreateDate(LocalDateTime createDate) {
+        this.createDate = createDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Answer answer = (Answer) o;
+        return Objects.equals(id, answer.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
-        return "Question{" +
+        return "Answer{" +
                 "id=" + id +
-                ", writer='" + writer + '\'' +
-                ", title='" + title + '\'' +
+                ", writer=" + writer +
                 ", contents='" + contents + '\'' +
-                ", index=" + index +
+                ", createDate=" + createDate +
                 '}';
     }
 }

@@ -48,19 +48,9 @@
                 <div class="col-md-3"></div>
                 <div class="col-md-6 text-center">
                     <ul class="pagination center-block" style="display:inline-block;">
-                        {{#if posts.first}}
-                        {{else}}
                         <li><a href="/?page={{posts.previousOrFirst}}">«</a></li>
-                        {{/if}}
-
-                        {{#posts}}
                         <li><a href="/?page={{@index}}">{{@index}}</a></li>
-                        {{/posts}}
-
-                        {{#if posts.last}}
-                        {{else}}
                         <li><a href="/?page={{posts.next}}">»</a></li>
-                        {{/if}}
                     </ul>
                 </div>
                 <div class="col-md-3 qna-write">

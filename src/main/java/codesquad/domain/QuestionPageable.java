@@ -1,9 +1,14 @@
 package codesquad.domain;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 public class QuestionPageable implements Pageable {
+    private static final Logger log =  LoggerFactory.getLogger(QuestionPageable.class);
+
     private int pageNumber = 0;
     private int pageSize = 15;
 
@@ -17,6 +22,7 @@ public class QuestionPageable implements Pageable {
 
     @Override
     public int getPageNumber() {
+        log.debug("Page number is {}", pageNumber);
         return this.pageNumber;
     }
 

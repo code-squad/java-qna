@@ -19,7 +19,7 @@ public class QuestionController {
     @GetMapping("/questions/form")
     public String form(HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
-            return "/users/loginForm";
+            return "/user/login";
         }
 
         return "qna/form";
@@ -28,7 +28,7 @@ public class QuestionController {
     @PostMapping("/questions")
     public String createQuestion(String title, String contents, HttpSession session){
         if (!HttpSessionUtils.isLoginUser(session)) {
-            return "/users/loginForm";
+            return "/user/login";
         }
 
         User sessionUser = HttpSessionUtils.getUserFromSession(session);
@@ -51,50 +51,55 @@ public class QuestionController {
 
     @GetMapping("/questions/{id}/form")
     public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
+        try {
+            Question question = questionRepository.findById(id).get();
+            hasPermission(session, question);
+            model.addAttribute("question", question);
+            return "/qna/updateForm";
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/user/login";
+        }
+    }
+
+    private boolean hasPermission(HttpSession session, Question question) {
         if (!HttpSessionUtils.isLoginUser(session)) {
-            return "/users/loginForm";
+            throw new IllegalStateException("로그인이 필요합니다.");
         }
 
         User loginUser = HttpSessionUtils.getUserFromSession(session);
-        Question question = questionRepository.findById(id).get();
         if (!question.isSameWriter(loginUser)) {
-            return "/users/loginForm";
+            throw new IllegalStateException("자신이 쓴 글만 수정, 삭제가 가능합니다.");
         }
-
-        model.addAttribute("question", question);
-        return "/qna/updateForm";
+        return true;
     }
 
     @PutMapping("/questions/{id}")
-    public String update(@PathVariable Long id, String title, String contents, HttpSession session) {
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            return "/users/loginForm";
+    public String update(@PathVariable Long id, String title, String contents, Model model, HttpSession session) {
+        try {
+            Question question = questionRepository.findById(id).get();
+            hasPermission(session, question);
+            question.update(title, contents);
+            questionRepository.save(question);
+            return String.format("redirect:/questions/%d", id);
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/user/login";
         }
 
-        User loginUser = HttpSessionUtils.getUserFromSession(session);
-        Question question = questionRepository.findById(id).get();
-        if (!question.isSameWriter(loginUser)) {
-            return "/users/loginForm";
-        }
-        question.update(title, contents);
-        questionRepository.save(question);
-        return String.format("redirect:/questions/%d", id);
     }
 
     @DeleteMapping("/questions/{id}")
-    public String delete(@PathVariable Long id, HttpSession session) {
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            return "/users/loginForm";
+    public String delete(@PathVariable Long id, HttpSession session, Model model) {
+        try {
+            Question question = questionRepository.findById(id).get();
+            hasPermission(session, question);
+            questionRepository.deleteById(id);
+            return "redirect:/";
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/user/login";
         }
-
-        User loginUser = HttpSessionUtils.getUserFromSession(session);
-        Question question = questionRepository.findById(id).get();
-        if (!question.isSameWriter(loginUser)) {
-            return "/users/loginForm";
-        }
-
-        questionRepository.deleteById(id);
-        return "redirect:/";
     }
 }
 

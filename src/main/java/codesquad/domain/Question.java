@@ -3,6 +3,7 @@ package codesquad.domain;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -10,6 +11,10 @@ public class Question {
     @Id
     @GeneratedValue
     private Long id;
+
+    @OneToMany(mappedBy="question")
+    @OrderBy("id ASC")
+    private List<Answer> answers;
 
     public Question() {
     }
@@ -26,6 +31,8 @@ public class Question {
     private User writer;
 
     private String title;
+
+    @Lob
     private String contents;
 
     private LocalDateTime createDate;

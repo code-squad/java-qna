@@ -16,6 +16,10 @@ public class Question {
     @OrderBy("id ASC")
     private List<Answer> answers;
 
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    private User writer;
+
     public List<Answer> getAnswers() {
         return answers;
     }
@@ -23,6 +27,15 @@ public class Question {
     public void setAnswers(List<Answer> answers) {
         this.answers = answers;
     }
+
+    private String title;
+
+    @Lob
+    private String contents;
+
+    private LocalDateTime createDate;
+
+    private int index;
 
     public Question() {
     }
@@ -34,18 +47,21 @@ public class Question {
         this.createDate = LocalDateTime.now();
     }
 
-    @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
-    private User writer;
+    public String getFormattedCreateDate() {
+        if (createDate == null) {
+            return "";
+        }
+        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd. HH:mm:ss"));
+    }
 
-    private String title;
+    public void update(String title, String contents) {
+        this.title = title;
+        this.contents = contents;
+    }
 
-    @Lob
-    private String contents;
-
-    private LocalDateTime createDate;
-
-    private int index;
+    public boolean isSameWriter(User loginUser) {
+        return this.writer.equals(loginUser);
+    }
 
     public Long getId() {
         return id;
@@ -85,22 +101,6 @@ public class Question {
 
     public void setIndex(int index) {
         this.index = index;
-    }
-
-    public String getFormattedCreateDate() {
-        if (createDate == null) {
-            return "";
-        }
-        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd. HH:mm:ss"));
-    }
-
-    public void update(String title, String contents) {
-        this.title = title;
-        this.contents = contents;
-    }
-
-    public boolean isSameWriter(User loginUser) {
-        return this.writer.equals(loginUser);
     }
 
     @Override

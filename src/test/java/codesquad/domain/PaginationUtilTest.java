@@ -30,8 +30,24 @@ public class PaginationUtilTest {
     @Test
     public void isFirstBlock() {
         int currentPage = 4;
-        int blockNo = PaginationUtil.getBlockNumberCurrentPage(4, BLOCK_SIZE);
+        int blockNo = PaginationUtil.getBlockNumberCurrentPage(currentPage, BLOCK_SIZE);
         assertThat(PaginationUtil.isFirstBlock(blockNo),is(true));
+    }
+
+    @Test
+    public void isLastBlock() {
+        // lastBlockNo is 3
+        int currentPage = 12;
+        int totalPages = 14;
+        int currentBlockNo = PaginationUtil.getBlockNumberCurrentPage(currentPage, BLOCK_SIZE);
+        assertThat(PaginationUtil.isLastBlock(currentBlockNo, totalPages), is(true));
+    }
+
+    @Test
+    public void getLastBlockNo() {
+        int lastBlockNo = 4;
+        int totalPages = 17;
+        assertThat(lastBlockNo == PaginationUtil.getLastBlockNo(totalPages),is(true));
     }
 
     @Test

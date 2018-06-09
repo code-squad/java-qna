@@ -1,7 +1,6 @@
 package codesquad.domain;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class PaginationUtil {
@@ -26,8 +25,19 @@ public class PaginationUtil {
         return currentPage == FIRST;
     }
 
+    public static boolean isLastBlock(int currentBlockNo, int totalPages) {
+        return getLastBlockNo(totalPages) == currentBlockNo;
+    }
+
+    public static int getLastBlockNo(int totalPages) {
+        if (totalPages % PAGE_BLOCK_SIZE == 0) {
+            return totalPages / PAGE_BLOCK_SIZE;
+        }
+        return (totalPages / PAGE_BLOCK_SIZE) + 1;
+    }
+
     public static int getBlockNumberCurrentPage(int currentPage, int blockSize) {
-        return (int)Math.ceil((currentPage - 1) / blockSize) + 1;
+        return (int) Math.ceil((currentPage - 1) / blockSize) + 1;
     }
 
     public static List<Integer> getCurrentBlockPageList(int currentPage, int totalPages) {
@@ -47,11 +57,13 @@ public class PaginationUtil {
         StringBuilder sb = new StringBuilder();
         for (int i = startNo; i <= endNo; i++) {
             sb.append("<li><a href=\"/?page=");
-            sb.append(i-1);
+            sb.append(i - 1);
             sb.append("\">");
             sb.append(i);
             sb.append("</a></li>");
         }
         return sb.toString();
     }
+
+
 }

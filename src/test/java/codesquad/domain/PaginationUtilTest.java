@@ -156,4 +156,13 @@ public class PaginationUtilTest {
 
         assertThat(pageBlockHTML.equals(returnedPageBlockHTML), is(true));
     }
+
+    @Test
+    public void getLeftArrowHTMLCode() {
+        int currentPage = 6;
+        int startNo = 6;
+        String leftArrowHTMLCode = "<li><a href=\"/?page=4\">«</a></li>";
+        String newLeftArrowHTMLCode = PaginationUtil.getLeftArrowHTMLCode(startNo, currentPage);
+        assertThat(leftArrowHTMLCode.equals(newLeftArrowHTMLCode),is(true));
+    }
 }

@@ -8,6 +8,10 @@ public class PaginationUtil {
     private static final int BLOCK_END_NO = 1;
     private static final int BLOCK_SIZE = 5;
     private static final int FIRST = 1;
+    private static final String EMPTY = "";
+    private static final String ARROW_HEADER = "<li><a href=\"/?page=";
+    private static final String ARROW_RIGHT_CLOSER = "\">»</a></li>";
+    private static final String ARROW_LEFT_CLOSER = "\">«</a></li>";
 
     public static int getBlockStartPage(int currentPage) {
         return ((currentPage - 1) / BLOCK_SIZE) * BLOCK_SIZE + 1;
@@ -56,22 +60,29 @@ public class PaginationUtil {
         int endNo = pageList.get(BLOCK_END_NO);
         StringBuilder sb = new StringBuilder();
         if (!isFirstBlock(currentPage)) {
-            sb.append("<li><a href=\"/?page=");
+            sb.append(ARROW_HEADER);
             sb.append(startNo - 2);
-            sb.append("\">«</a></li>");
+            sb.append(ARROW_LEFT_CLOSER);
         }
         for (int i = startNo; i <= endNo; i++) {
-            sb.append("<li><a href=\"/?page=");
+            sb.append(ARROW_HEADER);
             sb.append(i - 1);
             sb.append("\">");
             sb.append(i);
             sb.append("</a></li>");
         }
         if (!isLastBlock(getCurrentPageBlockNumber(currentPage), totalPages)) {
-            sb.append("<li><a href=\"/?page=");
+            sb.append(ARROW_HEADER);
             sb.append(endNo);
-            sb.append("\">»</a></li>");
+            sb.append(ARROW_RIGHT_CLOSER);
         }
         return sb.toString();
+    }
+
+    public static String getLeftArrowHTMLCode(int startNo, int currentPage) {
+        if (PaginationUtil.isFirstBlock(currentPage)) {
+            return EMPTY;
+        }
+        return ARROW_HEADER + (startNo - 2) + ARROW_LEFT_CLOSER;
     }
 }

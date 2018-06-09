@@ -69,24 +69,9 @@ public class PaginationUtilTest {
         int endNo = 15;
         StringBuilder sb = new StringBuilder();
 
-        if (!PaginationUtil.isFirstBlock(currentPage)) {
-            sb.append("<li><a href=\"/?page=");
-            sb.append(startNo - 2);
-            sb.append("\">«</a></li>");
-        }
-        for (int i = startNo; i <= endNo; i++) {
-            sb.append("<li><a href=\"/?page=");
-            // pageable에서는 0페이지부터 시작하므로 i-1 해줘서 페이지 넘버를 보정한다.
-            sb.append(i - 1);
-            sb.append("\">");
-            sb.append(i);
-            sb.append("</a></li>");
-        }
-        if (!PaginationUtil.isLastBlock(PaginationUtil.getCurrentPageBlockNumber(currentPage), totalPages)) {
-            sb.append("<li><a href=\"/?page=");
-            sb.append(endNo);
-            sb.append("\">»</a></li>");
-        }
+        sb.append(PaginationUtil.getBlockLeft(startNo, currentPage));
+        sb.append(PaginationUtil.getBlockBody(startNo, endNo));
+        sb.append(PaginationUtil.getBlockRight(endNo, currentPage, totalPages));
 
         String returnedPageBlockHTML = PaginationUtil.getCurrentPageBlockHTML(currentPage, totalPages);
         String pageBlockHTML = sb.toString();
@@ -99,25 +84,11 @@ public class PaginationUtilTest {
         int totalPages = 6;
         int startNo = 1;
         int endNo = 5;
+
         StringBuilder sb = new StringBuilder();
-        if (!PaginationUtil.isFirstBlock(currentPage)) {
-            sb.append("<li><a href=\"/?page=");
-            sb.append(startNo - 2);
-            sb.append("\">«</a></li>");
-        }
-        for (int i = startNo; i <= endNo; i++) {
-            sb.append("<li><a href=\"/?page=");
-            // pageable에서는 0페이지부터 시작하므로 i-1 해줘서 페이지 넘버를 보정한다.
-            sb.append(i - 1);
-            sb.append("\">");
-            sb.append(i);
-            sb.append("</a></li>");
-        }
-        if (!PaginationUtil.isLastBlock(PaginationUtil.getCurrentPageBlockNumber(currentPage), totalPages)) {
-            sb.append("<li><a href=\"/?page=");
-            sb.append(endNo);
-            sb.append("\">»</a></li>");
-        }
+        sb.append(PaginationUtil.getBlockLeft(startNo, currentPage));
+        sb.append(PaginationUtil.getBlockBody(startNo, endNo));
+        sb.append(PaginationUtil.getBlockRight(endNo, currentPage, totalPages));
 
         String returnedPageBlockHTML = PaginationUtil.getCurrentPageBlockHTML(currentPage, totalPages);
         String pageBlockHTML = sb.toString();
@@ -131,25 +102,11 @@ public class PaginationUtilTest {
         int totalPages = 8;
         int startNo = 6;
         int endNo = 8;
+
         StringBuilder sb = new StringBuilder();
-        if (!PaginationUtil.isFirstBlock(currentPage)) {
-            sb.append("<li><a href=\"/?page=");
-            sb.append(startNo - 2);
-            sb.append("\">«</a></li>");
-        }
-        for (int i = startNo; i <= endNo; i++) {
-            sb.append("<li><a href=\"/?page=");
-            // pageable에서는 0페이지부터 시작하므로 i-1 해줘서 페이지 넘버를 보정한다.
-            sb.append(i - 1);
-            sb.append("\">");
-            sb.append(i);
-            sb.append("</a></li>");
-        }
-        if (!PaginationUtil.isLastBlock(PaginationUtil.getCurrentPageBlockNumber(currentPage), totalPages)) {
-            sb.append("<li><a href=\"/?page=");
-            sb.append(endNo);
-            sb.append("\">»</a></li>");
-        }
+        sb.append(PaginationUtil.getBlockLeft(startNo, currentPage));
+        sb.append(PaginationUtil.getBlockBody(startNo, endNo));
+        sb.append(PaginationUtil.getBlockRight(endNo, currentPage, totalPages));
 
         String returnedPageBlockHTML = PaginationUtil.getCurrentPageBlockHTML(currentPage, totalPages);
         String pageBlockHTML = sb.toString();
@@ -158,11 +115,30 @@ public class PaginationUtilTest {
     }
 
     @Test
+    public void getBlockBody() {
+        int startNo = 1;
+        int endNo = 5;
+        String blockBody = "<li><a href=\"/?page=0\">1</a></li><li><a href=\"/?page=1\">2</a></li><li><a href=\"/?page=2\">3</a></li><li><a href=\"/?page=3\">4</a></li><li><a href=\"/?page=4\">5</a></li>";
+        String newBlockBody = PaginationUtil.getBlockBody(startNo, endNo);
+        assertThat(blockBody.equals(newBlockBody), is(true));
+    }
+
+    @Test
     public void getLeftArrowHTMLCode() {
         int currentPage = 6;
         int startNo = 6;
         String leftArrowHTMLCode = "<li><a href=\"/?page=4\">«</a></li>";
-        String newLeftArrowHTMLCode = PaginationUtil.getLeftArrowHTMLCode(startNo, currentPage);
+        String newLeftArrowHTMLCode = PaginationUtil.getBlockLeft(startNo, currentPage);
         assertThat(leftArrowHTMLCode.equals(newLeftArrowHTMLCode),is(true));
+    }
+
+    @Test
+    public void getRightArrowHTMLCode() {
+        int endNo = 5;
+        int currentPage = 4;
+        int totalPages = 7;
+        String rightArrowHTMLCode = "<li><a href=\"/?page=5\">»</a></li>";
+        String newRightArrowHTMLCode = PaginationUtil.getBlockRight(endNo, currentPage, totalPages);
+        assertThat(rightArrowHTMLCode.equals(newRightArrowHTMLCode),is(true));
     }
 }

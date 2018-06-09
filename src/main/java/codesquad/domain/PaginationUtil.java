@@ -79,10 +79,30 @@ public class PaginationUtil {
         return sb.toString();
     }
 
-    public static String getLeftArrowHTMLCode(int startNo, int currentPage) {
+    public static String getBlockLeft(int startNo, int currentPage) {
         if (PaginationUtil.isFirstBlock(currentPage)) {
             return EMPTY;
         }
         return ARROW_HEADER + (startNo - 2) + ARROW_LEFT_CLOSER;
+    }
+
+    public static String getBlockRight(int endNo, int currentPage, int totalPages) {
+        if (PaginationUtil.isLastBlock(getCurrentPageBlockNumber(currentPage), totalPages)) {
+            return EMPTY;
+        }
+        return ARROW_HEADER + endNo + ARROW_RIGHT_CLOSER;
+    }
+
+    public static String getBlockBody(int startNo, int endNo) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = startNo; i <= endNo; i++) {
+            sb.append("<li><a href=\"/?page=");
+            // pageable에서는 0페이지부터 시작하므로 i-1 해줘서 페이지 넘버를 보정한다.
+            sb.append(i - 1);
+            sb.append("\">");
+            sb.append(i);
+            sb.append("</a></li>");
+        }
+        return sb.toString();
     }
 }

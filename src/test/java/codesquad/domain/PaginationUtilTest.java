@@ -14,7 +14,6 @@ public class PaginationUtilTest {
 
     @Test
     public void getStartPage() {
-        int BLOCK_SIZE = 5;
         int currentPage = 23;
         assertThat(PaginationUtil.getBlockStartPage(BLOCK_SIZE, currentPage), is(21));
     }
@@ -30,11 +29,9 @@ public class PaginationUtilTest {
 
     @Test
     public void isFirstBlock() {
-        int pageBlockSize = 5;
         int currentPage = 4;
-        int startPage = PaginationUtil.getBlockStartPage(pageBlockSize, currentPage);
-        System.out.println(startPage);
-        assertThat(PaginationUtil.isFirstBlock(startPage), is(true));
+        int blockNo = PaginationUtil.getBlockNumberCurrentPage(4, BLOCK_SIZE);
+        assertThat(PaginationUtil.isFirstBlock(blockNo),is(true));
     }
 
     @Test
@@ -69,8 +66,11 @@ public class PaginationUtilTest {
         }
         String returnedPageBlockHTML = PaginationUtil.getCurrentPageBlockHTML(currentPage, totalPages);
         String pageBlockHTML = sb.toString();
-        System.out.println(returnedPageBlockHTML);
-        System.out.println(pageBlockHTML);
         assertThat(pageBlockHTML.equals(returnedPageBlockHTML), is(true));
+    }
+
+    @Test
+    public void removeReftArrow() {
+
     }
 }

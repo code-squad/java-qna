@@ -47,7 +47,7 @@ public class PaginationUtil {
         StringBuilder sb = new StringBuilder();
         for (int i = startNo; i <= endNo; i++) {
             sb.append("<li><a href=\"/?page=");
-            sb.append(i);
+            sb.append(i-1);
             sb.append("\">");
             sb.append(i);
             sb.append("</a></li>");

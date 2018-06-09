@@ -61,7 +61,8 @@ public class PaginationUtilTest {
         StringBuilder sb = new StringBuilder();
         for (int i = startNo; i <= endNo; i++) {
             sb.append("<li><a href=\"/?page=");
-            sb.append(i);
+            // pageable에서는 0페이지부터 시작하므로 i-1 해줘서 페이지 넘버를 보정한다.
+            sb.append(i-1);
             sb.append("\">");
             sb.append(i);
             sb.append("</a></li>");

@@ -2,7 +2,6 @@ package codesquad.domain;
 
 import org.junit.Test;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,7 +16,7 @@ public class PaginationUtilTest {
     public void getStartPage() {
         int BLOCK_SIZE = 5;
         int currentPage = 23;
-        assertThat(PaginationUtil.getBlockStartPage(BLOCK_SIZE, currentPage),is(21));
+        assertThat(PaginationUtil.getBlockStartPage(BLOCK_SIZE, currentPage), is(21));
     }
 
     @Test
@@ -26,7 +25,7 @@ public class PaginationUtilTest {
         int currentPage = 11;
         int pageBlockSize = 5;
         int startPage = PaginationUtil.getBlockStartPage(pageBlockSize, currentPage);
-        assertThat(PaginationUtil.getBlockEndPage(pageBlockSize, totalPages, startPage),is(15));
+        assertThat(PaginationUtil.getBlockEndPage(pageBlockSize, totalPages, startPage), is(15));
     }
 
     @Test
@@ -41,16 +40,36 @@ public class PaginationUtilTest {
     @Test
     public void getBlockNumberCurrentPage() {
         int currentPage = 17;
-        assertThat(PaginationUtil.getBlockNumberCurrentPage(currentPage, BLOCK_SIZE),is(4));
+        assertThat(PaginationUtil.getBlockNumberCurrentPage(currentPage, BLOCK_SIZE), is(4));
     }
 
     @Test
     public void getCurrentBlockPageList() {
         int currentPage = 7;
         int totalPages = 27;
-        Integer[] integers = {6, 10};
-        List<Integer> pageList = Arrays.asList(integers);
+        List<Integer> pageList = Arrays.asList(6, 10);
         List<Integer> newPageList = PaginationUtil.getCurrentBlockPageList(currentPage, totalPages);
         assertThat(pageList.equals(newPageList), is(true));
+    }
+
+    @Test
+    public void getCurrentPageBlockHTML() {
+        int currentPage = 13;
+        int totalPages = 27;
+        int startNo = 11;
+        int endNo = 15;
+        StringBuilder sb = new StringBuilder();
+        for (int i = startNo; i <= endNo; i++) {
+            sb.append("<li><a href=\"/?page=");
+            sb.append(i);
+            sb.append("\">");
+            sb.append(i);
+            sb.append("</a></li>");
+        }
+        String returnedPageBlockHTML = PaginationUtil.getCurrentPageBlockHTML(currentPage, totalPages);
+        String pageBlockHTML = sb.toString();
+        System.out.println(returnedPageBlockHTML);
+        System.out.println(pageBlockHTML);
+        assertThat(pageBlockHTML.equals(returnedPageBlockHTML), is(true));
     }
 }

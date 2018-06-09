@@ -26,15 +26,10 @@ public class HomeController {
     private QuestionRepository questionRepository;
 
     @GetMapping({"/", "index"})
-//    public String home(Model model, QuestionPageable questionPageable) {
     public String home(Model model, @PageableDefault(sort = { "id" }, direction = Sort.Direction.DESC, size = 15) Pageable pageable) {
-//        model.addAttribute("posts", questionRepository.findAll(new Sort(Sort.Direction.DESC, "id")));
         Page<Question> questionPage = questionRepository.findAll(pageable);
-        Handlebars handlebars = new Handlebars();
-        handlebars.registerHelpers(new PaginationHelper());
-        // helper를 사용하여 pagination을 구현하려는 시도중임
-        // 페이지 그룹을 구하여 필요한 그룹만 출력하는 것을 짜는 중
-        log.debug("this is home, page is {}", pageable.getPageNumber());
+        log.debug("page number is {}", pageable.getPageNumber());
+
         model.addAttribute("posts", questionPage);
         log.debug("/index/success");
         return "index";

@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class PaginationUtil {
+    private static final int BLOCK_START_NO = 0;
+    private static final int BLOCK_END_NO = 1;
     private static final int PAGE_BLOCK_SIZE = 5;
     private static final int FIRST = 1;
 
@@ -36,5 +38,20 @@ public class PaginationUtil {
             throw new IllegalStateException("page start, end list is over 2");
         }
         return pageList;
+    }
+
+    public static String getCurrentPageBlockHTML(int currentPage, int totalPages) {
+        List<Integer> pageList = getCurrentBlockPageList(currentPage, totalPages);
+        int startNo = pageList.get(BLOCK_START_NO);
+        int endNo = pageList.get(BLOCK_END_NO);
+        StringBuilder sb = new StringBuilder();
+        for (int i = startNo; i <= endNo; i++) {
+            sb.append("<li><a href=\"/?page=");
+            sb.append(i);
+            sb.append("\">");
+            sb.append(i);
+            sb.append("</a></li>");
+        }
+        return sb.toString();
     }
 }

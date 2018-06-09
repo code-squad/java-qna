@@ -2,6 +2,10 @@ package codesquad.domain;
 
 import org.junit.Test;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -22,7 +26,7 @@ public class PaginationUtilTest {
         int currentPage = 11;
         int pageBlockSize = 5;
         int startPage = PaginationUtil.getBlockStartPage(pageBlockSize, currentPage);
-        assertThat(PaginationUtil.getEndPage(pageBlockSize, totalPages, startPage),is(15));
+        assertThat(PaginationUtil.getBlockEndPage(pageBlockSize, totalPages, startPage),is(15));
     }
 
     @Test
@@ -37,6 +41,16 @@ public class PaginationUtilTest {
     @Test
     public void getBlockNumberCurrentPage() {
         int currentPage = 17;
-        assertThat(PaginationUtil.getBlockNumberCurrentPage(currentPage, BLOCK_SIZE),is(2));
+        assertThat(PaginationUtil.getBlockNumberCurrentPage(currentPage, BLOCK_SIZE),is(4));
+    }
+
+    @Test
+    public void getCurrentBlockPageList() {
+        int currentPage = 7;
+        int totalPages = 27;
+        Integer[] integers = {6, 10};
+        List<Integer> pageList = Arrays.asList(integers);
+        List<Integer> newPageList = PaginationUtil.getCurrentBlockPageList(currentPage, totalPages);
+        assertThat(pageList.equals(newPageList), is(true));
     }
 }

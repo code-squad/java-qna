@@ -19,16 +19,15 @@ public class PaginationUtilTest {
     public void getEndPage() {
         int totalPages = 18;
         int currentPage = 11;
-        int pageBlockSize = 5;
-        int startPage = PaginationUtil.getBlockStartPage(pageBlockSize);
-        assertThat(PaginationUtil.getBlockEndPage(pageBlockSize, totalPages, startPage), is(15));
+        int startPage = PaginationUtil.getBlockStartPage(currentPage);
+        assertThat(PaginationUtil.getBlockEndPage(totalPages, startPage), is(15));
     }
 
     @Test
     public void isFirstBlock() {
         int currentPage = 4;
         int blockNo = PaginationUtil.getCurrentPageBlockNumber(currentPage);
-        assertThat(PaginationUtil.isFirstBlock(blockNo),is(true));
+        assertThat(PaginationUtil.isFirstBlock(blockNo), is(true));
     }
 
     @Test
@@ -44,7 +43,7 @@ public class PaginationUtilTest {
     public void getLastBlockNo() {
         int lastBlockNo = 4;
         int totalPages = 17;
-        assertThat(lastBlockNo == PaginationUtil.getLastBlockNo(totalPages),is(true));
+        assertThat(lastBlockNo == PaginationUtil.getLastBlockNo(totalPages), is(true));
     }
 
     @Test
@@ -69,14 +68,26 @@ public class PaginationUtilTest {
         int startNo = 11;
         int endNo = 15;
         StringBuilder sb = new StringBuilder();
+
+        if (!PaginationUtil.isFirstBlock(currentPage)) {
+            sb.append("<li><a href=\"/?page=");
+            sb.append(startNo - 2);
+            sb.append("\">«</a></li>");
+        }
         for (int i = startNo; i <= endNo; i++) {
             sb.append("<li><a href=\"/?page=");
             // pageable에서는 0페이지부터 시작하므로 i-1 해줘서 페이지 넘버를 보정한다.
-            sb.append(i-1);
+            sb.append(i - 1);
             sb.append("\">");
             sb.append(i);
             sb.append("</a></li>");
         }
+        if (!PaginationUtil.isLastBlock(PaginationUtil.getCurrentPageBlockNumber(currentPage), totalPages)) {
+            sb.append("<li><a href=\"/?page=");
+            sb.append(endNo);
+            sb.append("\">»</a></li>");
+        }
+
         String returnedPageBlockHTML = PaginationUtil.getCurrentPageBlockHTML(currentPage, totalPages);
         String pageBlockHTML = sb.toString();
         assertThat(pageBlockHTML.equals(returnedPageBlockHTML), is(true));
@@ -89,24 +100,59 @@ public class PaginationUtilTest {
         int startNo = 1;
         int endNo = 5;
         StringBuilder sb = new StringBuilder();
+        if (!PaginationUtil.isFirstBlock(currentPage)) {
+            sb.append("<li><a href=\"/?page=");
+            sb.append(startNo - 2);
+            sb.append("\">«</a></li>");
+        }
         for (int i = startNo; i <= endNo; i++) {
             sb.append("<li><a href=\"/?page=");
             // pageable에서는 0페이지부터 시작하므로 i-1 해줘서 페이지 넘버를 보정한다.
-            sb.append(i-1);
+            sb.append(i - 1);
             sb.append("\">");
             sb.append(i);
             sb.append("</a></li>");
-            if (i == endNo) {
-                sb.append("<li><a href=\"/?page=");
-                sb.append(i+1);
-                sb.append("\">»</a></li>");
-            }
+        }
+        if (!PaginationUtil.isLastBlock(PaginationUtil.getCurrentPageBlockNumber(currentPage), totalPages)) {
+            sb.append("<li><a href=\"/?page=");
+            sb.append(endNo);
+            sb.append("\">»</a></li>");
         }
 
         String returnedPageBlockHTML = PaginationUtil.getCurrentPageBlockHTML(currentPage, totalPages);
         String pageBlockHTML = sb.toString();
-        System.out.println(returnedPageBlockHTML);
-        System.out.println(pageBlockHTML);
+
+        assertThat(pageBlockHTML.equals(returnedPageBlockHTML), is(true));
+    }
+
+    @Test
+    public void getBlockHTMLRemovedRightArrow() {
+        int currentPage = 6;
+        int totalPages = 8;
+        int startNo = 6;
+        int endNo = 8;
+        StringBuilder sb = new StringBuilder();
+        if (!PaginationUtil.isFirstBlock(currentPage)) {
+            sb.append("<li><a href=\"/?page=");
+            sb.append(startNo - 2);
+            sb.append("\">«</a></li>");
+        }
+        for (int i = startNo; i <= endNo; i++) {
+            sb.append("<li><a href=\"/?page=");
+            // pageable에서는 0페이지부터 시작하므로 i-1 해줘서 페이지 넘버를 보정한다.
+            sb.append(i - 1);
+            sb.append("\">");
+            sb.append(i);
+            sb.append("</a></li>");
+        }
+        if (!PaginationUtil.isLastBlock(PaginationUtil.getCurrentPageBlockNumber(currentPage), totalPages)) {
+            sb.append("<li><a href=\"/?page=");
+            sb.append(endNo);
+            sb.append("\">»</a></li>");
+        }
+
+        String returnedPageBlockHTML = PaginationUtil.getCurrentPageBlockHTML(currentPage, totalPages);
+        String pageBlockHTML = sb.toString();
 
         assertThat(pageBlockHTML.equals(returnedPageBlockHTML), is(true));
     }

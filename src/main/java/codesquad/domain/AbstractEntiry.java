@@ -31,14 +31,8 @@ abstract public class AbstractEntiry {
 
     protected AbstractEntiry() {}
 
-    protected AbstractEntiry(String id) {
-        // Test에서 id에 null을 주니깐 NFE이 발생해서
-        if (id == null) {
-            this.id = null;
-        }
-        if (id != null) {
-            this.id = Long.valueOf(id);
-        }
+    protected AbstractEntiry(Long id) {
+        this.id = id;
     }
 
     public Long getId() {

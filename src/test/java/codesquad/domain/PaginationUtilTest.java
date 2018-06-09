@@ -70,7 +70,7 @@ public class PaginationUtilTest {
         StringBuilder sb = new StringBuilder();
 
         sb.append(PaginationUtil.getBlockLeft(startNo, currentPage));
-        sb.append(PaginationUtil.getBlockBody(startNo, endNo));
+        sb.append(PaginationUtil.getBlockBody(startNo, endNo, currentPage));
         sb.append(PaginationUtil.getBlockRight(endNo, currentPage, totalPages));
 
         String returnedPageBlockHTML = PaginationUtil.getCurrentPageBlockHTML(currentPage, totalPages);
@@ -87,7 +87,7 @@ public class PaginationUtilTest {
 
         StringBuilder sb = new StringBuilder();
         sb.append(PaginationUtil.getBlockLeft(startNo, currentPage));
-        sb.append(PaginationUtil.getBlockBody(startNo, endNo));
+        sb.append(PaginationUtil.getBlockBody(startNo, endNo, currentPage));
         sb.append(PaginationUtil.getBlockRight(endNo, currentPage, totalPages));
 
         String returnedPageBlockHTML = PaginationUtil.getCurrentPageBlockHTML(currentPage, totalPages);
@@ -105,7 +105,7 @@ public class PaginationUtilTest {
 
         StringBuilder sb = new StringBuilder();
         sb.append(PaginationUtil.getBlockLeft(startNo, currentPage));
-        sb.append(PaginationUtil.getBlockBody(startNo, endNo));
+        sb.append(PaginationUtil.getBlockBody(startNo, endNo, currentPage));
         sb.append(PaginationUtil.getBlockRight(endNo, currentPage, totalPages));
 
         String returnedPageBlockHTML = PaginationUtil.getCurrentPageBlockHTML(currentPage, totalPages);
@@ -118,8 +118,9 @@ public class PaginationUtilTest {
     public void getBlockBody() {
         int startNo = 1;
         int endNo = 5;
-        String blockBody = "<li><a href=\"/?page=0\">1</a></li><li><a href=\"/?page=1\">2</a></li><li><a href=\"/?page=2\">3</a></li><li><a href=\"/?page=3\">4</a></li><li><a href=\"/?page=4\">5</a></li>";
-        String newBlockBody = PaginationUtil.getBlockBody(startNo, endNo);
+        int currentPage = 3;
+        String blockBody = "<li><a href=\"/?page=0\">1</a></li><li><a href=\"/?page=1\">2</a></li><li class=\"active\"><a href=\"/?page=2\">3</a></li><li><a href=\"/?page=3\">4</a></li><li><a href=\"/?page=4\">5</a></li>";
+        String newBlockBody = PaginationUtil.getBlockBody(startNo, endNo, currentPage);
         assertThat(blockBody.equals(newBlockBody), is(true));
     }
 

@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PaginationUtil {
-    private static final int BLOCK_START_NO = 0;
-    private static final int BLOCK_END_NO = 1;
+    private static final int BLOCK_START_INDEX = 0;
+    private static final int BLOCK_END_INDEX = 1;
     private static final int BLOCK_SIZE = 5;
     private static final int FIRST = 1;
     private static final String EMPTY = "";
-    private static final String ARROW_HEADER = "<li><a href=\"/?page=";
-    private static final String ARROW_RIGHT_CLOSER = "\">»</a></li>";
-    private static final String ARROW_LEFT_CLOSER = "\">«</a></li>";
+    private static final String HEADER = "<li><a href=\"/?page=";
+    private static final String HEADER_ACTIVE = "<li class=\"active\"><a href=\"/?page=";
+    private static final String RIGHT_CLOSER = "\">»</a></li>";
+    private static final String LEFT_CLOSER = "\">«</a></li>";
 
     public static int getBlockStartPage(int currentPage) {
         return ((currentPage - 1) / BLOCK_SIZE) * BLOCK_SIZE + 1;
@@ -56,26 +57,14 @@ public class PaginationUtil {
 
     public static String getCurrentPageBlockHTML(int currentPage, int totalPages) {
         List<Integer> pageList = getCurrentBlockPageList(currentPage, totalPages);
-        int startNo = pageList.get(BLOCK_START_NO);
-        int endNo = pageList.get(BLOCK_END_NO);
+        int startNo = pageList.get(BLOCK_START_INDEX);
+        int endNo = pageList.get(BLOCK_END_INDEX);
+
         StringBuilder sb = new StringBuilder();
-        if (!isFirstBlock(currentPage)) {
-            sb.append(ARROW_HEADER);
-            sb.append(startNo - 2);
-            sb.append(ARROW_LEFT_CLOSER);
-        }
-        for (int i = startNo; i <= endNo; i++) {
-            sb.append(ARROW_HEADER);
-            sb.append(i - 1);
-            sb.append("\">");
-            sb.append(i);
-            sb.append("</a></li>");
-        }
-        if (!isLastBlock(getCurrentPageBlockNumber(currentPage), totalPages)) {
-            sb.append(ARROW_HEADER);
-            sb.append(endNo);
-            sb.append(ARROW_RIGHT_CLOSER);
-        }
+        sb.append(PaginationUtil.getBlockLeft(startNo, currentPage));
+        sb.append(PaginationUtil.getBlockBody(startNo, endNo, currentPage));
+        sb.append(PaginationUtil.getBlockRight(endNo, currentPage, totalPages));
+
         return sb.toString();
     }
 
@@ -83,20 +72,25 @@ public class PaginationUtil {
         if (PaginationUtil.isFirstBlock(currentPage)) {
             return EMPTY;
         }
-        return ARROW_HEADER + (startNo - 2) + ARROW_LEFT_CLOSER;
+        return HEADER + (startNo - 2) + LEFT_CLOSER;
     }
 
     public static String getBlockRight(int endNo, int currentPage, int totalPages) {
         if (PaginationUtil.isLastBlock(getCurrentPageBlockNumber(currentPage), totalPages)) {
             return EMPTY;
         }
-        return ARROW_HEADER + endNo + ARROW_RIGHT_CLOSER;
+        return HEADER + endNo + RIGHT_CLOSER;
     }
 
-    public static String getBlockBody(int startNo, int endNo) {
+    public static String getBlockBody(int startNo, int endNo, int currentPage) {
         StringBuilder sb = new StringBuilder();
         for (int i = startNo; i <= endNo; i++) {
-            sb.append("<li><a href=\"/?page=");
+            if (i == currentPage) {
+                sb.append(HEADER_ACTIVE);
+            }
+            if (i != currentPage) {
+                sb.append(HEADER);
+            }
             // pageable에서는 0페이지부터 시작하므로 i-1 해줘서 페이지 넘버를 보정한다.
             sb.append(i - 1);
             sb.append("\">");

@@ -26,11 +26,9 @@ public class HomeController {
         if (page == null) {
             page = "0";
         }
-        int currentPageNo = Integer.parseInt(page) + 1;
-        log.debug("current page number is {}", currentPageNo);
 
         Page<Question> questionPage = questionRepository.findAll(pageable);
-        model.addAttribute("pageBlock", PaginationUtil.getCurrentPageBlockHTML(currentPageNo, questionPage.getTotalPages()));
+        model.addAttribute("pageBlock", PaginationUtil.getCurrentPageBlockHTML(Integer.parseInt(page) + 1, questionPage.getTotalPages()));
         model.addAttribute("posts", questionPage);
 
         log.debug("/index/success");

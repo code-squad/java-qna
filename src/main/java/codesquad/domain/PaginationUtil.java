@@ -6,11 +6,11 @@ import java.util.List;
 public class PaginationUtil {
     private static final int BLOCK_START_NO = 0;
     private static final int BLOCK_END_NO = 1;
-    private static final int PAGE_BLOCK_SIZE = 5;
+    private static final int BLOCK_SIZE = 5;
     private static final int FIRST = 1;
 
-    public static int getBlockStartPage(int pageBlockSize, int currentPage) {
-        return ((currentPage - 1) / pageBlockSize) * pageBlockSize + 1;
+    public static int getBlockStartPage(int currentPage) {
+        return ((currentPage - 1) / BLOCK_SIZE) * BLOCK_SIZE + 1;
     }
 
     public static int getBlockEndPage(int pageBlockSize, int totalPages, int startPage) {
@@ -22,7 +22,7 @@ public class PaginationUtil {
     }
 
     public static boolean isFirstBlock(int currentPage) {
-        return currentPage == FIRST;
+        return getCurrentPageBlockNumber(currentPage) == FIRST;
     }
 
     public static boolean isLastBlock(int currentBlockNo, int totalPages) {
@@ -30,20 +30,20 @@ public class PaginationUtil {
     }
 
     public static int getLastBlockNo(int totalPages) {
-        if (totalPages % PAGE_BLOCK_SIZE == 0) {
-            return totalPages / PAGE_BLOCK_SIZE;
+        if (totalPages % BLOCK_SIZE == 0) {
+            return totalPages / BLOCK_SIZE;
         }
-        return (totalPages / PAGE_BLOCK_SIZE) + 1;
+        return (totalPages / BLOCK_SIZE) + 1;
     }
 
-    public static int getBlockNumberCurrentPage(int currentPage, int blockSize) {
-        return (int) Math.ceil((currentPage - 1) / blockSize) + 1;
+    public static int getCurrentPageBlockNumber(int currentPage) {
+        return (int) Math.ceil((currentPage - 1) / BLOCK_SIZE) + 1;
     }
 
     public static List<Integer> getCurrentBlockPageList(int currentPage, int totalPages) {
         List<Integer> pageList = new ArrayList<>();
-        pageList.add(getBlockStartPage(PAGE_BLOCK_SIZE, currentPage));
-        pageList.add(getBlockEndPage(PAGE_BLOCK_SIZE, totalPages, pageList.get(0)));
+        pageList.add(getBlockStartPage(currentPage));
+        pageList.add(getBlockEndPage(BLOCK_SIZE, totalPages, pageList.get(0)));
         if (pageList.size() > 2) {
             throw new IllegalStateException("page start, end list is over 2");
         }
@@ -55,6 +55,12 @@ public class PaginationUtil {
         int startNo = pageList.get(BLOCK_START_NO);
         int endNo = pageList.get(BLOCK_END_NO);
         StringBuilder sb = new StringBuilder();
+        System.out.println(getCurrentPageBlockNumber(currentPage));
+        if (!isFirstBlock(currentPage)) {
+            sb.append("<li><a href=\"/?page=");
+            sb.append(startNo - 2);
+            sb.append("\">«</a></li>");
+        }
         for (int i = startNo; i <= endNo; i++) {
             sb.append("<li><a href=\"/?page=");
             sb.append(i - 1);
@@ -62,8 +68,11 @@ public class PaginationUtil {
             sb.append(i);
             sb.append("</a></li>");
         }
+        if (!isLastBlock(getCurrentPageBlockNumber(currentPage), totalPages)) {
+            sb.append("<li><a href=\"/?page=");
+            sb.append(endNo);
+            sb.append("\">»</a></li>");
+        }
         return sb.toString();
     }
-
-
 }

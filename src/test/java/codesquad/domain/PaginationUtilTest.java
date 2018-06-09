@@ -9,13 +9,10 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public class PaginationUtilTest {
-    private final int BLOCK_SIZE = 5;
-    private final int PAGE_SIZE = 5;
-
     @Test
     public void getStartPage() {
         int currentPage = 23;
-        assertThat(PaginationUtil.getBlockStartPage(BLOCK_SIZE, currentPage), is(21));
+        assertThat(PaginationUtil.getBlockStartPage(currentPage), is(21));
     }
 
     @Test
@@ -23,14 +20,14 @@ public class PaginationUtilTest {
         int totalPages = 18;
         int currentPage = 11;
         int pageBlockSize = 5;
-        int startPage = PaginationUtil.getBlockStartPage(pageBlockSize, currentPage);
+        int startPage = PaginationUtil.getBlockStartPage(pageBlockSize);
         assertThat(PaginationUtil.getBlockEndPage(pageBlockSize, totalPages, startPage), is(15));
     }
 
     @Test
     public void isFirstBlock() {
         int currentPage = 4;
-        int blockNo = PaginationUtil.getBlockNumberCurrentPage(currentPage, BLOCK_SIZE);
+        int blockNo = PaginationUtil.getCurrentPageBlockNumber(currentPage);
         assertThat(PaginationUtil.isFirstBlock(blockNo),is(true));
     }
 
@@ -39,7 +36,7 @@ public class PaginationUtilTest {
         // lastBlockNo is 3
         int currentPage = 12;
         int totalPages = 14;
-        int currentBlockNo = PaginationUtil.getBlockNumberCurrentPage(currentPage, BLOCK_SIZE);
+        int currentBlockNo = PaginationUtil.getCurrentPageBlockNumber(currentPage);
         assertThat(PaginationUtil.isLastBlock(currentBlockNo, totalPages), is(true));
     }
 
@@ -53,7 +50,7 @@ public class PaginationUtilTest {
     @Test
     public void getBlockNumberCurrentPage() {
         int currentPage = 17;
-        assertThat(PaginationUtil.getBlockNumberCurrentPage(currentPage, BLOCK_SIZE), is(4));
+        assertThat(PaginationUtil.getCurrentPageBlockNumber(currentPage), is(4));
     }
 
     @Test
@@ -86,7 +83,31 @@ public class PaginationUtilTest {
     }
 
     @Test
-    public void removeReftArrow() {
+    public void getBlockHTMLRemovedLeftArrow() {
+        int currentPage = 2;
+        int totalPages = 6;
+        int startNo = 1;
+        int endNo = 5;
+        StringBuilder sb = new StringBuilder();
+        for (int i = startNo; i <= endNo; i++) {
+            sb.append("<li><a href=\"/?page=");
+            // pageable에서는 0페이지부터 시작하므로 i-1 해줘서 페이지 넘버를 보정한다.
+            sb.append(i-1);
+            sb.append("\">");
+            sb.append(i);
+            sb.append("</a></li>");
+            if (i == endNo) {
+                sb.append("<li><a href=\"/?page=");
+                sb.append(i+1);
+                sb.append("\">»</a></li>");
+            }
+        }
 
+        String returnedPageBlockHTML = PaginationUtil.getCurrentPageBlockHTML(currentPage, totalPages);
+        String pageBlockHTML = sb.toString();
+        System.out.println(returnedPageBlockHTML);
+        System.out.println(pageBlockHTML);
+
+        assertThat(pageBlockHTML.equals(returnedPageBlockHTML), is(true));
     }
 }

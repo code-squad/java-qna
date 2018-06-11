@@ -29,6 +29,9 @@ public class Question {
     @JsonProperty
     private String contents;
 
+    @JsonProperty
+    private Integer countOfAnswer = 0;
+
     private LocalDateTime createDate;
 
     private int index;
@@ -58,6 +61,14 @@ public class Question {
     public void update(String title, String contents) {
         this.title = title;
         this.contents = contents;
+    }
+
+    public void addAnswer() {
+        this.countOfAnswer += 1;
+    }
+
+    public void deleteAnswer() {
+        this.countOfAnswer -= 1;
     }
 
     public boolean isSameWriter(User loginUser) {
@@ -122,4 +133,6 @@ public class Question {
                 ", index=" + index +
                 '}';
     }
+
+
 }

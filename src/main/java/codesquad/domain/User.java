@@ -2,21 +2,11 @@ package codesquad.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import java.util.Objects;
 
 @Entity
-public class User {
-
-    @Id
-    @GeneratedValue
-    @JsonProperty
-    private Long id;
-
+public class User extends AbstractEntity{
     @Column(nullable = false, length = 20, unique = true)
     @JsonProperty
     private String userId;
@@ -30,19 +20,11 @@ public class User {
     @JsonProperty
     private String email;
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public boolean matchId(Long newId) {
         if (newId == null) {
             return false;
         }
-        return newId.equals(id);
+        return newId.equals(getId());
     }
 
     public boolean matchPassword(String newPassword) {
@@ -52,15 +34,6 @@ public class User {
 
         return newPassword.equals(password);
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
 
     public boolean matchUser(String userId){
         return this.userId.equals(userId);
@@ -73,47 +46,45 @@ public class User {
         }
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "userId='" + userId + '\'' +
-                ", password='" + password + '\'' +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(id);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
     public String getUserId() {
         return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getPassword() {
         return password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getEmail() {
         return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" + super.toString() +
+                "userId='" + userId + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

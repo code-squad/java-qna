@@ -11,12 +11,7 @@ import java.util.List;
 
 
 @Entity
-public class Question {
-    @Id
-    @GeneratedValue
-    @JsonProperty
-    private Long id;
-
+public class Question extends AbstractEntity {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     @JsonProperty
@@ -32,10 +27,6 @@ public class Question {
     @JsonProperty
     private Integer countOfAnswer = 0;
 
-    private LocalDateTime createDate;
-
-    private int index;
-
     @OneToMany(mappedBy="question")
     @OrderBy("id desc")
     @JsonIgnore
@@ -48,19 +39,15 @@ public class Question {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-        this.createDate = LocalDateTime.now();
-    }
-
-    public String getFormattedCreateDate() {
-        if (createDate == null) {
-            return "";
-        }
-        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd. HH:mm:ss"));
     }
 
     public void update(String title, String contents) {
         this.title = title;
         this.contents = contents;
+    }
+
+    public boolean isSameWriter(User loginUser) {
+        return this.writer.equals(loginUser);
     }
 
     public void addAnswer() {
@@ -69,26 +56,6 @@ public class Question {
 
     public void deleteAnswer() {
         this.countOfAnswer -= 1;
-    }
-
-    public boolean isSameWriter(User loginUser) {
-        return this.writer.equals(loginUser);
-    }
-
-    public List<Answer> getAnswers() {
-        return answers;
-    }
-
-    public void setAnswers(List<Answer> answers) {
-        this.answers = answers;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public User getWriter() {
@@ -115,24 +82,30 @@ public class Question {
         this.contents = contents;
     }
 
-    public int getIndex() {
-        return index;
+    public Integer getCountOfAnswer() {
+        return countOfAnswer;
     }
 
-    public void setIndex(int index) {
-        this.index = index;
+    public void setCountOfAnswer(Integer countOfAnswer) {
+        this.countOfAnswer = countOfAnswer;
+    }
+
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
     }
 
     @Override
     public String toString() {
         return "Question{" +
-                "id=" + id +
-                ", writer='" + writer + '\'' +
+                "writer=" + writer +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
-                ", index=" + index +
+                ", countOfAnswer=" + countOfAnswer +
+                ", answers=" + answers +
                 '}';
     }
-
-
 }

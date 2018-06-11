@@ -8,12 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 @Entity
-public class Answer {
-    @Id
-    @GeneratedValue
-    @JsonProperty
-    private Long id;
-
+public class Answer extends AbstractEntity{
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
     @JsonProperty
@@ -28,8 +23,6 @@ public class Answer {
     @JsonProperty
     private String contents;
 
-    private LocalDateTime createDate;
-
     public Answer() {
     }
 
@@ -37,26 +30,10 @@ public class Answer {
         this.writer = writer;
         this.question = question;
         this.contents = contents;
-        this.createDate = LocalDateTime.now();
-    }
-
-    public String getFormattedCreateDate() {
-        if (createDate == null) {
-            return "";
-        }
-        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd. HH:mm:ss"));
     }
 
     public boolean isSameWriter(User loginUser) {
         return loginUser.equals(this.writer);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public User getWriter() {
@@ -83,35 +60,12 @@ public class Answer {
         this.contents = contents;
     }
 
-    public LocalDateTime getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(LocalDateTime createDate) {
-        this.createDate = createDate;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Answer answer = (Answer) o;
-        return Objects.equals(id, answer.id);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(id);
-    }
-
     @Override
     public String toString() {
-        return "Answer{" +
-                "id=" + id +
-                ", writer=" + writer +
+        return "Answer{" + super.toString() +
+                "writer=" + writer +
+                ", question=" + question +
                 ", contents='" + contents + '\'' +
-                ", createDate=" + createDate +
                 '}';
     }
 }

@@ -1,41 +1,42 @@
 package codesquad.domain;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Objects;
+
 
 @Entity
 public class Question {
     @Id
     @GeneratedValue
+    @JsonProperty
     private Long id;
-
-    @OneToMany(mappedBy="question")
-    @OrderBy("id ASC")
-    private List<Answer> answers;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    @JsonProperty
     private User writer;
 
-    public List<Answer> getAnswers() {
-        return answers;
-    }
-
-    public void setAnswers(List<Answer> answers) {
-        this.answers = answers;
-    }
-
+    @JsonProperty
     private String title;
 
     @Lob
+    @JsonProperty
     private String contents;
 
     private LocalDateTime createDate;
 
     private int index;
+
+    @OneToMany(mappedBy="question")
+    @OrderBy("id desc")
+    @JsonIgnore
+    private List<Answer> answers;
 
     public Question() {
     }
@@ -61,6 +62,14 @@ public class Question {
 
     public boolean isSameWriter(User loginUser) {
         return this.writer.equals(loginUser);
+    }
+
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
     }
 
     public Long getId() {

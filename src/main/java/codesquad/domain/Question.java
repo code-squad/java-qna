@@ -1,41 +1,36 @@
 package codesquad.domain;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Objects;
+
 
 @Entity
-public class Question {
-    @Id
-    @GeneratedValue
-    private Long id;
-
-    @OneToMany(mappedBy="question")
-    @OrderBy("id ASC")
-    private List<Answer> answers;
-
+public class Question extends AbstractEntity {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    @JsonProperty
     private User writer;
 
-    public List<Answer> getAnswers() {
-        return answers;
-    }
-
-    public void setAnswers(List<Answer> answers) {
-        this.answers = answers;
-    }
-
+    @JsonProperty
     private String title;
 
     @Lob
+    @JsonProperty
     private String contents;
 
-    private LocalDateTime createDate;
+    @JsonProperty
+    private Integer countOfAnswer = 0;
 
-    private int index;
+    @OneToMany(mappedBy="question")
+    @OrderBy("id desc")
+    @JsonIgnore
+    private List<Answer> answers;
 
     public Question() {
     }
@@ -44,14 +39,6 @@ public class Question {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-        this.createDate = LocalDateTime.now();
-    }
-
-    public String getFormattedCreateDate() {
-        if (createDate == null) {
-            return "";
-        }
-        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd. HH:mm:ss"));
     }
 
     public void update(String title, String contents) {
@@ -63,12 +50,12 @@ public class Question {
         return this.writer.equals(loginUser);
     }
 
-    public Long getId() {
-        return id;
+    public void addAnswer() {
+        this.countOfAnswer += 1;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void deleteAnswer() {
+        this.countOfAnswer -= 1;
     }
 
     public User getWriter() {
@@ -95,22 +82,30 @@ public class Question {
         this.contents = contents;
     }
 
-    public int getIndex() {
-        return index;
+    public Integer getCountOfAnswer() {
+        return countOfAnswer;
     }
 
-    public void setIndex(int index) {
-        this.index = index;
+    public void setCountOfAnswer(Integer countOfAnswer) {
+        this.countOfAnswer = countOfAnswer;
+    }
+
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
     }
 
     @Override
     public String toString() {
         return "Question{" +
-                "id=" + id +
-                ", writer='" + writer + '\'' +
+                "writer=" + writer +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
-                ", index=" + index +
+                ", countOfAnswer=" + countOfAnswer +
+                ", answers=" + answers +
                 '}';
     }
 }

@@ -59,6 +59,7 @@ public class UserController {
 
     @PostMapping("/create")
     public String create(User user){
+        System.out.println(user.toString()+ "야호야호");
         userRepository.save(user);
         return "redirect:/users/list";
     }

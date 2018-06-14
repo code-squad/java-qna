@@ -6,9 +6,8 @@
 		<title>SLiPP Java Web Programming</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<link href="css/bootstrap.min.css" rel="stylesheet">
-		<!--[if lt IE 9]>
+		[if lt IE 9]>
 			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-		<![endif]-->
 		<link href="css/styles.css" rel="stylesheet">
 	</head>
 	
@@ -67,10 +66,10 @@
                 <li class="active"><a href="index.html">Posts</a></li>
                 <li><a href="user/login.html" role="button">로그인</a></li>
                 <li><a href="user/form.html" role="button">회원가입</a></li>
-                <!--
+                
                 <li><a href="#loginModal" role="button" data-toggle="modal">로그인</a></li>
                 <li><a href="#registerModal" role="button" data-toggle="modal">회원가입</a></li>
-                -->
+               
                 <li><a href="#" role="button">로그아웃</a></li>
                 <li><a href="#" role="button">개인정보수정</a></li>
             </ul>
@@ -82,42 +81,26 @@
    <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
       <div class="panel panel-default qna-list">
           <ul class="list">
+          {{#questions}}
               <li>
                   <div class="wrap">
                       <div class="main">
                           <strong class="subject">
-                              <a href="./qna/show.html">국내에서 Ruby on Rails와 Play가 활성화되기 힘든 이유는 뭘까?</a>
+                              <a href="/questions/{{id}}">{{title}}</a>
                           </strong>
                           <div class="auth-info">
                               <i class="icon-add-comment"></i>
-                              <span class="time">2016-01-15 18:47</span>
-                              <a href="./user/profile.html" class="author">자바지기</a>
+                              <span class="time">1</span>
+                              <a href="./user/profile.html" class="author">{{writer}}</a>
                           </div>
                           <div class="reply" title="댓글">
                               <i class="icon-reply"></i>
-                              <span class="point">8</span>
+                              <span class="point">{{id}}</span>
                           </div>
                       </div>
                   </div>
               </li>
-              <li>
-                  <div class="wrap">
-                      <div class="main">
-                          <strong class="subject">
-                              <a href="./qna/show.html">runtime 에 reflect 발동 주체 객체가 뭔지 알 방법이 있을까요?</a>
-                          </strong>
-                          <div class="auth-info">
-                              <i class="icon-add-comment"></i>
-                              <span class="time">2016-01-05 18:47</span>
-                              <a href="./user/profile.html" class="author">김문수</a>
-                          </div>
-                          <div class="reply" title="댓글">
-                              <i class="icon-reply"></i>
-                              <span class="point">12</span>
-                          </div>
-                      </div>
-                  </div>
-              </li>
+              {{/questions}}
           </ul>
           <div class="row">
               <div class="col-md-3"></div>
@@ -140,8 +123,8 @@
     </div>
 </div>
 
-<!--login modal-->
-<!--
+login modal
+
 <div id="loginModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog">
   <div class="modal-content">
@@ -173,10 +156,10 @@
   </div>
   </div>
 </div>
--->
 
-<!--register modal-->
-<!--
+
+register modal
+
 <div id="registerModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog">
   <div class="modal-content">
@@ -215,9 +198,9 @@
   </div>
   </div>
 </div>
--->
 
-<!-- script references -->
+
+script references
 <script src="js/jquery-2.2.0.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/scripts.js"></script>

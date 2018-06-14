@@ -22,6 +22,22 @@ public class User {
 		this.email = email;
 	}
 
+	public String getUserId() {
+		return userId;
+	}
+
+	public String getPasssword() {
+		return passsword;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
 	@Override
 	public String toString() {
 		return "User [userId=" + userId + ", passsword=" + passsword + ", name=" + name + ", email=" + email + "]";

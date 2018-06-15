@@ -17,7 +17,7 @@ public class UserController {
 		return users;
 	}
 	
-	@PostMapping("/create")
+	@PostMapping("/users/create")
 	public String create(User user) {
 		System.out.println("user : " + user);
 		users.add(user); 
@@ -38,5 +38,11 @@ public class UserController {
 			}
 		}
 		return "/user/profile";
+	}
+	
+	@GetMapping("/users/form")
+	public String profile(Model model) {
+		model.addAttribute("users", users);
+		return "/user/form";
 	}
 }

@@ -1,10 +1,11 @@
 package codesquad.web;
 
+
 public class Question {
 	private long id;
 	private String writer;
 	private String title;
-	private String content;
+	private String contents;
 	
 	public long getId() {
 		return id;
@@ -30,16 +31,16 @@ public class Question {
 		this.title = title;
 	}
 	
-	public String getContent() {
-		return content;
+	public String getContents() {
+		return contents;
 	}
 	
-	public void setContent(String content) {
-		this.content = content;
+	public void setContents(String contents) {
+		this.contents = contents;
 	}
-
+	
 	@Override
 	public String toString() {
-		return "Question [name=" + writer + ", title=" + title + ", content=" + content + "]";
+		return "Question [name=" + writer + ", title=" + title + ", content=" + contents + "]";
 	}
 }

@@ -1,45 +1,40 @@
 package codesquad.web;
 
-import java.util.ArrayList;
-import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import codesquad.domain.Question;
+import codesquad.domain.QuestionRepository;
 
 @Controller
+@RequestMapping("/questions")
 public class QuestionController {
-	private List<Question> questions = new ArrayList<>();
+	
+	@Autowired
+	private QuestionRepository questionRepository;
 
-	@PostMapping("/questions/create")
+	@PostMapping("")
 	public String create(Question question) {
-		question.setId(questions.size() + 1);
 		System.out.println("question : " + question);
-		questions.add(question);
+		questionRepository.save(question);
 		return "redirect:/";
 	}
-
-	@GetMapping("/")
-	public String list(Model model) {
-		model.addAttribute("questions", questions);
-		return "index";
-	}
 	
-	@GetMapping("/questions/{id}")
-	public String profile(Model model, @PathVariable long id) {
-		for(int i = 0; i < questions.size(); i++) {
-			if (questions.get(i).getId() == id) {
-				model.addAttribute("question", questions.get(i));
-			}
-		}
+	@GetMapping("/{id}")
+	public String profile(Model model, @PathVariable Long id) {
+		model.addAttribute("question", questionRepository.findById(id).get());
 		return "/qna/show";
 	}
 	
-	@GetMapping("/questions/form")
+	@GetMapping("/form")
 	public String profile(Model model) {
-		model.addAttribute("questions", questions);
+		model.addAttribute("questions", questionRepository.findAll());
 		return "/qna/form";
 	}
 }

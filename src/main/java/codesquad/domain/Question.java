@@ -1,17 +1,23 @@
-package codesquad.web;
+package codesquad.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
+@Entity
 public class Question {
-	private long id;
+	@Id
+	@GeneratedValue
+	private Long id;
 	private String writer;
 	private String title;
 	private String contents;
 	
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 	
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	
@@ -38,9 +44,9 @@ public class Question {
 	public void setContents(String contents) {
 		this.contents = contents;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "Question [name=" + writer + ", title=" + title + ", content=" + contents + "]";
+		return "Question [id=" + id + ", writer=" + writer + ", title=" + title + ", contents=" + contents + "]";
 	}
 }

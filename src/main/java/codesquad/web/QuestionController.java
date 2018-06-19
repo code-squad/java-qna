@@ -30,6 +30,7 @@ public class QuestionController {
 		return "index";
 	}
 	
+	
 	@GetMapping("/questions/{id}")
 	public String profile(Model model, @PathVariable Long id) {
 		model.addAttribute("question", questionRepository.findById(id).get());

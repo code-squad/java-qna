@@ -1,7 +1,5 @@
 package codesquad.web;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,7 +21,7 @@ public class UserController {
 	private UserRepository userRepository;
 	
 	
-	@PostMapping("/create")
+	@PostMapping("")
 	public String create(User user) {
 		System.out.println("user : " + user);
 		userRepository.save(user);

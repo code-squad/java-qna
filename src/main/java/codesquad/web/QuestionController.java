@@ -7,37 +7,32 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import codesquad.domain.Question;
 import codesquad.domain.QuestionRepository;
 
 @Controller
+@RequestMapping("/questions")
 public class QuestionController {
 	
 	@Autowired
 	private QuestionRepository questionRepository;
 
-	@PostMapping("/questions/create")
+	@PostMapping("")
 	public String create(Question question) {
 		System.out.println("question : " + question);
 		questionRepository.save(question);
 		return "redirect:/";
 	}
-
-	@GetMapping("/")
-	public String list(Model model) {
-		model.addAttribute("questions", questionRepository.findAll());
-		return "index";
-	}
 	
-	
-	@GetMapping("/questions/{id}")
+	@GetMapping("/{id}")
 	public String profile(Model model, @PathVariable Long id) {
 		model.addAttribute("question", questionRepository.findById(id).get());
 		return "/qna/show";
 	}
 	
-	@GetMapping("/questions/form")
+	@GetMapping("/form")
 	public String profile(Model model) {
 		model.addAttribute("questions", questionRepository.findAll());
 		return "/qna/form";

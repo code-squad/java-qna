@@ -1,6 +1,10 @@
 package codesquad.web;
 
 
+import javax.servlet.http.HttpSession;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,14 +20,14 @@ import codesquad.domain.UserRepository;
 @Controller
 @RequestMapping("/users")
 public class UserController {
+	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 	
 	@Autowired
 	private UserRepository userRepository;
 	
-	
 	@PostMapping("")
 	public String create(User user) {
-		System.out.println("user : " + user);
+		logger.debug("user : {}", user);
 		userRepository.save(user);
 		return "redirect:/users";
 	}
@@ -32,6 +36,34 @@ public class UserController {
 	public String list(Model model) {
 		model.addAttribute("users", userRepository.findAll());
 		return "/user/list";
+	}
+	
+	@GetMapping("/loginForm")
+	public String loginForm() {
+		return "/user/login";
+	}
+	
+	@PostMapping("/login")
+	public String login(String userId, String password, HttpSession session) {
+		User user = userRepository.findByUserId(userId);
+		if (user == null) {
+			System.out.println("fail");
+			return "redirect:/users/loginForm";
+		}
+		if (!password.equals(user.getPassword())) {
+			System.out.println("fail");
+			return "redirect:/users/loginForm";
+		}
+		System.out.println("success");
+		// 로그인 정보 기록
+		session.setAttribute("user", user);
+		return "redirect:/";
+	}
+	
+	@GetMapping("/logout")
+	public String logout(HttpSession session) {
+		session.removeAttribute("user");
+		return "redirect:/";
 	}
 	
 	@GetMapping("/{id}")

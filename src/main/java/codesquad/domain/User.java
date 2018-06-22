@@ -11,7 +11,7 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@Column(nullable=false, length=20)
+	@Column(nullable=false, length=20, unique=true)
 	private String userId;
 	private String password;
 	private String name;
@@ -37,16 +37,22 @@ public class User {
 		this.email = email;
 	}
 	
-	public Long getId() {
-		return id;
+	public boolean checkId(Long insertedId) {
+		if (insertedId == null) {
+			return false;
+		}
+		return id.equals(insertedId);
 	}
 
 	public String getUserId() {
 		return userId;
 	}
 
-	public String getPassword() {
-		return password;
+	public boolean checkPassword(String insertedPassword) {
+		if (insertedPassword == null) {
+			return false;
+		}
+		return insertedPassword.equals(password);
 	}
 
 	public String getName() {
@@ -68,5 +74,4 @@ public class User {
 		return "User [id=" + id + ", userId=" + userId + ", password=" + password + ", name=" + name + ", email="
 				+ email + "]";
 	}
-
 }

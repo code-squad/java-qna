@@ -37,12 +37,11 @@ public class Question {
 		return writer;
 	}
 	
-	public boolean checkWriter(String userId) {
-		if (userId == null) {
-			return false;
-		}
-		return writer.equals(userId);
+	public boolean checkWriter(User user) {
+		return writer.equals(user.getUserId());
 	}
+	
+	
 	
 	public String getTitle() {
 		return title;

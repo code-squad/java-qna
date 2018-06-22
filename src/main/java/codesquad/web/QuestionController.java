@@ -91,7 +91,7 @@ public class QuestionController {
 		}
 		User sessionedUser = (User) session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
 		Question question = questionRepository.findById(id).get();
-		if (!question.checkWriter(sessionedUser.getUserId())) {
+		if (!question.checkWriter(sessionedUser)) {
 			throw new IllegalStateException("u can modify only yours");
 		}
 		

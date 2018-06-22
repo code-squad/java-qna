@@ -47,22 +47,22 @@ public class UserController {
 	public String login(String userId, String password, HttpSession session) {
 		User user = userRepository.findByUserId(userId);
 		if (user == null) {
-			System.out.println("fail");
-			return "redirect:/users/loginForm";
+			logger.debug("fail");
+			return "/user/login_failed";
 		}
-		if (!password.equals(user.getPassword())) {
-			System.out.println("fail");
-			return "redirect:/users/loginForm";
+		if (!user.checkPassword(password)) {
+			logger.debug("fail");
+			return "/user/login_failed";
 		}
-		System.out.println("success");
+		logger.debug("success");
 		// 로그인 정보 기록
-		session.setAttribute("user", user);
+		session.setAttribute("sessionedUser", user);
 		return "redirect:/";
 	}
 	
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {
-		session.removeAttribute("user");
+		session.removeAttribute("sessionedUser");
 		return "redirect:/";
 	}
 	
@@ -80,16 +80,33 @@ public class UserController {
 	}
 	
 	@GetMapping("/{id}/form")
-	public String updateForm(@PathVariable Long id, Model model) {
+	public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
+		if (!HttpSessionUtils.isLoginUser(session)) {
+			return "redirect:/users/loginForm";
+		}
+		User sessionedUser = (User) session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
+		//question의 id와 user의 id가 맞는지 아닌지 확인하고 있음
+		if (!sessionedUser.checkId(id)) {
+			throw new IllegalStateException("u can modify only yours");
+		}
+		
 		User user = userRepository.findById(id).get();
 		model.addAttribute("user", user);
 		return "/user/updateForm";
 	}
 	
 	@PutMapping("/{id}")
-	public String update(@PathVariable Long id, User newUser) {
+	public String update(@PathVariable Long id, User updatedUser, HttpSession session) {
+		if (!HttpSessionUtils.isLoginUser(session)) {
+			return "redirect:/users/loginForm";
+		}
+		User sessionedUser = (User) session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
+		if (!sessionedUser.checkId(id)) {
+			throw new IllegalStateException("u can modify only yours");
+		}
+		
 		User user = userRepository.findById(id).get();
-		user.update(newUser);
+		user.update(updatedUser);
 		userRepository.save(user);
 		return "redirect:/users";
 	}

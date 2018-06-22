@@ -14,6 +14,17 @@ public class Question {
 	private String title;
 	private String contents;
 	
+	public Question() {
+		
+	}
+	
+	public Question(String writer, String title, String contents) {
+		super();
+		this.writer = writer;
+		this.title = title;
+		this.contents = contents;
+	}
+	
 	public Long getId() {
 		return id;
 	}
@@ -26,23 +37,23 @@ public class Question {
 		return writer;
 	}
 	
-	public void setWriter(String writer) {
-		this.writer = writer;
+	public boolean checkWriter(String userId) {
+		if (userId == null) {
+			return false;
+		}
+		return writer.equals(userId);
 	}
 	
 	public String getTitle() {
 		return title;
 	}
 	
-	public void setTitle(String title) {
-		this.title = title;
-	}
-	
 	public String getContents() {
 		return contents;
 	}
 	
-	public void setContents(String contents) {
+	public void update(String title, String contents) {
+		this.title = title;
 		this.contents = contents;
 	}
 

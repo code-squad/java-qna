@@ -32,7 +32,7 @@ public class QuestionController {
 			return "redirect:/users/loginForm";
 		}
 		User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-		Question newQuestion = new Question(sessionedUser.getUserId(), title, contents); 
+		Question newQuestion = new Question(sessionedUser, title, contents); 
 		logger.debug("question : {}", newQuestion);
 		questionRepository.save(newQuestion);
 		return "redirect:/";
@@ -59,11 +59,11 @@ public class QuestionController {
 			return "redirect:/users/loginForm";
 		}
 		User sessionedUser = (User) session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
-		if (!sessionedUser.checkId(id)) {
+		Question question = questionRepository.findById(id).get();
+		if (!question.checkWriter(sessionedUser)) {
 			throw new IllegalStateException("u can modify only yours");
 		}
 		
-		Question question = questionRepository.findById(id).get();
 		model.addAttribute("question", question);
 		return "/qna/updateForm";
 	}
@@ -74,14 +74,14 @@ public class QuestionController {
 			return "redirect:/users/loginForm";
 		}
 		User sessionedUser = (User) session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
-		if (!sessionedUser.checkId(id)) {
+		Question question = questionRepository.findById(id).get();
+		if (!question.checkWriter(sessionedUser)) {
 			throw new IllegalStateException("u can modify only yours");
 		}
 		
-		Question question = questionRepository.findById(id).get();
 		question.update(title, contents);
 		questionRepository.save(question);
-		return "redirect:/";
+		return String.format("redirect:/questions/%d", id);
 	}
 	
 	@DeleteMapping("/{id}")

@@ -17,7 +17,7 @@ import javax.persistence.OrderBy;
 
 
 @Entity
-public class Question {
+public class Question extends All{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

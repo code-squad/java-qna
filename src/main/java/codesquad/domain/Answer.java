@@ -12,7 +12,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class Answer {
+public class Answer extends All{
 	@Id
 	@GeneratedValue
 	private Long id;
@@ -30,11 +30,19 @@ public class Answer {
 		
 	}
 	
+	public boolean checkWriter(User user) {
+		return writer.equals(user);
+	}
+	
 	public Answer(User writer, Question question, String contents) {
 		this.writer = writer;
 		this.question = question;
 		this.contents = contents;
 		this.createDate = LocalDateTime.now();
+	}
+	
+	public void update(String contents) {
+		this.contents = contents;
 	}
 	
 	public String getFormattedCreateDate() {

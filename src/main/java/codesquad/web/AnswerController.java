@@ -41,7 +41,7 @@ public class AnswerController {
 	@DeleteMapping("/{id}")
 	public String delete(@PathVariable Long questionId, @PathVariable Long id, Model model, HttpSession session) {
 		Answer answer = answerRepository.findById(id).get();
-		Result result = Result.valid(session, answer);
+		Result result = Result.valid(session, answer.classForQAndA());
 		if (!result.isValid()) {
 			model.addAttribute("errorMessage", result.getErrorMessage());
 			return "/user/login_failed";

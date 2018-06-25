@@ -57,7 +57,7 @@ public class QuestionController {
 	@GetMapping("/{id}/form")
 	public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
 		Question question = questionRepository.findById(id).get();
-		Result result = Result.valid(session, question);
+		Result result = Result.valid(session, question.getClassForQAndA());
 		if (!result.isValid()) {
 			model.addAttribute("errorMessage", result.getErrorMessage());
 			return "/user/login_failed";
@@ -69,7 +69,7 @@ public class QuestionController {
 	@PutMapping("/{id}")
 	public String update(@PathVariable Long id, String title, String contents, Model model, HttpSession session) {
 		Question question = questionRepository.findById(id).get();
-		Result result = Result.valid(session, question);
+		Result result = Result.valid(session, question.getClassForQAndA());
 		if (!result.isValid()) {
 			model.addAttribute("errorMessage", result.getErrorMessage());
 			return "/user/login_failed";
@@ -82,7 +82,7 @@ public class QuestionController {
 	@DeleteMapping("/{id}")
 	public String delete(@PathVariable Long id, Model model, HttpSession session) {
 		Question question = questionRepository.findById(id).get();
-		Result result = Result.valid(session, question);
+		Result result = Result.valid(session, question.getClassForQAndA());
 		if (!result.isValid()) {
 			model.addAttribute("errorMessage", result.getErrorMessage());
 			return "/user/login_failed";

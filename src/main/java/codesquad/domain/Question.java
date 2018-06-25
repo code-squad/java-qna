@@ -4,26 +4,23 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
 
 @Entity
-public class Question extends All{
+public class Question{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@ManyToOne
-	@JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
-	private User writer;
+	@Embedded
+	private ClassForQAndA classForQAndA;
 	@OneToMany(mappedBy="question")
 	@OrderBy("id ASC")
 	private List<Answer> answers;
@@ -38,7 +35,7 @@ public class Question extends All{
 	
 	public Question(User writer, String title, String contents) {
 		super();
-		this.writer = writer;
+		this.classForQAndA = new ClassForQAndA(writer);
 		this.title = title;
 		this.contents = contents;
 		this.createDate = LocalDateTime.now();
@@ -52,20 +49,16 @@ public class Question extends All{
 		this.id = id;
 	}
 	
-	public User getWriter() {
-		return writer;
-	}
-	
-	public boolean checkWriter(User user) {
-		return writer.equals(user);
-	}
-	
 	public String getTitle() {
 		return title;
 	}
 	
 	public String getContents() {
 		return contents;
+	}
+	
+	public ClassForQAndA getClassForQAndA() {
+		return classForQAndA;
 	}
 	
 	public void update(String title, String contents) {
@@ -82,6 +75,6 @@ public class Question extends All{
 
 	@Override
 	public String toString() {
-		return "Question [id=" + id + ", writer=" + writer + ", title=" + title + ", contents=" + contents + "]";
+		return "Question [id=" + id + ", writer=" + classForQAndA.writer + ", title=" + title + ", contents=" + contents + "]";
 	}
 }

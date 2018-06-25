@@ -29,7 +29,7 @@ public class Result {
 		return new Result(false, errorMessage);
 	}
 	
-	public static Result valid(HttpSession session, All all) {
+	public static Result valid(HttpSession session, ClassForQAndA all) {
 		if (!HttpSessionUtils.isLoginUser(session)) {
 			return Result.fail("u have to login");
 		}

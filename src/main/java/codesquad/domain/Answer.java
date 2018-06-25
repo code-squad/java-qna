@@ -3,6 +3,7 @@ package codesquad.domain;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -12,13 +13,12 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class Answer extends All{
+public class Answer {
 	@Id
 	@GeneratedValue
 	private Long id;
-	@ManyToOne
-	@JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
-	private User writer;
+	@Embedded
+	private ClassForQAndA classForQAndA;
 	@ManyToOne
 	@JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_question"))
 	private Question question;
@@ -30,12 +30,8 @@ public class Answer extends All{
 		
 	}
 	
-	public boolean checkWriter(User user) {
-		return writer.equals(user);
-	}
-	
 	public Answer(User writer, Question question, String contents) {
-		this.writer = writer;
+		this.classForQAndA = new ClassForQAndA(writer);
 		this.question = question;
 		this.contents = contents;
 		this.createDate = LocalDateTime.now();
@@ -50,6 +46,10 @@ public class Answer extends All{
 			return "";
 		}
 		return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
+	}
+	
+	public ClassForQAndA classForQAndA() {
+		return this.classForQAndA;
 	}
 
 	@Override

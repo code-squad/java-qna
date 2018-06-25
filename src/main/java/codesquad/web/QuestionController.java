@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import codesquad.domain.Question;
 import codesquad.domain.QuestionRepository;
+import codesquad.domain.Result;
 import codesquad.domain.User;
 
 @Controller
@@ -32,7 +33,7 @@ public class QuestionController {
 			return "redirect:/users/loginForm";
 		}
 		User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-		Question newQuestion = new Question(sessionedUser.getUserId(), title, contents); 
+		Question newQuestion = new Question(sessionedUser, title, contents);
 		logger.debug("question : {}", newQuestion);
 		questionRepository.save(newQuestion);
 		return "redirect:/";
@@ -52,50 +53,41 @@ public class QuestionController {
 		model.addAttribute("questions", questionRepository.findAll());
 		return "/qna/form";
 	}
-	
+
 	@GetMapping("/{id}/form")
 	public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
-		if (!HttpSessionUtils.isLoginUser(session)) {
-			return "redirect:/users/loginForm";
-		}
-		User sessionedUser = (User) session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
-		if (!sessionedUser.checkId(id)) {
-			throw new IllegalStateException("u can modify only yours");
-		}
-		
 		Question question = questionRepository.findById(id).get();
+		Result result = Result.valid(session, question.getClassForQAndA());
+		if (!result.isValid()) {
+			model.addAttribute("errorMessage", result.getErrorMessage());
+			return "/user/login_failed";
+		}
 		model.addAttribute("question", question);
 		return "/qna/updateForm";
 	}
 	
 	@PutMapping("/{id}")
-	public String update(@PathVariable Long id, String title, String contents, HttpSession session) {
-		if (!HttpSessionUtils.isLoginUser(session)) {
-			return "redirect:/users/loginForm";
-		}
-		User sessionedUser = (User) session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
-		if (!sessionedUser.checkId(id)) {
-			throw new IllegalStateException("u can modify only yours");
-		}
-		
+	public String update(@PathVariable Long id, String title, String contents, Model model, HttpSession session) {
 		Question question = questionRepository.findById(id).get();
+		Result result = Result.valid(session, question.getClassForQAndA());
+		if (!result.isValid()) {
+			model.addAttribute("errorMessage", result.getErrorMessage());
+			return "/user/login_failed";
+		}
 		question.update(title, contents);
 		questionRepository.save(question);
-		return "redirect:/";
+		return String.format("redirect:/questions/%d", id);
 	}
-	
+
 	@DeleteMapping("/{id}")
-	public String delete(@PathVariable Long id, HttpSession session) {
-		if (!HttpSessionUtils.isLoginUser(session)) {
-			return "redirect:/users/loginForm";
-		}
-		User sessionedUser = (User) session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
+	public String delete(@PathVariable Long id, Model model, HttpSession session) {
 		Question question = questionRepository.findById(id).get();
-		if (!question.checkWriter(sessionedUser)) {
-			throw new IllegalStateException("u can modify only yours");
+		Result result = Result.valid(session, question.getClassForQAndA());
+		if (!result.isValid()) {
+			model.addAttribute("errorMessage", result.getErrorMessage());
+			return "/user/login_failed";
 		}
-		
-		questionRepository.delete(question);;
+		questionRepository.delete(question);
 		return "redirect:/";
 	}
 }

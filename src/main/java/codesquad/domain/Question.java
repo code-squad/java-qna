@@ -13,20 +13,27 @@ import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 @Entity
 public class Question{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonProperty
 	private Long id;
 	@Embedded
+	@JsonProperty
 	private ClassForQAndA classForQAndA;
 	@OneToMany(mappedBy="question")
-	@OrderBy("id ASC")
+	@OrderBy("id DESC")
 	private List<Answer> answers;
+	@JsonProperty
 	private String title;
 	@Lob
+	@JsonProperty
 	private String contents;
+	@JsonProperty
 	private LocalDateTime createDate;
 	
 	public Question() {

@@ -12,18 +12,25 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 public class Answer {
 	@Id
 	@GeneratedValue
+	@JsonProperty
 	private Long id;
 	@Embedded
+	@JsonProperty
 	private ClassForQAndA classForQAndA;
 	@ManyToOne
-	@JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_question"))
+	@JoinColumn
+	@JsonProperty
 	private Question question;
 	@Lob
+	@JsonProperty
 	private String contents;
+	@JsonProperty
 	private LocalDateTime createDate;
 	
 	public Answer() {

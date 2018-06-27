@@ -30,6 +30,8 @@ public class Question{
 	private List<Answer> answers;
 	@JsonProperty
 	private String title;
+	@JsonProperty
+	private Integer countOfAnswer = 0;
 	@Lob
 	@JsonProperty
 	private String contents;
@@ -68,6 +70,14 @@ public class Question{
 		return classForQAndA;
 	}
 	
+	public void addAnswer() {
+		++this.countOfAnswer;
+	}
+	
+	public void delteAnswer() {
+		--this.countOfAnswer;
+	}
+	
 	public void update(String title, String contents) {
 		this.title = title;
 		this.contents = contents;
@@ -84,4 +94,5 @@ public class Question{
 	public String toString() {
 		return "Question [id=" + id + ", writer=" + classForQAndA.writer + ", title=" + title + ", contents=" + contents + "]";
 	}
+
 }

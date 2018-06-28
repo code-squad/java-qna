@@ -1,25 +1,24 @@
 package codesquad.domain;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-public class User {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+public class User extends AbstractEntity{
 	@Column(nullable=false, length=20, unique=true)
+	@JsonProperty
 	private String userId;
+	@JsonIgnore
 	private String password;
+	@JsonProperty
 	private String name;
+	@JsonProperty
 	private String email;
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 	
 	public void setUserId(String userId) {
 		this.userId = userId;
@@ -35,13 +34,6 @@ public class User {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-	
-	public boolean checkId(Long insertedId) {
-		if (insertedId == null) {
-			return false;
-		}
-		return id.equals(insertedId);
 	}
 
 	public String getUserId() {
@@ -69,34 +61,16 @@ public class User {
 		this.password = newUser.password;
 	}
 	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
+	public boolean checkId(Long insertedId) {
+		if (insertedId == null) {
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		User other = (User) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
+		}
+		return insertedId.equals(getId());
 	}
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", userId=" + userId + ", password=" + password + ", name=" + name + ", email="
+		return "User [" + super.toString() + ", userId=" + userId + ", password=" + password + ", name=" + name + ", email="
 				+ email + "]";
 	}
 }

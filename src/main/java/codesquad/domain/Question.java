@@ -1,33 +1,31 @@
 package codesquad.domain;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 @Entity
-public class Question{
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+public class Question extends AbstractEntity{
 	@Embedded
+	@JsonProperty
 	private ClassForQAndA classForQAndA;
 	@OneToMany(mappedBy="question")
-	@OrderBy("id ASC")
+	@OrderBy("id DESC")
 	private List<Answer> answers;
+	@JsonProperty
 	private String title;
+	@JsonProperty
+	private Integer countOfAnswer = 0;
 	@Lob
+	@JsonProperty
 	private String contents;
-	private LocalDateTime createDate;
 	
 	public Question() {
 		
@@ -38,15 +36,6 @@ public class Question{
 		this.classForQAndA = new ClassForQAndA(writer);
 		this.title = title;
 		this.contents = contents;
-		this.createDate = LocalDateTime.now();
-	}
-	
-	public Long getId() {
-		return id;
-	}
-	
-	public void setId(Long id) {
-		this.id = id;
 	}
 	
 	public String getTitle() {
@@ -61,20 +50,22 @@ public class Question{
 		return classForQAndA;
 	}
 	
+	public void addAnswer() {
+		++this.countOfAnswer;
+	}
+	
+	public void delteAnswer() {
+		--this.countOfAnswer;
+	}
+	
 	public void update(String title, String contents) {
 		this.title = title;
 		this.contents = contents;
 	}
-	
-	public String getFormattedCreateDate() {
-		if (createDate == null) {
-			return "";
-		}
-		return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
-	}
 
 	@Override
 	public String toString() {
-		return "Question [id=" + id + ", writer=" + classForQAndA.writer + ", title=" + title + ", contents=" + contents + "]";
+		return "Question [" + super.toString() + ", writer=" + classForQAndA.writer + ", title=" + title + ", contents=" + contents + "]";
 	}
+
 }

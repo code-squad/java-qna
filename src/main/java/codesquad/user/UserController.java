@@ -3,10 +3,12 @@ package codesquad.user;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class UserController {
@@ -31,4 +33,18 @@ public class UserController {
         return "/user/list";
         //"user.list"를 써도 application.properties의 suffix에 지정해줬기 때문에 list.html을 찾게 된다.
     }
+
+    @GetMapping("/users/{userId}")
+    public String profile(Model model, @PathVariable String userId) {
+
+        for (User user : users) {
+            //todo: 간결화 가능한 지, getter 쓰지 않고 가능한 지?
+            if(user.getUserId().equals(userId)) {
+                model.addAttribute("user", user);
+            }
+        }
+        return "/user/profile";
+    }
 }
+//todo: stream에서 map한 값은 object type인지 확인해보기
+

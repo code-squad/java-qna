@@ -46,17 +46,17 @@ public class UserController {
         return "/user/profile";
     }
 
-    @GetMapping("/user/login")
-    public String login(Model model) {
-//        model.addAttribute("users", users);
-        return "user/login";
-    }
-
-    @GetMapping("/user/join")
-    public String form(Model model) {
-//        model.addAttribute("users", users);
-        return "user/form";
-    }
+//    @GetMapping("/user/login")
+//    public String login(Model model) {
+////        model.addAttribute("users", users);
+//        return "user/login";
+//    }
+//
+//    @GetMapping("/user/join")
+//    public String form(Model model) {
+////        model.addAttribute("users", users);
+//        return "user/form";
+//    }
 
 }
 //todo: stream에서 map한 값은 object type인지 확인해보기

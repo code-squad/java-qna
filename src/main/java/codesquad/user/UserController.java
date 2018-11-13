@@ -5,61 +5,51 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@RequestMapping("/users")
 public class UserController {
-    private List<User> users = new ArrayList<>();
+    UserRepository userRepository = UserRepository.INSTANCE;
 
-    @GetMapping("/users/form")
+    @GetMapping("/form")
     public String userForm() {
         return "user/form";
     }
 
-    @PostMapping("/user/create")
+    @PostMapping("/signUp")
     public String create(User user) {
-        users.add(user);
+        userRepository.addUser(user);
         return "redirect:/users";
     }
 
-    @GetMapping("/users")
+    @GetMapping()
     public String list(Model model) {
-        model.addAttribute("users", users);
+        model.addAttribute("users", userRepository);
         return "user/list";
     }
 
-    @GetMapping("/users/{userId}")
+    @GetMapping("/{userId}")
     public String profile(@PathVariable String userId, Model model) {
-        User user = findUser(userId);
-
-        model.addAttribute("user", user);
+        model.addAttribute("user", userRepository.findUser(userId));
         return "user/profile";
     }
 
-    @GetMapping("/users/login")
+    @GetMapping("/login")
     public String login() {
         return "user/login";
     }
 
-    @GetMapping("/users/{userId}/form")
+    @GetMapping("/{userId}/form")
     public String updateForm(@PathVariable String userId, Model model) {
-        User user = findUser(userId);
-        model.addAttribute("user", user);
-
-        users.remove(user);
+        model.addAttribute("user", userRepository.findUser(userId));
         return "user/updateForm";
     }
 
-    @PostMapping("/users/{userId}/update")
+    @PostMapping("/{userId}")
     public String update(User user) {
-        users.add(user);
-
+        userRepository.modifyUser(user);
         return "redirect:/users";
     }
 
-    public User findUser(String userId) {
-        return users.stream().filter(u -> u.getUserId().equals(userId)).findFirst().orElse(User.defaultUser);
-    }
 }

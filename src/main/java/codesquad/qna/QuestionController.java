@@ -5,28 +5,27 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-public class QnaController {
-    public static List<Qna> questions = new ArrayList<>();
+@RequestMapping("/questions")
+public class QuestionController {
+    QuestionRepository questionRepository = QuestionRepository.INSTANCE;
 
-    @GetMapping("/questions/form")
+    @GetMapping("/form")
     public String form() {
         return "qna/form";
     }
 
-    @PostMapping("/questions")
-    public String create(Qna qna) {
-        questions.add(qna);
+    @PostMapping()
+    public String create(Question question) {
+        questionRepository.addQuestion(question);
         return "redirect:/";
     }
 
-    @GetMapping("/questions/{index}")
+    @GetMapping("/{index}")
     public String show(@PathVariable int index, Model model) {
-        model.addAttribute("question", questions.get(index - 1));
+        model.addAttribute("question", questionRepository.findQuestion(index - 1));
         return "qna/show";
     }
     

@@ -1,6 +1,6 @@
 package codesquad.qna;
 
-public class Qna {
+public class Question {
     private String userId;
     private String title;
     private String contents;

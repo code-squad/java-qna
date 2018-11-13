@@ -10,8 +10,8 @@
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-12">
         <div class="panel panel-default">
-            <header class="qna-header">
-                <h2 class="qna-title">{{title}}</h2>
+            <header class="question-header">
+                <h2 class="question-title">{{title}}</h2>
             </header>
             <div class="content-main">
                 {{#question}}
@@ -51,10 +51,10 @@
                 </article>
                 {{/question}}
 
-                <div class="qna-comment">
-                    <div class="qna-comment-slipp">
-                        <p class="qna-comment-count"><strong>2</strong>개의 의견</p>
-                        <div class="qna-comment-slipp-articles">
+                <div class="question-comment">
+                    <div class="question-comment-slipp">
+                        <p class="question-comment-count"><strong>2</strong>개의 의견</p>
+                        <div class="question-comment-slipp-articles">
 
                             <article class="article" id="answer-1405">
                                 <div class="article-header">
@@ -152,7 +152,7 @@
         <div class="article-util">
             <ul class="article-util-list">
                 <li>
-                    <a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
+                    <a class="link-modify-article" href="/api/question/updateAnswer/{3}">수정</a>
                 </li>
                 <li>
                     <form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">

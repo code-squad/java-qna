@@ -1,6 +1,6 @@
 package codesquad;
 
-import codesquad.qna.QnaController;
+import codesquad.qna.QuestionRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +10,7 @@ public class MainController {
 
     @GetMapping("/")
     public String index(Model model) {
-        model.addAttribute("questions", QnaController.questions);
+        model.addAttribute("questions", QuestionRepository.INSTANCE);
         return "index";
     }
 

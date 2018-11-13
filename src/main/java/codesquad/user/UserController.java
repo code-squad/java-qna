@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 public class UserController {
@@ -19,7 +18,7 @@ public class UserController {
     public String create(User user) {
         System.out.println("execute create!!");
         System.out.println("userId : " + user);
-        users.add(user);
+        UserRepository.addUser(user);
         //추가된사용자들은 보여줘야하는데 -> 동적
         //이건 static에서 하는게 아니라 templates디렉토리 만들어서
         return "redirect:/users";
@@ -29,20 +28,25 @@ public class UserController {
 
     @GetMapping("/users")
     public String list(Model model) {
-        model.addAttribute("users", users);
+        model.addAttribute("users", UserRepository.getUsers());
         return "user/list";
         //"user.list"를 써도 application.properties의 suffix에 지정해줬기 때문에 list.html을 찾게 된다.
     }
 
     @GetMapping("/users/{userId}")
     public String profile(Model model, @PathVariable String userId) {
+        model.addAttribute("user",
+                UserRepository.getUsers().stream()
+                .filter(u -> u.isMatchUserId(userId))
+                .findFirst()
+                .orElse(null));
 
-        for (User user : users) {
-            //todo: 간결화 가능한 지, getter 쓰지 않고 가능한 지?
-            if(user.getUserId().equals(userId)) {
-                model.addAttribute("user", user);
-            }
-        }
+//        for (User user : users) {
+//            //todo: 간결화 가능한 지, getter 쓰지 않고 가능한 지?
+//            if(user.getUserId().equals(userId)) {
+//                model.addAttribute("user", user);
+//            }
+//        }
         return "/user/profile";
     }
 

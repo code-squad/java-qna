@@ -6,6 +6,11 @@ public class User {
     private String name;
     private String email;
 
+    //User클래스에 위치해도 괜찮은 메서드인지?
+    boolean isMatchUserId(String userId) {
+        return this.userId.equals(userId);
+    }
+
     public String getUserId() {
         return userId;
     }

@@ -1,9 +1,18 @@
 package codesquad.question;
 
 public class Question {
+    private int index;
     private String writer;
     private String title;
     private String contents;
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
 
     public String getWriter() {
         return writer;

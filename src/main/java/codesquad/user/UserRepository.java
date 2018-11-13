@@ -2,8 +2,15 @@ package codesquad.user;
 
 import java.util.*;
 
-public class Users {
+public class UserRepository {
+    private static UserRepository ourInstance = new UserRepository();
     private Map<String, User> map = new HashMap<>();
+
+    private UserRepository(){}
+
+    public static UserRepository getInstance() {
+        return ourInstance;
+    }
 
     public void add(User user) {
         map.put(user.getUserId(), user);

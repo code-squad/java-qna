@@ -52,7 +52,7 @@ public class UserController {
         return "user/login";
     }
 
-    @GetMapping("/user/form")
+    @GetMapping("/user/join")
     public String form(Model model) {
 //        model.addAttribute("users", users);
         return "user/form";

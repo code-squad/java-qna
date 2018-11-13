@@ -30,7 +30,7 @@ public class UserController {
     @GetMapping("/users")
     public String list(Model model) {
         model.addAttribute("users", users);
-        return "/user/list";
+        return "user/list";
         //"user.list"를 써도 application.properties의 suffix에 지정해줬기 때문에 list.html을 찾게 된다.
     }
 
@@ -45,6 +45,19 @@ public class UserController {
         }
         return "/user/profile";
     }
+
+    @GetMapping("/user/login")
+    public String login(Model model) {
+//        model.addAttribute("users", users);
+        return "user/login";
+    }
+
+    @GetMapping("/user/form")
+    public String form(Model model) {
+//        model.addAttribute("users", users);
+        return "user/form";
+    }
+
 }
 //todo: stream에서 map한 값은 object type인지 확인해보기
 

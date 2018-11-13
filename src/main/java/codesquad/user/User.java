@@ -1,6 +1,7 @@
 package codesquad.user;
 
 public class User {
+    private int index;
     private String userId;
     private String password;
     private String name;
@@ -9,6 +10,14 @@ public class User {
     //User클래스에 위치해도 괜찮은 메서드인지?
     boolean isMatchUserId(String userId) {
         return this.userId.equals(userId);
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     public String getUserId() {

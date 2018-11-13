@@ -15,13 +15,11 @@
               <tbody>
                 {{#users}}
                 <tr>
-                    <th scope="row">1</th>
-                    <!--1차 닉네임을 눌렀을 때 프로필화면으로 이동하도록-->
-                    <!--2차 닉네임을 눌렀을 때 URL users/userId로 이동하도록(UserController에서 해당 url에 해당 유저정보를 담은 프로필을 반환하도록 했음-->
+                    <td>{{index}}</td>
                     <td><a href="../users/{{userId}}" role="button">{{userId}}</a></td>
                     <td>{{name}}</td>
                     <td>{{email}}</td>
-                    <td><a href="#" class="btn btn-success" role="button">수정</a></td>
+                    <td><a href="/users/{{userId}}/form" class="btn btn-success" role="button">수정</a></td>
                 </tr>
                 {{/users}}
               </tbody>

@@ -1,37 +1,11 @@
-/*
-package codesquad.question;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-
-import java.util.ArrayList;
-import java.util.List;
-
-@Controller
-public class QuestionController {
-    private static List<Question> questions = new ArrayList<>();
-
-    @GetMapping("/questions/form")
-    public String create(Question question) {
-        questions.add(question);
-        return "redirect:/questions";
-    }
-
-    @PostMapping("/questions")
-    public String list() {
-
-        return "/";
-    }
-
-}
-*/
 
 package codesquad.question;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
@@ -49,7 +23,9 @@ public class QuestionController {
         question2.setWriter("java");
         question1.setContents("123");
         question2.setContents("qweasd");
+        question1.setIndex(String.valueOf(questions.size()+1));
         questions.add(question1);
+        question2.setIndex(String.valueOf(questions.size()+1));
         questions.add(question2);
     }
 
@@ -57,6 +33,7 @@ public class QuestionController {
     public String questions(Question question) {
         System.out.println(question);
         System.out.println("AAA");
+        question.setIndex(String.valueOf(questions.size()+1));
         questions.add(question);
         return "redirect:/";
     }
@@ -66,6 +43,16 @@ public class QuestionController {
         System.out.println("getquestions");
         model.addAttribute("questions",questions);
         return "index";
+    }
+
+    @GetMapping("/questions/{index}")
+    public String profile(Model model, @PathVariable String index) {
+        Question question = questions.stream()
+                .filter(q -> q.getIndex().equals(index))
+                .findFirst()
+                .orElse(null);
+        model.addAttribute("question", question);
+        return "/qna/show";
     }
 
 }

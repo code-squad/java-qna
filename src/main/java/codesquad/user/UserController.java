@@ -29,9 +29,11 @@ public class UserController {
 
     @GetMapping("/users/{userId}")
     public String profile(Model model, @PathVariable String userId) {
-        User user = users.stream().filter(u -> u.getUserId().equals(userId)).findFirst().orElse(null);
+        User user = users.stream()
+                .filter(u -> u.getUserId().equals(userId))
+                .findFirst()
+                .orElse(null);
         model.addAttribute("user", user);
-        System.out.println(user);
         return "user/profile";
     }
 

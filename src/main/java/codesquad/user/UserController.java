@@ -5,28 +5,25 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@RequestMapping("/users")
 public class UserController {
-    private List<User> users = new ArrayList<>();
-
-    @PostMapping("/user/create")
+    @PostMapping
     public String create(User user) {
         user.setIndex(UserRepository.getUsers().size() + 1);
         UserRepository.addUser(user);
         return "redirect:/users";
     }
 
-    @GetMapping("/users")
+    @GetMapping
     public String list(Model model) {
         model.addAttribute("users", UserRepository.getUsers());
         return "user/list";
     }
 
-    @GetMapping("/users/{userId}")
+    @GetMapping("/{userId}")
     public String profile(Model model, @PathVariable String userId) {
         model.addAttribute("user",
                 UserRepository.getUsers().stream()
@@ -37,7 +34,7 @@ public class UserController {
     }
 
     ////        todo: 회원정보수정
-    @GetMapping("/users/{userId}/form")
+    @GetMapping("/{userId}/form")
     public String updateProfile(Model model, @PathVariable String userId) {
         model.addAttribute("user",
                 UserRepository.getUsers().stream()
@@ -47,7 +44,8 @@ public class UserController {
         return "/user/updateForm";
     }
 
-    @PostMapping("/users/update")
+    //그냥 users로 그럼 create와 구분 어떻게?
+    @PostMapping("/update")
     public String updateUser(User updatedUser) {
         User user = UserRepository.getUsers().get(updatedUser.getIndex());
 

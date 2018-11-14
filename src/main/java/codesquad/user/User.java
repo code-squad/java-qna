@@ -7,7 +7,12 @@ public class User {
     private String name;
     private String email;
 
-    //User클래스에 위치해도 괜찮은 메서드인지?
+    void updateUserProfile(User updated) {
+        this.setName(updated.name);
+        this.setPassword(updated.password);
+        this.setEmail(updated.email);
+    }
+
     boolean isMatchUserId(String userId) {
         return this.userId.equals(userId);
     }

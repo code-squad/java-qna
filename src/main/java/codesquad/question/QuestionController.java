@@ -5,27 +5,27 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
+@RequestMapping("/questions")
 @Controller
 public class QuestionController {
-
-    //todo: 싱글톤패턴, questions 객체 하나만 생성하여 이용
-    @PostMapping("/question/create")
+    @PostMapping
     public String create(Question question) {
         question.setIndex(QuestionRepository.getQuestions().size() + 1);
         QuestionRepository.addQuestion(question);
-        return "redirect:/";
+        return "redirect:/questions";
     }
 
-    @GetMapping("/")
+    @GetMapping
     public String list(Model model) {
         model.addAttribute("questions", QuestionRepository.getQuestions());
         return "index";
     }
 
-    @GetMapping("/questions/{index}")
+    @GetMapping("/{index}")
     public String eachQuestion(Model model, @PathVariable int index) {
-        model.addAttribute("question", QuestionRepository.getQuestions().get(index - 1));
+        model.addAttribute("question", QuestionRepository.findMatchQuestion(index));
         return "/qna/show";
     }
 }

@@ -7,10 +7,11 @@ public class UserRepository {
     private static UserRepository userRepository = new UserRepository();
     private static List<User> users = new ArrayList<>();
 
-    private UserRepository() { }
+    private UserRepository() {
+    }
 
     public static UserRepository getUserRepository() {
-        if(userRepository == null) {
+        if (userRepository == null) {
             userRepository = new UserRepository();
         }
         return userRepository;
@@ -20,8 +21,19 @@ public class UserRepository {
         users.add(user);
     }
 
-    public static List<User> getUsers() {
+    static List<User> getUsers() {
         return users;
+    }
+
+    static User findMatchIdUser(String anyId) {
+        return users.stream()
+                .filter(u -> u.isMatchUserId(anyId))
+                .findFirst()
+                .orElse(null);
+    }
+
+    static User findMatchIdUser(User any) {
+        return findMatchIdUser(any.getUserId());
     }
 }
 

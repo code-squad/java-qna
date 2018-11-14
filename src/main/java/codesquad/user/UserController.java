@@ -25,37 +25,20 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public String profile(Model model, @PathVariable String userId) {
-        model.addAttribute("user",
-                UserRepository.getUsers().stream()
-                .filter(u -> u.isMatchUserId(userId))
-                .findFirst()
-                .orElse(null));
+        model.addAttribute("user", UserRepository.findMatchIdUser(userId));
         return "/user/profile";
     }
 
-    ////        todo: 회원정보수정
     @GetMapping("/{userId}/form")
     public String updateProfile(Model model, @PathVariable String userId) {
-        model.addAttribute("user",
-                UserRepository.getUsers().stream()
-                        .filter(u -> u.isMatchUserId(userId))
-                        .findFirst()
-                        .orElse(null));
+        model.addAttribute("user", UserRepository.findMatchIdUser(userId));
         return "/user/updateForm";
     }
 
-    //그냥 users로 그럼 create와 구분 어떻게?
+    //todo : users로 create와 구분 어떻게? post, /users, parameter User 모두 동일한데...
     @PostMapping("/update")
     public String updateUser(User updatedUser) {
-        User user = UserRepository.getUsers().get(updatedUser.getIndex());
-
-        //비밀번호만 같을 때 수정가능하다...? 근데 비밀번호도 수정...? 로그인상태 전제...?
-        user.setEmail(updatedUser.getEmail());
-        user.setName(updatedUser.getName());
-        user.setEmail(updatedUser.getEmail());
-
+        UserRepository.findMatchIdUser(updatedUser).updateUserProfile(updatedUser);
         return "redirect:/users";
     }
 }
-//todo: stream에서 map한 값은 object type인지 확인해보기
-

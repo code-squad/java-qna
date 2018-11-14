@@ -23,6 +23,10 @@ public class QuestionRepository {
     public static List<Question> getQuestions() {
         return questions;
     }
+
+    public static Question findMatchQuestion(int index) {
+        return questions.get(index - 1);
+    }
 }
 //가장 기본적인 Eager initialization 싱글톤 패턴
 //ref : https://blog.seotory.com/post/2016/03/java-singleton-pattern

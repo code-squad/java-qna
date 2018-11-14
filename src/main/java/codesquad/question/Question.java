@@ -4,14 +4,14 @@ public class Question {
     private String writer;
     private String title;
     private String contents;
-    private String id;
+    private int index;
 
-    public String getId() {
-        return id;
+    public int getIndex() {
+        return index;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     public String getWriter() {

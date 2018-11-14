@@ -43,6 +43,16 @@ public class UserController {
         return "user/form";
     }
 
+    @GetMapping("/user/login")
+    public String userLogin(){
+        return "user/login";
+    }
+
+    @GetMapping("/qna/form")
+    public String qnaForm() {
+        return "qna/form";
+    }
+
 //    @PostMapping("/user/create")
 //    public String create(String userId , String password, String name, String email) {
 //        System.out.println("execute create!!");

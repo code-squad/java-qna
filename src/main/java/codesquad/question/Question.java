@@ -44,6 +44,7 @@ public class Question {
                 "writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
+                ", index='" + index + '\'' +
                 '}';
     }
 }

@@ -15,8 +15,6 @@ public class UserController {
 
     @PostMapping("/user/create")
     public String create(User user) {
-        System.out.println("된다된다");
-        System.out.println(user);
         users.add(user);
         return "redirect:/users";
     }
@@ -35,6 +33,28 @@ public class UserController {
                 .orElse(null);
         model.addAttribute("user", user);
         return "user/profile";
+    }
+
+    @GetMapping("/users/{userId}/form")
+    public String updateForm(Model model, @PathVariable String userId) {
+        User user = users.stream()
+                .filter(u -> u.getUserId().equals(userId))
+                .findFirst()
+                .orElse(null);
+        model.addAttribute("user", user);
+        return "user/updateForm";
+    }
+
+    @PostMapping("/update")
+    public String updateForm(User newUser) {
+        for (User user : users) {
+            if (newUser.getUserId().equals(user.getUserId())) {
+                user.setName(newUser.getName());
+                user.setEmail(newUser.getEmail());
+                user.setPassword(newUser.getPassword());
+            }
+        }
+        return "redirect:/users";
     }
 
 }

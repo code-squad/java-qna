@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Controller
@@ -40,17 +42,19 @@ public class QuestionController {
 
     @GetMapping("/")
     public String list(Model model) {
-        System.out.println("getquestions");
+        questions.sort(Comparator.comparing(Question::getIndex).reversed());
         model.addAttribute("questions",questions);
         return "index";
     }
 
     @GetMapping("/questions/{index}")
     public String profile(Model model, @PathVariable String index) {
+        System.out.println(index);
         Question question = questions.stream()
                 .filter(q -> q.getIndex().equals(index))
                 .findFirst()
                 .orElse(null);
+        System.out.println(question);
         model.addAttribute("question", question);
         return "/qna/show";
     }

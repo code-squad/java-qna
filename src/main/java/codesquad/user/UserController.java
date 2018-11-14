@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.*;
 
-
 // 어노테이션, 컨트롤러라고 명시
 @Controller
 public class UserController {
@@ -33,12 +32,6 @@ public class UserController {
     // suffix  = 그 값과 이것을 합쳐서 파일을 찾게 된다.
     @GetMapping("/users")
     public String list(Model model) {
-        User user = new User();
-        user.setName("a");
-        user.setEmail("1@1");
-        user.setPassword("1");
-        user.setUserId("a");
-        users.add(user);
         model.addAttribute("users", users);
         return "user/list";
     }
@@ -46,11 +39,7 @@ public class UserController {
 
     @GetMapping("/users/{userId}")
     public String showProfile(Model model, @PathVariable("userId") String userId) {
-
-        for (User user : users) {
-            user.getUserId().equals(userId);
-            model.addAttribute("user", user);
-        }
+        model.addAttribute(users.stream().filter(x -> x.getUserId().equals(userId)).findFirst().orElse(null));
         return "user/profile";
     }
 }

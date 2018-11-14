@@ -9,15 +9,15 @@
           <header class="question-header">
               <h2 class="question-title">{{title}}</h2>
           </header>
-            {{#questions}}
             <div class="content-main">
-              <article class="article">
+                {{#question}}
+                <article class="article">
                   <div class="article-header">
                       <div class="article-header-thumb">
                           <img src="https://graph.facebook.com/v2.3/100000059371774/picture" class="article-author-thumb" alt="">
                       </div>
                       <div class="article-header-text">
-                          <a href="/users/92/kimmunsu" class="article-author-name">kimmunsu</a>
+                          <a href="/users/92/kimmunsu" class="article-author-name">{{writer}}</a>
                           <a href="/questions/413" class="article-header-time" title="퍼머링크">
                               2015-12-30 01:47
                               <i class="icon-link"></i>
@@ -25,8 +25,7 @@
                       </div>
                   </div>
                   <div class="article-doc">
-                      <p>A 에 의존성을 가지는 B라는 클래스가 있습니다.</p><p>B라는 클래스는 InitializingBean 을 상속하고 afterPropertiesSet을 구현하고 있습니다.
-                      서버가 가동되면서 bean들이 초기화되는 시점에 B라는 클래스의 afterPropertiesSet 메소드는</p><p>A라는 클래스의 특정 메소드인 afunc()를 호출하고 있습니다.</p>
+                      {{contents}}
                   </div>
                   <div class="article-util">
                       <ul class="article-util-list">
@@ -45,7 +44,7 @@
                       </ul>
                   </div>
               </article>
-
+                {{/question}}
               <div class="qna-comment">
                   <div class="qna-comment-slipp">
                       <p class="qna-comment-count"><strong>2</strong>개의 의견</p>
@@ -119,7 +118,6 @@
                       </div>
                   </div>
               </div>
-              {{/questions}}
           </div>
         </div>
     </div>

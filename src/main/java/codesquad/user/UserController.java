@@ -31,9 +31,7 @@ public class UserController {
     @GetMapping("/user/profile/{id}")
     public String userProfile(Model model, @PathVariable String id) {
         for (User user : users) {
-            if (user.getUserId().equals(id)) {
-                model.addAttribute(user);
-            }
+            if (user.getUserId().equals(id)) model.addAttribute(user);
         }
         return "user/profile";
     }
@@ -44,7 +42,7 @@ public class UserController {
     }
 
     @GetMapping("/user/login")
-    public String userLogin(){
+    public String userLogin() {
         return "user/login";
     }
 

@@ -1,18 +1,13 @@
-<!DOCTYPE html>
-<html lang="kr">
-{{> base/head}}
-<body>
-{{> base/nav}}
-
+{{#partial "content"}}
 <div class="container" index="main">
     <div class="col-md-12 col-sm-12 col-lg-12">
         <div class="panel panel-default">
+            {{#question}}
           <header class="qna-header">
               <h2 class="qna-title">{{title}}</h2>
           </header>
           <div class="content-main">
               <article class="article">
-                  {{#question}}
                   <div class="article-header">
                       <div class="article-header-thumb">
                           <img src="https://graph.facebook.com/v2.3/100000059371774/picture" class="article-author-thumb" alt="">
@@ -154,8 +149,6 @@
 		</div>
 	</article>
 </script>
+{{/partial}}
 
-<!-- script references -->
-{{> base/script}}
-	</body>
-</html>
+{{> base}}

@@ -48,7 +48,14 @@ public class UserController {
     }
 
     @PostMapping("/users/update")
-    public String updateUser(User user) {
+    public String updateUser(User updatedUser) {
+        User user = UserRepository.getUsers().get(updatedUser.getIndex());
+
+        //비밀번호만 같을 때 수정가능하다...? 근데 비밀번호도 수정...? 로그인상태 전제...?
+        user.setEmail(updatedUser.getEmail());
+        user.setName(updatedUser.getName());
+        user.setEmail(updatedUser.getEmail());
+
         return "redirect:/users";
     }
 }

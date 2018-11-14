@@ -1,17 +1,10 @@
-<!DOCTYPE html>
-<html lang="kr">
-
-{{> base/header}}
-
-<body>
-
-{{> base/nav}}
+{{> base/topframe}}
 
 <div class="container" id="main">
    <div class="col-md-6 col-md-offset-3">
       <div class="panel panel-default content-main">
           {{#user}}
-          <form name="question" method="post" action="/user/{{userId}}/update">
+          <form name="question" method="post" action="/users/{{userId}}">
               <div class="form-group">
                   <label for="userId">사용자 아이디</label>
                   <input class="form-control" id="userId" name="userId" value="{{userId}}" placeholder="User ID" readonly />

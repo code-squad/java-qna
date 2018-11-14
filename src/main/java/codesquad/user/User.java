@@ -8,6 +8,13 @@ public class User {
     private String name;
     private String email;
 
+    public User(String userId, String password, String name, String email) {
+        this.userId = userId;
+        this.password = password;
+        this.name = name;
+        this.email = email;
+    }
+
     public String getUserId() {
         return userId;
     }
@@ -38,6 +45,21 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public boolean isSameId(User modifyUser) {
+        if (userId.equals(modifyUser.getUserId())) {
+            return true;
+        }
+        return false;
+    }
+
+    public void update(User modifyUser) {
+        if(isSameId(modifyUser)) {
+            setName(modifyUser.getName());
+            setPassword(modifyUser.getPassword());
+            setEmail(modifyUser.getEmail());
+        }
     }
 
     @Override

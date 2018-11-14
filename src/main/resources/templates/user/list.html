@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html lang="kr">
-
-{{> base/header}}
-
-<body>
-
-{{> base/nav}}
+{{> base/topframe}}
 
 <div class="container" id="main">
    <div class="col-md-10 col-md-offset-1">
@@ -22,7 +15,7 @@
                     <th scope="row">1</th> <td><a href="/users/{{userId}}">{{userId}}</a></td>
                     <td>{{name}}</td>
                     <td>{{email}}</td>
-                    <td><a href="/user/{{userId}}/form" class="btn btn-success" role="button">수정</a></td>
+                    <td><a href="/users/{{userId}}/form" class="btn btn-success" role="button">수정</a></td>
                 </tr>
               {{/users}}
               </tbody>

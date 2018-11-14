@@ -5,35 +5,29 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.ArrayList;
-import java.util.List;
+import static codesquad.qna.QuestionRepository.getQuestionRepository;
 
 @Controller
+@RequestMapping("/questions")
 public class QuestionController {
-    public static List<Question> questions = new ArrayList<>();
 
-    @PostMapping("/qna/create")
-    public String create(Question question) {
-        System.out.println("excute create!");
-        questions.add(question);
-        question.setId(questions.size());
-        System.out.println("user : " + question);
-        System.out.println("id : " + question.getId());
-        return "redirect:/";
-    }
-
-    @GetMapping("/qna/form")
+    @GetMapping("/form")
     public String qnaForm() {
         return "qna/form";
     }
 
-    @GetMapping("/questions/{index}")
+    @PostMapping("/create")
+    public String create(Question question) {
+        System.out.println("excute create!");
+        getQuestionRepository().create(question);
+        return "redirect:/";
+    }
+
+    @GetMapping("/{index}")
     public String showpage(@PathVariable int index, Model model) {
-        model.addAttribute("list", questions.stream()
-                .filter(q -> q.getId() == index)
-                .findFirst()
-                .orElse(null));
+        model.addAttribute("list", getQuestionRepository().checkSameId(index));
         return "qna/show";
     }
 }

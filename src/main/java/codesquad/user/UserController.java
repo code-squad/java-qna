@@ -7,14 +7,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/users")
 public class UserController {
-    private List<User> users = TestUsers.addUsers();
+    private List<User> users = UserRepository.getInstance();
 
     @PostMapping
     public String create(User user) {

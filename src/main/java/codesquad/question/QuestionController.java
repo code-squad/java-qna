@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
-    private List<Question> questions = TestQuestions.addQuestions();
+    private List<Question> questions = QuestionRepository.getInstance();
 
     @GetMapping
     public String home(Model model) {

@@ -38,6 +38,10 @@ public class User {
         this.email = email;
     }
 
+    public boolean isUser(String userId){
+        return userId.equals(this.userId);
+    }
+
     @Override
     public String toString() {
         return "User{" +

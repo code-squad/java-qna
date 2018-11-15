@@ -1,10 +1,8 @@
 package codesquad.qna;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
+@Entity
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,5 +43,10 @@ public class Question {
 
     public void setContents(String contents) {
         this.contents = contents;
+    }
+
+    public void updateQuestion(Question newQuestion) {
+        this.title = newQuestion.title;
+        this.contents = newQuestion.contents;
     }
 }

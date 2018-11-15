@@ -7,23 +7,23 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-//@RequestMapping("/questions")
+@RequestMapping("/questions")
 @Controller
 public class QuestionController {
-    @PostMapping("/questions")
+    @PostMapping
     public String create(Question question) {
         question.setIndex(QuestionRepository.getQuestions().size() + 1);
         QuestionRepository.addQuestion(question);
-        return "redirect:/";
+        return "redirect:/questions/posts";
     }
 
-    @GetMapping("/")
+    @GetMapping("/posts")
     public String list(Model model) {
         model.addAttribute("questions", QuestionRepository.getQuestions());
         return "index";
     }
 
-    @GetMapping("/questions/{index}")
+    @GetMapping("/{index}")
     public String eachQuestion(Model model, @PathVariable int index) {
         model.addAttribute("question", QuestionRepository.findMatchQuestion(index));
         return "/qna/show";

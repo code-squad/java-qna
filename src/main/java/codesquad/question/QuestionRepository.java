@@ -3,6 +3,7 @@ package codesquad.question;
 import java.util.ArrayList;
 import java.util.List;
 
+//todo 다시 생각해보기... 싱글톤 개념과 활용 등...
 public class QuestionRepository {
     private static QuestionRepository questionRepository = new QuestionRepository();
     private static List<Question> questions = new ArrayList<>();

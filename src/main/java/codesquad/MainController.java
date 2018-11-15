@@ -11,6 +11,7 @@ public class MainController {
     @GetMapping("/")
     public String index(Model model) {
         model.addAttribute("questions", QuestionRepository.INSTANCE);
+        System.out.println("peter");
         return "index";
     }
 

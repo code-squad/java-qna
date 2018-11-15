@@ -14,8 +14,6 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    UserRepositoryImpl userRepositoryImpl = UserRepositoryImpl.INSTANCE;
-
     @GetMapping("/form")
     public String userForm() {
         return "user/form";
@@ -23,19 +21,19 @@ public class UserController {
 
     @PostMapping("/signUp")
     public String create(User user) {
-        userRepositoryImpl.addUser(user);
+        userRepository.save(user);
         return "redirect:/users";
     }
 
     @GetMapping()
     public String list(Model model) {
-        model.addAttribute("users", userRepositoryImpl);
+        model.addAttribute("users", userRepository.findAll());
         return "user/list";
     }
 
-    @GetMapping("/{userId}")
-    public String profile(@PathVariable String userId, Model model) {
-        model.addAttribute("user", userRepositoryImpl.findUser(userId));
+    @GetMapping("/{id}")
+    public String profile(@PathVariable Long id, Model model) {
+        model.addAttribute("user", userRepository.findById(id).orElseThrow(IllegalArgumentException::new));
         return "user/profile";
     }
 
@@ -44,15 +42,15 @@ public class UserController {
         return "user/login";
     }
 
-    @GetMapping("/{userId}/form")
-    public String updateForm(@PathVariable String userId, Model model) {
-        model.addAttribute("user", userRepositoryImpl.findUser(userId));
+    @GetMapping("/{id}/form")
+    public String updateForm(@PathVariable Long id, Model model) {
+        model.addAttribute("user", userRepository.findById(id).orElseThrow(IllegalArgumentException::new));
         return "user/updateForm";
     }
 
-    @PostMapping("/{userId}")
-    public String update(User user) {
-        userRepositoryImpl.modifyUser(user);
+    @PostMapping("/{id}")
+    public String update(User newUser) {
+        userRepository.save(newUser);
         return "redirect:/users";
     }
 

@@ -10,7 +10,6 @@ public class User {
 
     @Column(nullable = false, length = 20)
     private String userId;
-
     private String password;
     private String name;
     private String email;
@@ -55,11 +54,11 @@ public class User {
         this.email = email;
     }
 
-//    public void update(User newUser) {
-//        this.name = newUser.name;
-//        this.password = newUser.password;
-//        this.email = newUser.email;
-//    }
+    public void update(User newUser) {
+        this.name = newUser.name;
+        this.password = newUser.password;
+        this.email = newUser.email;
+    }
 
     // domain
     public Boolean isUserId(String userId) {

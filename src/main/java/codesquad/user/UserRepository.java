@@ -1,25 +1,7 @@
 package codesquad.user;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.data.repository.CrudRepository;
 
-public class UserRepository {
-    private UserRepository() {
-    }
-
-    private static class Holder {
-        public static final List<User> users = new ArrayList<>();
-
-        static {  // for test
-            users.add(new User(1, "brad903", "1234", "브래드", "brad903@naver.com"));
-            users.add(new User(2, "leejh903", "1234", "이정현", "leeh903@gmail.com"));
-            users.add(new User(3, "abdaf", "1234", "장보고", "seafood@naver.com"));
-            users.add(new User(4, "bacddd", "1234", "홍길동", "honghong@naver.com"));
-            users.add(new User(5, "mrboo7", "1234", "장영희", "younghee@naver.com"));
-        }
-    }
-
-    public static List<User> getInstance() {
-        return UserRepository.Holder.users;
-    }
+public interface UserRepository extends CrudRepository<User, Long> {
+    // Long은 id의 타입, JDBC 사용시보다 10배 줄인 코드, 여기에 많은 뜻이 함축된 만큼 나중에 유연하게 사용하기 위해 학습비용 발생
 }

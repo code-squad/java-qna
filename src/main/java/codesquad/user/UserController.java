@@ -1,5 +1,6 @@
 package codesquad.user;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,40 +14,43 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/users")
 public class UserController {
-    private List<User> users = UserRepository.getInstance();
+    @Autowired
+    private UserRepository userRepository;
+//    private List<User> users = UserRepository2.getInstance();
 
     @PostMapping
     public String create(User user) {
-        user.setIndex(users.size() + 1);
-        users.add(user);
+//        user.setIndex(users.size() + 1);
+//        users.add(user);
+        userRepository.save(user);
         return "redirect:/users";
     }
 
     @GetMapping
     public String list(Model model) {
-        model.addAttribute("users", users);
+        model.addAttribute("users", userRepository.findAll());
         return "user/list";
     }
 
     @GetMapping("/{userId}")
     public String showProfile(@PathVariable String userId, Model model) {
-        User user = users.stream().filter(users -> users.isUserId(userId)).findAny().get();
-        model.addAttribute("user", user);
+//        User user = users.stream().filter(users -> users.isUserId(userId)).findAny().get();
+//        model.addAttribute("user", user);
         return "user/profile";
     }
 
     @GetMapping("/{userId}/form")
     public String showUserInfo(@PathVariable String userId, Model model) {
-        User user = users.stream().filter(users -> users.isUserId(userId)).findAny().get();
-        model.addAttribute("user", user);
+//        User user = users.stream().filter(users -> users.isUserId(userId)).findAny().get();
+//        model.addAttribute("user", user);
         return "user/updateForm";
     }
 
     @PostMapping("/{userId}")
     public String updateUserInfo(@PathVariable String userId, User userUpdated) {
-        users = users.stream()
-                .map(theUser -> theUser.isUserId(userId)? userUpdated : theUser)
-                .collect(Collectors.toList());
+//        users = users.stream()
+//                .map(theUser -> theUser.isUserId(userId)? userUpdated : theUser)
+//                .collect(Collectors.toList());
         return "redirect:/users";
     }
 

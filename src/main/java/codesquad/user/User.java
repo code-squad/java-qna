@@ -1,6 +1,16 @@
 package codesquad.user;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity  // 알아서 데이터베이스 넣거나 꺼낼때 Mapping해줌
 public class User {
+    @Id  // Primary key
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  // +1씩 자동증가
+    private long id;
+
     private int index;
     private String userId;
     private String password;

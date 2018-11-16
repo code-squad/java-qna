@@ -20,7 +20,7 @@ public class QuestionController {
     private QuestionRepository questionRepository;
 
     @PostMapping("/create")
-    public String create(Question question){
+    public String questionCreate(Question question){
         System.out.println("execute create!!");
         System.out.println("user1 : " + question);
         questionRepository.save(question);
@@ -28,13 +28,13 @@ public class QuestionController {
     }
 
     @GetMapping("")
-    public String list(Model model){
+    public String goHome(Model model){
         model.addAttribute("questions",questionRepository.findAll());
         return "/index";
     }
 
     @GetMapping("/{id}")
-    public String list(@PathVariable int id, Model model){
+    public String DetailContents(@PathVariable int id, Model model){
         model.addAttribute("questions",questionRepository.findById(id).orElse(null));
         return "/qna/show";
     }

@@ -18,26 +18,22 @@ public class UserController {
     private UserRepository userRepository;
 
     @PostMapping("/create")
-    public String create(User user){
+    public String userCreate(User user){
         System.out.println("execute create!!");
         System.out.println("user : " + user);
-
         userRepository.save(user);
-        System.out.println(userRepository.findAll());
         return "redirect:";       //행위를 하고 다른 페이지를 보여주고 싶을때
     }
 
     @GetMapping("")
-    public String list(Model model){
+    public String showMemberList(Model model){
         model.addAttribute("users",userRepository.findAll());
         return "/user/list";
     }
 
     @GetMapping("/{id}")
-    public String list(@PathVariable Long id, Model model){
-        System.out.println("!!!!!!!!!!!" + userRepository.findById(id));
-        System.out.println(id);
-        model.addAttribute("users",userRepository.findById(id).orElse(null));
+    public String showPersonalInformation(@PathVariable Long id, Model model){
+        model.addAttribute("usersProfile",userRepository.findById(id).orElse(null));
         return "/user/profile";
     }
 

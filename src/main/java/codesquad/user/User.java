@@ -1,9 +1,6 @@
 package codesquad.user;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity         //데이터 베이스 맵핑할때 알아서 꺼내줌
 public class User {
@@ -11,7 +8,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(nullable = false, length = 20)
     private String userId;
+
     private String password;
     private String name;
     private String email;

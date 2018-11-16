@@ -12,6 +12,12 @@ import java.util.List;
 @Controller
 public class UserController {
     private List<User> users = new ArrayList();
+
+    @GetMapping("/")
+    public String start(){
+        return "index";
+    }
+
     @PostMapping("/user/create")
     public String create(User user){
         users.add(user);
@@ -21,7 +27,7 @@ public class UserController {
     @GetMapping("/users")
     public String list(Model model){
         model.addAttribute("users", users);
-        return "list";
+        return "user/list";
     }
 
     @GetMapping("/users/{userId}")
@@ -29,7 +35,7 @@ public class UserController {
         User user = findUser(userId);
         model.addAttribute("user", user);
 
-        return "profile";
+        return "user/profile";
     }
 
     public User findUser(String userId){

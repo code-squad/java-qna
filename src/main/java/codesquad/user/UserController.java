@@ -32,10 +32,10 @@ public class UserController {
         return "user/profile";
     }
 
- /*   @GetMapping("/users/{writer}")
+/*    @GetMapping("/{writer}")
     public String profileOfuserid(Model model, @PathVariable String writer) {
         System.out.println("프로필 유저아이디로 찾기");
-        User user = userRepository.findById(id).orElse(null);
+        User user = userRepository.findByUserId(writer);
         model.addAttribute("user", user);
         return "user/profile";
     }*/

@@ -1,9 +1,6 @@
 package codesquad.user;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 //어노테이션 붙이면 자동으로 디비와 매핑, 데이터를 넣을 때 꺼낼 때
 @Entity
@@ -14,7 +11,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private long id;
-    private int index;
+
+    @Column(nullable = false, length = 20)
     private String userId;
     private String password;
     private String name;
@@ -26,24 +24,12 @@ public class User {
         this.setEmail(updated.email);
     }
 
-    boolean isMatchUserId(String userId) {
-        return this.userId.equals(userId);
-    }
-
     public long getId() {
         return id;
     }
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
     }
 
     public String getUserId() {

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/users")
@@ -13,7 +14,6 @@ public class UserController {
 
     @PostMapping
     public String create(User user) {
-        user.setIndex( + 1);
         userRepository.save(user);
         return "redirect:/users";
     }
@@ -25,10 +25,17 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public String profile(Model model, @PathVariable long id) {
+    public String show(Model model, @PathVariable long id) {
         model.addAttribute("user", userRepository.findById(id).orElse(null));
         return "/user/profile";
     }
+
+//    @GetMapping("/{id}")
+//    public ModelAndView show(@PathVariable long id) {
+//        ModelAndView mav = new ModelAndView("user/profile");
+//        mav.addObject("user", userRepository.findById(id).orElse(null));
+//        return mav;
+//    }
 
     @GetMapping("/{id}/form")
     public String updateProfile(Model model, @PathVariable long id) {

@@ -16,8 +16,6 @@ public class QuestionController {
 
     @PostMapping("")
     public String create(Question question) {
-        //인덱스를 그냥 Id로 대체해도...?
-        question.setIndex((int)questionRepository.count() + 1);
         questionRepository.save(question);
         return "redirect:/questions";
     }
@@ -30,7 +28,7 @@ public class QuestionController {
 
     @GetMapping("/{id}")
     public String eachQuestion(Model model, @PathVariable long id) {
-        model.addAttribute("question", questionRepository.findById(id));
+        model.addAttribute("question", questionRepository.findById(id).orElse(null));
         return "/qna/show";
     }
 }

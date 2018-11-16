@@ -1,30 +1,8 @@
 package codesquad.user;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.data.repository.CrudRepository;
 
-public class UserRepository {
-    private static UserRepository repository;
-    private List<User> users = new ArrayList<>();
-
-    private UserRepository() {
-
-    }
-
-    public static UserRepository getInstance() {
-        if (repository == null) {
-            repository = new UserRepository();
-        }
-        return repository;
-    }
-
-    public void addUser(User user) {
-        users.add(user);
-    }
-
-    public List<User> getUsers() {
-        return users;
-    }
-
+// <객체, 프라이머리키의 타입>
+public interface UserRepository extends CrudRepository<User, Long> {
 
 }

@@ -19,6 +19,9 @@ public class QuestionController {
 
     @GetMapping("/{index}")
     public String showQuestions(Model model, @PathVariable("index") int index) {
+
+
+
         model.addAttribute(
                 QuestionRepository.getInstance().getQuestions()
                         .stream().filter(x -> x.getIndex() == index).findFirst().orElse(null));

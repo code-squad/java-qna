@@ -14,14 +14,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private long id;
-
     private int index;
     private String userId;
     private String password;
     private String name;
     private String email;
 
-    void updateUserProfile(User updated) {
+    void update(User updated) {
         this.setName(updated.name);
         this.setPassword(updated.password);
         this.setEmail(updated.email);
@@ -29,6 +28,14 @@ public class User {
 
     boolean isMatchUserId(String userId) {
         return this.userId.equals(userId);
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public int getIndex() {

@@ -1,10 +1,27 @@
 package codesquad.question;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class Question {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    private long id;
     private int index;
     private String writer;
     private String title;
     private String contents;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public int getIndex() {
         return index;

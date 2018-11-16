@@ -1,5 +1,6 @@
 package codesquad.question;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,22 +11,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/questions")
 @Controller
 public class QuestionController {
-    @PostMapping
+    @Autowired
+    private QuestionRepository questionRepository;
+
+    @PostMapping("")
     public String create(Question question) {
-        question.setIndex(QuestionRepository.getQuestions().size() + 1);
-        QuestionRepository.addQuestion(question);
-        return "redirect:/questions/posts";
+        //인덱스를 그냥 Id로 대체해도...?
+        question.setIndex((int)questionRepository.count() + 1);
+        questionRepository.save(question);
+        return "redirect:/questions";
     }
 
-    @GetMapping("/posts")
+    @GetMapping("")
     public String list(Model model) {
-        model.addAttribute("questions", QuestionRepository.getQuestions());
+        model.addAttribute("questions", questionRepository.findAll());
         return "index";
     }
 
-    @GetMapping("/{index}")
-    public String eachQuestion(Model model, @PathVariable int index) {
-        model.addAttribute("question", QuestionRepository.findMatchQuestion(index));
+    @GetMapping("/{id}")
+    public String eachQuestion(Model model, @PathVariable long id) {
+        model.addAttribute("question", questionRepository.findById(id));
         return "/qna/show";
     }
 }

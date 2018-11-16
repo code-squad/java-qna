@@ -19,26 +19,6 @@ public class QuestionControllerTest {
         System.out.println(date.format(today) + time.format(today));
     }
 
-    @Test
-    public void 싱글톤_연습() {
-        System.out.println(Something.getInstance());
-        Something.getInstance().add(new Question(1, "brad", "질문이 있습니다", "안녕하세요. 모르는게 너무 많아요.", "2018-01-12 13:12"));
-        System.out.println(Something.getInstance());
-
-        Something.getInstance().add(new Question(2, "brad", "질문이 있습니다", "안녕하세요. 모르는게 너무 많아요.", "2018-01-12 13:12"));
-        System.out.println(Something.getInstance());
-
-        test();
-        System.out.println(Something.getInstance());
-
-        List<Question> question = Something.getInstance();
-        question.add(new Question(4, "david", "질문이 있습니다", "안녕하세요. 모르는게 너무 많아요.", "2018-01-12 13:12"));
-        System.out.println(Something.getInstance());
-    }
-
-    public void test() {
-        Something.getInstance().add(new Question(3, "brad", "질문이 있습니다", "안녕하세요. 모르는게 너무 많아요.", "2018-01-12 13:12"));
-    }
 }
 
 class Something {

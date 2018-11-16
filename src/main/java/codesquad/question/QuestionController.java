@@ -1,5 +1,6 @@
 package codesquad.question;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,34 +10,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
-    private List<Question> questions = QuestionRepository.getInstance();
+    @Autowired
+    private QuestionRepository questionRepository;
 
-    @GetMapping
+    @GetMapping("")
     public String home(Model model) {
-        Comparator<Question> comp = (q1, q2) -> -1;
-        List sortedQuestions = questions.stream().sorted(comp.reversed()).collect(Collectors.toList());
-        model.addAttribute("questions", sortedQuestions);
+        model.addAttribute("questions", questionRepository.findAll());
         return "index";
     }
 
-    @PostMapping
-    public String question(Question question) {
+    @PostMapping("")
+    public String post(Question question) {
         question.setTime(getTodayDate());
-        question.setIndex(questions.size() + 1);
-        questions.add(question);
+        questionRepository.save(question);
         return "redirect:/questions";
     }
 
     @GetMapping("/{index}")
-    public String detail(@PathVariable int index, Model model) {
-        System.out.println("index : " + index);
-        Question theQuestion = questions.get(index - 1);
-        model.addAttribute("theQuestion", theQuestion);
+    public String detail(@PathVariable Long index, Model model) throws QuestionNotFoundException {
+        Question question = questionRepository.findById(index).
+                orElseThrow(() -> new QuestionNotFoundException("해당 질문을 찾을 수 없습니다."));
+        model.addAttribute("question", question);
         return "qna/show";
     }
 

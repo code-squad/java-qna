@@ -1,27 +1,22 @@
 package codesquad.question;
 
+import javax.persistence.*;
+
+@Entity
 public class Question {
-    private int index;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long index;
     private String writer;
     private String title;
     private String contents;
     private String time;
 
-    public Question() {}
-
-    public Question(int index, String writer, String title, String contents, String time) {
-        this.index = index;
-        this.writer = writer;
-        this.title = title;
-        this.contents = contents;
-        this.time = time;
-    }
-
-    public int getIndex() {
+    public Long getIndex() {
         return index;
     }
 
-    public void setIndex(int index) {
+    public void setIndex(Long index) {
         this.index = index;
     }
 

@@ -1,39 +1,26 @@
 package codesquad.user;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
-@Entity  // 알아서 데이터베이스 넣거나 꺼낼때 Mapping해줌
+@Entity
 public class User {
-    @Id  // Primary key
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  // +1씩 자동증가
-    private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private int index;
+    @Column(nullable = false, length = 20)
     private String userId;
+
     private String password;
     private String name;
     private String email;
 
-    public User() {
+    public Long getId() {
+        return id;
     }
 
-    public User(int index, String userId, String password, String name, String email) {
-        this.index = index;
-        this.userId = userId;
-        this.password = password;
-        this.name = name;
-        this.email = email;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUserId() {
@@ -72,10 +59,16 @@ public class User {
         return this.userId.equals(userId);
     }
 
+    public void update(User userUpdated) {
+        this.password = userUpdated.password;
+        this.name = userUpdated.name;
+        this.email = userUpdated.email;
+    }
+
     @Override
     public String toString() {
         return "User{" +
-                "index=" + index +
+                "id=" + id +
                 ", userId='" + userId + '\'' +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +

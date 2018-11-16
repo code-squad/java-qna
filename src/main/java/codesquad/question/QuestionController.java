@@ -2,52 +2,49 @@
 
 package codesquad.question;
 
+import codesquad.user.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 @Controller
+@RequestMapping("/questions")
 public class QuestionController {
-    private static List<Question> questions = new ArrayList<>();
-    static {
-        questions.add(new Question("백경훈", "나는 잘생겼다.", "이것은 거짓이다.", String.valueOf(questions.size()+1)));
-        questions.add(new Question("peter", "자바는 참 어렵다.", "하지만 재밌다.", String.valueOf(questions.size()+1)));
-    }
+    @Autowired
+    private QuestionRepository questionRepository;
 
-    @PostMapping("/questions")
+
+    @PostMapping("/create")
     public String questions(Question question) {
-        System.out.println(question);
         System.out.println("AAA");
-        question.setIndex(String.valueOf(questions.size()+1));
-        questions.add(question);
+        questionRepository.save(question);
         return "redirect:/";
     }
 
-    @GetMapping("/")
-    public String list(Model model) {
-        System.out.println("첫화면");
-        questions.sort(Comparator.comparing(Question::getIndex).reversed());
-        model.addAttribute("questions",questions);
-        return "index";
-    }
-
-    @GetMapping("/questions/{index}")
-    public String profile(Model model, @PathVariable String index) {
-        System.out.println(index);
-        Question question = questions.stream()
-                .filter(q -> q.getIndex().equals(index))
-                .findFirst()
-                .orElse(null);
-        System.out.println(question);
+    @GetMapping("/{id}")
+    public String profile(Model model, @PathVariable long id) {
+        Question question = questionRepository.findById(id).orElse(null);
         model.addAttribute("question", question);
         return "/qna/show";
+    }
+
+    @GetMapping("/{id}/form")
+    public String updateForm(Model model, @PathVariable long id) {
+        System.out.println("수정");
+        Question question = questionRepository.findById(id).orElse(null);
+        model.addAttribute("question", question);
+        return "qna/updateForm";
+    }
+
+    @PutMapping("/{id}")
+    public String update(@PathVariable long id, Question newQuestion) {
+        System.out.println("업데이트");
+        Question question = questionRepository.findById(id).orElse(null);
+        question.update(newQuestion);
+        questionRepository.save(question);
+        return "redirect:/";
     }
 
 }

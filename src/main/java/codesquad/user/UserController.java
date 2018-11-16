@@ -3,61 +3,58 @@ package codesquad.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
+@RequestMapping("/users")
 public class UserController {
-    private List<User> users = new ArrayList<>();
     @Autowired
     private UserRepository userRepository;
 
-    @PostMapping("/users")
+    @PostMapping("")
     public String create(User user) {
         userRepository.save(user);
-        System.out.println();
+        System.out.println("유저생성");
         return "redirect:/users";
     }
 
-    @GetMapping("/users")
+    @GetMapping("")
     public String list(Model model) {
         model.addAttribute("users", userRepository.findAll());
         return "user/list";
     }
 
-    @GetMapping("/users/{userId}")
-    public String profile(Model model, @PathVariable String userId) {
-        User user = users.stream()
-                .filter(u -> u.getUserId().equals(userId))
-                .findFirst()
-                .orElse(null);
+    @GetMapping("/{id}")
+    public String profile(Model model, @PathVariable long id) {
+        System.out.println("프로필");
+        User user = userRepository.findById(id).orElse(null);
         model.addAttribute("user", user);
         return "user/profile";
     }
 
-    @GetMapping("/users/{userId}/form")
-    public String updateForm(Model model, @PathVariable String userId) {
-        User user = users.stream()
-                .filter(u -> u.getUserId().equals(userId))
-                .findFirst()
-                .orElse(null);
+ /*   @GetMapping("/users/{writer}")
+    public String profileOfuserid(Model model, @PathVariable String writer) {
+        System.out.println("프로필 유저아이디로 찾기");
+        User user = userRepository.findById(id).orElse(null);
+        model.addAttribute("user", user);
+        return "user/profile";
+    }*/
+
+
+    @GetMapping("/{id}/form")
+    public String updateForm(Model model, @PathVariable long id) {
+        System.out.println("수정");
+        User user = userRepository.findById(id).orElse(null);
         model.addAttribute("user", user);
         return "user/updateForm";
     }
 
-    @PostMapping("/update")
-    public String updateForm(User newUser) {
-        for (User user : users) {
-            if (newUser.getUserId().equals(user.getUserId())) {
-                user.setName(newUser.getName());
-                user.setEmail(newUser.getEmail());
-                user.setPassword(newUser.getPassword());
-            }
-        }
+    @PutMapping("/{id}")
+    public String update(@PathVariable long id, User newUser) {
+        System.out.println("업데이트");
+        User user = userRepository.findById(id).orElse(null);
+        user.update(newUser);
+        userRepository.save(user);
         return "redirect:/users";
     }
 

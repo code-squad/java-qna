@@ -1,27 +1,34 @@
 package codesquad.question;
 
+import javax.persistence.*;
+
+@Entity
 public class Question {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @Column(nullable = false, length = 20)
     private String writer;
+    @Column(nullable = false, length = 20)
     private String title;
     private String contents;
-    private String index;
+//    private String index;
 
     public Question() {
     }
 
-    public Question(String writer, String title, String contents, String index) {
-        this.writer = writer;
-        this.title = title;
-        this.contents = contents;
-        this.index = index;
+    public long getId() {
+        return id;
     }
 
-    public String getIndex() {
-        return index;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public void setIndex(String index) {
-        this.index = index;
+    public void update(Question newQuestion) {
+        this.title = newQuestion.title;
+        this.contents = newQuestion.contents;
     }
 
     public String getWriter() {
@@ -54,7 +61,7 @@ public class Question {
                 "writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
-                ", index='" + index + '\'' +
+                ", index='" + id + '\'' +
                 '}';
     }
 }

@@ -32,6 +32,7 @@ public class QuestionController {
 
     @GetMapping("/")
     public String list(Model model) {
+        System.out.println("첫화면");
         questions.sort(Comparator.comparing(Question::getIndex).reversed());
         model.addAttribute("questions",questions);
         return "index";

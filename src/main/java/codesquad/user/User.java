@@ -14,7 +14,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 자동으로 1씩 증가해서 유일한 값을 만들어 준다.
     private long id;
 
-
     private String userId;
     private String password;
     private String name;
@@ -59,7 +58,6 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
-
 
     @Override
     public String toString() {

@@ -31,6 +31,17 @@ public class UserController {
     public String showProfile(Model model, @PathVariable("id") Long id) {
         System.out.println(userRepository.findById(id));
         model.addAttribute("user", userRepository.findById(id));
+        return "user/list";
+    }
+
+    @GetMapping("/{userId}")
+    public String showProfile(Model model, @PathVariable("userId") String userId) {
+        /*
+        model.addAttribute(
+                UserRepository.getInstance().getUsers()
+                        .stream().filter(x -> x.getUserId().equals(userId)).findFirst().orElse(null));
+                        */
         return "user/profile";
+
     }
 }

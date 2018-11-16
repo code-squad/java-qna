@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping("/qna")
 public class QnaController {
     private List<Question> questions = new ArrayList<>();
-    @PostMapping("/create")
+    @PostMapping
     public String create(Question question){
         questions.add(question);
         return "redirect:/";

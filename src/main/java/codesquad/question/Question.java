@@ -9,6 +9,7 @@ public class Question {
     private long id;
 
     @Column(nullable = false, length = 20)
+public class Question {
     private String writer;
     private String title;
     private String contents;
@@ -19,7 +20,6 @@ public class Question {
 
     public void setId(long id) {
         this.id = id;
-    }
 
     public String getWriter() {
         return writer;

@@ -1,20 +1,26 @@
 package codesquad.user;
 
+import javax.persistence.*;
+
+@Entity
 public class User {
-    public static User defaultUser;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-    static {
-        defaultUser = new User();
-        defaultUser.setName("defaultName");
-        defaultUser.setEmail("defaultEmail@slipp.net");
-        defaultUser.setUserId("defaultID");
-        defaultUser.setPassword("1234");
-    }
-
+    @Column(nullable = false, length = 20)
     private String userId;
     private String password;
     private String name;
     private String email;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getUserId() {
         return userId;
@@ -48,6 +54,13 @@ public class User {
         this.email = email;
     }
 
+    public void update(User newUser) {
+        this.name = newUser.name;
+        this.password = newUser.password;
+        this.email = newUser.email;
+    }
+
+    // domain
     public Boolean isUserId(String userId) {
         return this.userId.equals(userId);
     }

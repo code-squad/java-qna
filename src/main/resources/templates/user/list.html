@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html lang="kr">
-
-{{>shared/head}}
-
-<body>
-
-{{>shared/nav}}
-
+{{#partial "content"}}
 <div class="container" id="main">
     <div class="col-md-10 col-md-offset-1">
         <div class="panel panel-default">
@@ -21,22 +13,20 @@
                 </tr>
                 </thead>
                 <tbody>
-                {{#users.users}}
+                {{#users}}
                 <tr>
-                    <th scope="row">{{@index_1}}</th>
-                    <td><a href="/users/{{userId}}">{{userId}}</a></td>
+                    <th scope="row">{{id}}</th>
+                    <td><a href="/users/{{id}}">{{userId}}</a></td>
                     <td>{{name}}</td>
                     <td>{{email}}</td>
-                    <td><a href="/users/{{userId}}/form" class="btn btn-success" role="button">수정</a></td>
+                    <td><a href="/users/{{id}}/form" class="btn btn-success" role="button">수정</a></td>
                 </tr>
-                {{/users.users}}
+                {{/users}}
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+{{/partial}}
 
-{{>shared/script}}
-
-</body>
-</html>
+{{> shared/base}}

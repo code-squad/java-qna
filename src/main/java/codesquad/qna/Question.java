@@ -1,9 +1,25 @@
 package codesquad.qna;
 
+import javax.persistence.*;
+
+@Entity
 public class Question {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @Column(nullable = false, length = 20)
     private String userId;
     private String title;
     private String contents;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getUserId() {
         return userId;
@@ -27,5 +43,10 @@ public class Question {
 
     public void setContents(String contents) {
         this.contents = contents;
+    }
+
+    public void updateQuestion(Question newQuestion) {
+        this.title = newQuestion.title;
+        this.contents = newQuestion.contents;
     }
 }

@@ -1,25 +1,7 @@
 package codesquad.qna;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.data.repository.CrudRepository;
 
-public class QuestionRepository {
-    public static final QuestionRepository INSTANCE = new QuestionRepository();
-    private List<Question> questions;
+public interface QuestionRepository extends CrudRepository<Question, Long> {
 
-    private QuestionRepository() {
-        this.questions = new ArrayList<>();
-    }
-
-    public void addQuestion(Question question) {
-        questions.add(question);
-    }
-
-    public Question findQuestion(int index) {
-        return questions.get(index);
-    }
-
-    public List<Question> getQuestions() {
-        return questions;
-    }
 }

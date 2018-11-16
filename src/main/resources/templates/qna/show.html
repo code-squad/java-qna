@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html lang="kr">
-
-{{>shared/head}}
-
-<body>
-
-{{>shared/nav}}
-
+{{#partial "content"}}
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-12">
         <div class="panel panel-default">
@@ -35,7 +27,7 @@
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
-                                <a class="link-modify-article" href="/questions/423/form">수정</a>
+                                <a class="link-modify-article" href="/questions/{{id}}/form">수정</a>
                             </li>
                             <li>
                                 <form class="form-delete" action="/questions/423" method="POST">
@@ -164,8 +156,6 @@
         </div>
     </article>
 </script>
+{{/partial}}
 
-{{>shared/script}}
-
-</body>
-</html>
+{{> shared/base}}

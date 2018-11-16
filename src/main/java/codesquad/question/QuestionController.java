@@ -17,18 +17,8 @@ import java.util.List;
 public class QuestionController {
     private static List<Question> questions = new ArrayList<>();
     static {
-        Question question1 = new Question();
-        Question question2 = new Question();
-        question1.setTitle("qqqq");
-        question2.setTitle("aaaa");
-        question1.setWriter("pobi");
-        question2.setWriter("java");
-        question1.setContents("123");
-        question2.setContents("qweasd");
-        question1.setIndex(String.valueOf(questions.size()+1));
-        questions.add(question1);
-        question2.setIndex(String.valueOf(questions.size()+1));
-        questions.add(question2);
+        questions.add(new Question("백경훈", "나는 잘생겼다.", "이것은 거짓이다.", String.valueOf(questions.size()+1)));
+        questions.add(new Question("peter", "자바는 참 어렵다.", "하지만 재밌다.", String.valueOf(questions.size()+1)));
     }
 
     @PostMapping("/questions")

@@ -9,10 +9,10 @@ import java.util.Objects;
 @Entity
 public class User {
     //데이터베이스에 테이블 에는 데이터를 식별하는 키가 있어야한다. 각자 고유의 키
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     private String userId;
     private String password;
     private String name;
@@ -50,12 +50,9 @@ public class User {
         this.email = email;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(userId, user.userId);
+
+    public boolean equalsOfString(String o) {
+        return Objects.equals(userId, o);
     }
 
     @Override

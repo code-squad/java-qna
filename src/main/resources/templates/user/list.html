@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="kr">
-{{>base/header}}
-<body>
-{{>base/navigator}}
-
-
+{{#partial "content"}}
 <div class="container" id="main">
     <div class="col-md-10 col-md-offset-1">
         <div class="panel panel-default">
@@ -21,11 +15,11 @@
                 {{#users}}
                 <tbody>
                 <tr>
-                    <th scope="row">{{@index_1}}</th>
+                    <th scope="row">{{id}}</th>
                     <td> <a href="/users/{{userId}}" role="button">{{userId}}</a></td>
                     <td>{{name}}</td>
                     <td>{{email}}</td>
-                    <td><a href="/users/{{userId}}/form" class="btn btn-success" role="button">수정</a></td>
+                    <td><a href="/users/{{id}}/form" class="btn btn-success" role="button">수정</a></td>
                 </tr>
                 </tbody>
                 {{/users}}
@@ -33,8 +27,6 @@
         </div>
     </div>
 </div>
+{{/partial}}
 
-<!-- script references -->
-{{>base/footer}}
-</body>
-</html>
+{{> frame/base}}

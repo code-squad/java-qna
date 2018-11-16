@@ -1,9 +1,4 @@
-<!DOCTYPE html>
-<html lang="kr">
-{{>base/header}}
-<body>
-{{>base/navigator}}
-
+{{#partial "content"}}
 <div class="container" id="main">
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default">
@@ -29,8 +24,6 @@
         </div>
     </div>
 </div>
+{{/partial}}
 
-<!-- script references -->
-{{>base/footer}}
-</body>
-</html>
+{{> frame/base}}

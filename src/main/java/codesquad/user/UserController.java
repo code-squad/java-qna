@@ -16,12 +16,12 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    @PostMapping("/user/create")
+    @PostMapping("/users")
     public String create(User user) {
         userRepository.save(user);
+        System.out.println();
         return "redirect:/users";
     }
-
 
     @GetMapping("/users")
     public String list(Model model) {
@@ -59,12 +59,6 @@ public class UserController {
             }
         }
         return "redirect:/users";
-    }
-
-
-    @GetMapping("/abc")
-    public String abc() {
-        return "user/list";
     }
 
 }

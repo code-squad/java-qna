@@ -6,6 +6,16 @@ public class Question {
     private String contents;
     private String index;
 
+    public Question() {
+    }
+
+    public Question(String writer, String title, String contents, String index) {
+        this.writer = writer;
+        this.title = title;
+        this.contents = contents;
+        this.index = index;
+    }
+
     public String getIndex() {
         return index;
     }

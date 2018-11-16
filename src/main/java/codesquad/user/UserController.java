@@ -13,7 +13,7 @@ import java.util.List;
 public class UserController {
     private List<User> users = new ArrayList();
 
-    @PostMapping("/user/create")
+    @PostMapping("/users/create")
     public String create(User user){
         users.add(user);
         return "redirect:/users";
@@ -27,16 +27,27 @@ public class UserController {
 
     @GetMapping("/users/{userId}")
     public String profile(@PathVariable String userId, Model model){
-        User user = findUser(userId);
-        model.addAttribute("user", user);
-
+        setUpUser(userId, model);
         return "user/profile";
     }
 
-    public User findUser(String userId){
+    public Model setUpUser(String userId, Model model){
+        User user = findUserById(userId);
+        model.addAttribute("user", user);
+        return model;
+    }
+
+    public User findUserById(String userId){
         for (User user : users) {
             if(user.isUser(userId)) return user;
         }
         return null;
+    }
+
+    @GetMapping("/users/{userId}/form")
+    public String modify(@PathVariable String userId, Model model){
+        setUpUser(userId, model);
+        System.out.println("?");
+        return "user/updateForm";
     }
 }

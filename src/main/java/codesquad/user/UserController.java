@@ -25,27 +25,29 @@ public class UserController {
 
     @GetMapping("/{id}")
     public String showProfile(@PathVariable Long id, Model model) throws IdNotFoundException {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new IdNotFoundException("해당 id를 찾을 수 없습니다"));
+        User user = getUser(id);
         model.addAttribute("user", user);
         return "user/profile";
     }
 
     @GetMapping("/{id}/form")
     public String showUserInfo(@PathVariable Long id, Model model) throws IdNotFoundException {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new IdNotFoundException("해당 id를 찾을 수 없습니다"));
+        User user = getUser(id);
         model.addAttribute("user", user);
         return "user/updateForm";
     }
 
     @PutMapping("/{id}")
     public String updateUserInfo(@PathVariable Long id, User userUpdated) throws IdNotFoundException {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new IdNotFoundException("해당 id를 찾을 수 없습니다"));
+        User user = getUser(id);
         user.update(userUpdated);
         userRepository.save(user);
         return "redirect:/users";
+    }
+
+    private User getUser(@PathVariable Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new IdNotFoundException("해당 id를 찾을 수 없습니다"));
     }
 
 }

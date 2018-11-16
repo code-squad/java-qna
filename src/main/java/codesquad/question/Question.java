@@ -7,8 +7,11 @@ public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long index;
+    @Column(nullable = false, length = 20)
     private String writer;
+    @Column(nullable = false, length = 40)
     private String title;
+    @Column(nullable = false)
     private String contents;
     private String time;
 

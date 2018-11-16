@@ -17,17 +17,11 @@ public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
 
-    @GetMapping("")
-    public String home(Model model) {
-        model.addAttribute("questions", questionRepository.findAll());
-        return "index";
-    }
-
     @PostMapping("")
     public String post(Question question) {
         question.setTime(getTodayDate());
         questionRepository.save(question);
-        return "redirect:/questions";
+        return "redirect:/";
     }
 
     @GetMapping("/{index}")
@@ -44,4 +38,5 @@ public class QuestionController {
         SimpleDateFormat time = new SimpleDateFormat("HH:mm");
         return date.format(today) + time.format(today);
     }
+
 }

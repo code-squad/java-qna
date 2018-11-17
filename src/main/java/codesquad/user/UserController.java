@@ -69,15 +69,4 @@ public class UserController {
 //        System.out.println("email : " + email);
 //        return "user/index";
 //    }
-
-//    @GetMapping("/users")
-//    public String list(Model model) {
-//        model.addAttribute("users",users);
-//        return "user/list";
-//    }
-
-//    @GetMapping("/helloWorld")
-//    public String welcome(){
-//        return "user/welcome";
-//    }
 }

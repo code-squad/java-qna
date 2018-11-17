@@ -21,17 +21,13 @@ public class QuestionController {
 
     @PostMapping("/create")
     public String create(Question question) {
-//        question.setIndex(questions.size() + 1);
-//        questions.add(question);
         questionRepository.save(question);
         return "redirect:/question/list";
     }
 
     @GetMapping("/list")
     public String questionList(Model model) {
-//        model.addAttribute("questions", questions);
         model.addAttribute("questions", questionRepository.findAll());
-        System.out.println("!!");
         return "/index";
     }
 
@@ -50,12 +46,4 @@ public class QuestionController {
     public String qnaForm() {
         return "/qna/form";
     }
-
-//    @GetMapping("/question/{title}")
-//    public String questionContents(Model model, @PathVariable String title) {
-//        for (Question question : questions) {
-//            if (question.getTitle().equals(title)) model.addAttribute(question);
-//        }
-//        return "qna/show";
-//    }
 }

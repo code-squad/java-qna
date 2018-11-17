@@ -1,6 +1,16 @@
 package codesquad.user;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // 자동으로 1씩 증가하며 아이디를 부여.
+    private long id;
+
     private String userId;
     private String password;
     private String name;
@@ -38,17 +48,34 @@ public class User {
         this.email = email;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public boolean isUser(String userId){
         return userId.equals(this.userId);
+    }
+
+
+    public void update(User modifiedUser) {
+        this.name = modifiedUser.name;
+        this.password = modifiedUser.password;
+        this.email = modifiedUser.email;
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "userId='" + userId + '\'' +
+                "id=" + id +
+                ", userId='" + userId + '\'' +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 '}';
     }
+
 }

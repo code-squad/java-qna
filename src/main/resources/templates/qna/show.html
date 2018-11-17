@@ -1,13 +1,10 @@
-<!DOCTYPE html>
-<html lang="kr">
-{{>header}}
-<body>
-{{>navigationBar}}
+{{#partial "content"}}
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-12">
         <div class="panel panel-default">
             <header class="qna-header">
-                <h2 class="qna-title">{{question.title}}</h2>
+                {{#question}}
+                <h2 class="qna-title">{{title}}</h2>
             </header>
             <div class="content-main">
                 <article class="article">
@@ -17,7 +14,7 @@
                                  class="article-author-thumb" alt="">
                         </div>
                         <div class="article-header-text">
-                            <a href="/users/92/kimmunsu" class="article-author-name">{{question.writer}}</a>
+                            <a href="/users/profile/{{userId}}" class="article-author-name">{{writer}}</a>
                             <a href="/questions/413" class="article-header-time" title="퍼머링크">
                                 2015-12-30 01:47
                                 <i class="icon-link"></i>
@@ -25,11 +22,12 @@
                         </div>
                     </div>
                     <div class="article-doc">
-                        <p>{{question.contents}}</p>
+                        <p>{{contents}}</p>
                     </div>
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
+                                {{/question}}
                                 <a class="link-modify-article" href="/questions/423/form">수정</a>
                             </li>
                             <li>
@@ -133,7 +131,8 @@
     <article class="article">
         <div class="article-header">
             <div class="article-header-thumb">
-                <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
+                <img src="https://www.facebook.com/daehanmindecline/photos/t.100000404146163/10151858007749302/?type=3&theater"
+                     class="article-author-thumb" alt="">
             </div>
             <div class="article-header-text">
                 <a href="#" class="article-author-name">{0}</a>
@@ -158,8 +157,6 @@
         </div>
     </article>
 </script>
-
+{{/partial}}
 <!-- script references -->
-{{>footer}}
-</body>
-</html>
+{{> base}}

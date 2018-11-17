@@ -1,8 +1,4 @@
-<!DOCTYPE html>
-<html lang="kr">
-{{>header}}
-<body>
-{{>navigationBar}}
+{{#partial "content"}}
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
         <div class="panel panel-default qna-list">
@@ -12,16 +8,16 @@
                     <div class="wrap">
                         <div class="main">
                             <strong class="subject">
-                                <a href="/show/{{id}}">{{title}}</a>
+                                <a href="/qna/{{id}}">{{title}}</a>
                             </strong>
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
                                 <span class="time">2016-01-15 18:47</span>
-                                <a href="/profile/{{writer}}" class="author">{{writer}}</a>
+                                <a href="/user/profile/{{userId}}" class="author">{{writer}}</a>
                             </div>
                             <div class="reply" title="댓글">
                                 <i class="icon-reply"></i>
-                                <span class="point">{{@index}}</span>
+                                <span class="point">{{id}}</span>
                             </div>
                         </div>
                     </div>
@@ -42,7 +38,7 @@
                     </ul>
                 </div>
                 <div class="col-md-3 qna-write">
-                    <a href="/qna/form" class="btn btn-primary pull-right" role="button">질문하기</a>
+                    <a href="/question/form" class="btn btn-primary pull-right" role="button">질문하기</a>
                 </div>
             </div>
         </div>
@@ -125,8 +121,6 @@
   </div>
 </div>
 -->
-
+{{/partial}}
 <!-- script references -->
-{{>footer}}
-</body>
-</html>
+{{>base}}

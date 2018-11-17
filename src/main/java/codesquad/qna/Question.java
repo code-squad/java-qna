@@ -1,9 +1,18 @@
 package codesquad.qna;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
+@Entity
 public class Question {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String writer;
     private String title;
     private String contents;
@@ -43,12 +52,11 @@ public class Question {
         this.contents = contents;
     }
 
-    @Override
-    public String toString() {
-        return "Question{" +
-                "writer='" + writer + '\'' +
-                ", title='" + title + '\'' +
-                ", contents='" + contents + '\'' +
-                '}';
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

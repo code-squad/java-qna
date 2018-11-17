@@ -5,9 +5,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -27,7 +24,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public String showProfile(@PathVariable long id, Model model){
+    public String showUser(@PathVariable long id, Model model){
         model.addAttribute("user", userRepository.findById(id).get());
         return "user/profile";
     }

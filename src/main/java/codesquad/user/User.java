@@ -1,9 +1,6 @@
 package codesquad.user;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class User {
@@ -11,6 +8,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 자동으로 1씩 증가하며 아이디를 부여.
     private long id;
 
+    @Column(unique = true, nullable = false)
     private String userId;
     private String password;
     private String name;

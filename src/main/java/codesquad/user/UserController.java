@@ -1,55 +1,56 @@
 package codesquad.user;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@RequestMapping("/user")
 public class UserController {
-    private List<User> users = new ArrayList<>();
 
-    @PostMapping("/user/create")
+    @Autowired
+    private UserRepository userRepository;  //db
+
+    @PostMapping("/create")
     public String create(User user) {
         System.out.println("execute create!!");
         System.out.println("user : " + user);
-        users.add(user);
+        userRepository.save(user);
         return "redirect:/user/list";
     }
 
-    @GetMapping("/user/list")
+    @GetMapping("/list")
     public String userList(Model model) {
         System.out.println("userList execute complete!");
-        model.addAttribute("users", users);
-        return "user/list";
+        model.addAttribute("users", userRepository.findAll());
+        return "/user/list";
     }
 
-    @GetMapping("/user/profile/{id}")
-    public String userProfile(Model model, @PathVariable String id) {
-        for (User user : users) {
-            if (user.getUserId().equals(id)) model.addAttribute(user);
-        }
-        return "user/profile";
+    @GetMapping("/profile/{pId}")
+    public String userProfile(Model model, @PathVariable long pId) {
+        System.out.println("profile complete!");
+        model.addAttribute("user",userRepository.findById(pId).get());
+        System.out.println(model);
+        return "/user/profile";
     }
 
-    @GetMapping("/user/form")
+    @GetMapping("/form")
     public String userForm() {
-        return "user/form";
+        return "/user/form";
     }
 
-    @GetMapping("/user/login")
+    @GetMapping("/login")
     public String userLogin() {
-        return "user/login";
+        return "/user/login";
     }
 
-    @GetMapping("/qna/form")
-    public String qnaForm() {
-        return "qna/form";
-    }
 
 //    @PostMapping("/user/create")
 //    public String create(String userId , String password, String name, String email) {

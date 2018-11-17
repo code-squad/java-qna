@@ -1,10 +1,26 @@
 package codesquad.user;
 
+import javax.persistence.*;
+
+@Entity
 public class User {
+    @Id //기본키
+    @GeneratedValue(strategy = GenerationType.IDENTITY)    //db에 자동으로 새로 추가된 데이터의 id 번호+1
+    private long pId;
+
+    @Column(nullable = false)
     private String id;
     private String password;
     private String name;
     private String email;
+
+    public long getPId() {
+        return pId;
+    }
+
+    public void setPId(long pId) {
+        this.pId = pId;
+    }
 
     public String getUserId() {
         return id;

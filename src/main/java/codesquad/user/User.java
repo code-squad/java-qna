@@ -1,29 +1,38 @@
 package codesquad.user;
 
+import javax.persistence.*;
+
+@Entity
 public class User {
-    private int index;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(nullable = false, unique = true, length = 20)
     private String userId;
+    @Column(nullable = false, length = 40)
     private String password;
+    @Column(nullable = false, length = 30)
     private String name;
+    @Column(nullable = false, length = 30)
     private String email;
 
-    public User() {
+    User() {
     }
 
-    public User(int index, String userId, String password, String name, String email) {
-        this.index = index;
+    public User(Long id, String userId, String password, String name, String email) {
+        this.id = id;
         this.userId = userId;
         this.password = password;
         this.name = name;
         this.email = email;
     }
 
-    public int getIndex() {
-        return index;
+    public Long getId() {
+        return id;
     }
 
-    public void setIndex(int index) {
-        this.index = index;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUserId() {
@@ -58,14 +67,16 @@ public class User {
         this.email = email;
     }
 
-    public boolean isUserId(String userId) {
-        return this.userId.equals(userId);
+    public void update(User userUpdated) {
+        this.password = userUpdated.password;
+        this.name = userUpdated.name;
+        this.email = userUpdated.email;
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "index=" + index +
+                "id=" + id +
                 ", userId='" + userId + '\'' +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +

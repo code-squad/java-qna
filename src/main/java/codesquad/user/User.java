@@ -1,9 +1,6 @@
 package codesquad.user;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 //ㄷㅔ이터 베이스에 데이터를 넣거나 꺼낼 때 자동으로 매핑해주느 역할
 @Entity
@@ -14,6 +11,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 자동으로 1씩 증가해서 유일한 값을 만들어 준다.
     private long id;
 
+    @Column
     private String userId;
     private String password;
     private String name;
@@ -59,6 +57,11 @@ public class User {
         this.email = email;
     }
 
+    public void update(User newUesr) {
+        this.name = newUesr.name;
+        this.password = newUesr.password;
+        this.email = newUesr.email;
+    }
     @Override
     public String toString() {
         return "User{" +

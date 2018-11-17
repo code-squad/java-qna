@@ -1,5 +1,6 @@
 package codesquad.question;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,16 +16,21 @@ import java.util.List;
 public class QuestionController {
     private List<Question> questions = new ArrayList<>();
 
+    @Autowired
+    private QuestionRepository questionRepository;
+
     @PostMapping("/create")
     public String create(Question question) {
-        question.setIndex(questions.size() + 1);
-        questions.add(question);
+//        question.setIndex(questions.size() + 1);
+//        questions.add(question);
+        questionRepository.save(question);
         return "redirect:/question/list";
     }
 
     @GetMapping("/list")
     public String questionList(Model model) {
-        model.addAttribute("questions", questions);
+//        model.addAttribute("questions", questions);
+        model.addAttribute("questions", questionRepository.findAll());
         System.out.println("!!");
         return "/index";
     }
@@ -34,9 +40,9 @@ public class QuestionController {
         return "/qna/show";
     }
 
-    @GetMapping("/{index}")
-    public String questionContents(Model model, @PathVariable int index) {
-        model.addAttribute(questions.get(index - 1));
+    @GetMapping("/{pId}")
+    public String questionContents(Model model, @PathVariable long pId) {
+        model.addAttribute("question", questionRepository.findById(pId).get());
         return "/qna/show";
     }
 

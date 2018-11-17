@@ -3,13 +3,7 @@ package codesquad.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/user")
@@ -49,6 +43,20 @@ public class UserController {
     @GetMapping("/login")
     public String userLogin() {
         return "/user/login";
+    }
+
+    @GetMapping("/{pId}/form")
+    private String userUpdateForm(Model model, @PathVariable long pId){
+        model.addAttribute("user",userRepository.findById(pId).get());
+        return "/user/updateForm";
+    }
+
+    @PutMapping("/{pId}/update")
+    private String userUpdate(User newUser, @PathVariable long pId){
+        User user = userRepository.findById(pId).get();
+        user.update(newUser);
+        userRepository.save(user);
+        return "redirect:/user/list";
     }
 
 

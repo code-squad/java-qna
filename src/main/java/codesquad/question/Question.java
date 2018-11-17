@@ -1,18 +1,25 @@
 package codesquad.question;
 
+import javax.persistence.*;
+
+@Entity
 public class Question {
-    private int index;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    private long id;
+
+    @Column(nullable = false, length = 20)
+public class Question {
     private String writer;
     private String title;
     private String contents;
 
-    public int getIndex() {
-        return index;
+    public long getId() {
+        return id;
     }
 
-    public void setIndex(int index) {
-        this.index = index;
-    }
+    public void setId(long id) {
+        this.id = id;
 
     public String getWriter() {
         return writer;

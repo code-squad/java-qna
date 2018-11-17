@@ -1,5 +1,10 @@
 package codesquad.user;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,35 +15,45 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/users")
 public class UserController {
+    @Autowired
+    private UserRepository userRepository;
+
     @PostMapping
     public String create(User user) {
-        user.setIndex(UserRepository.getUsers().size() + 1);
-        UserRepository.addUser(user);
+        userRepository.save(user);
         return "redirect:/users";
     }
 
     @GetMapping
     public String list(Model model) {
-        model.addAttribute("users", UserRepository.getUsers());
+        model.addAttribute("users", userRepository.findAll());
         return "user/list";
     }
 
-    @GetMapping("/{userId}")
-    public String profile(Model model, @PathVariable String userId) {
-        model.addAttribute("user", UserRepository.findMatchIdUser(userId));
+    @GetMapping("/{id}")
+    public String show(Model model, @PathVariable long id) {
+        model.addAttribute("user", userRepository.findById(id).orElse(null));
         return "/user/profile";
     }
 
-    @GetMapping("/{userId}/form")
-    public String updateProfile(Model model, @PathVariable String userId) {
-        model.addAttribute("user", UserRepository.findMatchIdUser(userId));
+//    @GetMapping("/{id}")
+//    public ModelAndView show(@PathVariable long id) {
+//        ModelAndView mav = new ModelAndView("user/profile");
+//        mav.addObject("user", userRepository.findById(id).orElse(null));
+//        return mav;
+//    }
+
+    @GetMapping("/{id}/form")
+    public String updateProfile(Model model, @PathVariable long id) {
+        model.addAttribute("user", userRepository.findById(id).orElse(null));
         return "/user/updateForm";
     }
 
-    //todo : users로 create와 구분 어떻게? post, /users, parameter User 모두 동일한데...
-    @PostMapping("/update")
-    public String updateUser(User updatedUser) {
-        UserRepository.findMatchIdUser(updatedUser).updateUserProfile(updatedUser);
+    @PutMapping("/{id}")
+    public String updateUser(User updatedUser, @PathVariable long id) {
+        User user = userRepository.findById(id).orElse(null);
+        user.update(updatedUser);
+        userRepository.save(user);
         return "redirect:/users";
     }
 }

@@ -1,19 +1,22 @@
 package codesquad.user;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
 public class User {
-    private String userId;
-    private String password;
-    private String name;
-    private String email;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    public User(String userId, String password, String name, String email) {
-        this.userId = userId;
-        this.password = password;
-        this.name = name;
-        this.email = email;
-    }
+    @Column(nullable = false, length = 20)
+    private String userId;
+    @Column(nullable = false, length = 20)
+    private String password;
+    @Column(nullable = false, length = 10)
+    private String name;
+    @Column(length = 30)
+    private String email;
 
     public String getUserId() {
         return userId;
@@ -47,19 +50,12 @@ public class User {
         this.email = email;
     }
 
-    public boolean isSameId(User modifyUser) {
-        if (userId.equals(modifyUser.getUserId())) {
-            return true;
-        }
-        return false;
+    public Long getId() {
+        return id;
     }
 
-    public void update(User modifyUser) {
-        if(isSameId(modifyUser)) {
-            setName(modifyUser.getName());
-            setPassword(modifyUser.getPassword());
-            setEmail(modifyUser.getEmail());
-        }
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Override
@@ -83,5 +79,11 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(userId);
+    }
+
+    public void update(User modifyUser) {
+        this.name = modifyUser.getName();
+        this.password = modifyUser.getPassword();
+        this.email = modifyUser.getEmail();
     }
 }

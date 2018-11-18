@@ -27,6 +27,18 @@ public class UserController {
         return "/user/profile";
     }
 
+    @GetMapping("/{userId}/form")
+    public String updateForm(Model model, @PathVariable String userId) {
+        model.addAttribute("user", matchUser(userId));
+        return "/user/updateForm";
+    }
+
+    @PostMapping("/{userId}/date")
+    public String update(User putValue, @PathVariable String userId) {
+        users.update(putValue, matchUser(userId));
+        return "redirect:/users";
+    }
+
     private User matchUser(String userId) {
         for (User user : users.getUsers()) if (user.isSameUser(userId)) return user;
         return null;

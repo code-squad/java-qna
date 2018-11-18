@@ -19,4 +19,8 @@ public class Users {
     List<User> getUsers() {
         return users;
     }
+
+    void update(User putValue, User user) {
+        user.putProfile(putValue);
+    }
 }

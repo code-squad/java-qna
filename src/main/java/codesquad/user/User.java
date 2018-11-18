@@ -1,6 +1,7 @@
 package codesquad.user;
 
 public class User {
+
     private String userId;
     private String password;
     private String name;
@@ -40,5 +41,11 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void putProfile(User user) {
+        setPassword(user.getPassword());
+        setName(user.getName());
+        setEmail(user.getEmail());
     }
 }

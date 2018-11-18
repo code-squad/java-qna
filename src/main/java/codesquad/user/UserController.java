@@ -3,13 +3,7 @@ package codesquad.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/users")
@@ -22,7 +16,7 @@ public class UserController {
         System.out.println("execute create!!");
         System.out.println("user : " + user);
         userRepository.save(user);
-        return "redirect:";       //행위를 하고 다른 페이지를 보여주고 싶을때
+        return "redirect:/users";       //행위를 하고 다른 페이지를 보여주고 싶을때
     }
 
     @GetMapping("")
@@ -37,5 +31,17 @@ public class UserController {
         return "/user/profile";
     }
 
+    @GetMapping("/{id}/form")
+    public String updatePersonalInformation(@PathVariable Long id, Model model){
+        model.addAttribute("usersInformation",userRepository.findById(id).orElse(null));
+        return "/user/updateForm";
+    }
 
+    @PutMapping("/{id}")
+    public String redirect(@PathVariable Long id,User updateUser){
+        User user = userRepository.findById(id).orElse(null);
+        user.update(updateUser);
+        userRepository.save(user);
+        return "redirect:/users";
+    }
 }

@@ -1,15 +1,19 @@
 package codesquad.user;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.Optional;
 
+@Entity
 public class User {
-    static public User DEFAULT = new User("default", "password", "홍길동", "default@default");
+    @Id
     private String userId;
     private String password;
     private String name;
     private String email;
 
-    public User(){}
+    public User() {
+    }
 
     public User(String userId, String password, String name, String email) {
         this.userId = userId;
@@ -60,10 +64,10 @@ public class User {
                 '}';
     }
 
-    public boolean checkPassword(User user) {
-        if (user == null) {
-            return false;
+    public boolean checkPassword(Optional<User> user) {
+        if (user.isPresent()) {
+            return password.equals(user.get().password);
         }
-        return password.equals(user.password);
+        return false;
     }
 }

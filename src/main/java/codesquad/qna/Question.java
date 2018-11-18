@@ -1,21 +1,32 @@
 package codesquad.qna;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
+
+@Entity
 public class Question {
-    private int index;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long index;
+    @Column(nullable=false, length=20)
     private String writer;
+    @Column(nullable=false, length=100)
     private String title;
+    @Column(nullable=false, length=1000)
     private String contents;
-    private String time;
+    @CreationTimestamp
+    private LocalDateTime createdTime;
+    @UpdateTimestamp
+    private LocalDateTime updateTime;
 
-    boolean isSameQuestion(int index) {
-        return this.index == index;
-    }
-
-    public int getIndex() {
+    public Long getIndex() {
         return index;
     }
 
-    public void setIndex(int index) {
+    public void setIndex(Long index) {
         this.index = index;
     }
 
@@ -43,11 +54,19 @@ public class Question {
         this.contents = contents;
     }
 
-    public String getTime() {
-        return time;
+    public LocalDateTime getCreatedTime() {
+        return createdTime;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setCreatedTime(LocalDateTime createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    public LocalDateTime getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(LocalDateTime updateTime) {
+        this.updateTime = updateTime;
     }
 }

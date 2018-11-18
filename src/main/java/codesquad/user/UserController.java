@@ -1,5 +1,6 @@
 package codesquad.user;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -7,40 +8,38 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/users")
 public class UserController {
-    private Users users = Users.of();
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping
     public String create(User user) {
-        users.add(user);
+        userRepository.save(user);
         return "redirect:/users";
     }
 
     @GetMapping
     public String list(Model model) {
-        model.addAttribute("users", users.getUsers());
+        model.addAttribute("users", userRepository.findAll());
         return "/user/list";
     }
 
-    @GetMapping("/{userId}")
-    public String profile(Model model, @PathVariable String userId) {
-        model.addAttribute("user", matchUser(userId));
+    @GetMapping("/{id}")
+    public String profile(Model model, @PathVariable Long id) {
+        model.addAttribute("user", userRepository.findById(id).orElse(null));
         return "/user/profile";
     }
 
-    @GetMapping("/{userId}/form")
-    public String updateForm(Model model, @PathVariable String userId) {
-        model.addAttribute("user", matchUser(userId));
+    @GetMapping("/{id}/form")
+    public String updateForm(Model model, @PathVariable Long id) {
+        model.addAttribute("user", userRepository.findById(id).orElse(null));
         return "/user/updateForm";
     }
 
-    @PostMapping("/{userId}/date")
-    public String update(User putValue, @PathVariable String userId) {
-        users.update(putValue, matchUser(userId));
+    @PutMapping("/{id}")
+    public String update(@PathVariable Long id, User modifiedUser) {
+        User user = userRepository.findById(id).orElse(null);
+        user.update(modifiedUser);
+        userRepository.save(user);
         return "redirect:/users";
-    }
-
-    private User matchUser(String userId) {
-        for (User user : users.getUsers()) if (user.isSameUser(userId)) return user;
-        return null;
     }
 }

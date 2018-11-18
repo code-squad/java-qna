@@ -1,14 +1,31 @@
 package codesquad.user;
 
-public class User {
+import javax.persistence.*;
 
+@Entity
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable=false, length=20)
     private String userId;
+
+    @Column(nullable=false, length=12)
     private String password;
+
+    @Column(nullable=false, length=12)
     private String name;
+
+    @Column(nullable=false, length=50)
     private String email;
 
-    boolean isSameUser(String userId) {
-        return this.userId.equals(userId);
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUserId() {
@@ -43,9 +60,9 @@ public class User {
         this.email = email;
     }
 
-    public void putProfile(User user) {
-        setPassword(user.getPassword());
-        setName(user.getName());
-        setEmail(user.getEmail());
+    public void update(User modifiedUser) {
+        setPassword(modifiedUser.getPassword());
+        setName(modifiedUser.getName());
+        setEmail(modifiedUser.getEmail());
     }
 }

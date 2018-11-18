@@ -1,5 +1,6 @@
 package codesquad.user;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -9,23 +10,24 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/users")
 public class UserController {
-    private UserRepository userRepository = UserRepository.getInstance();
+    @Autowired
+    UserRepository userRepository;
 
     @GetMapping
     public String list(Model model) {
-        model.addAttribute("users", userRepository.getAll());
+        model.addAttribute("users", userRepository.findAll());
         return "user/list";
     }
 
     @PostMapping
     public String create(User user) {
-        userRepository.add(user);
+        userRepository.save(user);
         return "redirect:/users";
     }
 
     @GetMapping("/{userId}")
     public String readProfiles(Model model, @PathVariable String userId) {
-        Optional<User> user = userRepository.findUser(userId);
+        Optional<User> user = userRepository.findById(userId);
         if (!user.isPresent()) {
             return "redirect:/";
         }
@@ -35,7 +37,7 @@ public class UserController {
 
     @GetMapping("/{userId}/form")
     public String updateForm(Model model, @PathVariable String userId) {
-        Optional<User> user = userRepository.findUser(userId);
+        Optional<User> user = userRepository.findById(userId);
         if (!user.isPresent()) {
             return "redirect:/users";
         }
@@ -43,11 +45,13 @@ public class UserController {
         return "user/update_form";
     }
 
-    @PostMapping("/{userId}")
+    @PutMapping("/{userId}")
     public String update(@PathVariable String userId, User updateUserInfo) {
         updateUserInfo.setUserId(userId);
-        System.out.println(updateUserInfo);
-        userRepository.update(updateUserInfo);
+        Optional<User> user = userRepository.findById(userId);
+        if (updateUserInfo.checkPassword(user)) {
+            userRepository.save(updateUserInfo);
+        }
         return "redirect:/users";
     }
 }

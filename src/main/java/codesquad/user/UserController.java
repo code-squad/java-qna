@@ -23,6 +23,7 @@ public class UserController {
 
     @PostMapping
     public String create(User user) {
+        System.out.println(user);
         userRepository.save(user);
         return "redirect:/users";
     }
@@ -54,20 +55,24 @@ public class UserController {
 
     //todo 로그인한 사용자가 자기 자신의 정보를 업데이트 할 때만 수정이 되도록
 
-    @PutMapping("/{id}")
-    public String updateUser(User updatedUser, @PathVariable long id) {
-        User user = userRepository.findById(id).orElse(null);
-        user.update(updatedUser);
-        userRepository.save(user);
-        return "redirect:/users";
-    }
-
 //    @PutMapping("/{id}")
-//    public String updateUser(User updatedUser, HttpSession session) {
-//        User loginUser = (User)session.getAttribute("loginUser");
-//
+//    public String updateUser(User updatedUser, @PathVariable long id) {
+//        User user = userRepository.findById(id).orElse(null);
+//        user.update(updatedUser);
+//        userRepository.save(user);
 //        return "redirect:/users";
 //    }
+
+    @PutMapping("/{id}")
+    public String updateUser(User updatedUser, HttpSession session) {
+        User loginUser = (User)session.getAttribute("loginUser");
+        if(loginUser != null && loginUser.matchId(updatedUser)) {
+            loginUser.update(updatedUser);
+            userRepository.save(loginUser);
+            return "redirect:/users";
+        }
+        return "/user/updateFail";
+    }
 
 //아이디 비번 불일치 경우도 +
     @PostMapping("/login")

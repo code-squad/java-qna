@@ -13,6 +13,15 @@ public class User {
     private String password;
     private String name;
     private String email;
+    private String address;
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
     void update(User updated) {
         this.name = updated.name;
@@ -24,6 +33,10 @@ public class User {
     //todo null체크
     public boolean matchPassword(String password) {
         return this.password.equals(password);
+    }
+
+    public boolean matchId(User other) {
+        return this.id == other.id;
     }
 
     public long getId() {
@@ -69,10 +82,12 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "userId='" + userId + '\'' +
+                "id=" + id +
+                ", userId='" + userId + '\'' +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
+                ", address='" + address + '\'' +
                 '}';
     }
 }

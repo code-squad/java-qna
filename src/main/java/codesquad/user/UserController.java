@@ -31,7 +31,7 @@ public class UserController {
     @GetMapping
     public String list(Model model) {
         model.addAttribute("users", userRepository.findAll());
-        return "user/list";
+        return "/user/list";
     }
 
     @GetMapping("/{id}")
@@ -69,12 +69,11 @@ public class UserController {
         if(loginUser != null && loginUser.matchPassword(updatedUser)) {
             loginUser.update(updatedUser);
             userRepository.save(loginUser);
-            return "redirect:/users";
+            return "redirect:/users/{id}";
         }
         return "/user/update_failed";
     }
 
-//아이디 비번 불일치 경우도 +
     @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
         Optional<User> maybeUser = userRepository.findByUserId(userId);

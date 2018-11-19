@@ -5,6 +5,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
+import java.util.Optional;
+
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -45,5 +48,18 @@ public class UserController {
         user.update(modifyUser);
         userRepository.save(user);
         return "redirect:/users";
+    }
+
+    @PostMapping("/login")
+    public String login(String userId, String password, HttpSession session) {
+        Optional<User> maybeUser = userRepository.findByUserId(userId);
+        if (maybeUser.isPresent()) {
+            User user = maybeUser.get();
+            if (user.matchPassword(password)) {
+                // 톰켓 서버상에 파일시스템으로 저장
+                session.setAttribute("loginUser", user);
+            }
+        }
+        return "redirect:/";
     }
 }

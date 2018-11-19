@@ -9,4 +9,3 @@ public class QnaApplication {
         SpringApplication.run(QnaApplication.class, args);
     }
 }
-git che

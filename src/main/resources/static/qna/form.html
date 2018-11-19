@@ -10,6 +10,26 @@
     <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     <link href="../css/styles.css" rel="stylesheet">
+    <script>
+        var dateDelimiter = '-';
+        var timeDelimiter = ':';
+        var spaceDelimiter = ' ';
+        function submitForm() {
+            var now = new Date();
+            var today = now.getFullYear() + dateDelimiter
+                            + leadingZero(now.getMonth() + 1) + dateDelimiter
+                            + leadingZero(now.getDate()) + spaceDelimiter
+                            + leadingZero(now.getHours()) + timeDelimiter
+                            + leadingZero(now.getMinutes());
+            $('#reportingDate').val(today);
+            $('#question').submit();
+        }
+
+        function leadingZero(str) {
+            return str < 10 ? '0' + str : str;
+        }
+
+    </script>
 </head>
 <body>
 <nav class="navbar navbar-fixed-top header">
@@ -76,20 +96,21 @@
 <div class="container" id="main">
    <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
       <div class="panel panel-default content-main">
-          <form name="question" method="post" action="">
+          <form id="question" name="question" method="post" action="/qna/inquire">
               <div class="form-group">
                   <label for="writer">글쓴이</label>
-                  <input class="form-control" id="writer" name="writer" placeholder="글쓴이"/>
+                  <input class="form-control" id="writer" name="writer" placeholder="글쓴이" value="Doby"/>
               </div>
               <div class="form-group">
                   <label for="title">제목</label>
-                  <input type="text" class="form-control" id="title" name="title" placeholder="제목"/>
+                  <input type="text" class="form-control" id="title" name="title" placeholder="제목" value="I have a question"/>
               </div>
               <div class="form-group">
                   <label for="contents">내용</label>
-                  <textarea name="contents" id="contents" rows="5" class="form-control"></textarea>
+                  <textarea name="contents" id="contents" rows="5" class="form-control" value="Detail More"></textarea>
               </div>
-              <button type="submit" class="btn btn-success clearfix pull-right">질문하기</button>
+              <input type="hidden" name="reportingDate" id="reportingDate" value="" />
+              <button class="btn btn-success clearfix pull-right" onclick="submitForm()">질문하기</button>
               <div class="clearfix" />
           </form>
         </div>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> Step1 연습 - 1</title>
+</head>
+<body>
+    <h1> Welcome </h1>
+    {{#users}}
+        {{#visible}}
+            <input type="text" name = "name" value="{{name}}" /> <br>
+            <input type="text" name = "age" value="{{age}}" /> <br>
+        {{/visible}}
+        {{^visible}}
+            <h5> 비공개 </h5>
+        {{/visible}}
+    <hr>
+    {{/users}}
+    <a href="https://mustache.github.io/mustache.1.html"> 메뉴얼1 </a>
+    <a href="https://mustache.github.io/mustache.5.html"> 메뉴얼2 </a>
+</body>
+</html>

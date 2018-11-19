@@ -16,7 +16,7 @@ public class QuestionController {
     private QuestionRepository questionRepository;
 
 
-    @PostMapping("/create")
+    @PostMapping("")
     public String questions(Question question) {
         System.out.println("AAA");
         questionRepository.save(question);

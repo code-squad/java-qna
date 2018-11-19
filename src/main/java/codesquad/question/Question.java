@@ -1,6 +1,8 @@
 package codesquad.question;
 
 import javax.persistence.*;
+import java.util.Objects;
+
 
 @Entity
 public class Question {

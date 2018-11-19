@@ -82,4 +82,12 @@ public class User {
                 ", email='" + email + '\'' +
                 '}';
     }
+
+    public boolean matchPassword(String password) {
+        return this.password.equals(password);
+    }
+
+    public boolean matchId(long id) {
+        return this.id == id;
+    }
 }

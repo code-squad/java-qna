@@ -20,6 +20,12 @@ public class User {
         this.email = updated.email;
     }
 
+    //시간관계상 널체크무시
+    //todo null체크
+    public boolean matchPassword(String password) {
+        return this.password.equals(password);
+    }
+
     public long getId() {
         return id;
     }

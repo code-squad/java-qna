@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpSession;
+import java.util.Optional;
+
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -49,11 +52,35 @@ public class UserController {
         return "/user/updateForm";
     }
 
+    //todo 로그인한 사용자가 자기 자신의 정보를 업데이트 할 때만 수정이 되도록
+
     @PutMapping("/{id}")
     public String updateUser(User updatedUser, @PathVariable long id) {
         User user = userRepository.findById(id).orElse(null);
         user.update(updatedUser);
         userRepository.save(user);
         return "redirect:/users";
+    }
+
+//    @PutMapping("/{id}")
+//    public String updateUser(User updatedUser, HttpSession session) {
+//        User loginUser = (User)session.getAttribute("loginUser");
+//
+//        return "redirect:/users";
+//    }
+
+//아이디 비번 불일치 경우도 +
+    @PostMapping("/login")
+    public String login(String userId, String password, HttpSession session) {
+        Optional<User> maybeUser = userRepository.findByUserId(userId);
+        if(maybeUser.isPresent()) {
+            User user = maybeUser.get();
+            if(user.matchPassword(password)) {
+                //세션을 쓰자 HttpSession이용, 자동으로 담아서 클라이언트에 전달한다
+                //DB에 저장하는게 아니고 톰캣 서버상의 파일시스템에 저장한다.(설정 통해서 디비저장도 되긴함)
+                session.setAttribute("loginUser", user);
+            }
+        }
+        return "redirect:/";
     }
 }

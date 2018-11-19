@@ -13,19 +13,10 @@ public class User {
     private String password;
     private String name;
     private String email;
-    private String address;
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
 
     void update(User updated) {
         this.name = updated.name;
-        this.password = updated.name;
+        this.password = updated.password;
         this.email = updated.email;
     }
 
@@ -33,6 +24,10 @@ public class User {
     //todo null체크
     public boolean matchPassword(String password) {
         return this.password.equals(password);
+    }
+
+    public boolean matchPassword(User other) {
+        return this.password.equals(other.password);
     }
 
     public boolean matchId(User other) {
@@ -87,7 +82,6 @@ public class User {
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
-                ", address='" + address + '\'' +
                 '}';
     }
 }

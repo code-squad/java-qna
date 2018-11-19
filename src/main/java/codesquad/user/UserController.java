@@ -50,7 +50,7 @@ public class UserController {
     @GetMapping("/{id}/form")
     public String updateProfile(Model model, @PathVariable long id) {
         model.addAttribute("user", userRepository.findById(id).orElse(null));
-        return "/user/updateForm";
+        return "/user/update_form";
     }
 
     //todo 로그인한 사용자가 자기 자신의 정보를 업데이트 할 때만 수정이 되도록
@@ -66,12 +66,12 @@ public class UserController {
     @PutMapping("/{id}")
     public String updateUser(User updatedUser, HttpSession session) {
         User loginUser = (User)session.getAttribute("loginUser");
-        if(loginUser != null && loginUser.matchId(updatedUser)) {
+        if(loginUser != null && loginUser.matchPassword(updatedUser)) {
             loginUser.update(updatedUser);
             userRepository.save(loginUser);
             return "redirect:/users";
         }
-        return "/user/updateFail";
+        return "/user/update_failed";
     }
 
 //아이디 비번 불일치 경우도 +
@@ -84,8 +84,9 @@ public class UserController {
                 //세션을 쓰자 HttpSession이용, 자동으로 담아서 클라이언트에 전달한다
                 //DB에 저장하는게 아니고 톰캣 서버상의 파일시스템에 저장한다.(설정 통해서 디비저장도 되긴함)
                 session.setAttribute("loginUser", user);
+                return "redirect:/";
             }
         }
-        return "redirect:/";
+        return "/user/login_failed";
     }
 }

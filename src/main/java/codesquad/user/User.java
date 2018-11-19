@@ -72,4 +72,8 @@ public class User {
                 ", email='" + email + '\'' +
                 '}';
     }
+
+    public boolean matchPassword(String password) {
+        return this.password.equals(password);
+    }
 }

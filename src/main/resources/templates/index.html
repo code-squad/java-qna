@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="kr">
-{{> base}}
+{{#partial "content"}}
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
         <div class="panel panel-default qna-list">
@@ -11,7 +9,7 @@
                         <div class="main">
 
                             <strong class="subject">
-                                <a href="/index/{{index}}">{{title}}</a>
+                                <a href="/questions/{{id}}">{{title}}</a>
                             </strong>
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
@@ -125,9 +123,5 @@
 </div>
 -->
 
-<!-- script references -->
-<script src="js/jquery-2.2.0.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/scripts.js"></script>
-</body>
-</html>
+{{/partial}}
+{{> base}}

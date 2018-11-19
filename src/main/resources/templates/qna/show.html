@@ -1,9 +1,7 @@
-<!DOCTYPE html>
-{{> base}}
-
+{{#partial "content"}}
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-12">
-        {{#quest}}
+        {{#quests}}
         <div class="panel panel-default">
             <header class="qna-header">
                 <h2 class="qna-title">{{title}}</h2>
@@ -27,7 +25,7 @@
                     <div class="article-doc">
                         {{content}}
                     </div>
-                    {{/quest}}
+                    {{/quests}}
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
@@ -159,7 +157,5 @@
         </div>
     </article>
 </script>
-
-{{> bootstrap}}
-</body>
-</html>
+{{/partial}}
+{{> base}}

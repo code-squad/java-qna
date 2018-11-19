@@ -54,15 +54,17 @@
         </div>
         <div class="collapse navbar-collapse" index="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
-                <li class="active"><a href="../">Posts</a></li>
-                <li><a href="/users/login" role="button">로그인</a></li>
-                <li><a href="/users/form" role="button">회원가입</a></li>
-                <!--
-                <li><a href="#loginModal" role="button" data-toggle="modal">로그인</a></li>
-                <li><a href="#registerModal" role="button" data-toggle="modal">회원가입</a></li>
-                -->
+                <li class="active"><a href="/">Posts</a></li>
+                <!--세션에 로그인 유저 없을 때-->
+                {{^loginUser}}
+                <li><a href="/user/login" role="button">로그인</a></li>
+                <li><a href="/user/form" role="button">회원가입</a></li>
+                {{/loginUser}}
+                <!--세션에 로그인 유저가 있을때-->
+                {{#loginUser}}
                 <li><a href="#" role="button">로그아웃</a></li>
                 <li><a href="#" role="button">개인정보수정</a></li>
+                {{/loginUser}}
             </ul>
         </div>
     </div>

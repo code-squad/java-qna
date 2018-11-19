@@ -73,6 +73,10 @@ public class User {
         this.email = userUpdated.email;
     }
 
+    public boolean matchPassword(String password) {
+        return this.password.equals(password);
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -83,4 +87,5 @@ public class User {
                 ", email='" + email + '\'' +
                 '}';
     }
+
 }

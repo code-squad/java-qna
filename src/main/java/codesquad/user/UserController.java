@@ -5,6 +5,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
+import java.util.Optional;
+
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -38,6 +41,21 @@ public class UserController {
     public String login() {
         return "user/login";
     }
+
+
+    @PostMapping("/signIn")
+    public String signIn(String userId, String password, HttpSession session) {
+        Optional<User> maybeuser = userRepository.findByUserId(userId);
+        if (maybeuser.isPresent()) {
+            User user = maybeuser.get();
+            if (user.matchPassword(password)) {
+                session.setAttribute("loginUser", user);
+                return "redirect:/";
+            }
+        }
+        return "redirect:/users/login";
+    }
+
 
     @GetMapping("/{id}/form")
     public String updateForm(@PathVariable Long id, Model model) {

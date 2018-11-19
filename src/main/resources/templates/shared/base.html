@@ -75,8 +75,11 @@
                 <li class="active"><a href="/">Posts</a></li>
                 <li><a href="/users/login" role="button">로그인</a></li>
                 <li><a href="/users/form" role="button">회원가입</a></li>
+                <!--session에 loginUser가 있으면-->
+                {{#loginUser}}
                 <li><a href="#" role="button">로그아웃</a></li>
                 <li><a href="#" role="button">개인정보수정</a></li>
+                {{/loginUser}}
             </ul>
         </div>
     </div>

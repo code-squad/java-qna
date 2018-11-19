@@ -1,0 +1,2 @@
+INSERT INTO USER (id, user_id, password, name, email) VALUES (1, 'Dom', 'test', 'dom', 'javajigi@slipp.net');
+INSERT INTO USER (id, user_id, password, name, email) VALUES (2, 'sehun', 'test', 'sehun', 'sanjigi@slipp.net');

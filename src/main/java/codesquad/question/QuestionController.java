@@ -32,7 +32,8 @@ public class QuestionController {
 
         question.setWriter(sessionedUser.getName());
         question.setTime(getTodayDate());
-        question.setId(sessionedUser.getId());
+        System.out.println("sessionedUser : " + sessionedUser);
+        question.setUser(sessionedUser);
         questionRepository.save(question);
         return "redirect:/";
     }
@@ -43,7 +44,8 @@ public class QuestionController {
         Question question = getQuestion(index);
 
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-        if(!question.matchId(sessionedUser.getId())) {
+        System.out.println("sessionedUser : " + sessionedUser); // for debug
+        if(!question.matchUser(sessionedUser)) {
             return "qna/error";
         };
         model.addAttribute("question", question);
@@ -60,7 +62,7 @@ public class QuestionController {
     }
 
     @GetMapping("/{index}")
-    public String detail(@PathVariable Long index, Model model) throws QuestionNotFoundException {
+    public String detail(@PathVariable Long index, Model model) {
         Question question = getQuestion(index);
         model.addAttribute("question", question);
         return "qna/show";
@@ -70,7 +72,7 @@ public class QuestionController {
     public String delete(@PathVariable Long index, HttpSession session) {
         Question question = getQuestion(index);
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-        if(HttpSessionUtils.isLogin(session) && question.matchId(sessionedUser.getId())) {
+        if(HttpSessionUtils.isLogin(session) && question.matchUser(sessionedUser)) {
             questionRepository.delete(question);
             return "redirect:/";
         }

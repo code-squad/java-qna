@@ -1,5 +1,7 @@
 package codesquad.question;
 
+import codesquad.user.User;
+
 import javax.persistence.*;
 
 @Entity
@@ -13,19 +15,20 @@ public class Question {
     private String title;
     @Column(nullable = false, length = 10000)
     private String contents;
-    @Column(nullable = false)
-    private Long id;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    private User user;
     private String time;
 
     Question() {
     }
 
-    public Question(Long index, String writer, String title, String contents, Long id, String time) {
+    public Question(Long index, String writer, String title, String contents, User user, String time) {
         this.index = index;
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-        this.id = id;
+        this.user = user;
         this.time = time;
     }
 
@@ -61,16 +64,16 @@ public class Question {
         this.contents = contents;
     }
 
-    public Long getId() {
-        return id;
+    public User getUser() {
+        return user;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public boolean matchId(Long id) {
-        return this.id.equals(id);
+    public boolean matchUser(User sessionedUser) {
+        return user.equals(sessionedUser);
     }
 
     public String getTime() {
@@ -93,7 +96,7 @@ public class Question {
                 ", writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
-                ", id='" + id + '\'' +
+                ", user='" + user + '\'' +
                 ", time='" + time + '\'' +
                 '}';
     }

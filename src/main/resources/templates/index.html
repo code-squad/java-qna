@@ -3,6 +3,7 @@
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
         <div class="panel panel-default qna-list">
             {{#questions}}
+            {{#loginUser}}
             <ul class="list">
                 <li>
                     <div class="wrap">
@@ -13,7 +14,7 @@
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
                                 <span class="time">{{time}}</span>
-                                <a href="./user/profile.html" class="author">{{writer}}</a>
+                                <a href="/users/{{id}}" class="author">{{writer}}</a>
                             </div>
                             <div class="reply" title="댓글">
                                 <i class="icon-reply"></i>
@@ -23,6 +24,7 @@
                     </div>
                 </li>
             </ul>
+            {{/loginUser}}
             {{/questions}}
             <div class="row">
                 <div class="col-md-3"></div>

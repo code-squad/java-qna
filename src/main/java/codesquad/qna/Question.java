@@ -1,9 +1,6 @@
 package codesquad.qna;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
@@ -13,8 +10,12 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 10)
     private String writer;
+
+    @Column(length = 30)
     private String title;
+
     private String contents;
     private String date;
 

@@ -8,10 +8,16 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 자동으로 1씩 증가하며 아이디를 부여.
     private long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, length = 20)
     private String userId;
+
+    @Column(length = 20)
     private String password;
+
+    @Column(length = 10)
     private String name;
+
+    @Column(length = 40)
     private String email;
 
     public String getUserId() {

@@ -1,5 +1,7 @@
 package codesquad.question;
 
+import codesquad.user.User;
+import codesquad.utils.HttpSessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +23,9 @@ public class QuestionController {
     private QuestionRepository questionRepository;
 
     @PostMapping("/create")
-    public String create(Question question) {
+    public String create(Question question, HttpSession session) {
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        question.setWriter(loginUser.getUserId());
         questionRepository.save(question);
         return "redirect:/question/list";
     }
@@ -43,7 +48,10 @@ public class QuestionController {
     }
 
     @GetMapping("/form")
-    public String qnaForm() {
-        return "/qna/form";
+    public String questionForm(HttpSession session) {
+        if (HttpSessionUtils.isLoginUser(session)) {
+            return "/qna/form";
+        }
+        return "user/login";
     }
 }

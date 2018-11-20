@@ -1,5 +1,6 @@
 package codesquad.user;
 
+import codesquad.utils.HttpSessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,10 +46,8 @@ public class UserController {
 
     @GetMapping("/{pId}/form")
     private String userUpdateForm(Model model, @PathVariable long pId, HttpSession session) {
-        User loginUser = (User) session.getAttribute("loginUser");
-//        model.addAttribute("user", userRepository.findById(loginUser.getPId()).get());
-//        return "/user/updateForm";
-        if (loginUser.getPId()==pId) {
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        if (loginUser.matchPId(pId)) {
             model.addAttribute("user", userRepository.findById(pId).get());
             return "/user/updateForm";
         }
@@ -56,10 +55,8 @@ public class UserController {
     }
 
     @PutMapping("/{pId}/update")
-    private String userUpdate(User updatedUser, @PathVariable long pId, HttpSession session) {
+    private String userUpdate(User updatedUser, @PathVariable long pId) {
         User user = userRepository.findById(pId).orElseThrow(() -> new IllegalArgumentException());
-//        if(session.)
-//        User user = userRepository.findById(pId).get();
         user.update(updatedUser);
         userRepository.save(user);
         return "redirect:/user/list";
@@ -82,14 +79,14 @@ public class UserController {
             System.out.println("Wrong Password!");
             return "/user/login";
         }
-        session.setAttribute("loginUser", user);
+        session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
         System.out.println("login complete");
         return "redirect:/";
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.removeAttribute("loginUser");
+        session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
         return "redirect:/";
     }
 

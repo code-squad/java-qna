@@ -70,7 +70,11 @@ public class User {
         this.email = newUser.email;
     }
 
-    public boolean matchPassword(String password){
+    public boolean matchPassword(String password) {
         return this.password.equals(password);
+    }
+
+    public boolean matchPId(long pId) {
+        return this.pId == pId;
     }
 }

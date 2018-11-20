@@ -1,6 +1,8 @@
 package codesquad.question;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Entity
 public class Question {
@@ -13,6 +15,17 @@ public class Question {
     private String title;
     private String contents;
     private int index;
+    private String date;
+
+    public Question(){
+        Date now = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        this.date = simpleDateFormat.format(now);
+    }
+
+    public String getDate() {
+        return date;
+    }
 
     public long getPId() {
         return pId;

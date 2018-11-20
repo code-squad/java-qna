@@ -37,17 +37,24 @@ public class UserController {
     }
 
     @GetMapping("/{id}/form")
-    public String updateForm(@PathVariable Long id, Model model) {
-        model.addAttribute("user", userRepository.findById(id).orElse(null));
-        return "user/updateForm";
+    public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
+        User loginUser = (User)session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
+        if(loginUser.matchId(id)) {
+            model.addAttribute("user", userRepository.findById(id).orElse(null));
+            return "user/updateForm";
+        }
+        return "user/matchUserId_failed";
     }
 
     @PutMapping("/{id}")
-    public String modifyForm(User modifyUser) {
-        User user = userRepository.findById(modifyUser.getId()).orElse(null);
-        user.update(modifyUser);
-        userRepository.save(user);
-        return "redirect:/users";
+    public String modifyForm(User modifyUser, HttpSession session) {
+        User loginUser = (User)session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
+        if(loginUser.matchPassword(modifyUser.getPassword())) {
+            loginUser.update(modifyUser);
+            userRepository.save(loginUser);
+            return "redirect:/users";
+        }
+        return "user/update_failed";
     }
 
     @PostMapping("/login")
@@ -57,9 +64,16 @@ public class UserController {
             User user = maybeUser.get();
             if (user.matchPassword(password)) {
                 // 톰켓 서버상에 파일시스템으로 저장
-                session.setAttribute("loginUser", user);
+                session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
             }
         }
+        return "redirect:/";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+
+        session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
         return "redirect:/";
     }
 }

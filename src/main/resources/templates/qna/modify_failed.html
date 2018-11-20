@@ -1,5 +1,6 @@
 {{#partial "content"}}
 <div class="container" id="main">
+    <div class="alert alert-danger" role="alert">아이디 또는 비밀번호가 틀립니다. 다시 로그인 해주세요.</div>
     <div class="col-md-12 col-sm-12 col-lg-12">
         {{#list}}
         <div class="panel panel-default">
@@ -28,15 +29,12 @@
                           <li>
                               <form class="form-modify" action="/questions/{{writer}}/modify" method="POST">
                                   <!--<a class="link-modify-article" href="/questions/423/form">수정</a>-->
-                                  <input type="hidden" name="id" value="{{questionId}}">
                                   <input type="hidden" name="_method" value="PUT" />
                                   <button class="link-modify-article" type="submit">수정</button>
                               </form>
                           </li>
                           <li>
-                              <form class="form-delete" action="/questions/delete" method="POST">
-                                  <input type="hidden" name="writer" value="{{writer}}">
-                                  <input type="hidden" name="questionId" value="{{questionId}}">
+                              <form class="form-delete" action="/questions/423" method="POST">
                                   <input type="hidden" name="_method" value="DELETE">
                                   <button class="link-delete-article" type="submit">삭제</button>
                               </form>

@@ -60,7 +60,11 @@ public class UserController {
     @GetMapping("/{id}/form")
     public String updateForm(HttpSession session, Model model, @PathVariable long id) {
         System.out.println("수정");
-        User loginUser =(User) session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
+        System.out.println(id);
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "redirect:/users/login";
+        }
+        User loginUser = HttpSessionUtils.getUserFormSession(session);
         if (!loginUser.matchId(id)) {
             model.addAttribute("users", userRepository.findAll());
             return "/user/list_failed";
@@ -89,11 +93,4 @@ public class UserController {
         return "user/profile";
     }
 
-    /*    @GetMapping("/{writer}")
-    public String profileOfuserid(Model model, @PathVariable String writer) {
-        System.out.println("프로필 유저아이디로 찾기");
-        User user = userRepository.findByUserId(writer);
-        model.addAttribute("user", user);
-        return "user/profile";
-    }*/
 }

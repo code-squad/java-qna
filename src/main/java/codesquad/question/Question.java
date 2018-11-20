@@ -1,5 +1,7 @@
 package codesquad.question;
 
+import codesquad.user.User;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -10,8 +12,11 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false, length = 20)
-    private String writer;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    private User writer;
+
+
     @Column(nullable = false, length = 20)
     private String title;
     private String contents;
@@ -20,7 +25,7 @@ public class Question {
     public Question() {
     }
 
-    public Question(String writer, String title, String contents) {
+    public Question(User writer, String title, String contents) {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
@@ -39,11 +44,11 @@ public class Question {
         this.contents = newQuestion.contents;
     }
 
-    public String getWriter() {
+    public User getWriter() {
         return writer;
     }
 
-    public void setWriter(String writer) {
+    public void setWriter(User writer) {
         this.writer = writer;
     }
 
@@ -71,6 +76,13 @@ public class Question {
                 ", contents='" + contents + '\'' +
                 ", index='" + id + '\'' +
                 '}';
+    }
+
+    public boolean matchWrite(User user) {
+        if (user == null) {
+            return false;
+        }
+        return user.equals(this.writer);
     }
 }
 

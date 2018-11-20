@@ -68,8 +68,20 @@ public class User {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id &&
+                Objects.equals(userId, user.userId) &&
+                Objects.equals(password, user.password) &&
+                Objects.equals(name, user.name) &&
+                Objects.equals(email, user.email);
+    }
+
+    @Override
     public int hashCode() {
-        return Objects.hash(userId);
+        return Objects.hash(id, userId, password, name, email);
     }
 
     @Override
@@ -93,5 +105,9 @@ public class User {
 
     public boolean matchId(long id) {
         return this.id == id;
+    }
+
+    public boolean matchUserId(String writer) {
+        return userId.equals(writer);
     }
 }

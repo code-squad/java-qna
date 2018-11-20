@@ -3,6 +3,7 @@
 package codesquad.question;
 
 import codesquad.HttpSessionUtils;
+import codesquad.answer.AnswerRepository;
 import codesquad.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.Collection;
 
 
 @Controller
@@ -17,7 +19,8 @@ import javax.servlet.http.HttpSession;
 public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
-
+    @Autowired
+    private AnswerRepository answerRepository;
 
     @GetMapping("/form")
     public String questions(HttpSession session,Model model) {
@@ -44,18 +47,21 @@ public class QuestionController {
 
     @GetMapping("/{id}")
     public String profile(Model model, @PathVariable long id) {
+        System.out.println("질문 상세 페이지");
         Question question = questionRepository.findById(id).orElse(null);
+
+        model.addAttribute("answers",answerRepository.findByQuestion(question));
+        model.addAttribute("count",((Collection)answerRepository.findByQuestion(question)).size());
         model.addAttribute("question", question);
         return "/qna/show";
     }
 
     @GetMapping("/{id}/form")
     public String updateForm(Model model, @PathVariable long id, HttpSession session) {
-        System.out.println("질문 수정");
+        System.out.println("질문 수정폼");
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/users/login";
         }
-
         User sessionUser = HttpSessionUtils.getUserFormSession(session);
         Question question = questionRepository.findById(id).orElse(null);
 
@@ -75,7 +81,7 @@ public class QuestionController {
         Question question = questionRepository.findById(id).orElse(null);
         question.update(newQuestion);
         questionRepository.save(question);
-        return "redirect:/";
+        return "redirect:/questions/{id}";
     }
 
     @DeleteMapping("/{id}/delete")
@@ -90,7 +96,7 @@ public class QuestionController {
         //아이디와 질문아이디와 다를경우 로그아웃 하고 로그인 화면 띄움
         if (!question.matchWrite(sessionUser)) {
             session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
-            return "redirect:/users/login";
+            return "/user/update_failed";
         }
         questionRepository.delete(question);
         return "redirect:/";

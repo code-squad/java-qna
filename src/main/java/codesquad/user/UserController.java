@@ -68,7 +68,7 @@ public class UserController {
         if (!loginUser.matchId(id)) {
             model.addAttribute("users", userRepository.findAll());
             return "/user/list_failed";
-        }
+    }
         model.addAttribute("user", loginUser);
         return "user/updateForm";
     }

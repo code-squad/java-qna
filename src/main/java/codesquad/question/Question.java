@@ -3,7 +3,6 @@ package codesquad.question;
 import codesquad.user.User;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 
 @Entity
@@ -20,7 +19,6 @@ public class Question {
     @Column(nullable = false, length = 20)
     private String title;
     private String contents;
-//    private String index;
 
     public Question() {
     }

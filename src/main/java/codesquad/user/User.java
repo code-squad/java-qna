@@ -5,11 +5,11 @@ import javax.persistence.*;
 @Entity
 public class User {
     @Id //기본키
-    @GeneratedValue(strategy = GenerationType.IDENTITY)    //db에 자동으로 새로 추가된 데이터의 id 번호+1
+    @GeneratedValue(strategy = GenerationType.IDENTITY)    //db에 자동으로 새로 추가된 데이터의 userId 번호+1
     private long pId;
 
-    @Column(nullable = false)
-    private String id;
+    @Column(nullable = false, length = 20, unique = true)
+    private String userId;
     private String password;
     private String name;
     private String email;
@@ -23,11 +23,11 @@ public class User {
     }
 
     public String getUserId() {
-        return id;
+        return userId;
     }
 
-    public void setUserId(String id) {
-        this.id = id;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getPassword() {
@@ -57,7 +57,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "id='" + id + '\'' +
+                "userId='" + userId + '\'' +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
@@ -68,5 +68,9 @@ public class User {
         this.password = newUser.password;
         this.name = newUser.name;
         this.email = newUser.email;
+    }
+
+    public boolean matchPassword(String password){
+        return this.password.equals(password);
     }
 }

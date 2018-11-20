@@ -1,5 +1,7 @@
 package codesquad.user;
 
+import codesquad.exception.UserIdNotMatchException;
+
 import javax.persistence.*;
 
 @Entity
@@ -55,15 +57,16 @@ public class User {
         this.email = email;
     }
 
-    public void update(User newUser) {
+    // domain
+    public void update(User newUser, Long id) {
+        if (!(this.id == id)) new UserIdNotMatchException("USER_ID IS NOT CORRECT");
         this.name = newUser.name;
         this.password = newUser.password;
         this.email = newUser.email;
     }
 
-    // domain
-    public Boolean matchId(Long id) {
-        return this.id == id;
+    public Boolean matchId(User otherUser) {
+        return this.id == otherUser.id;
     }
 
     public Boolean matchPassword(String password) {

@@ -1,5 +1,6 @@
 package codesquad.qna;
 
+import codesquad.exception.UserIdNotMatchException;
 import codesquad.user.User;
 
 import javax.persistence.*;
@@ -15,6 +16,8 @@ public class Question {
     private User user;
 
     private String title;
+
+    @Column(nullable = false, length = 1000)
     private String contents;
 
     public Question() {
@@ -58,8 +61,13 @@ public class Question {
         this.contents = contents;
     }
 
-    public void updateQuestion(Question newQuestion) {
+    // domain
+    public void update(Question newQuestion, User updateUser) {
+        if (!updateUser.matchId(this.user)) {
+            throw new UserIdNotMatchException("USER_ID IS NOT CORRECT");
+        }
         this.title = newQuestion.title;
         this.contents = newQuestion.contents;
     }
+
 }

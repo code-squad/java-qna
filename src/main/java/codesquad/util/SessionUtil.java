@@ -1,5 +1,6 @@
 package codesquad.util;
 
+import codesquad.exception.UserIdNotMatchException;
 import codesquad.user.User;
 
 import javax.servlet.http.HttpSession;
@@ -20,17 +21,17 @@ public class SessionUtil {
         return (User) session.getAttribute(USER_SESSION_KEY);
     }
 
-    public static boolean permissionCheck(HttpSession session, Long id) {
+    public static boolean permissionCheck(HttpSession session, User user) {
         if (SessionUtil.isLoginUser(session)) {
-            matchId(session, id);
+            matchId(session, user);
             return true;
         }
         return false;
     }
 
-    public static void matchId(HttpSession session, Long id) {
-        if (!SessionUtil.getUserFromSesssion(session).matchId(id))
-            throw new IllegalArgumentException("Your not allow this page");
+    public static void matchId(HttpSession session, User user) {
+        if (!SessionUtil.getUserFromSesssion(session).matchId(user))
+            throw new UserIdNotMatchException("USER_ID IS NOT CORRECT");
     }
 
 }

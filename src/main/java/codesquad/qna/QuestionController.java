@@ -1,18 +1,26 @@
 package codesquad.qna;
 
+import codesquad.answer.Answer;
+import codesquad.answer.AnswerRepository;
 import codesquad.util.SessionUtil;
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private AnswerRepository answerRepository;
 
     @GetMapping("/form")
     public String form(HttpSession session) {
@@ -32,6 +40,10 @@ public class QuestionController {
     @GetMapping("/{id}")
     public String show(@PathVariable Long id, Model model) {
         model.addAttribute("question", questionRepository.findById(id).orElseThrow(IllegalAccessError::new));
+
+        List<Answer> answers = Lists.newArrayList(answerRepository.findByQuestionId(id));
+        model.addAttribute("answers", answers);
+        model.addAttribute("answerCnt", answers.size());
         return "qna/show";
     }
 
@@ -45,11 +57,10 @@ public class QuestionController {
 
     @PutMapping("/{id}")
     public String update(@PathVariable Long id, Question newQuestion, HttpSession session) {
-        if (!permissionCheck(session, id)) return "redirect:/users/login";
+        if(!SessionUtil.isLoginUser(session)) return "redirect:/users/login";
 
         Question question = questionRepository.findById(id).orElseThrow(IllegalAccessError::new);
-        question.updateQuestion(newQuestion);
-
+        question.update(newQuestion,SessionUtil.getUserFromSesssion(session));
         questionRepository.save(question);
         return "redirect:/";
     }
@@ -67,7 +78,7 @@ public class QuestionController {
                 .findById(id)
                 .orElseThrow(IllegalAccessError::new)
                 .getUser()
-                .getId());
+        );
     }
     
 }

@@ -67,18 +67,19 @@ public class UserController {
 
     @GetMapping("/{id}/form")
     public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
-        if (!SessionUtil.permissionCheck(session, id)) return "redirect:/users/login";
+        User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        if (!SessionUtil.permissionCheck(session, user)) return "redirect:/users/login";
 
-        model.addAttribute("user", userRepository.findById(id).orElseThrow(IllegalArgumentException::new));
+        model.addAttribute("user", user);
         return "user/updateForm";
     }
 
     @PutMapping("/{id}")
     public String update(@PathVariable Long id, User updateUser, HttpSession session) {
-        if (!SessionUtil.permissionCheck(session, id)) return "redirect:/users/login";
+        if (! SessionUtil.isLoginUser(session)) return "redirect:/users/login";
 
         User user = userRepository.findById(id).orElseThrow(IllegalAccessError::new);
-        user.update(updateUser);
+        user.update(updateUser, id);
         userRepository.save(user);
         return "redirect:/users";
     }

@@ -16,17 +16,18 @@ public class Question {
     @Column(length = 30)
     private String title;
 
+    @Column(length = 10000)
     private String contents;
-    private String date;
+    private String curDate;
 
     public Question() {
         Date cur = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        this.date = sdf.format(cur);
+        this.curDate = sdf.format(cur);
     }
 
-    public String getDate() {
-        return date;
+    public String getCurDate() {
+        return curDate;
     }
 
     public String getWriter() {
@@ -59,5 +60,19 @@ public class Question {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void update(Question otherQuestion){
+        this.title = otherQuestion.title;
+        this.contents = otherQuestion.contents;
+        this.curDate = otherQuestion.curDate;
+    }
+
+    public boolean matchWriter(Question otherQuestion){
+        return otherQuestion.matchWriter(this.writer);
+    }
+
+    public boolean matchWriter(String otherWriter){
+        return this.writer.equals(otherWriter);
     }
 }

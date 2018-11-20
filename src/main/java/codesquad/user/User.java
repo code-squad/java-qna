@@ -81,6 +81,10 @@ public class User {
         return this.id == id;
     }
 
+    public boolean matchName(String otherName){
+        return this.name.equals(otherName);
+    }
+
     @Override
     public String toString() {
         return "User{" +

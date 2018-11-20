@@ -16,57 +16,69 @@ public class QuestionController {
     private QuestionRepository questionRepository;
 
     @GetMapping("/form")
-    public String qnaForm(HttpSession session) {
-        User user = (User)session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
-        if(user != null){
+    public String form(HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "user/login";
+        }
+        User loginUser = HttpSessionUtils.getUserFormSession(session);
+        if(loginUser != null){
             return "qna/form";
         }
         return "user/login";
     }
 
-    @PostMapping("/create")
-    public String create(Question question) {
+    @PostMapping("")
+    public String create(String title, String contents, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "user/login";
+        }
         System.out.println("excute create!");
-//        getQuestionRepository().create(question);
-        questionRepository.save(question);
+        User loginUser = HttpSessionUtils.getUserFormSession(session);
+        Question newQuestion = new Question(loginUser, title, contents);
+        questionRepository.save(newQuestion);
         return "redirect:/";
     }
 
-    @GetMapping("/{index}")
-    public String showpage(@PathVariable Long index, Model model) {
-        model.addAttribute("list", questionRepository.findById(index).orElse(null));
+    @GetMapping("/{id}")
+    public String showpage(@PathVariable Long id, Model model) {
+        model.addAttribute("question", questionRepository.findById(id).orElse(null));
         return "qna/show";
     }
 
-    @PostMapping("/{questionId}")
-    public String modify(Question modifyQuestion, @PathVariable Long questionId, Model model) {
-        System.out.println("index : " + questionId);
-        Question question = questionRepository.findById(questionId).orElse(null);
+    @PutMapping("/{id}")
+    public String modify(Question modifyQuestion, @PathVariable Long id, Model model) {
+        Question question = questionRepository.findById(id).orElse(null);
         question.update(modifyQuestion);
         questionRepository.save(question);
         model.addAttribute("list", question);
-        return "qna/show";
+        return String.format("redirect:/questions/%d", id);
     }
 
-    @PutMapping("/{writer}/modify")
-    public String modify(@PathVariable String writer, HttpSession session, Model model, Long id) {
-        User user = (User)session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
-        if(user.matchUserId(writer)){
-            model.addAttribute("modifyForm", questionRepository.findById(id).orElse(null));
+    @GetMapping("/{id}/form")
+    public String modifyForm(HttpSession session, Model model, @PathVariable Long id) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "user/login";
+        }
+        User loginUser = HttpSessionUtils.getUserFormSession(session);
+        Question question = questionRepository.findById(id).orElse(null);
+        if(question.isSameWriter(loginUser)){
+            model.addAttribute("modifyForm", question);
             return "qna/modifyForm";
         }
         return "qna/modify_failed";
     }
 
-    @DeleteMapping("/delete")
-    public String delete(String writer, Long questionId, HttpSession session) {
-        System.out.println("질문 아이디 : " + writer);
-        User user = (User)session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
-        if(user.matchUserId(writer)) {
-            Question question = questionRepository.findById(questionId).orElse(null);
+    @DeleteMapping("/{id}")
+    public String delete(String writer, @PathVariable Long id, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "user/login";
+        }
+        User loginUser = HttpSessionUtils.getUserFormSession(session);
+        Question question = questionRepository.findById(id).orElse(null);
+        if(question.isSameWriter(loginUser)) {
             questionRepository.delete(question);
             return "redirect:/";
         }
-        return "qna/show";
+        return "qna/delete_failed";
     }
 }

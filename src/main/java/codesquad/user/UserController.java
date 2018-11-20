@@ -21,7 +21,7 @@ public class UserController {
         System.out.println(user.getId());
         userRepository.save(user);
 
-        return "redirect:/users";
+        return "redirect:/";
     }
 
     @GetMapping("")
@@ -65,9 +65,10 @@ public class UserController {
             if (user.matchPassword(password)) {
                 // 톰켓 서버상에 파일시스템으로 저장
                 session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
+                return "redirect:/";
             }
         }
-        return "redirect:/";
+        return "user/login_failed";
     }
 
     @GetMapping("/logout")

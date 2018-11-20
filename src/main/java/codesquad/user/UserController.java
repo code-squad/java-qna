@@ -5,9 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -63,7 +60,7 @@ public class UserController {
     public String update(User updatedUser, HttpSession session) {
         User loggedInUser = HttpSessionUtils.getUserFromSession(session);
 
-        if(!loggedInUser.matchPassword(updatedUser)) {
+        if(!loggedInUser.isMatchPassword(updatedUser.getPassword())) {
             return "user/update_failed";
         }
 
@@ -81,7 +78,7 @@ public class UserController {
             return "/user/login_failed";
         }
 
-        if(!maybeUser.get().matchPassword(password)) {
+        if(!maybeUser.get().isMatchPassword(password)) {
             System.out.println("비밀번호 불일치");
             return "/user/login_failed";
         }

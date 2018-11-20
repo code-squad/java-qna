@@ -13,6 +13,11 @@ public class Question {
     private String title;
     private String contents;
 
+    public void update(Question updatedQuestion) {
+        this.title = updatedQuestion.title;
+        this.contents = updatedQuestion.contents;
+    }
+
     public long getId() {
         return id;
     }
@@ -43,10 +48,5 @@ public class Question {
 
     public void setContents(String contents) {
         this.contents = contents;
-    }
-
-    public void update(Question updatedQuestion) {
-        this.title = updatedQuestion.title;
-        this.contents = updatedQuestion.contents;
     }
 }

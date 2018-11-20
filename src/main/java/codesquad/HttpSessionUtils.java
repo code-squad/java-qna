@@ -12,9 +12,9 @@ public class HttpSessionUtils {
     }
 
     public static User getUserFromSession(HttpSession session) {
-//        if(!isLoggedInUser(session)) {
-//            return null;
-//        }
+        if(!isLoggedInUser(session)) {
+            return null;
+        }
 
         return (User)session.getAttribute(USER_SESSION_KEY);
     }

@@ -1,9 +1,6 @@
 package codesquad.user;
 
-import codesquad.question.Question;
-
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 public class User {
@@ -24,31 +21,16 @@ public class User {
         this.email = updated.email;
     }
 
-    //시간관계상 널체크무시
-    //todo null체크
-    public boolean matchPassword(String password) {
-        if(password == null) {
-            return false;
-        }
-
-        return this.password.equals(password);
+    public boolean isMatchId(long id) {
+        return this.id == id;
     }
 
-    public boolean matchPassword(User other) {
-//        if(other == null) {
-//            return false;
-//        }
-
-        return this.password.equals(other.password);
-    }
-
-//    todo : get메소드 사용안하기 가능?
     public boolean isMatchName(String name) {
         return this.name.equals(name);
     }
 
-    public boolean isMatchId(long id) {
-        return this.id == id;
+    public boolean isMatchPassword(String password) {
+        return this.password.equals(password);
     }
 
     public long getId() {

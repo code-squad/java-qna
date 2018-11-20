@@ -5,6 +5,7 @@ import codesquad.user.User;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -16,6 +17,10 @@ public class Question {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     private User writer;
+
+    @OneToMany(mappedBy = "question")
+    @OrderBy("id ASC")
+    private List<Answer> answers;
 
     @Column(nullable = false)
     private String title;
@@ -71,6 +76,18 @@ public class Question {
             return "";
         }
         return timer.format(DateTimeFormatter.ofPattern("YYYY.MM.dd HH:mm:ss"));
+    }
+
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
+    }
+
+    public Integer getAnswerCount() {
+        return answers.size();
     }
 
     @Override

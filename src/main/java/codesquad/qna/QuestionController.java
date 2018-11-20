@@ -21,7 +21,7 @@ public class QuestionController {
             return "user/login";
         }
         User loginUser = HttpSessionUtils.getUserFormSession(session);
-        if(loginUser != null){
+        if (loginUser != null) {
             return "qna/form";
         }
         return "user/login";
@@ -61,7 +61,7 @@ public class QuestionController {
         }
         User loginUser = HttpSessionUtils.getUserFormSession(session);
         Question question = questionRepository.findById(id).orElse(null);
-        if(question.isSameWriter(loginUser)){
+        if (question.isSameWriter(loginUser)) {
             model.addAttribute("modifyForm", question);
             return "qna/modifyForm";
         }
@@ -73,9 +73,10 @@ public class QuestionController {
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "user/login";
         }
+
         User loginUser = HttpSessionUtils.getUserFormSession(session);
         Question question = questionRepository.findById(id).orElse(null);
-        if(question.isSameWriter(loginUser)) {
+        if (question.isSameWriter(loginUser)) {
             questionRepository.delete(question);
             return "redirect:/";
         }

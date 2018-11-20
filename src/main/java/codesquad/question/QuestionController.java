@@ -1,5 +1,6 @@
 package codesquad.question;
 
+import codesquad.HttpSessionUtils;
 import codesquad.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,35 +27,39 @@ public class QuestionController {
         return "index";
     }
 
+    //질문하기 버튼 (로그인:질문지 폼으로 / 비로그인:로그인 폼으로)
     @GetMapping("/form")
     public String questionForm(HttpSession session) {
-        if(session.getAttribute("loginUser") != null) {
+        if(HttpSessionUtils.isLoggedInUser(session)) {
             System.out.println(session);
             return "qna/form";
         }
+
         return "redirect:/user/login";
     }
 
+    //질문 상세보기 버튼
     @GetMapping("/{id}")
     public String show(Model model, @PathVariable long id) {
         model.addAttribute("question", questionRepository.findById(id).orElse(null));
         return "/qna/show";
     }
 
-    //인자3개인데 꼭 필요한 인자들인가? 메서드가 한가지일만 하는가?
     @GetMapping("/{id}/form")
-    public String check(Model model, HttpSession session, @PathVariable long id) {
+    public String updateForm(@PathVariable long id, Model model, HttpSession session) {
+        if(!HttpSessionUtils.isLoggedInUser(session)) {
+            return "/user/login";
+        }
+
+        User loggedInUser = HttpSessionUtils.getUserFromSession(session);
         Question question = questionRepository.findById(id).orElse(null);
-        User loginUser = (User)session.getAttribute("loginUser");
-
-
         model.addAttribute("question", question);
 
-        //아이디 일치확인 리팩토링
-        if(loginUser != null && question.getWriter().equals(loginUser.getName())) {
-            return "/qna/update_form";
+        if(!loggedInUser.isMatchName(question.getWriter())) {
+            return "/qna/update_failed";
         }
-        return "/qna/update_failed";
+
+        return "/qna/update_form";
     }
 
     @PutMapping("/{id}")
@@ -67,15 +72,20 @@ public class QuestionController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable long id, HttpSession session) {
-        Question question = questionRepository.findById(id).orElse(null);
-        User loginUser = (User)session.getAttribute("loginUser");
-
-        //아이디 일치확인 리팩토링
-        if(loginUser != null && question.getWriter().equals(loginUser.getName())) {
-            questionRepository.delete(question);
-            return "redirect:/questions";
+    public String delete(@PathVariable long id, Model model, HttpSession session) {
+        if(!HttpSessionUtils.isLoggedInUser(session)) {
+            return "/user/login";
         }
-        return "/user/login";
+
+        User loggedInUser = HttpSessionUtils.getUserFromSession(session);
+        Question question = questionRepository.findById(id).orElse(null);
+        model.addAttribute(question);
+
+        if(!loggedInUser.isMatchName(question.getWriter())) {
+            return "/qna/update_failed";
+        }
+
+        questionRepository.delete(question);
+        return "redirect:/questions";
     }
 }

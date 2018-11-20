@@ -43,8 +43,8 @@ public class User {
     }
 
 //    todo : get메소드 사용안하기 가능?
-    public boolean matchQuestionWriter(Question question) {
-        return this.userId.equals(question.getWriter());
+    public boolean isMatchName(String name) {
+        return this.name.equals(name);
     }
 
     public boolean isMatchId(long id) {

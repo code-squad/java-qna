@@ -1,5 +1,7 @@
 package codesquad.user;
 
+import codesquad.question.Question;
+
 import javax.persistence.*;
 
 @Entity
@@ -30,8 +32,9 @@ public class User {
         return this.password.equals(other.password);
     }
 
-    public boolean matchId(User other) {
-        return this.id == other.id;
+//    todo : get메소드 사용안하기 가능?
+    public boolean matchQuestionWriter(Question question) {
+        return this.userId.equals(question.getWriter());
     }
 
     public long getId() {

@@ -45,4 +45,8 @@ public class Question {
         this.contents = contents;
     }
 
+    public void update(Question updatedQuestion) {
+        this.title = updatedQuestion.title;
+        this.contents = updatedQuestion.contents;
+    }
 }

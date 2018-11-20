@@ -4,10 +4,7 @@ import codesquad.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -24,7 +21,7 @@ public class QuestionController {
     }
 
     @GetMapping("")
-    public String list(Model model, HttpSession session) {
+    public String list(Model model) {
         model.addAttribute("questions", questionRepository.findAll());
         return "index";
     }
@@ -42,5 +39,18 @@ public class QuestionController {
             return "qna/form";
         }
         return "redirect:/user/login";
+    }
+
+    @PutMapping("/{id}")
+    public String updateQuestion(Question updatedQuestion, HttpSession session, @PathVariable long id) {
+        Question question = questionRepository.findById(id).orElse(null);
+
+        User loginUser = (User)session.getAttribute("loginUser");
+        if(loginUser != null && loginUser.matchQuestionWriter(updatedQuestion)) {
+            question.update(updatedQuestion);
+            questionRepository.save(question);
+            return "redirect:/questions/{id}";
+        }
+        return "/qna/update_failed";
     }
 }

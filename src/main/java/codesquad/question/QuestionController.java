@@ -1,13 +1,13 @@
 package codesquad.question;
 
+import codesquad.config.HttpSessionUtils;
+import codesquad.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -17,19 +17,59 @@ public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
 
+    @GetMapping("")
+    public String question(HttpSession session) {
+        if(!HttpSessionUtils.isLogin(session)) return "redirect:/user/login";
+        return "qna/form";
+    }
+
     @PostMapping("")
-    public String post(Question question) {
+    public String post(Question question, HttpSession session) {
+        if(!HttpSessionUtils.isLogin(session)) {
+            return "redirect:/user/login";
+        }
+        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+
+        question.setWriter(sessionedUser.getName());
         question.setTime(getTodayDate());
+        question.setId(sessionedUser.getId());
         questionRepository.save(question);
         return "redirect:/";
     }
 
+    @GetMapping("/{index}/form")
+    public String showUpdateForm(@PathVariable Long index, Model model, HttpSession session) {
+        if(!HttpSessionUtils.isLogin(session)) return "redirect:/user/login";
+        Question question = getQuestion(index);
+
+        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+        if(!question.matchId(sessionedUser.getId())) {
+            return "qna/error";
+        };
+        model.addAttribute("question", question);
+        return "qna/updateForm";
+    }
+
+    @PutMapping("/{index}")
+    public String updateQuestion(@PathVariable Long index, Question updatedQuestion, HttpSession session) {
+        if(!HttpSessionUtils.isLogin(session)) return "redirect:/user/login";
+        Question question = getQuestion(index);
+
+        question.update(updatedQuestion);
+        questionRepository.save(question);
+        return "redirect:/questions/" + index;
+    }
+
     @GetMapping("/{index}")
     public String detail(@PathVariable Long index, Model model) throws QuestionNotFoundException {
-        Question question = questionRepository.findById(index).
-                orElseThrow(() -> new QuestionNotFoundException("해당 질문을 찾을 수 없습니다."));
+        Question question = getQuestion(index);
         model.addAttribute("question", question);
         return "qna/show";
+    }
+
+    private Question getQuestion(@PathVariable Long index) {
+        return questionRepository.findById(index).
+                    orElseThrow(() -> new QuestionNotFoundException("해당 질문을 찾을 수 없습니다."));
     }
 
     private String getTodayDate() {

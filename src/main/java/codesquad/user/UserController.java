@@ -44,12 +44,12 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public String updateUserInfo(@PathVariable Long id, User userUpdated, HttpSession session) throws UserNotFoundException {
+    public String updateUserInfo(@PathVariable Long id, User updatedUser, HttpSession session) throws UserNotFoundException {
         String validResult = sessionValidCheck(id, session);
         if (validResult != null) return validResult;
 
         User user = getUser(id);
-        user.update(userUpdated);
+        user.update(updatedUser);
         userRepository.save(user);
         return "redirect:/users";
     }

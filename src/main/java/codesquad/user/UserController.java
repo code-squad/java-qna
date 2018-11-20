@@ -1,5 +1,6 @@
 package codesquad.user;
 
+import codesquad.HttpSessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
+
+import static codesquad.HttpSessionUtils.USER_SESSION_KEY;
 
 @Controller
 @RequestMapping("/users")
@@ -40,58 +43,71 @@ public class UserController {
         return "/user/profile";
     }
 
+    @GetMapping("/{id}/form")
+    public String updateForm(@PathVariable long id, Model model, HttpSession session) {
+        if(!HttpSessionUtils.isLoggedInUser(session)) {
+            return "/user/login";
+        }
+
+        User loggedInUser = HttpSessionUtils.getUserFromSession(session);
+        if(!loggedInUser.isMatchId(id)) {
+            return "/error/access";
+        }
+
+        User user = userRepository.findById(id).orElse(null);
+        model.addAttribute("user", user);
+        return "/user/update_form";
+    }
+
+    @PutMapping("/{id}")
+    public String update(User updatedUser, HttpSession session) {
+        User loggedInUser = HttpSessionUtils.getUserFromSession(session);
+
+        if(!loggedInUser.matchPassword(updatedUser)) {
+            return "user/update_failed";
+        }
+
+        loggedInUser.update(updatedUser);
+        userRepository.save(loggedInUser);
+        return "redirect:/users/";
+    }
+
+    @PostMapping("/login")
+    public String login(String userId, String password, HttpSession session) {
+        Optional<User> maybeUser = userRepository.findByUserId(userId);
+
+        if(!maybeUser.isPresent()) {
+            System.out.println("아이디 불일치");
+            return "/user/login_failed";
+        }
+
+        if(!maybeUser.get().matchPassword(password)) {
+            System.out.println("비밀번호 불일치");
+            return "/user/login_failed";
+        }
+
+        System.out.println("로그인 성공");
+        session.setAttribute(USER_SESSION_KEY, maybeUser.get());
+
+        return "redirect:/";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.removeAttribute(USER_SESSION_KEY);
+        return "redirect:/";
+    }
+}
+
+//    MvcConfig에서 지정
+//    @GetMapping("/login")
+//    public String loginForm() {
+//        return "/user/login";
+//    }
+
 //    @GetMapping("/{id}")
 //    public ModelAndView show(@PathVariable long id) {
 //        ModelAndView mav = new ModelAndView("user/profile");
 //        mav.addObject("user", userRepository.findById(id).orElse(null));
 //        return mav;
 //    }
-
-    @GetMapping("/{id}/form")
-    public String updateProfile(Model model, @PathVariable long id) {
-        model.addAttribute("user", userRepository.findById(id).orElse(null));
-        return "/user/update_form";
-    }
-
-    //todo 로그인한 사용자가 자기 자신의 정보를 업데이트 할 때만 수정이 되도록
-
-//    @PutMapping("/{id}")
-//    public String updateUser(User updatedUser, @PathVariable long id) {
-//        User user = userRepository.findById(id).orElse(null);
-//        user.update(updatedUser);
-//        userRepository.save(user);
-//        return "redirect:/users";
-//    }
-
-    @PutMapping("/{id}")
-    public String updateUser(User updatedUser, HttpSession session) {
-        User loginUser = (User)session.getAttribute("loginUser");
-        if(loginUser != null && loginUser.matchPassword(updatedUser)) {
-            loginUser.update(updatedUser);
-            userRepository.save(loginUser);
-            return "redirect:/users/{id}";
-        }
-        return "/user/update_failed";
-    }
-
-    @PostMapping("/login")
-    public String login(String userId, String password, HttpSession session) {
-        Optional<User> maybeUser = userRepository.findByUserId(userId);
-        if(maybeUser.isPresent()) {
-            User user = maybeUser.get();
-            if(user.matchPassword(password)) {
-                //세션을 쓰자 HttpSession이용, 자동으로 담아서 클라이언트에 전달한다
-                //DB에 저장하는게 아니고 톰캣 서버상의 파일시스템에 저장한다.(설정 통해서 디비저장도 되긴함)
-                session.setAttribute("loginUser", user);
-                return "redirect:/";
-            }
-        }
-        return "/user/login_failed";
-    }
-
-    @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.removeAttribute("loginUser");
-        return "redirect:/";
-    }
-}

@@ -3,6 +3,7 @@ package codesquad.user;
 import codesquad.question.Question;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class User {
@@ -10,7 +11,8 @@ public class User {
     @Id
     private long id;
 
-    @Column(nullable = false, length = 20)
+    //TODO : 이미 가입 된 유저아이디를 기입하고 회원가입 시에 재입력하도록(현재는 SQL 에러페이지)
+    @Column(nullable = false, length = 20, unique = true)
     private String userId;
     private String password;
     private String name;
@@ -25,16 +27,28 @@ public class User {
     //시간관계상 널체크무시
     //todo null체크
     public boolean matchPassword(String password) {
+        if(password == null) {
+            return false;
+        }
+
         return this.password.equals(password);
     }
 
     public boolean matchPassword(User other) {
+//        if(other == null) {
+//            return false;
+//        }
+
         return this.password.equals(other.password);
     }
 
 //    todo : get메소드 사용안하기 가능?
     public boolean matchQuestionWriter(Question question) {
         return this.userId.equals(question.getWriter());
+    }
+
+    public boolean isMatchId(long id) {
+        return this.id == id;
     }
 
     public long getId() {

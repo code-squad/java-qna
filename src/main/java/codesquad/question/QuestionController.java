@@ -51,7 +51,7 @@ public class QuestionController {
         model.addAttribute("question", question);
 
         //아이디 일치확인 리팩토링
-        if(loginUser != null && question.getWriter().equals(loginUser.getUserId())) {
+        if(loginUser != null && question.getWriter().equals(loginUser.getName())) {
             return "/qna/update_form";
         }
         return "/qna/update_failed";
@@ -72,7 +72,7 @@ public class QuestionController {
         User loginUser = (User)session.getAttribute("loginUser");
 
         //아이디 일치확인 리팩토링
-        if(loginUser != null && question.getWriter().equals(loginUser.getUserId())) {
+        if(loginUser != null && question.getWriter().equals(loginUser.getName())) {
             questionRepository.delete(question);
             return "redirect:/questions";
         }

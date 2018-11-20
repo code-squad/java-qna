@@ -26,12 +26,6 @@ public class QuestionController {
         return "index";
     }
 
-    @GetMapping("/{id}")
-    public String eachQuestion(Model model, @PathVariable long id) {
-        model.addAttribute("question", questionRepository.findById(id).orElse(null));
-        return "/qna/show";
-    }
-
     @GetMapping("/form")
     public String questionForm(HttpSession session) {
         if(session.getAttribute("loginUser") != null) {
@@ -41,16 +35,35 @@ public class QuestionController {
         return "redirect:/user/login";
     }
 
-    @PutMapping("/{id}")
-    public String updateQuestion(Question updatedQuestion, HttpSession session, @PathVariable long id) {
-        Question question = questionRepository.findById(id).orElse(null);
+    @GetMapping("/{id}")
+    public String show(Model model, @PathVariable long id) {
+        model.addAttribute("question", questionRepository.findById(id).orElse(null));
+        return "/qna/show";
+    }
 
+    //인자3개인데 꼭 필요한 인자들인가? 메서드가 한가지일만 하는가?
+    @GetMapping("/{id}/form")
+    public String check(Model model, HttpSession session, @PathVariable long id) {
+        Question question = questionRepository.findById(id).orElse(null);
         User loginUser = (User)session.getAttribute("loginUser");
-        if(loginUser != null && loginUser.matchQuestionWriter(updatedQuestion)) {
-            question.update(updatedQuestion);
-            questionRepository.save(question);
-            return "redirect:/questions/{id}";
+
+
+        model.addAttribute("question", question);
+
+        //아이디 일치확인 리팩토링
+        if(loginUser != null && question.getWriter().equals(loginUser.getUserId())) {
+            return "/qna/update_form";
         }
         return "/qna/update_failed";
     }
+
+    @PutMapping("/{id}")
+    public String update(@PathVariable long id, Question updatedQuestion) {
+        Question question = questionRepository.findById(id).orElse(null);
+        question.update(updatedQuestion);
+        questionRepository.save(question);
+
+        return "redirect:/questions/{id}";
+    }
+
 }

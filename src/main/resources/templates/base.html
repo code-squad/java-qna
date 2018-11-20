@@ -42,7 +42,12 @@
                         <li><a href="https://facebook.com" target="_blank">Facebook</a></li>
                     </ul>
                 </li>
-                <li><a href="/user/updateForm"><i class="glyphicon glyphicon-user"></i></a></li>
+                {{^loginUser}}
+                <li><a href="/user/login"><i class="glyphicon glyphicon-user"></i></a></li>
+                {{/loginUser}}
+                {{#loginUser}}
+                <li><a href="/users/{{id}}"><i class="glyphicon glyphicon-user"></i></a></li>
+                {{/loginUser}}
             </ul>
         </div>
     </div>
@@ -73,7 +78,7 @@
                 {{/loginUser}}
                 {{#loginUser}}
                 <li><a href="/users/logout" role="button">로그아웃</a></li>
-                <li><a href="/user/updateFrom" role="button">개인정보수정</a></li>
+                <li><a href="/users/{{id}}/form" role="button">개인정보수정</a></li>
                 {{/loginUser}}
             </ul>
         </div>

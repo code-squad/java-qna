@@ -60,12 +60,19 @@ public class User {
 
     public void update(User modifiedUser) {
         this.name = modifiedUser.name;
-        this.password = modifiedUser.password;
         this.email = modifiedUser.email;
     }
 
     public boolean matchPassword(String password) {
         return this.password.equals(password);
+    }
+
+    public boolean matchPassword(User user) {
+        return user.matchPassword(this.password);
+    }
+
+    public boolean matchId(long id){
+        return this.id == id;
     }
 
     @Override

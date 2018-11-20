@@ -32,26 +32,34 @@ public class UserController {
     }
 
     @GetMapping("/{id}/form")
-    public String showModifyView(@PathVariable long id, Model model){
-        model.addAttribute("user", userRepository.findById(id).get());
+    public String showModifyView(@PathVariable long id, HttpSession session){
+        // did not login.
+        Object temp = session.getAttribute("loginUser");
+        if(temp == null) return "redirect:/user/login";
+
+        // request to change another user info.
+        User theUser = (User)temp;
+        if(!theUser.matchId(id)) return "user/list_failed";
+
         return "user/updateForm";
     }
 
     @PutMapping("/{id}")
-    public String updateUser(@PathVariable long id, User modifiedUser){
-        User user = userRepository.findById(id).get();
+    public String updateUser(@PathVariable long id, User modifiedUser, HttpSession session){
+        // did not login.
+        Object temp = session.getAttribute("loginUser");
+        if(temp == null) return "redirect:/user/login";
+
+        // request to change another user info.
+        User theUser = (User)temp;
+        if(!theUser.matchId(id)) return "user/list_failed";
+
+        User user = userRepository.findById(id).orElse(null);
+        if(!user.matchPassword(modifiedUser)) return "user/updateForm_failed";
         user.update(modifiedUser);
         userRepository.save(user);
         return "redirect:/users";
     }
-
-
-    /*@PutMapping("/{id}")
-    public String updateUserTest(User user, HttpSession session){
-        User loginUser = (User)session.getAttribute("loginUser");
-        return null
-    }*/
-
 
     @PostMapping("/login")
     public String login(String userId, String password, HttpSession session){

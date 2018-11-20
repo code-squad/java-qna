@@ -54,7 +54,6 @@ public class QuestionController {
     public String updateQuestion(@PathVariable Long index, Question updatedQuestion, HttpSession session) {
         if(!HttpSessionUtils.isLogin(session)) return "redirect:/user/login";
         Question question = getQuestion(index);
-
         question.update(updatedQuestion);
         questionRepository.save(question);
         return "redirect:/questions/" + index;
@@ -65,6 +64,17 @@ public class QuestionController {
         Question question = getQuestion(index);
         model.addAttribute("question", question);
         return "qna/show";
+    }
+
+    @DeleteMapping("/{index}")
+    public String delete(@PathVariable Long index, HttpSession session) {
+        Question question = getQuestion(index);
+        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+        if(HttpSessionUtils.isLogin(session) && question.matchId(sessionedUser.getId())) {
+            questionRepository.delete(question);
+            return "redirect:/";
+        }
+        return "redirect:/user/login";
     }
 
     private Question getQuestion(@PathVariable Long index) {

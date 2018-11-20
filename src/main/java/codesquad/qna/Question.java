@@ -1,5 +1,7 @@
 package codesquad.qna;
 
+import codesquad.user.User;
+
 import javax.persistence.*;
 
 @Entity
@@ -8,10 +10,21 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false, length = 20)
-    private String userId;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_user"))
+    private User user;
+
     private String title;
     private String contents;
+
+    public Question() {
+    }
+
+    public Question(User user, String title, String contents) {
+        this.user = user;
+        this.title = title;
+        this.contents = contents;
+    }
 
     public long getId() {
         return id;
@@ -21,12 +34,12 @@ public class Question {
         this.id = id;
     }
 
-    public String getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getTitle() {

@@ -80,7 +80,7 @@
                 <!--session에 loginUser가 있으면-->
                 {{#loginUser}}
                 <li><a href="/users/logout" role="button">로그아웃</a></li>
-                <li><a href="#" role="button">개인정보수정</a></li>
+                <li><a href="/users/{{id}}/form" role="button">개인정보수정</a></li>
                 {{/loginUser}}
             </ul>
         </div>

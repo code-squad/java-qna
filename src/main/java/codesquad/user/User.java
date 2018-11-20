@@ -10,7 +10,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, unique = true)
     private String userId;
     private String password;
     private String name;
@@ -85,6 +85,10 @@ public class User {
 
     public boolean matchPassword(String password) {
         return this.password.equals(password);
+    }
+
+    public boolean matchPassword(User otherUser) {
+        return this.password.equals(otherUser.password);
     }
 
     public boolean matchId(long id) {

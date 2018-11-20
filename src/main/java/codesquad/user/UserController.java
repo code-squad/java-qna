@@ -1,5 +1,6 @@
 package codesquad.user;
 
+import codesquad.HttpSessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +14,11 @@ import java.util.Optional;
 public class UserController {
     @Autowired
     private UserRepository userRepository;
+
+    @GetMapping("/form")
+    public String userForm() {
+        return "user/form";
+    }
 
     @PostMapping("")
     public String create(User user) {
@@ -38,7 +44,7 @@ public class UserController {
         if (mybeUser.isPresent()) {
             User user = mybeUser.get();
             if (user.matchPassword(password)) {
-                session.setAttribute("loginUser",user);
+                session.setAttribute(HttpSessionUtils.USER_SESSION_KEY,user);
                 return "redirect:/";
             }
         }
@@ -47,41 +53,32 @@ public class UserController {
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.removeAttribute("loginUser");
+        session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
         return "redirect:/";
     }
-
-/*    @GetMapping("/{writer}")
-    public String profileOfuserid(Model model, @PathVariable String writer) {
-        System.out.println("프로필 유저아이디로 찾기");
-        User user = userRepository.findByUserId(writer);
-        model.addAttribute("user", user);
-        return "user/profile";
-    }*/
 
     @GetMapping("/{id}/form")
     public String updateForm(HttpSession session, Model model, @PathVariable long id) {
         System.out.println("수정");
-        User loginUser =(User) session.getAttribute("loginUser");
-        if (loginUser.matchId(id)) {
-            User user = userRepository.findById(id).orElse(null);
-            model.addAttribute("user", user);
-            return "user/updateForm";
+        User loginUser =(User) session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
+        if (!loginUser.matchId(id)) {
+            model.addAttribute("users", userRepository.findAll());
+            return "/user/list_failed";
         }
-        model.addAttribute("users", userRepository.findAll());
-        return "/user/list_failed";
+        model.addAttribute("user", loginUser);
+        return "user/updateForm";
     }
 
     @PutMapping("/{id}")
-    public String update(HttpSession session, User newUser) {
+    public String update(HttpSession session, User updatedUser) {
         System.out.println("업데이트");
-        User loginUser =(User) session.getAttribute("loginUser");
-        if (loginUser.matchPassword(newUser.getPassword())) {
-            loginUser.update(newUser);
-            userRepository.save(loginUser);
-            return "redirect:/users";
+        User loginUser =(User) session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
+        if (!loginUser.matchPassword(updatedUser)) {
+            return "/user/update_failed";
         }
-        return "/user/update_failed";
+        loginUser.update(updatedUser);
+        userRepository.save(loginUser);
+        return "redirect:/users";
     }
 
     @GetMapping("/{id}")
@@ -92,4 +89,11 @@ public class UserController {
         return "user/profile";
     }
 
+    /*    @GetMapping("/{writer}")
+    public String profileOfuserid(Model model, @PathVariable String writer) {
+        System.out.println("프로필 유저아이디로 찾기");
+        User user = userRepository.findByUserId(writer);
+        model.addAttribute("user", user);
+        return "user/profile";
+    }*/
 }

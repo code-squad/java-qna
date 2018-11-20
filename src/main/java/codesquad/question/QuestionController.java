@@ -2,11 +2,14 @@
 
 package codesquad.question;
 
+import codesquad.HttpSessionUtils;
 import codesquad.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
 
 
 @Controller
@@ -16,10 +19,26 @@ public class QuestionController {
     private QuestionRepository questionRepository;
 
 
+    @GetMapping("/form")
+    public String questions(HttpSession session,Model model) {
+        System.out.println("질문하기");
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "redirect:/users/login";
+        }
+        model.addAttribute("User",HttpSessionUtils.getUserFormSession(session));
+        return "/qna/form";
+    }
+
     @PostMapping("")
-    public String questions(Question question) {
-        System.out.println("AAA");
-        questionRepository.save(question);
+    public String questions(String title,String contents, HttpSession session) {
+        System.out.println("qna 인스턴스 생성");
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "redirect:/users/login";
+        }
+        User sessionUser = HttpSessionUtils.getUserFormSession(session);
+        Question newQuestion = new Question(sessionUser.getUserId(),title,contents);
+
+        questionRepository.save(newQuestion);
         return "redirect:/";
     }
 

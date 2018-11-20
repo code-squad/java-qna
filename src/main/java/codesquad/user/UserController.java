@@ -5,6 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
+
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -41,5 +43,28 @@ public class UserController {
         user.update(modifiedUser);
         userRepository.save(user);
         return "redirect:/users";
+    }
+
+
+    /*@PutMapping("/{id}")
+    public String updateUserTest(User user, HttpSession session){
+        User loginUser = (User)session.getAttribute("loginUser");
+        return null
+    }*/
+
+
+    @PostMapping("/login")
+    public String login(String userId, String password, HttpSession session){
+        User user = userRepository.findByUserId(userId).orElse(null);
+        if(user == null || !user.matchPassword(password)) return "user/login_failed";
+
+        session.setAttribute("loginUser", user);
+        return "redirect:/";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session){
+        session.removeAttribute("loginUser");
+        return "redirect:/";
     }
 }

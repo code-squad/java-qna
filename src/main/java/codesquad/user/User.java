@@ -58,11 +58,14 @@ public class User {
         return userId.equals(this.userId);
     }
 
-
     public void update(User modifiedUser) {
         this.name = modifiedUser.name;
         this.password = modifiedUser.password;
         this.email = modifiedUser.email;
+    }
+
+    public boolean matchPassword(String password) {
+        return this.password.equals(password);
     }
 
     @Override
@@ -75,5 +78,4 @@ public class User {
                 ", email='" + email + '\'' +
                 '}';
     }
-
 }

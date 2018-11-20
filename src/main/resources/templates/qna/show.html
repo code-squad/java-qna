@@ -26,10 +26,10 @@
                   <div class="article-util">
                       <ul class="article-util-list">
                           <li>
-                              <a class="link-modify-article" href="/questions/{{id}}/form">수정</a>
+                              <a class="link-modify-article" href="/questions/{{questionId}}/form">수정</a>
                           </li>
                           <li>
-                              <form class="form-delete" action="/questions/{{id}}" method="POST">
+                              <form class="form-delete" action="/questions/{{questionId}}" method="POST">
                                   <input type="hidden" name="writer" value="{{writer}}">
                                   <input type="hidden" name="_method" value="DELETE">
                                   <button class="link-delete-article" type="submit">삭제</button>
@@ -77,7 +77,7 @@
                               </div>
                           </article>
                           {{/answers}}
-                          <form class="submit-write" method="post" action="/questions/{{id}}/answers">
+                          <form class="submit-write" method="post" action="/questions/{{questionId}}/answers">
                               <div class="form-group" style="padding:14px;">
                                   <textarea class="form-control" placeholder="Update your status" name="contents"></textarea>
                               </div>

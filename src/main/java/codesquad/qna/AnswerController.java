@@ -34,7 +34,7 @@ public class AnswerController {
         return String.format("redirect:/questions/%d", questionId);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public String delete(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "user/login";

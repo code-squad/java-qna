@@ -66,4 +66,16 @@ public class QuestionController {
         return "redirect:/questions/{id}";
     }
 
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable long id, HttpSession session) {
+        Question question = questionRepository.findById(id).orElse(null);
+        User loginUser = (User)session.getAttribute("loginUser");
+
+        //아이디 일치확인 리팩토링
+        if(loginUser != null && question.getWriter().equals(loginUser.getUserId())) {
+            questionRepository.delete(question);
+            return "redirect:/questions";
+        }
+        return "/user/login";
+    }
 }

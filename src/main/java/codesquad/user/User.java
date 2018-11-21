@@ -40,6 +40,10 @@ public class User {
         return this.id.equals(id);
     }
 
+    public boolean matchUser(User sessionedUser) {
+        return this.id.equals(sessionedUser.id);
+    }
+
     public String getUserId() {
         return userId;
     }

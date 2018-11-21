@@ -69,8 +69,8 @@ public class Question {
         this.user = user;
     }
 
-    public boolean matchUser(Long id) {
-        return user.getId().equals(id);
+    public boolean matchUser(User sessionedUser) {
+        return user.matchUser(sessionedUser);
     }
 
     public LocalDateTime getTime() {
@@ -81,9 +81,13 @@ public class Question {
         this.time = time;
     }
 
-    public void update(Question updatedQuestion) {
-        this.title = updatedQuestion.title;
-        this.contents = updatedQuestion.contents;
+    public boolean update(Question updatedQuestion, User sessionedUser) {
+        if(matchUser(sessionedUser)) {
+            this.title = updatedQuestion.title;
+            this.contents = updatedQuestion.contents;
+            return true;
+        }
+        return false;
     }
 
     @Override

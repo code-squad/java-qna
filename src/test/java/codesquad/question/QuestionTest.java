@@ -26,7 +26,7 @@ public class QuestionTest {
 
     @Test
     public void matchId() {
-        assertThat(question1.matchUser(user.getId())).isEqualTo(true);
+        assertThat(question1.matchUser(user)).isEqualTo(true);
     }
 
     @Test

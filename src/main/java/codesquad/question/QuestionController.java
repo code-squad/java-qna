@@ -4,7 +4,6 @@ import codesquad.config.HttpSessionUtils;
 import codesquad.question.answer.Answer;
 import codesquad.question.answer.AnswerRepository;
 import codesquad.user.User;
-import codesquad.utils.Time;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,7 +43,7 @@ public class QuestionController {
         if(!HttpSessionUtils.isLogin(session)) return "redirect:/user/login";
         Question question = getQuestion(id);
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-        if(!question.matchUser(sessionedUser.getId())) {
+        if(!question.matchUser(sessionedUser)) {
             return "qna/error";
         };
         model.addAttribute("question", question);
@@ -55,7 +54,8 @@ public class QuestionController {
     public String updateQuestion(@PathVariable Long id, Question updatedQuestion, HttpSession session) {
         if(!HttpSessionUtils.isLogin(session)) return "redirect:/user/login";
         Question question = getQuestion(id);
-        question.update(updatedQuestion);
+        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+        if(!question.update(updatedQuestion, sessionedUser)) return "qna/error";
         questionRepository.save(question);
         return "redirect:/questions/" + id;
     }
@@ -74,7 +74,7 @@ public class QuestionController {
     public String delete(@PathVariable Long id, HttpSession session) {
         Question question = getQuestion(id);
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-        if(HttpSessionUtils.isLogin(session) && question.matchUser(sessionedUser.getId())) {
+        if(HttpSessionUtils.isLogin(session) && question.matchUser(sessionedUser)) {
             questionRepository.delete(question);
             return "redirect:/";
         }

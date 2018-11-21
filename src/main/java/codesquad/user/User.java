@@ -1,21 +1,39 @@
 package codesquad.user;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import java.util.Objects;
 import java.util.Optional;
 
+@Entity
 public class User {
-    static public User DEFAULT = new User("default", "password", "홍길동", "default@default");
+    public static final String SESSION_NAME = "loginUser";
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String userId;
     private String password;
     private String name;
     private String email;
 
-    public User(){}
+    public User() {
+    }
 
     public User(String userId, String password, String name, String email) {
         this.userId = userId;
         this.password = password;
         this.name = name;
         this.email = email;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUserId() {
@@ -60,10 +78,45 @@ public class User {
                 '}';
     }
 
-    public boolean checkPassword(User user) {
-        if (user == null) {
-            return false;
+    public boolean checkPassword(Optional<User> user) {
+        if (user.isPresent() && this.password != null) {
+            return password.equals(user.get().password);
         }
-        return password.equals(user.password);
+        return false;
+    }
+
+    public boolean checkId(String userId) {
+        return this.userId.equals(userId);
+    }
+
+    public void fillEmpty(User loginUser) {
+        if (this.id == null) {
+            this.id = loginUser.id;
+        }
+        if (this.userId == null) {
+            this.userId = loginUser.userId;
+        }
+        if (this.email == null) {
+            this.email = loginUser.email;
+        }
+        if (this.name == null) {
+            this.name = loginUser.name;
+        }
+        if (this.password == null) {
+            this.password = loginUser.password;
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, userId, password, name, email);
     }
 }

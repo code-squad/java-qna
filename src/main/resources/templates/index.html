@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="kr">
-{{> head}}
-<body>
-{{> nav}}
-{{> subnav}}
-
+{{#partial "content" }}
 <div class="container" id="main">
    <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
       <div class="panel panel-default qna-list">
@@ -19,7 +13,7 @@
                           <div class="auth-info">
                               <i class="icon-add-comment"></i>
                               <span class="time">2016-01-15 18:47</span>
-                              <a href="./user/profile.html" class="author">{{writer}}</a>
+                              <a href="./user/profile.html" class="author">{{writer.userId}}</a>
                           </div>
                           <div class="reply" title="댓글">
                               <i class="icon-reply"></i>
@@ -80,11 +74,11 @@
                 </ul>
               </div>
               <div class="col-md-3 qna-write">
-                  <a href="./qna/form.html" class="btn btn-primary pull-right" role="button">질문하기</a>
               </div>
           </div>
-        </div>
-    </div>
+      </div>
+   </div>
+    <a href="./questions/form" class="btn btn-primary pull-right" role="button">질문하기</a>
 </div>
 
 <!--login modal-->
@@ -163,7 +157,6 @@
   </div>
 </div>
 -->
+{{/partial}}
 
-{{> script_reference}}
-</body>
-</html>
+{{> base}}

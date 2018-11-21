@@ -5,6 +5,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
+import java.util.Optional;
+
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -18,7 +21,7 @@ public class UserController {
         System.out.println(user.getId());
         userRepository.save(user);
 
-        return "redirect:/users";
+        return "redirect:/";
     }
 
     @GetMapping("")
@@ -34,16 +37,46 @@ public class UserController {
     }
 
     @GetMapping("/{id}/form")
-    public String updateForm(@PathVariable Long id, Model model) {
-        model.addAttribute("user", userRepository.findById(id).orElse(null));
-        return "user/updateForm";
+    public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
+        User loginUser = (User)session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
+        if(loginUser.matchId(id)) {
+            model.addAttribute("user", userRepository.findById(id).orElse(null));
+            return "user/updateForm";
+        }
+        return "user/matchUserId_failed";
     }
 
     @PutMapping("/{id}")
-    public String modifyForm(User modifyUser) {
-        User user = userRepository.findById(modifyUser.getId()).orElse(null);
-        user.update(modifyUser);
-        userRepository.save(user);
-        return "redirect:/users";
+    public String modifyForm(User modifyUser, HttpSession session) {
+        User loginUser = (User)session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
+        if(loginUser.update(modifyUser)) {
+            userRepository.save(loginUser);
+            return "redirect:/users";
+        }
+        return "user/update_failed";
+    }
+
+    @PostMapping("/login")
+    public String login(String userId, String password, Model model, HttpSession session) {
+        User user = userRepository.findByUserId(userId)
+                .filter(u -> u.matchPassword(password))
+                .orElse(null);
+
+        return addSessionUser(user, session);
+    }
+
+    public String addSessionUser(User user, HttpSession session) {
+        if (user != null) {
+            session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
+            return "redirect:/";
+        }
+        return "user/login_failed";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+
+        session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
+        return "redirect:/";
     }
 }

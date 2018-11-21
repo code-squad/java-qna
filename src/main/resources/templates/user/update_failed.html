@@ -3,6 +3,7 @@
    <div class="col-md-6 col-md-offset-3">
       <div class="panel panel-default content-main">
           {{#user}}
+          <div class="alert alert-danger" role="alert">비밀번호가 틀립니다. 다시 입력 해주세요.</div>
           <form name="question" method="post" action="/users/{{id}}">
               <input type="hidden" name="_method" value="put" />
               <div class="form-group">

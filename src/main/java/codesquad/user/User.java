@@ -9,7 +9,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, unique = true)
     private String userId;
     @Column(nullable = false, length = 20)
     private String password;
@@ -73,17 +73,33 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(userId, user.userId);
+        return Objects.equals(id, user.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId);
+        return Objects.hash(id);
     }
 
-    public void update(User modifyUser) {
-        this.name = modifyUser.getName();
-        this.password = modifyUser.getPassword();
-        this.email = modifyUser.getEmail();
+    public boolean update(User modifyUser) {
+        if(modifyUser.matchPassword(password)) {
+            this.name = modifyUser.getName();
+            this.password = modifyUser.getPassword();
+            this.email = modifyUser.getEmail();
+            return true;
+        }
+        return false;
+    }
+
+    public boolean matchPassword(String password) {
+        return this.password.equals(password);
+    }
+
+    public boolean matchId(Long id) {
+        return this.id.equals(id);
+    }
+
+    public boolean matchUserId(String userId) {
+        return this.userId.equals(userId);
     }
 }

@@ -1,12 +1,13 @@
 package codesquad.qna;
 
+import codesquad.user.HttpSessionUtils;
+import codesquad.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/questions")
@@ -15,21 +16,74 @@ public class QuestionController {
     private QuestionRepository questionRepository;
 
     @GetMapping("/form")
-    public String qnaForm() {
-        return "qna/form";
+    public String form(HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "user/login";
+        }
+        User loginUser = HttpSessionUtils.getUserFormSession(session);
+        if (loginUser != null) {
+            return "qna/form";
+        }
+        return "user/login";
     }
 
-    @PostMapping("/create")
-    public String create(Question question) {
+    @PostMapping("")
+    public String create(String title, String contents, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "user/login";
+        }
         System.out.println("excute create!");
-//        getQuestionRepository().create(question);
-        questionRepository.save(question);
+        User loginUser = HttpSessionUtils.getUserFormSession(session);
+        Question newQuestion = new Question(loginUser, title, contents);
+        questionRepository.save(newQuestion);
         return "redirect:/";
     }
 
-    @GetMapping("/{index}")
-    public String showpage(@PathVariable Long index, Model model) {
-        model.addAttribute("list", questionRepository.findById(index).orElse(null));
+    @GetMapping("/{id}")
+    public String showpage(@PathVariable Long id, Model model) {
+        model.addAttribute("question", getQuestionFromId(id));
         return "qna/show";
+    }
+
+    @PutMapping("/{id}")
+    public String modify(Question modifyQuestion, @PathVariable Long id, Model model, HttpSession session) {
+        Question question = getQuestionFromId(id);
+        User loginUser = HttpSessionUtils.getUserFormSession(session);
+        question.update(modifyQuestion, loginUser);
+        questionRepository.save(question);
+        model.addAttribute("list", question);
+        return String.format("redirect:/questions/%d", id);
+    }
+
+    @GetMapping("/{id}/form")
+    public String modifyForm(HttpSession session, Model model, @PathVariable Long id) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "user/login";
+        }
+        User loginUser = HttpSessionUtils.getUserFormSession(session);
+        Question question = getQuestionFromId(id);
+        if (question.isSameWriter(loginUser)) {
+            model.addAttribute("modifyForm", question);
+            return "qna/modifyForm";
+        }
+        return "qna/modify_failed";
+    }
+
+    private Question getQuestionFromId(Long id) {
+        return questionRepository.findById(id).orElse(null);
+    }
+
+    @DeleteMapping("/{id}")
+    public String delete(String writer, @PathVariable Long id, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "user/login";
+        }
+        User loginUser = HttpSessionUtils.getUserFormSession(session);
+        Question question = getQuestionFromId(id);
+        if (question.isSameWriter(loginUser)) {
+            questionRepository.delete(question);
+            return "redirect:/";
+        }
+        return "qna/delete_failed";
     }
 }

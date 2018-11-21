@@ -8,7 +8,7 @@ import javax.persistence.*;
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long index;
+    private Long id;
     @Column(nullable = false, length = 20)
     private String writer;
     @Column(nullable = false, length = 40)
@@ -23,8 +23,8 @@ public class Question {
     Question() {
     }
 
-    public Question(Long index, String writer, String title, String contents, User user, String time) {
-        this.index = index;
+    public Question(Long id, String writer, String title, String contents, User user, String time) {
+        this.id = id;
         this.writer = writer;
         this.title = title;
         this.contents = contents;
@@ -32,12 +32,12 @@ public class Question {
         this.time = time;
     }
 
-    public Long getIndex() {
-        return index;
+    public Long getId() {
+        return id;
     }
 
-    public void setIndex(Long index) {
-        this.index = index;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getWriter() {
@@ -72,8 +72,8 @@ public class Question {
         this.user = user;
     }
 
-    public boolean matchUser(User sessionedUser) {
-        return user.equals(sessionedUser);
+    public boolean matchUser(Long id) {
+        return user.getId().equals(id);
     }
 
     public String getTime() {
@@ -92,7 +92,7 @@ public class Question {
     @Override
     public String toString() {
         return "Question{" +
-                "index=" + index +
+                "id=" + id +
                 ", writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +

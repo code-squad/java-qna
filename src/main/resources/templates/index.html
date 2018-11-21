@@ -1,15 +1,14 @@
 {{#partial "content"}}
-<div class="container" index="main">
+<div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
         <div class="panel panel-default qna-list">
             {{#questions}}
-            {{#loginUser}}
             <ul class="list">
                 <li>
                     <div class="wrap">
                         <div class="main">
                             <strong class="subject">
-                                <a href="/questions/{{index}}">{{title}}</a>
+                                <a href="/questions/{{id}}">{{title}}</a>
                             </strong>
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
@@ -24,7 +23,6 @@
                     </div>
                 </li>
             </ul>
-            {{/loginUser}}
             {{/questions}}
             <div class="row">
                 <div class="col-md-3"></div>
@@ -49,7 +47,7 @@
 
 <!--login modal-->
 <!--
-<div index="loginModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+<div id="loginModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog">
   <div class="modal-content">
       <div class="modal-header">
@@ -84,7 +82,7 @@
 
 <!--register modal-->
 <!--
-<div index="registerModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+<div id="registerModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog">
   <div class="modal-content">
       <div class="modal-header">
@@ -95,19 +93,19 @@
           <form class="form col-md-12 center-block">
               <div class="form-group">
                   <label for="userId">사용자 아이디</label>
-                  <input class="form-control" index="userId" name="userId" placeholder="User ID">
+                  <input class="form-control" id="userId" name="userId" placeholder="User ID">
               </div>
               <div class="form-group">
                   <label for="password">비밀번호</label>
-                  <input type="password" class="form-control" index="password" name="password" placeholder="Password">
+                  <input type="password" class="form-control" id="password" name="password" placeholder="Password">
               </div>
               <div class="form-group">
                   <label for="name">이름</label>
-                  <input class="form-control" index="name" name="name" placeholder="Name">
+                  <input class="form-control" id="name" name="name" placeholder="Name">
               </div>
               <div class="form-group">
                   <label for="email">이메일</label>
-                  <input type="email" class="form-control" index="email" name="email" placeholder="Email">
+                  <input type="email" class="form-control" id="email" name="email" placeholder="Email">
               </div>
             <div class="form-group">
               <button class="btn btn-primary btn-lg btn-block">회원가입</button>

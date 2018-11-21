@@ -1,5 +1,7 @@
 package codesquad.user;
 
+import codesquad.qna.Question;
+
 import javax.persistence.*;
 
 @Entity         //데이터 베이스 맵핑할때 알아서 꺼내줌
@@ -77,7 +79,25 @@ public class User {
                 '}';
     }
 
-    public boolean matchPassword(String password) {
-        return this.password.equals(password);
+    public boolean matchPassword(String newPassword) {
+        if (newPassword == null) {
+            return false;
+        }
+        return this.password.equals(newPassword);
     }
+
+    public boolean matchId(Long newId) {
+        if (newId == null) {
+            return false;
+        }
+        return this.id == newId;
+    }
+
+    public boolean matchUserId(String writer) {
+        if (writer.equals(null)) {
+            return false;
+        }
+        return this.userId.equals(writer);
+    }
+
 }

@@ -7,13 +7,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class MainController {
+public class HomeController {
     @Autowired
-    QuestionRepository questionRepository;
+    private QuestionRepository questionRepository;
 
     @GetMapping("/")
-    public String list(Model model){
+    public String home(Model model) {
         model.addAttribute("questions", questionRepository.findAll());
-        return "/index";
+        return "index";
     }
 }

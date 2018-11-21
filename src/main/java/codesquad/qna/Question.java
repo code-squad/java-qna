@@ -1,18 +1,38 @@
 package codesquad.qna;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 public class Question {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(nullable = false, length = 20)
     private String writer;
+    @Column(nullable = false, length = 100)
     private String title;
+    @Column(nullable = false, length = 10000)
     private String contents;
+
+    public Question() {
+    }
+
+    public Question (String writer, String title, String contents) {
+        this.writer = writer;
+        this.title = title;
+        this.contents = contents;
+    }
+
+    public Question update(Question question) {
+        this.title = question.title;
+        this.contents = question.contents;
+        return this;
+    }
 
     public Long getId() {
         return id;
@@ -49,7 +69,7 @@ public class Question {
     @Override
     public String toString() {
         return "Question{" +
-                "id='" + id + '\'' +
+                "id=" + id +
                 ", writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +

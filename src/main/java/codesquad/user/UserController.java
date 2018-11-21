@@ -52,15 +52,33 @@ public class UserController {
     }
 
     @GetMapping("/{id}/form")
-    public String updateForm(Model model, @PathVariable Long id) {
+    public String updateForm(Model model, @PathVariable Long id, HttpSession session) {
+        User loginUser = (User)session.getAttribute("loginUser");
+        if (loginUser == null) {
+            return "redirect:/user/login";
+        }
+
+        if (!id.equals(loginUser.getId())) {
+            throw new IllegalStateException("You can't edit the other user's information");
+        }
+
         model.addAttribute("user", userRepository.findById(id).orElse(null));
         return "/user/updateForm";
     }
 
     @PutMapping("/{id}")
-    public String update(User modifiedUser, HttpSession session) {
+    public String update(@PathVariable Long id, User updatedUser, HttpSession session) {
         User loginUser = (User)session.getAttribute("loginUser");
-        loginUser.update(modifiedUser);
+
+        if (loginUser == null) {
+            return "redirect:/user/login";
+        }
+
+        if (!id.equals(loginUser.getId())) {
+            throw new IllegalStateException("You can't edit the other user's information");
+        }
+
+        loginUser.update(updatedUser);
         userRepository.save(loginUser);
         return "redirect:/users";
     }

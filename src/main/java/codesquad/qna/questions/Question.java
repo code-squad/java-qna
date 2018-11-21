@@ -1,8 +1,13 @@
-package codesquad.qna;
+package codesquad.qna.questions;
+
+import codesquad.qna.answers.Answer;
+import codesquad.user.User;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 @Entity
 public class Question {
@@ -10,31 +15,38 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 10)
-    private String writer;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey)
+    private User writer;
 
     @Column(length = 30)
     private String title;
 
     @Column(length = 10000)
     private String contents;
+
+    @Column(length = 20)
     private String curDate;
+
+    @OneToMany(mappedBy = "question")
+    private List<Answer> answers;
 
     public Question() {
         Date cur = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         this.curDate = sdf.format(cur);
+        this.answers = new ArrayList<>();
     }
 
     public String getCurDate() {
         return curDate;
     }
 
-    public String getWriter() {
+    public User getWriter() {
         return writer;
     }
 
-    public void setWriter(String writer) {
+    public void setWriter(User writer) {
         this.writer = writer;
     }
 
@@ -62,17 +74,25 @@ public class Question {
         this.id = id;
     }
 
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
+    }
+
+    public int getAnswersCount(){
+        return answers.size();
+    }
+
     public void update(Question otherQuestion){
         this.title = otherQuestion.title;
         this.contents = otherQuestion.contents;
         this.curDate = otherQuestion.curDate;
     }
 
-    public boolean matchWriter(Question otherQuestion){
-        return otherQuestion.matchWriter(this.writer);
-    }
-
-    public boolean matchWriter(String otherWriter){
-        return this.writer.equals(otherWriter);
+    public boolean matchWriter(User user){
+        return this.writer.equals(user);
     }
 }

@@ -33,7 +33,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/form")
-    public String showModifyUser(@PathVariable long id, HttpSession session){
+    public String showUpdateView(@PathVariable long id, HttpSession session){
         if(!HttpSessionUtils.existLoginUserFromSession(session)) return "redirect:/user/login";
         if(!HttpSessionUtils.getLoginUserFromSession(session).matchId(id)) return "user/list_failed";
         return "user/updateForm";

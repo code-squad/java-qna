@@ -1,4 +1,4 @@
-package codesquad.qna;
+package codesquad.qna.questions;
 
 import org.springframework.data.repository.CrudRepository;
 

@@ -1,4 +1,4 @@
-package codesquad.qna;
+package codesquad.qna.questions;
 
 import codesquad.util.HttpSessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping("/qna")
-public class QnaController {
+@RequestMapping("/questions")
+public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
 
@@ -39,24 +39,35 @@ public class QnaController {
     }
 
     @GetMapping("/{id}/form")
-    public String showModifyQuestion(@PathVariable long id, Model model, HttpSession session){
+    public String showUpdateView(@PathVariable long id, Model model, HttpSession session){
         if(!HttpSessionUtils.existLoginUserFromSession(session)) return "redirect:/user/login";
         Question question = questionRepository.findById(id).orElse(null);
         model.addAttribute("question", question);
-        if(!HttpSessionUtils.getLoginUserFromSession(session).matchName(question.getWriter())) return "qna/show_failed";
+        if(!question.matchWriter(HttpSessionUtils.getLoginUserFromSession(session))) return "qna/show_failed";
         return "qna/updateForm";
     }
 
     @PutMapping("/{id}")
-    public String update(@PathVariable long id, Question modifiedQuestion, HttpSession session){
+    public String updateQuestion(@PathVariable long id, Question modifiedQuestion, HttpSession session){
         if(!HttpSessionUtils.existLoginUserFromSession(session)) return "redirect:/user/login";
         Question question = questionRepository.findById(id).orElse(null);
-        if(!HttpSessionUtils.getLoginUserFromSession(session).matchName(question.getWriter())) return "qna/update_failed";
+        if(!question.matchWriter(HttpSessionUtils.getLoginUserFromSession(session))) return "qna/modify_failed";
 
         question.update(modifiedQuestion);
         questionRepository.save(question);
         return "redirect:/";
     }
+
+    @DeleteMapping("/{id}")
+    public String deleteQuestion(@PathVariable long id, HttpSession session){
+        if(!HttpSessionUtils.existLoginUserFromSession(session)) return "redirect:/user/login";
+        Question question = questionRepository.findById(id).orElse(null);
+        if(!question.matchWriter(HttpSessionUtils.getLoginUserFromSession(session))) return "qna/modify_failed";
+        questionRepository.delete(question);
+        return "redirect:/";
+    }
+
+
 
 
 }

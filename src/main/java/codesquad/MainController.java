@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class MainController {
     @GetMapping("/")
     public String start(){
-        return "forward:/qna";
+        return "forward:/questions";
     }
 }
     

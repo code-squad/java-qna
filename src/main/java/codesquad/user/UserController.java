@@ -27,8 +27,15 @@ public class UserController {
             User user = maybeUser.get();
             if (user.matchPassword(password)) {
                 session.setAttribute("loginUser", user);
+                return "redirect:/";
             }
         }
+        return "redirect:/user/login";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.removeAttribute("loginUser");
         return "redirect:/";
     }
 

@@ -1,6 +1,12 @@
 package codesquad.user;
 
+import codesquad.answer.Answer;
+import codesquad.exception.UserIdNotMatchException;
+import codesquad.qna.Question;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class User {
@@ -8,11 +14,18 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, unique = true)
     private String userId;
+
     private String password;
     private String name;
     private String email;
+
+    @OneToMany(mappedBy = "user" ,cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<Question> questions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<Answer> answers = new ArrayList<>();
 
     public long getId() {
         return id;
@@ -54,15 +67,20 @@ public class User {
         this.email = email;
     }
 
-    public void update(User newUser) {
+    // domain
+    public void update(User newUser, Long id) {
+        if (!(this.id == id)) new UserIdNotMatchException("USER_ID IS NOT CORRECT");
         this.name = newUser.name;
         this.password = newUser.password;
         this.email = newUser.email;
     }
 
-    // domain
-    public Boolean isUserId(String userId) {
-        return this.userId.equals(userId);
+    public boolean matchId(User otherUser) {
+        return this.id == otherUser.id;
+    }
+
+    public boolean matchPassword(String password) {
+        return this.password.equals(password);
     }
 
     @Override

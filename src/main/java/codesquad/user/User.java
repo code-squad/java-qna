@@ -81,10 +81,14 @@ public class User {
         return Objects.hash(id);
     }
 
-    public void update(User modifyUser) {
-        this.name = modifyUser.getName();
-        this.password = modifyUser.getPassword();
-        this.email = modifyUser.getEmail();
+    public boolean update(User modifyUser) {
+        if(matchPassword(modifyUser.getPassword())) {
+            this.name = modifyUser.getName();
+            this.password = modifyUser.getPassword();
+            this.email = modifyUser.getEmail();
+            return true;
+        }
+        return false;
     }
 
     public boolean matchPassword(String password) {

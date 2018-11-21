@@ -1,8 +1,10 @@
 package codesquad.qna;
 
+import codesquad.user.HttpSessionUtils;
 import codesquad.user.User;
 
 import javax.persistence.*;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -90,6 +92,17 @@ public class Question {
         return answers.size();
     }
 
+    public void update(Question modify, HttpSession session) {
+        if (isSameWriter(HttpSessionUtils.getUserFormSession(session))){
+            this.title = modify.title;
+            this.contents = modify.contents;
+        }
+    }
+
+    public boolean isSameWriter(User loginUser) {
+        return this.writer.equals(loginUser);
+    }
+
     @Override
     public String toString() {
         return "Question{" +
@@ -97,15 +110,6 @@ public class Question {
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
                 '}';
-    }
-
-    public void update(Question modify) {
-        this.title = modify.title;
-        this.contents = modify.contents;
-    }
-
-    public boolean isSameWriter(User loginUser) {
-        return this.writer.equals(loginUser);
     }
 
     @Override

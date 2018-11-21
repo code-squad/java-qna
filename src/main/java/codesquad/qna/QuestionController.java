@@ -41,14 +41,14 @@ public class QuestionController {
 
     @GetMapping("/{id}")
     public String showpage(@PathVariable Long id, Model model) {
-        model.addAttribute("question", questionRepository.findById(id).orElse(null));
+        model.addAttribute("question", getQuestionFromId(id));
         return "qna/show";
     }
 
     @PutMapping("/{id}")
-    public String modify(Question modifyQuestion, @PathVariable Long id, Model model) {
-        Question question = questionRepository.findById(id).orElse(null);
-        question.update(modifyQuestion);
+    public String modify(Question modifyQuestion, @PathVariable Long id, Model model, HttpSession session) {
+        Question question = getQuestionFromId(id);
+        question.update(modifyQuestion, session);
         questionRepository.save(question);
         model.addAttribute("list", question);
         return String.format("redirect:/questions/%d", id);
@@ -60,7 +60,7 @@ public class QuestionController {
             return "user/login";
         }
         User loginUser = HttpSessionUtils.getUserFormSession(session);
-        Question question = questionRepository.findById(id).orElse(null);
+        Question question = getQuestionFromId(id);
         if (question.isSameWriter(loginUser)) {
             model.addAttribute("modifyForm", question);
             return "qna/modifyForm";
@@ -68,14 +68,17 @@ public class QuestionController {
         return "qna/modify_failed";
     }
 
+    private Question getQuestionFromId(Long id) {
+        return questionRepository.findById(id).orElse(null);
+    }
+
     @DeleteMapping("/{id}")
     public String delete(String writer, @PathVariable Long id, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "user/login";
         }
-
         User loginUser = HttpSessionUtils.getUserFormSession(session);
-        Question question = questionRepository.findById(id).orElse(null);
+        Question question = getQuestionFromId(id);
         if (question.isSameWriter(loginUser)) {
             questionRepository.delete(question);
             return "redirect:/";

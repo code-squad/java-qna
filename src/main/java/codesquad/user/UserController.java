@@ -49,8 +49,7 @@ public class UserController {
     @PutMapping("/{id}")
     public String modifyForm(User modifyUser, HttpSession session) {
         User loginUser = (User)session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
-        if(loginUser.matchPassword(modifyUser.getPassword())) {
-            loginUser.update(modifyUser);
+        if(loginUser.update(modifyUser)) {
             userRepository.save(loginUser);
             return "redirect:/users";
         }
@@ -58,15 +57,18 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(String userId, String password, HttpSession session) {
-        Optional<User> maybeUser = userRepository.findByUserId(userId);
-        if (maybeUser.isPresent()) {
-            User user = maybeUser.get();
-            if (user.matchPassword(password)) {
-                // 톰켓 서버상에 파일시스템으로 저장
-                session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
-                return "redirect:/";
-            }
+    public String login(String userId, String password, Model model, HttpSession session) {
+        User user = userRepository.findByUserId(userId)
+                .filter(u -> u.matchPassword(password))
+                .orElse(null);
+
+        return addSessionUser(user, session);
+    }
+
+    public String addSessionUser(User user, HttpSession session) {
+        if (user != null) {
+            session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
+            return "redirect:/";
         }
         return "user/login_failed";
     }

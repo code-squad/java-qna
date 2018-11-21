@@ -41,15 +41,16 @@
                         </ul>
                     </div>
                 </article>
+                {{/question}}
 
 
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
-                        <p class="qna-comment-count"><strong>2</strong>개의 의견</p>
+                        <p class="qna-comment-count"><strong>{{answerSize}}</strong>개의 의견</p>
                         <div class="qna-comment-slipp-articles">
 
-                            <!--각각의 코멘트-->
                             {{#answers}}
+                            <!--각각의 코멘트-->
                             <article class="article" id="answer-1405">
                                 <div class="article-header">
                                     <div class="article-header-thumb">
@@ -70,10 +71,10 @@
                                     <ul class="article-util-list">
                                         <li>
                                             <a class="link-modify-article"
-                                               href="/questions/413/answers/1405/form">수정</a>
+                                               href="/users/{{#user}}{{id}}{{/user}}">수정</a>
                                         </li>
                                         <li>
-                                            <form class="delete-answer-form" action="/questions/413/answers/1405"
+                                            <form class="delete-answer-form" action="/questions/{{#question}}{{id}}{{/question}}/answers/{{id}}"
                                                   method="POST">
                                                 <input type="hidden" name="_method" value="DELETE">
                                                 <button type="submit" class="delete-answer-button">삭제</button>
@@ -85,14 +86,13 @@
                             {{/answers}}
 
                             <!--답변 다는 공간-->
-                            <form class="submit-write" method="post" action="/questions/{{id}}/answers/{{#loginUser}}{{id}}{{/loginUser}}">
+                            <form class="submit-write" method="post" action="/questions/{{#question}}{{id}}{{/question}}/answers/{{#loginUser}}{{id}}{{/loginUser}}">
                                 <div class="form-group" style="padding:14px;">
                                     <textarea class="form-control" id="comment" name="comment" placeholder="Update your status"></textarea>
                                 </div>
                                 <button class="btn btn-success pull-right" type="submit">답변하기</button>
                                 <div class="clearfix"/>
                             </form>
-                            {{/question}}
 
                         </div>
                     </div>

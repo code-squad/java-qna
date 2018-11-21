@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 @RequestMapping("/questions")
@@ -63,8 +64,10 @@ public class QuestionController {
     @GetMapping("/{id}")
     public String detail(@PathVariable Long id, Model model) {
         Question question = getQuestion(id);
+        List<Answer> answers = answerRepository.findByQuestionId(id);
         model.addAttribute("question", question);
-        model.addAttribute("answers", answerRepository.findByQuestionId(id));
+        model.addAttribute("answers", answers);
+        model.addAttribute("answerSize", answers.size());
         return "qna/show";
     }
 

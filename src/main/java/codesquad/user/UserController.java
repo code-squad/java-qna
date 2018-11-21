@@ -1,5 +1,6 @@
 package codesquad.user;
 
+import codesquad.HttpSessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,7 +27,7 @@ public class UserController {
         if (maybeUser.isPresent()) {
             User user = maybeUser.get();
             if (user.matchPassword(password)) {
-                session.setAttribute("loginUser", user);
+                session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
                 return "redirect:/";
             }
         }
@@ -35,7 +36,7 @@ public class UserController {
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.removeAttribute("loginUser");
+        session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
         return "redirect:/";
     }
 
@@ -53,14 +54,8 @@ public class UserController {
 
     @GetMapping("/{id}/form")
     public String updateForm(Model model, @PathVariable Long id, HttpSession session) {
-        User loginUser = (User)session.getAttribute("loginUser");
-        if (loginUser == null) {
-            return "redirect:/user/login";
-        }
-
-        if (!id.equals(loginUser.getId())) {
-            throw new IllegalStateException("You can't edit the other user's information");
-        }
+        checkLoginUser(session);
+        checkUserSelf(id, session);
 
         model.addAttribute("user", userRepository.findById(id).orElse(null));
         return "/user/updateForm";
@@ -68,18 +63,24 @@ public class UserController {
 
     @PutMapping("/{id}")
     public String update(@PathVariable Long id, User updatedUser, HttpSession session) {
-        User loginUser = (User)session.getAttribute("loginUser");
-
-        if (loginUser == null) {
-            return "redirect:/user/login";
-        }
-
-        if (!id.equals(loginUser.getId())) {
-            throw new IllegalStateException("You can't edit the other user's information");
-        }
+        checkLoginUser(session);
+        User loginUser = checkUserSelf(id, session);
 
         loginUser.update(updatedUser);
         userRepository.save(loginUser);
         return "redirect:/users";
+    }
+
+    private User checkUserSelf(@PathVariable Long id, HttpSession session) {
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        if (!loginUser.matchId(id)) {
+            throw new IllegalStateException("You can't edit the other user's info");
+        }
+        return loginUser;
+    }
+
+    private String checkLoginUser(HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) return "redirect:/user/login";
+        return null;
     }
 }

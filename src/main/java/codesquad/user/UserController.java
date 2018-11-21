@@ -16,9 +16,8 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;  //db
 
-    @PostMapping("/create")
+    @PostMapping("")
     public String create(User user) {
-        System.out.println("execute create!!");
         System.out.println("user : " + user);
         userRepository.save(user);
         return "redirect:/user/list";
@@ -26,14 +25,12 @@ public class UserController {
 
     @GetMapping("/list")
     public String userList(Model model) {
-        System.out.println("userList execute complete!");
         model.addAttribute("users", userRepository.findAll());
         return "/user/list";
     }
 
     @GetMapping("/profile/{pId}")
     public String userProfile(Model model, @PathVariable long pId) {
-        System.out.println("profile complete!");
         model.addAttribute("user", userRepository.findById(pId).get());
         System.out.println(model);
         return "/user/profile";
@@ -46,17 +43,24 @@ public class UserController {
 
     @GetMapping("/{pId}/form")
     private String userUpdateForm(Model model, @PathVariable long pId, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "redirect:/user/list";
+        }
         User loginUser = HttpSessionUtils.getUserFromSession(session);
         if (loginUser.matchPId(pId)) {
             model.addAttribute("user", userRepository.findById(pId).get());
             return "/user/updateForm";
         }
-        throw new IllegalStateException("You can't update other user's information.");
+        return "redirect:/user/list";
     }
 
     @PutMapping("/{pId}/update")
-    private String userUpdate(User updatedUser, @PathVariable long pId) {
+    private String userUpdate(Model model, User updatedUser, @PathVariable long pId) {
         User user = userRepository.findById(pId).orElseThrow(() -> new IllegalArgumentException());
+        model.addAttribute("user", user);
+        if (!user.matchPassword(updatedUser.getPassword())) {
+            return "/user/update_failed";
+        }
         user.update(updatedUser);
         userRepository.save(user);
         return "redirect:/user/list";
@@ -72,15 +76,14 @@ public class UserController {
         Optional<User> maybeUser = userRepository.findByUserId(userId);
         if (!maybeUser.isPresent()) {
             System.out.println("Wrong Id!");
-            return "/user/login";
+            return "/user/login_failed";
         }
         User user = maybeUser.get();
         if (!user.matchPassword(password)) {
             System.out.println("Wrong Password!");
-            return "/user/login";
+            return "/user/login_failed";
         }
         session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
-        System.out.println("login complete");
         return "redirect:/";
     }
 

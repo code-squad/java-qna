@@ -13,8 +13,8 @@ public class Question {
     @Column(nullable = false)
     private String writer;
     private String title;
+    @Column(columnDefinition = "TEXT")
     private String contents;
-    private int index;
     private String date;
 
     public Question(){
@@ -33,14 +33,6 @@ public class Question {
 
     public void setPId(long pId) {
         this.pId = pId;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
     }
 
     public String getWriter() {
@@ -67,4 +59,10 @@ public class Question {
     public void setContents(String contents) {
         this.contents = contents;
     }
+
+    public void update(Question updateQuestion) {
+        this.title = updateQuestion.title;
+        this.contents = updateQuestion.contents;
+    }
+
 }

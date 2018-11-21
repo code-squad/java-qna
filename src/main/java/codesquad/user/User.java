@@ -77,4 +77,8 @@ public class User {
     public boolean matchPId(long pId) {
         return this.pId == pId;
     }
+
+    public boolean matchUserId(String writer){
+        return this.userId.equals(writer);
+    }
 }

@@ -2,6 +2,8 @@ package codesquad.question;
 
 import org.springframework.data.repository.CrudRepository;
 
-public interface QuestionRepository extends CrudRepository<Question, Long> {
+import java.util.Optional;
 
+public interface QuestionRepository extends CrudRepository<Question, Long> {
+    Optional<Question> findByWriter(String userId);
 }

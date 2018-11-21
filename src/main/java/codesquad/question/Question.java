@@ -3,6 +3,8 @@ package codesquad.question;
 import codesquad.user.User;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 public class Question {
@@ -22,17 +24,17 @@ public class Question {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     private User user;
 
-    private String time;
+    private LocalDateTime time;
 
     Question() {
     }
 
-    public Question(Long id, String title, String contents, User user, String time) {
+    public Question(Long id, String title, String contents, User user) {
         this.id = id;
         this.title = title;
         this.contents = contents;
         this.user = user;
-        this.time = time;
+        this.time = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
     }
 
     public Long getId() {
@@ -71,11 +73,11 @@ public class Question {
         return user.getId().equals(id);
     }
 
-    public String getTime() {
+    public LocalDateTime getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(LocalDateTime time) {
         this.time = time;
     }
 

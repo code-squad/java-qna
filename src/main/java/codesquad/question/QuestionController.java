@@ -34,7 +34,6 @@ public class QuestionController {
         }
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
 
-        question.setTime(Time.getTodayDate());
         question.setUser(sessionedUser);
         questionRepository.save(question);
         return "redirect:/";

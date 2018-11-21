@@ -4,6 +4,12 @@ import codesquad.user.User;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class QuestionTest {
@@ -21,5 +27,17 @@ public class QuestionTest {
     @Test
     public void matchId() {
         assertThat(question1.matchUser(user.getId())).isEqualTo(true);
+    }
+
+    @Test
+    public void LocalDateTime() {
+        LocalDate date = LocalDate.now();
+        LocalTime time = LocalTime.now();
+        LocalDateTime localDateTime = LocalDateTime.now();
+        localDateTime.truncatedTo(ChronoUnit.MINUTES);
+
+        System.out.println("date : " + date);
+        System.out.println("time : " + time);
+        System.out.println("localDateTime : " + localDateTime.now().truncatedTo(ChronoUnit.MINUTES));
     }
 }

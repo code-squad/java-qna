@@ -7,16 +7,12 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(nullable=false, length=20)
     private String userId;
-
     @Column(nullable=false, length=12)
     private String password;
-
     @Column(nullable=false, length=12)
     private String name;
-
     @Column(nullable=false, length=50)
     private String email;
 
@@ -64,5 +60,9 @@ public class User {
         setPassword(modifiedUser.getPassword());
         setName(modifiedUser.getName());
         setEmail(modifiedUser.getEmail());
+    }
+
+    public boolean matchPassword(String password) {
+        return this.password.equals(password);
     }
 }

@@ -6,16 +6,22 @@ import javax.persistence.*;
 
 @Entity
 public class Question {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false, length = 40)
     private String title;
-    @Column(nullable = false, length = 10000)
+
+    @Lob
+    @Column(nullable = false)
     private String contents;
+
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     private User user;
+
     private String time;
 
     Question() {

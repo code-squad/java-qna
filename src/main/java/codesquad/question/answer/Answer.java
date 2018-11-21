@@ -26,8 +26,7 @@ public class Answer {
     Answer() {
     }
 
-    public Answer(Long id, Question question, User user, String time, String comment) {
-        this.id = id;
+    public Answer(Question question, User user, String time, String comment) {
         this.question = question;
         this.user = user;
         this.time = time;

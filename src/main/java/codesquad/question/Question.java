@@ -9,8 +9,6 @@ public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false, length = 20)
-    private String writer;
     @Column(nullable = false, length = 40)
     private String title;
     @Column(nullable = false, length = 10000)
@@ -23,9 +21,8 @@ public class Question {
     Question() {
     }
 
-    public Question(Long id, String writer, String title, String contents, User user, String time) {
+    public Question(Long id, String title, String contents, User user, String time) {
         this.id = id;
-        this.writer = writer;
         this.title = title;
         this.contents = contents;
         this.user = user;
@@ -38,14 +35,6 @@ public class Question {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getWriter() {
-        return writer;
-    }
-
-    public void setWriter(String writer) {
-        this.writer = writer;
     }
 
     public String getTitle() {
@@ -93,7 +82,6 @@ public class Question {
     public String toString() {
         return "Question{" +
                 "id=" + id +
-                ", writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
                 ", user='" + user + '\'' +

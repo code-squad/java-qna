@@ -14,8 +14,8 @@
                                  class="article-author-thumb" alt="">
                         </div>
                         <div class="article-header-text">
-                            <a href="/users/92/kimmunsu" class="article-author-name">{{writer}}</a>
-                            <a href="/questions/413" class="article-header-time" title="퍼머링크">
+                            <a href="/users/{{#user}}{{id}}{{/user}}" class="article-author-name">{{#user}}{{name}}{{/user}}</a>
+                            <a href="#" class="article-header-time" title="퍼머링크">
                                 {{time}}
                                 <i class="icon-link"></i>
                             </a>
@@ -41,7 +41,7 @@
                         </ul>
                     </div>
                 </article>
-                {{/question}}
+
 
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
@@ -49,6 +49,7 @@
                         <div class="qna-comment-slipp-articles">
 
                             <!--각각의 코멘트-->
+                            {{#answers}}
                             <article class="article" id="answer-1405">
                                 <div class="article-header">
                                     <div class="article-header-thumb">
@@ -56,14 +57,14 @@
                                              class="article-author-thumb" alt="">
                                     </div>
                                     <div class="article-header-text">
-                                        <a href="/users/1/자바지기" class="article-author-name">자바지기</a>
+                                        <a href="/users/{{#user}}{{id}}{{/user}}" class="article-author-name">{{#user}}{{name}}{{/user}}</a>
                                         <a href="#answer-1434" class="article-header-time" title="퍼머링크">
-                                            2016-01-12 14:06
+                                            {{time}}
                                         </a>
                                     </div>
                                 </div>
                                 <div class="article-doc comment-doc">
-                                    <p>이 글만으로는 원인 파악하기 힘들겠다. 소스 코드와 설정을 단순화해서 공유해 주면 같이 디버깅해줄 수도 있겠다.</p>
+                                    {{comment}}
                                 </div>
                                 <div class="article-util">
                                     <ul class="article-util-list">
@@ -81,15 +82,17 @@
                                     </ul>
                                 </div>
                             </article>
+                            {{/answers}}
 
                             <!--답변 다는 공간-->
-                            <form class="submit-write">
+                            <form class="submit-write" method="post" action="/questions/{{id}}/answers/{{#loginUser}}{{id}}{{/loginUser}}">
                                 <div class="form-group" style="padding:14px;">
-                                    <textarea class="form-control" placeholder="Update your status"></textarea>
+                                    <textarea class="form-control" id="comment" name="comment" placeholder="Update your status"></textarea>
                                 </div>
-                                <button class="btn btn-success pull-right" type="button">답변하기</button>
+                                <button class="btn btn-success pull-right" type="submit">답변하기</button>
                                 <div class="clearfix"/>
                             </form>
+                            {{/question}}
 
                         </div>
                     </div>

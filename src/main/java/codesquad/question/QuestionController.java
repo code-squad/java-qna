@@ -1,21 +1,24 @@
 package codesquad.question;
 
 import codesquad.config.HttpSessionUtils;
+import codesquad.question.answer.Answer;
+import codesquad.question.answer.AnswerRepository;
 import codesquad.user.User;
+import codesquad.utils.Time;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
+    @Autowired
+    private AnswerRepository answerRepository;
 
     @GetMapping("")
     public String question(HttpSession session) {
@@ -30,8 +33,7 @@ public class QuestionController {
         }
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
 
-        question.setWriter(sessionedUser.getName());
-        question.setTime(getTodayDate());
+        question.setTime(Time.getTodayDate());
         question.setUser(sessionedUser);
         questionRepository.save(question);
         return "redirect:/";
@@ -62,6 +64,7 @@ public class QuestionController {
     public String detail(@PathVariable Long id, Model model) {
         Question question = getQuestion(id);
         model.addAttribute("question", question);
+        model.addAttribute("answers", answerRepository.findByQuestionId(id));
         return "qna/show";
     }
 
@@ -80,12 +83,4 @@ public class QuestionController {
         return questionRepository.findById(id).
                     orElseThrow(() -> new QuestionNotFoundException("해당 질문을 찾을 수 없습니다."));
     }
-
-    private String getTodayDate() {
-        Date today = new Date();
-        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd ");
-        SimpleDateFormat time = new SimpleDateFormat("HH:mm");
-        return date.format(today) + time.format(today);
-    }
-
 }

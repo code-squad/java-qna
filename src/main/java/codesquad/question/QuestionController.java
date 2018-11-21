@@ -8,9 +8,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/question")
@@ -51,11 +48,7 @@ public class QuestionController {
     public String questionUpdateForm(Model model, @PathVariable long pId, HttpSession session) {
         Question question = questionRepository.findById(pId).get();
         model.addAttribute("question", question);
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            return "/qna/update_failed";
-        }
-        User loginUser = HttpSessionUtils.getUserFromSession(session);
-        if (!loginUser.matchUserId(question.getWriter())) {
+        if (!HttpSessionUtils.isValid(session, question)) {
             return "/qna/update_failed";
         }
         return "/qna/updateForm";
@@ -71,17 +64,12 @@ public class QuestionController {
 
     @DeleteMapping("/{pId}/delete")
     public String questionDelete(Model model, @PathVariable long pId, HttpSession session) {
-        model.addAttribute("question", questionRepository.findById(pId).get());
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            return "/qna/update_failed";
-        }
-        User loginUser = HttpSessionUtils.getUserFromSession(session);
         Question question = questionRepository.findById(pId).get();
-        if (!loginUser.matchUserId(question.getWriter())) {
+        model.addAttribute("question", question);
+        if (!HttpSessionUtils.isValid(session, question)) {
             return "/qna/update_failed";
         }
-        questionRepository.delete(questionRepository.findById(pId).get());
-        System.out.println("delete complete!");
+        questionRepository.delete(question);
         return "redirect:/";
     }
 }

@@ -17,7 +17,7 @@ public class Question {
     private String contents;
     private String date;
 
-    public Question(){
+    public Question() {
         Date now = new Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         this.date = simpleDateFormat.format(now);
@@ -60,9 +60,16 @@ public class Question {
         this.contents = contents;
     }
 
-    public void update(Question updateQuestion) {
+    void update(Question updateQuestion) {
         this.title = updateQuestion.title;
         this.contents = updateQuestion.contents;
     }
 
+    public boolean matchUserId(String userId) {
+        return this.writer.equals(userId);
+    }
+
+//    public boolean matchUserId(User user) {
+//        return user.matchWriter(this.writer);
+//    }
 }

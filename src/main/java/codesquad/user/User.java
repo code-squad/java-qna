@@ -64,21 +64,25 @@ public class User {
                 '}';
     }
 
-    public void update(User newUser) {
+    void update(User newUser) {
         this.password = newUser.password;
         this.name = newUser.name;
         this.email = newUser.email;
     }
 
-    public boolean matchPassword(String password) {
+    boolean matchPassword(String password) {
         return this.password.equals(password);
     }
 
-    public boolean matchPId(long pId) {
+    boolean matchPassword(User updatedUser){
+        return this.password.equals(updatedUser.password);
+    }
+
+    boolean matchPId(long pId) {
         return this.pId == pId;
     }
 
-    public boolean matchUserId(String writer){
-        return this.userId.equals(writer);
-    }
+//    public boolean matchWriter(String writer) {
+//        return this.userId.equals(writer);
+//    }
 }

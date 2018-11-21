@@ -32,7 +32,6 @@ public class UserController {
     @GetMapping("/profile/{pId}")
     public String userProfile(Model model, @PathVariable long pId) {
         model.addAttribute("user", userRepository.findById(pId).get());
-        System.out.println(model);
         return "/user/profile";
     }
 
@@ -58,7 +57,7 @@ public class UserController {
     private String userUpdate(Model model, User updatedUser, @PathVariable long pId) {
         User user = userRepository.findById(pId).orElseThrow(() -> new IllegalArgumentException());
         model.addAttribute("user", user);
-        if (!user.matchPassword(updatedUser.getPassword())) {
+        if (!user.matchPassword(updatedUser)) {
             return "/user/update_failed";
         }
         user.update(updatedUser);
@@ -92,14 +91,4 @@ public class UserController {
         session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
         return "redirect:/";
     }
-
-//    @PostMapping("/user/create")
-//    public String create(String userId , String password, String name, String email) {
-//        System.out.println("execute create!!");
-//        System.out.println("userId : " + userId);
-//        System.out.println("name : " + name);
-//        System.out.println("password : " + password);
-//        System.out.println("email : " + email);
-//        return "user/index";
-//    }
 }

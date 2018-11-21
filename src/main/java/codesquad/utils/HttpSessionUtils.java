@@ -1,13 +1,12 @@
 package codesquad.utils;
 
+import codesquad.question.Question;
 import codesquad.user.User;
 
 import javax.servlet.http.HttpSession;
 
 public class HttpSessionUtils {
     public static final String USER_SESSION_KEY = "loginUser";
-    public static final String QUESTION_UPDATE_VALUE = "form";
-    public static final String QUESTION_DELETE_VALUE = "update";
 
     public static boolean isLoginUser(HttpSession session) {
         Object loginUser = session.getAttribute(USER_SESSION_KEY);
@@ -18,23 +17,12 @@ public class HttpSessionUtils {
         return (User) session.getAttribute(USER_SESSION_KEY);
     }
 
-//    public static boolean isValid(String writer, HttpSession session, String kind) {
-//        if (QUESTION_UPDATE_VALUE.equals(kind)) {
-//            if (!isLoginUser(session)) throw new IllegalStateException("You can't update other user's question! Please Login!");
-//            User loginUser = HttpSessionUtils.getUserFromSession(session);
-//            return loginUser.matchUserId(writer);
-//        }
-//        if (QUESTION_DELETE_VALUE.equals(kind)) {
-//            if (!isLoginUser(session)) throw new IllegalStateException("You can't delete other user's question! Please Login!");
-//            User loginUser = HttpSessionUtils.getUserFromSession(session);
-//            return loginUser.matchUserId(writer);
-//        }
-//        return false;
-//    }
-
-//    public static boolean isPossibleQuestionDelete(long pId, HttpSession session) {
-//        if (!isLoginUser(session)) throw new IllegalStateException("You can't update other user's question!");
-//        User loginUser = HttpSessionUtils.getUserFromSession(session);
-//        return loginUser.matchPId(pId);
-//    }
+    public static boolean isValid(HttpSession session, Question question) {
+        if (!isLoginUser(session)) {
+            return false;
+        }
+        User loginUser = getUserFromSession(session);
+        return  question.matchUserId(loginUser.getUserId());
+//        return  question.matchUserId(loginUser);
+    }
 }

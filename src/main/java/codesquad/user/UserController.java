@@ -22,7 +22,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(String userId, String password, HttpSession session) { //인자로 User user를 받아도 되고, 인자가 얼마안되니 저렇게 해도됨.
+    public String login(String userId, String password, HttpSession session) {
         Optional<User> maybeUser = userRepository.findByUserId(userId);
         if (maybeUser.isPresent()) {
             User user = maybeUser.get();
@@ -47,13 +47,13 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public String profile(Model model, @PathVariable Long id) {
+    public String profile(@PathVariable Long id, Model model) {
         model.addAttribute("user", userRepository.findById(id).orElse(null));
         return "/user/profile";
     }
 
     @GetMapping("/{id}/form")
-    public String updateForm(Model model, @PathVariable Long id, HttpSession session) {
+    public String updateForm(@PathVariable Long id, Model model,  HttpSession session) {
         checkLoginUser(session);
         checkUserSelf(id, session);
 

@@ -56,10 +56,10 @@ public class User {
         this.email = email;
     }
 
-    public void update(User modifiedUser) {
-        setPassword(modifiedUser.getPassword());
-        setName(modifiedUser.getName());
-        setEmail(modifiedUser.getEmail());
+    public void update(User updatedUser) {
+        setPassword(updatedUser.getPassword());
+        setName(updatedUser.getName());
+        setEmail(updatedUser.getEmail());
     }
 
     public boolean matchPassword(String password) {
@@ -72,4 +72,8 @@ public class User {
         return this.id.equals(id);
     }
 
+    public boolean matchUserId(String userId) {
+        if (userId == null) return false;
+        return this.userId.equals(userId);
+    }
 }

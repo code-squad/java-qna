@@ -5,10 +5,7 @@ import codesquad.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -41,8 +38,41 @@ public class QuestionController {
     }
 
     @GetMapping("/{index}")
-    public String show(Model model, @PathVariable Long index) {
+    public String show(@PathVariable Long index, Model model) {
         model.addAttribute("question", questionRepository.findById(index).orElse(null));
         return "/qna/show";
+    }
+
+    @GetMapping("/{index}/form")
+    public String updateForm(@PathVariable Long index, Model model,  HttpSession session) {
+        checkLoginUser(session);
+        Question question = checkUserSelf(index, session);
+
+        model.addAttribute("question", question);
+        return "/qna/updateForm";
+    }
+
+    @PutMapping("/{index}")
+    public String update(@PathVariable Long index, Question updatedQuestion, HttpSession session) {
+        checkLoginUser(session);
+        Question question = checkUserSelf(index, session);
+
+        question.update(updatedQuestion);
+        questionRepository.save(question);
+        return "redirect:/questions/{id}";
+    }
+
+    private Question checkUserSelf(@PathVariable Long index, HttpSession session) {
+        Question question = questionRepository.findById(index).orElse(null);
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        if (!loginUser.matchUserId(question.getWriter())) {
+            throw new IllegalStateException("You can't edit the other user's question");
+        }
+        return question;
+    }
+
+    private String checkLoginUser(HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) return "redirect:/user/login";
+        return null;
     }
 }

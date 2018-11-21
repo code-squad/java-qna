@@ -92,8 +92,8 @@ public class Question {
         return answers.size();
     }
 
-    public void update(Question modify, HttpSession session) {
-        if (isSameWriter(HttpSessionUtils.getUserFormSession(session))){
+    public void update(Question modify, User loginUser) {
+        if (isSameWriter(loginUser)){
             this.title = modify.title;
             this.contents = modify.contents;
         }

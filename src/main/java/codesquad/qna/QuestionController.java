@@ -48,7 +48,8 @@ public class QuestionController {
     @PutMapping("/{id}")
     public String modify(Question modifyQuestion, @PathVariable Long id, Model model, HttpSession session) {
         Question question = getQuestionFromId(id);
-        question.update(modifyQuestion, session);
+        User loginUser = HttpSessionUtils.getUserFormSession(session);
+        question.update(modifyQuestion, loginUser);
         questionRepository.save(question);
         model.addAttribute("list", question);
         return String.format("redirect:/questions/%d", id);

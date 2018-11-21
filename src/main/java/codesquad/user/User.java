@@ -82,7 +82,7 @@ public class User {
     }
 
     public boolean update(User modifyUser) {
-        if(matchPassword(modifyUser.getPassword())) {
+        if(modifyUser.matchPassword(password)) {
             this.name = modifyUser.getName();
             this.password = modifyUser.getPassword();
             this.email = modifyUser.getEmail();

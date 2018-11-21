@@ -10,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -39,11 +38,9 @@ public class QuestionController {
 
     @GetMapping("/{id}")
     public String show(@PathVariable Long id, Model model) {
-        model.addAttribute("question", questionRepository.findById(id).orElseThrow(IllegalAccessError::new));
+        Question question = questionRepository.findById(id).orElseThrow(IllegalAccessError::new);
 
-        List<Answer> answers = Lists.newArrayList(answerRepository.findByQuestionId(id));
-        model.addAttribute("answers", answers);
-        model.addAttribute("answerCnt", answers.size());
+        model.addAttribute("question", question);
         return "qna/show";
     }
 

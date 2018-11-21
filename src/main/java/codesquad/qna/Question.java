@@ -1,9 +1,12 @@
 package codesquad.qna;
 
+import codesquad.answer.Answer;
 import codesquad.exception.UserIdNotMatchException;
 import codesquad.user.User;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Question {
@@ -17,8 +20,12 @@ public class Question {
 
     private String title;
 
-    @Column(nullable = false, length = 1000)
+    @Lob
+    @Column(nullable = false)
     private String contents;
+
+    @OneToMany(mappedBy = "question" ,cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Answer> answers = new ArrayList<>();
 
     public Question() {
     }
@@ -70,4 +77,15 @@ public class Question {
         this.contents = newQuestion.contents;
     }
 
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
+    }
+
+    public int getAnswersLength() {
+        return answers.size();
+    }
 }

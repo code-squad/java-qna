@@ -8,6 +8,11 @@ import javax.servlet.http.HttpSession;
 public class SessionUtil {
     public static final String USER_SESSION_KEY = "loginUser";
 
+    public static User setUserToSession(HttpSession session, User user) {
+        session.setAttribute(USER_SESSION_KEY, user);
+        return user;
+    }
+
     public static boolean isLoginUser(HttpSession session) {
         Object loginUser = session.getAttribute(USER_SESSION_KEY);
 

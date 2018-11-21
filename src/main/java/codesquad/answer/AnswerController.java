@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping("/questions/{question_id}/answers")
+@RequestMapping("/questions/{questionId}/answers")
 public class AnswerController {
 
     @Autowired
@@ -22,25 +22,22 @@ public class AnswerController {
     private QuestionRepository questionRepository;
 
     @PostMapping()
-    public String create(@PathVariable("question_id") Long question_id, String contents, HttpSession session) {
-
-        System.out.println("왔섭!!!");
+    public String create(@PathVariable("questionId") Long questionId, String contents, HttpSession session) {
         if(!SessionUtil.isLoginUser(session)) return "redirect:/users/login";
 
-
-        questionRepository.findById(question_id).map(question -> {
+        questionRepository.findById(questionId).map(question -> {
             Answer answer = new Answer(question, SessionUtil.getUserFromSesssion(session), contents);
             return answerRepository.save(answer);
         }).orElseThrow(QuestionIdNotMatchException::new);
 
-        return "redirect:/questions/" + question_id;
+        return "redirect:/questions/" + questionId;
     }
 
-    @DeleteMapping("/{answer_id}")
-    public String delete(@PathVariable("question_id") Long question_id, @PathVariable("answer_id") Long answer_id, HttpSession session) {
+    @DeleteMapping("/{answerId}")
+    public String delete(@PathVariable("questionId") Long question_id, @PathVariable("answerId") Long answerId, HttpSession session) {
         if(!questionRepository.existsById(question_id)) throw new QuestionIdNotMatchException("QUESTION_ID IS NOT CORRECT");
 
-        Answer answer = answerRepository.findById(answer_id).orElseThrow(AnswerIdNotMatchException::new);
+        Answer answer = answerRepository.findById(answerId).orElseThrow(AnswerIdNotMatchException::new);
         if(!SessionUtil.permissionCheck(session, answer.getUser())) return "redirect:/users/login";
         answerRepository.delete(answer);
         return  "redirect:/questions/" + question_id;

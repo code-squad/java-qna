@@ -31,6 +31,10 @@ public class Answer {
         this.contents = contents;
     }
 
+    public long getId() {
+        return id;
+    }
+
     public String getContents() {
         return contents;
     }

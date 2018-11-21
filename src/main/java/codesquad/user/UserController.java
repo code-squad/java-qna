@@ -7,7 +7,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/users")
@@ -46,15 +45,8 @@ public class UserController {
 
     @PostMapping("/signIn")
     public String signIn(String userId, String password, HttpSession session) {
-        Optional<User> maybeuser = userRepository.findByUserId(userId);
-
-        if (maybeuser.isPresent()) {
-            User user = maybeuser.get();
-            if (user.matchPassword(password)) {
-                session.setAttribute(SessionUtil.USER_SESSION_KEY, user);
-                return "redirect:/";
-            }
-        }
+        if (isSignInSuccess(userId, password, session))
+            return "redirect:/";
         return "redirect:/users/login";
     }
 
@@ -76,7 +68,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     public String update(@PathVariable Long id, User updateUser, HttpSession session) {
-        if (! SessionUtil.isLoginUser(session)) return "redirect:/users/login";
+        if (!SessionUtil.isLoginUser(session)) return "redirect:/users/login";
 
         User user = userRepository.findById(id).orElseThrow(IllegalAccessError::new);
         user.update(updateUser, id);
@@ -84,5 +76,16 @@ public class UserController {
         return "redirect:/users";
     }
 
+    private boolean isSignInSuccess(String userId, String password, HttpSession session) {
+        try {
+            userRepository.findByUserId(userId)
+                    .filter(user -> user.matchPassword(password))
+                    .map(user -> SessionUtil.setUserToSession(session, user))
+                    .orElseThrow(IllegalAccessError::new);
+        } catch (IllegalAccessError e) {
+            return false;
+        }
+        return true;
+    }
 
 }

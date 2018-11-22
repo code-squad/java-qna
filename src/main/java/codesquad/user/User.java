@@ -2,26 +2,26 @@ package codesquad.user;
 
 import javax.persistence.*;
 
-//ㄷㅔ이터 베이스에 데이터를 넣거나 꺼낼 때 자동으로 매핑해주느 역할
 @Entity
 public class User {
-
-    //프라이머리 키가 필요하다.
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // 자동으로 1씩 증가해서 유일한 값을 만들어 준다.
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column
+    @Column(nullable = false, length = 20, unique = true)
     private String userId;
+    @Column(nullable = false, length = 20)
     private String password;
+    @Column(nullable = false, length = 20)
     private String name;
+    @Column(nullable = false, length = 100)
     private String email;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -57,11 +57,27 @@ public class User {
         this.email = email;
     }
 
-    public void update(User newUesr) {
-        this.name = newUesr.name;
-        this.password = newUesr.password;
-        this.email = newUesr.email;
+    public void update(User user) {
+        this.password = user.password;
+        this.name = user.name;
+        this.email = user.email;
     }
+
+    public boolean matchId(Long id) {
+        return this.id.equals(id);
+    }
+
+    public boolean matchUserId(String _userId) {
+        System.out.println("my user : " + _userId);
+        System.out.println("input user : " + userId);
+        return this.userId.equals(_userId);
+    }
+
+
+    public boolean matchPassword(String password) {
+        return this.password.equals(password);
+    }
+
     @Override
     public String toString() {
         return "User{" +

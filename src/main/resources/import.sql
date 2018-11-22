@@ -3,3 +3,5 @@ INSERT INTO QUESTION (id, writer, title, contents) VALUES (2, 'hoarder', '두번
 
 INSERT INTO USER (id, user_id, password, name, email) VALUES (1, 'hoarder', '11', '호더', 'hoarder@gmail.com');
 INSERT INTO USER (id, user_id, password, name, email) VALUES (2, 'kidcozyboy', '11', 'Kid Milli', 'imim@indigomusic3.com');
+INSERT INTO USER (id, user_id, password, name, email) VALUES (3, 'kim', '11', '김', 'kim@gmail.com');
+INSERT INTO USER (id, user_id, password, name, email) VALUES (4, '1', '1', '1', '1@1');

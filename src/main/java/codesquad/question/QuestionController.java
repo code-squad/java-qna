@@ -17,6 +17,8 @@ public class QuestionController {
 
     @PostMapping("")
     public String create(Question question) {
+        //글쓴이 입력필드 삭제하려면 로그인한 세션 유저의 name을 question에 set해야하나?
+        //현재는 readonly, value는 loggedInUser의 name을 지정
         questionRepository.save(question);
         return "redirect:/questions";
     }
@@ -27,7 +29,6 @@ public class QuestionController {
         return "index";
     }
 
-    //질문하기 버튼 (로그인:질문지 폼으로 / 비로그인:로그인 폼으로)
     @GetMapping("/form")
     public String questionForm(HttpSession session) {
         if(HttpSessionUtils.isLoggedInUser(session)) {
@@ -38,9 +39,8 @@ public class QuestionController {
         return "redirect:/user/login";
     }
 
-    //질문 상세보기 버튼
     @GetMapping("/{id}")
-    public String show(Model model, @PathVariable long id) {
+    public String show(@PathVariable long id, Model model) {
         model.addAttribute("question", questionRepository.findById(id).orElse(null));
         return "/qna/show";
     }
@@ -51,14 +51,14 @@ public class QuestionController {
             return "/user/login";
         }
 
-        User loggedInUser = HttpSessionUtils.getUserFromSession(session);
+        //todo 중복제거...?
         Question question = questionRepository.findById(id).orElse(null);
+
+//        if(!HttpSessionUtils.getUserFromSession(session).isMatchName(question.getWriter())) {
+//            return "/qna/update_failed";
+//        }
+
         model.addAttribute("question", question);
-
-        if(!loggedInUser.isMatchName(question.getWriter())) {
-            return "/qna/update_failed";
-        }
-
         return "/qna/update_form";
     }
 
@@ -72,18 +72,17 @@ public class QuestionController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable long id, Model model, HttpSession session) {
+    public String delete(@PathVariable long id, HttpSession session) {
         if(!HttpSessionUtils.isLoggedInUser(session)) {
             return "/user/login";
         }
 
         User loggedInUser = HttpSessionUtils.getUserFromSession(session);
         Question question = questionRepository.findById(id).orElse(null);
-        model.addAttribute(question);
 
-        if(!loggedInUser.isMatchName(question.getWriter())) {
-            return "/qna/update_failed";
-        }
+//        if(!loggedInUser.isMatchId(question.getWriter())) {
+//            return "/qna/update_failed";
+//        }
 
         questionRepository.delete(question);
         return "redirect:/questions";

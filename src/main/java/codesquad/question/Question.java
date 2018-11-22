@@ -10,12 +10,16 @@ public class Question {
 
     @Column(nullable = false, length = 20)
     private String writer;
+
+    @Column(nullable = false, length = 20)
     private String title;
+
+    @Lob
     private String contents;
 
     public void update(Question updatedQuestion) {
-        this.title = updatedQuestion.title;
-        this.contents = updatedQuestion.contents;
+            this.title = updatedQuestion.title;
+            this.contents = updatedQuestion.contents;
     }
 
     public long getId() {

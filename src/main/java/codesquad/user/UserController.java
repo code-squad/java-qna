@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public String show(Model model, @PathVariable long id) {
+    public String show(@PathVariable long id,Model model) {
         model.addAttribute("user", userRepository.findById(id).orElse(null));
         return "/user/profile";
     }

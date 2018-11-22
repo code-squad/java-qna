@@ -8,11 +8,17 @@ public class User {
     @Id
     private long id;
 
-    //TODO : 이미 가입 된 유저아이디를 기입하고 회원가입 시에 재입력하도록(현재는 SQL 에러페이지)
+    //TODO : 이미 가입 된 유저아이디를 기입하면 재입력하도록 유도
     @Column(nullable = false, length = 20, unique = true)
     private String userId;
+
+    @Column(nullable = false, length = 20)
     private String password;
+
+    @Column(nullable = false, length = 20)
     private String name;
+
+    @Column(nullable = false, length = 50)
     private String email;
 
     void update(User updated) {
@@ -23,10 +29,6 @@ public class User {
 
     public boolean isMatchId(long id) {
         return this.id == id;
-    }
-
-    public boolean isMatchName(String name) {
-        return this.name.equals(name);
     }
 
     public boolean isMatchPassword(String password) {

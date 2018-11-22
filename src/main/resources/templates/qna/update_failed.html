@@ -4,21 +4,21 @@
         <div class="panel panel-default content-main">
             <div class="alert alert-danger" role="alert">작성자만 수정 및 삭제가 가능합니다.</div>
             <form name="question" method="post" action="/questions">
-                <div class="form-group">
-                    <label for="writer">글쓴이</label>
-                    <input class="form-control" id="writer" name="writer" value="{{question.writer}}" placeholder="글쓴이" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="title">제목</label>
-                    <input type="text" class="form-control" id="title" name="title" placeholder="제목" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="contents">내용</label>
-                    <textarea name="contents" id="contents" rows="5" class="form-control" readonly></textarea>
-                </div>
+                <!--<div class="form-group">-->
+                    <!--<label for="writer">글쓴이</label>-->
+                    <!--<input class="form-control" id="writer" name="writer" value="{{question.writer}}" placeholder="글쓴이" readonly>-->
+                <!--</div>-->
+                <!--<div class="form-group">-->
+                    <!--<label for="title">제목</label>-->
+                    <!--<input type="text" class="form-control" id="title" name="title" placeholder="제목" readonly>-->
+                <!--</div>-->
+                <!--<div class="form-group">-->
+                    <!--<label for="contents">내용</label>-->
+                    <!--<textarea name="contents" id="contents" rows="5" class="form-control" readonly></textarea>-->
+                <!--</div>-->
 
 
-                <a href="/questions" class="btn back-to-list" role="button">목록으로</a>
+                <a href="/questions/{{question.id}}" class="btn back-to-list" role="button">뒤로</a>
                 <!--<button type="submit" class="btn btn-success clearfix pull-right">목록으로</button>-->
 
 

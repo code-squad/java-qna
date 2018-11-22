@@ -7,16 +7,12 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable=false, length=20)
+    @Column(nullable=false, length=20, unique=true)
     private String userId;
-
     @Column(nullable=false, length=12)
     private String password;
-
     @Column(nullable=false, length=12)
     private String name;
-
     @Column(nullable=false, length=50)
     private String email;
 
@@ -60,9 +56,24 @@ public class User {
         this.email = email;
     }
 
-    public void update(User modifiedUser) {
-        setPassword(modifiedUser.getPassword());
-        setName(modifiedUser.getName());
-        setEmail(modifiedUser.getEmail());
+    public void update(User updatedUser) {
+        setPassword(updatedUser.getPassword());
+        setName(updatedUser.getName());
+        setEmail(updatedUser.getEmail());
+    }
+
+    public boolean matchPassword(String password) {
+        if (password == null) return false;
+        return this.password.equals(password);
+    }
+
+    public boolean matchId(Long id) {
+        if (id == null) return false;
+        return this.id.equals(id);
+    }
+
+    public boolean matchUserId(String userId) {
+        if (userId == null) return false;
+        return this.userId.equals(userId);
     }
 }

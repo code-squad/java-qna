@@ -17,10 +17,19 @@ public class Question {
     private String title;
     @Column(nullable=false, length=1000)
     private String contents;
-    @CreationTimestamp
-    private LocalDateTime createdTime;
-    @UpdateTimestamp
-    private LocalDateTime updateTime;
+
+    private Question() {}
+
+    private Question(String writer, String title, String contents) {
+        super();
+        this.writer = writer;
+        this.title = title;
+        this.contents = contents;
+    }
+
+    public static Question newInstance(String writer, String title, String contents) {
+        return new Question(writer, title, contents);
+    }
 
     public Long getIndex() {
         return index;
@@ -54,19 +63,8 @@ public class Question {
         this.contents = contents;
     }
 
-    public LocalDateTime getCreatedTime() {
-        return createdTime;
-    }
-
-    public void setCreatedTime(LocalDateTime createdTime) {
-        this.createdTime = createdTime;
-    }
-
-    public LocalDateTime getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(LocalDateTime updateTime) {
-        this.updateTime = updateTime;
+    public void update(Question updatedQuestion) {
+        setTitle(updatedQuestion.getTitle());
+        setContents(updatedQuestion.getContents());
     }
 }

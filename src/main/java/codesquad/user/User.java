@@ -1,6 +1,7 @@
 package codesquad.user;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class User {
@@ -33,6 +34,14 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public boolean matchId(Long id) {
+        return this.id.equals(id);
+    }
+
+    public boolean matchUser(User sessionedUser) {
+        return this.id.equals(sessionedUser.id);
     }
 
     public String getUserId() {
@@ -73,6 +82,10 @@ public class User {
         this.email = userUpdated.email;
     }
 
+    public boolean matchPassword(String password) {
+        return this.password.equals(password);
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -83,4 +96,17 @@ public class User {
                 ", email='" + email + '\'' +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) &&
+                Objects.equals(userId, user.userId) &&
+                Objects.equals(password, user.password) &&
+                Objects.equals(name, user.name) &&
+                Objects.equals(email, user.email);
+    }
+
 }

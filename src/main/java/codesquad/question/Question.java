@@ -1,34 +1,48 @@
 package codesquad.question;
 
+import codesquad.user.User;
+
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 public class Question {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long index;
-    @Column(nullable = false, length = 20)
-    private String writer;
+    private Long id;
+
     @Column(nullable = false, length = 40)
     private String title;
+
+    @Lob
     @Column(nullable = false)
     private String contents;
-    private String time;
 
-    public Long getIndex() {
-        return index;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    private User user;
+
+    private LocalDateTime time;
+
+    Question() {
     }
 
-    public void setIndex(Long index) {
-        this.index = index;
+    public Question(Long id, String title, String contents, User user) {
+        this.id = id;
+        this.title = title;
+        this.contents = contents;
+        this.user = user;
+        this.time = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
     }
 
-    public String getWriter() {
-        return writer;
+    public Long getId() {
+        return id;
     }
 
-    public void setWriter(String writer) {
-        this.writer = writer;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -47,22 +61,44 @@ public class Question {
         this.contents = contents;
     }
 
-    public String getTime() {
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public boolean matchUser(User sessionedUser) {
+        return user.matchUser(sessionedUser);
+    }
+
+    public LocalDateTime getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(LocalDateTime time) {
         this.time = time;
+    }
+
+    public boolean update(Question updatedQuestion, User sessionedUser) {
+        if(matchUser(sessionedUser)) {
+            this.title = updatedQuestion.title;
+            this.contents = updatedQuestion.contents;
+            return true;
+        }
+        return false;
     }
 
     @Override
     public String toString() {
         return "Question{" +
-                "index=" + index +
-                ", writer='" + writer + '\'' +
+                "id=" + id +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
+                ", user='" + user + '\'' +
                 ", time='" + time + '\'' +
                 '}';
     }
+
 }

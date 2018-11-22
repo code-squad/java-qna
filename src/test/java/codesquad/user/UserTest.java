@@ -12,8 +12,8 @@ public class UserTest {
 
     @Before
     public void setUp() throws Exception {
-        user1 = new User((long)25, "leeh903", "1234", "이정현", "leejh903@naver.com");
-        user2 = new User((long)27, "brad903", "1234", "브래드", "brad903@naver.com");
+        user1 = new User(new Long(25), "leeh903", "1234", "이정현", "leejh903@naver.com");
+        user2 = new User(new Long(27), "brad903", "1234", "브래드", "brad903@naver.com");
     }
 
     @Test
@@ -22,5 +22,10 @@ public class UserTest {
         assertThat(user1.getEmail()).isEqualTo(user2.getEmail());
         assertThat(user1.getName()).isEqualTo(user2.getName());
         assertThat(user1.getId()).isEqualTo(user1.getId());
+    }
+
+    @Test
+    public void matchId() {
+        assertThat(user1.matchId(new Long(25))).isEqualTo(true);
     }
 }

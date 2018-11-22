@@ -1,5 +1,7 @@
 package codesquad.user;
 
+import codesquad.qna.Question;
+
 import javax.persistence.*;
 
 @Entity         //데이터 베이스 맵핑할때 알아서 꺼내줌
@@ -8,7 +10,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, unique = true)
     private String userId;
 
     @Column(nullable = false, length = 20)
@@ -75,6 +77,27 @@ public class User {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 '}';
+    }
+
+    public boolean matchPassword(String newPassword) {
+        if (newPassword == null) {
+            return false;
+        }
+        return this.password.equals(newPassword);
+    }
+
+    public boolean matchId(Long newId) {
+        if (newId == null) {
+            return false;
+        }
+        return this.id == newId;
+    }
+
+    public boolean matchUserId(String writer) {
+        if (writer.equals(null)) {
+            return false;
+        }
+        return this.userId.equals(writer);
     }
 
 }

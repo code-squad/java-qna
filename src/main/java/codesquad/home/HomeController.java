@@ -12,8 +12,8 @@ public class HomeController {
     private QuestionRepository questionRepository;
 
     @GetMapping("/")
-    public String goHome(Model model){
-        model.addAttribute("questions",questionRepository.findAll());
+    public String goHome(Model model) {
+        model.addAttribute("questions", questionRepository.findAll());
         return "/index";
     }
 }

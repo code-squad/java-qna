@@ -1,12 +1,14 @@
 package codesquad.qna;
 
+import codesquad.user.User;
+
 import javax.persistence.*;
 
 @Entity
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(nullable = false, length = 20)
     private String writer;
@@ -16,6 +18,17 @@ public class Question {
 
     @Column(nullable = false, length = 1500)
     private String contents;
+
+    public Question(){
+
+    }
+
+    public Question(String writer,String title,String contents){
+        super();
+        this.writer = writer;
+        this.title = title;
+        this.contents = contents;
+    }
 
     public String getWriter() {
         return writer;
@@ -41,12 +54,17 @@ public class Question {
         this.contents = contents;
     }
 
-    public int getId() {
+    public Long getId() {
         return this.id;
     }
 
-    public void setId(int index) {
+    public void setId(Long index) {
         this.id = index;
+    }
+
+    public void update(Question updateQuestion) {
+        this.title = updateQuestion.title;
+        this.contents = updateQuestion.contents;
     }
 
     @Override

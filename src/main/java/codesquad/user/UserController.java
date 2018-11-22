@@ -1,6 +1,8 @@
 package codesquad.user;
 
 import codesquad.HttpSessionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +14,7 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/users")
 public class UserController {
+    private static final Logger logger = LogManager.getLogger(UserController.class);
     @Autowired
     private UserRepository userRepository;
 
@@ -22,8 +25,8 @@ public class UserController {
 
     @PostMapping("")
     public String create(User user) {
+        logger.info("user create");
         userRepository.save(user);
-        System.out.println("유저생성");
         return "redirect:/users";
     }
 
@@ -59,7 +62,7 @@ public class UserController {
 
     @GetMapping("/{id}/form")
     public String updateForm(HttpSession session, Model model, @PathVariable long id) {
-        System.out.println("수정");
+        logger.info("user update form");
         System.out.println(id);
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/users/login";
@@ -75,7 +78,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     public String update(HttpSession session, User updatedUser) {
-        System.out.println("업데이트");
+        logger.info("update user");
         User loginUser =(User) session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
         if (!loginUser.matchPassword(updatedUser)) {
             return "/user/update_failed";
@@ -87,7 +90,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public String profile(Model model, @PathVariable long id) {
-        System.out.println("프로필");
+        logger.info("user profile");
         User user = userRepository.findById(id).orElse(null);
         model.addAttribute("user", user);
         return "user/profile";

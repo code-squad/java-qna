@@ -25,8 +25,8 @@ public class AnswerController {
 
     @PostMapping()
     public String create(HttpSession session, @PathVariable long questionId, String contents) {
-        logger.debug("answer 구현 log 메세지");
-        //System.out.println("answer 구현");
+        logger.info("answer.info");
+        System.out.println("answer 구현");
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/users/login";
         }
@@ -39,7 +39,7 @@ public class AnswerController {
 
     @GetMapping("/{id}")
     public String updateForm(@PathVariable long id, HttpSession session, Model model) {
-        System.out.println("답변 수정폼");
+        logger.info("답변 수정폼");
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/users/login";
         }
@@ -55,7 +55,7 @@ public class AnswerController {
 
     @PutMapping("/{id}")
     public String update(@PathVariable long id, Answer updatedAnswer) {
-        System.out.println("업데이트");
+        logger.info("업데이트");
         Answer answer = answerRepository.findById(id).orElse(null);
         answer.update(updatedAnswer);
         answerRepository.save(answer);
@@ -64,7 +64,7 @@ public class AnswerController {
 
     @DeleteMapping("/{id}")
     public String delete(HttpSession session, @PathVariable long id) {
-        System.out.println("삭제");
+        logger.info("answer 삭제");
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/users/login";
         }

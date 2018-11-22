@@ -5,6 +5,8 @@ package codesquad.question;
 import codesquad.HttpSessionUtils;
 import codesquad.answer.AnswerRepository;
 import codesquad.user.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +19,7 @@ import java.util.Collection;
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
+    private static final Logger logger = LogManager.getLogger(QuestionController.class);
     @Autowired
     private QuestionRepository questionRepository;
     @Autowired
@@ -24,7 +27,7 @@ public class QuestionController {
 
     @GetMapping("/form")
     public String questions(HttpSession session,Model model) {
-        System.out.println("질문하기");
+        logger.info("질문하기");
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/users/login";
         }
@@ -34,7 +37,7 @@ public class QuestionController {
 
     @PostMapping("")
     public String questions(String title,String contents, HttpSession session) {
-        System.out.println("qna 인스턴스 생성");
+        logger.info("qna 인스턴스 생성");
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/users/login";
         }
@@ -47,7 +50,7 @@ public class QuestionController {
 
     @GetMapping("/{id}")
     public String profile(Model model, @PathVariable long id) {
-        System.out.println("질문 상세 페이지");
+        logger.info("질문 상세 페이지");
         Question question = questionRepository.findById(id).orElse(null);
 
         model.addAttribute("answers",answerRepository.findByQuestion(question));
@@ -58,7 +61,7 @@ public class QuestionController {
 
     @GetMapping("/{id}/form")
     public String updateForm(Model model, @PathVariable long id, HttpSession session) {
-        System.out.println("질문 수정폼");
+        logger.info("qna 수정폼");
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/users/login";
         }
@@ -77,7 +80,7 @@ public class QuestionController {
 
     @PutMapping("/{id}")
     public String update(@PathVariable long id, Question newQuestion) {
-        System.out.println("업데이트");
+        logger.info("update");
         Question question = questionRepository.findById(id).orElse(null);
         question.update(newQuestion);
         questionRepository.save(question);
@@ -86,7 +89,7 @@ public class QuestionController {
 
     @DeleteMapping("/{id}/delete")
     public String delete(HttpSession session, @PathVariable long id){
-        System.out.println("삭제");
+        logger.info("delete");
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/users/login";
         }

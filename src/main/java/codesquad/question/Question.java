@@ -1,6 +1,8 @@
 package codesquad.question;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Entity
 public class Question {
@@ -11,8 +13,19 @@ public class Question {
     @Column(nullable = false)
     private String writer;
     private String title;
+    @Column(columnDefinition = "TEXT")
     private String contents;
-    private int index;
+    private String date;
+
+    public Question() {
+        Date now = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        this.date = simpleDateFormat.format(now);
+    }
+
+    public String getDate() {
+        return date;
+    }
 
     public long getPId() {
         return pId;
@@ -20,14 +33,6 @@ public class Question {
 
     public void setPId(long pId) {
         this.pId = pId;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
     }
 
     public String getWriter() {
@@ -54,4 +59,17 @@ public class Question {
     public void setContents(String contents) {
         this.contents = contents;
     }
+
+    void update(Question updateQuestion) {
+        this.title = updateQuestion.title;
+        this.contents = updateQuestion.contents;
+    }
+
+    public boolean matchUserId(String userId) {
+        return this.writer.equals(userId);
+    }
+
+//    public boolean matchUserId(User user) {
+//        return user.matchWriter(this.writer);
+//    }
 }

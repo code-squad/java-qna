@@ -4,6 +4,7 @@
         <div class="panel panel-default content-main">
             <form name="question" method="post" action="/user/{{pId}}/update">
                 <input type = "hidden" name="_method" value="put"/>
+                <div class="alert alert-danger" role="alert">비밀번호가 틀립니다. 다시 입력해주세요.</div>
                 {{#user}}
                 <div class="form-group">
                     <labeld for="userId">사용자 아이디</labeld>

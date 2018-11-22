@@ -20,6 +20,7 @@ public class Answer {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_user"))
     private User user;
 
+    @Lob
     private String contents;
 
     public Answer() {
@@ -68,6 +69,22 @@ public class Answer {
     }
 
     public void update(Answer updatedAnswer) {
-        this.contents = updatedAnswer.contents;
+        if (updatedAnswer.matchId(this.id)) {
+            this.contents = updatedAnswer.contents;
+        }
+    }
+
+    private boolean matchId(long id) {
+        return this.id == id;
+    }
+
+    @Override
+    public String toString() {
+        return "Answer{" +
+                "id=" + id +
+                ", question=" + question +
+                ", user=" + user +
+                ", contents='" + contents + '\'' +
+                '}';
     }
 }

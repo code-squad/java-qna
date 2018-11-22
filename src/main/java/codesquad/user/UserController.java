@@ -47,7 +47,7 @@ public class UserController {
         if (mybeUser.isPresent()) {
             User user = mybeUser.get();
             if (user.matchPassword(password)) {
-                session.setAttribute(HttpSessionUtils.USER_SESSION_KEY,user);
+                session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
                 return "redirect:/";
             }
         }
@@ -63,7 +63,6 @@ public class UserController {
     @GetMapping("/{id}/form")
     public String updateForm(HttpSession session, Model model, @PathVariable long id) {
         logger.info("user update form");
-        System.out.println(id);
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/users/login";
         }
@@ -71,7 +70,7 @@ public class UserController {
         if (!loginUser.matchId(id)) {
             model.addAttribute("users", userRepository.findAll());
             return "/user/list_failed";
-    }
+        }
         model.addAttribute("user", loginUser);
         return "user/updateForm";
     }
@@ -79,7 +78,7 @@ public class UserController {
     @PutMapping("/{id}")
     public String update(HttpSession session, User updatedUser) {
         logger.info("update user");
-        User loginUser =(User) session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
+        User loginUser = (User) session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
         if (!loginUser.matchPassword(updatedUser)) {
             return "/user/update_failed";
         }
@@ -95,5 +94,6 @@ public class UserController {
         model.addAttribute("user", user);
         return "user/profile";
     }
+
 
 }

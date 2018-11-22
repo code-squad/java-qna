@@ -58,9 +58,11 @@ public class User {
 
 
     public void update(User newUser) {
-        this.password = newUser.password;
-        this.name = newUser.name;
-        this.email = newUser.email;
+        if (newUser.matchId(this.id)) {
+            this.password = newUser.password;
+            this.name = newUser.name;
+            this.email = newUser.email;
+        }
     }
 
     public boolean equalsOfString(String o) {

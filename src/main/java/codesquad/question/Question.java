@@ -18,6 +18,8 @@ public class Question {
 
     @Column(nullable = false, length = 20)
     private String title;
+
+    @Lob
     private String contents;
 
     public Question() {

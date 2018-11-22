@@ -4,6 +4,8 @@ import codesquad.HttpSessionUtils;
 import codesquad.question.Question;
 import codesquad.question.QuestionRepository;
 import codesquad.user.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +16,7 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/questions/{questionId}/answers")
 public class AnswerController {
+    private static Logger logger = LoggerFactory.getLogger(AnswerController.class);
     @Autowired
     private AnswerRepository answerRepository;
     @Autowired
@@ -22,7 +25,8 @@ public class AnswerController {
 
     @PostMapping()
     public String create(HttpSession session, @PathVariable long questionId, String contents) {
-        System.out.println("answer 구현");
+        logger.debug("answer 구현 log 메세지");
+        //System.out.println("answer 구현");
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/users/login";
         }

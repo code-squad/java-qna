@@ -1,6 +1,7 @@
 package codesquad.user;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class User {
@@ -8,11 +9,19 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 자동으로 1씩 증가하며 아이디를 부여.
     private long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, length = 20)
     private String userId;
+
+    @Column(length = 20)
     private String password;
+
+    @Column(length = 10)
     private String name;
+
+    @Column(length = 40)
     private String email;
+
+    @OneToMany(mappedBy = "writer")
 
     public String getUserId() {
         return userId;
@@ -58,11 +67,25 @@ public class User {
         return userId.equals(this.userId);
     }
 
-
     public void update(User modifiedUser) {
         this.name = modifiedUser.name;
-        this.password = modifiedUser.password;
         this.email = modifiedUser.email;
+    }
+
+    public boolean matchPassword(String password) {
+        return this.password.equals(password);
+    }
+
+    public boolean matchPassword(User user) {
+        return user.matchPassword(this.password);
+    }
+
+    public boolean matchId(long id){
+        return this.id == id;
+    }
+
+    public boolean matchName(String otherName){
+        return this.name.equals(otherName);
     }
 
     @Override
@@ -76,4 +99,20 @@ public class User {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id &&
+                Objects.equals(userId, user.userId) &&
+                Objects.equals(password, user.password) &&
+                Objects.equals(name, user.name) &&
+                Objects.equals(email, user.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, userId, password, name, email);
+    }
 }

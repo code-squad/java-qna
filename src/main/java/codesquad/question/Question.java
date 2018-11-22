@@ -1,5 +1,7 @@
 package codesquad.question;
 
+import codesquad.user.User;
+
 import javax.persistence.*;
 
 @Entity
@@ -8,8 +10,9 @@ public class Question {
     @Id
     private long id;
 
-    @Column(nullable = false, length = 20)
-    private String writer;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_user"))
+    private User writer;
 
     @Column(nullable = false, length = 20)
     private String title;
@@ -17,9 +20,14 @@ public class Question {
     @Lob
     private String contents;
 
+    //TODO: 자신의 글인치 체크 후에 실행되도록
     public void update(Question updatedQuestion) {
             this.title = updatedQuestion.title;
             this.contents = updatedQuestion.contents;
+    }
+
+    public boolean isMatchWriter(User target) {
+        return this.writer.equals(target);
     }
 
     public long getId() {
@@ -30,11 +38,11 @@ public class Question {
         this.id = id;
     }
 
-    public String getWriter() {
+    public User getWriter() {
         return writer;
     }
 
-    public void setWriter(String writer) {
+    public void setWriter(User writer) {
         this.writer = writer;
     }
 
@@ -52,5 +60,15 @@ public class Question {
 
     public void setContents(String contents) {
         this.contents = contents;
+    }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "id=" + id +
+                ", writer=" + writer +
+                ", title='" + title + '\'' +
+                ", contents='" + contents + '\'' +
+                '}';
     }
 }

@@ -16,9 +16,9 @@ public class QuestionController {
     private QuestionRepository questionRepository;
 
     @PostMapping("")
-    public String create(Question question) {
-        //글쓴이 입력필드 삭제하려면 로그인한 세션 유저의 name을 question에 set해야하나?
-        //현재는 readonly, value는 loggedInUser의 name을 지정
+    public String create(Question question, HttpSession session) {
+        //set메서드 사용무방...?
+        question.setWriter(HttpSessionUtils.getUserFromSession(session));
         questionRepository.save(question);
         return "redirect:/questions";
     }
@@ -51,12 +51,10 @@ public class QuestionController {
             return "/user/login";
         }
 
-        //todo 중복제거...?
         Question question = questionRepository.findById(id).orElse(null);
-
-//        if(!HttpSessionUtils.getUserFromSession(session).isMatchName(question.getWriter())) {
-//            return "/qna/update_failed";
-//        }
+        if(!question.isMatchWriter(HttpSessionUtils.getUserFromSession(session))) {
+            return "/qna/update_failed";
+        }
 
         model.addAttribute("question", question);
         return "/qna/update_form";
@@ -77,12 +75,10 @@ public class QuestionController {
             return "/user/login";
         }
 
-        User loggedInUser = HttpSessionUtils.getUserFromSession(session);
         Question question = questionRepository.findById(id).orElse(null);
-
-//        if(!loggedInUser.isMatchId(question.getWriter())) {
-//            return "/qna/update_failed";
-//        }
+        if(!question.isMatchWriter(HttpSessionUtils.getUserFromSession(session))) {
+            return "/qna/update_failed";
+        }
 
         questionRepository.delete(question);
         return "redirect:/questions";

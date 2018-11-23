@@ -2,8 +2,11 @@ package codesquad.question.answer;
 
 import codesquad.question.Question;
 import codesquad.user.User;
+import codesquad.utils.TimeFormatter;
+import org.apache.tomcat.jni.Local;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 public class Answer {
@@ -19,18 +22,18 @@ public class Answer {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_user"))
     private User user;
 
-    private String time;
+    private LocalDateTime time;
     @Column(nullable = false, length = 500)
     private String comment;
 
     Answer() {
     }
 
-    public Answer(Question question, User user, String time, String comment) {
+    public Answer(Question question, User user, String comment) {
         this.question = question;
         this.user = user;
-        this.time = time;
         this.comment = comment;
+        this.time = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -58,11 +61,11 @@ public class Answer {
     }
 
     public String getTime() {
-        return time;
+        return TimeFormatter.commonFormat(this.time);
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setTime(LocalDateTime time) {
+        this.time = LocalDateTime.now();
     }
 
     public String getComment() {

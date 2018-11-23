@@ -1,6 +1,7 @@
 package codesquad.question;
 
 import codesquad.user.User;
+import codesquad.utils.TimeFormatter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -34,7 +35,6 @@ public class Question {
         this.title = title;
         this.contents = contents;
         this.user = user;
-        this.time = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
     }
 
     public Long getId() {
@@ -73,12 +73,12 @@ public class Question {
         return user.matchUser(sessionedUser);
     }
 
-    public LocalDateTime getTime() {
-        return time;
+    public String getTime() {
+        return TimeFormatter.commonFormat(time);
     }
 
     public void setTime(LocalDateTime time) {
-        this.time = time;
+        this.time = LocalDateTime.now();
     }
 
     public boolean update(Question updatedQuestion, User sessionedUser) {

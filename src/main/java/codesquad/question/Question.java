@@ -32,8 +32,8 @@ public class Question {
         this.contents = contents;
     }
 
-    void update(Question updatedQuestion) {
-        if(updatedQuestion != null && this.writer.equals(updatedQuestion.writer)) {
+    void update(HttpSession session, Question updatedQuestion) {
+        if(this.writer.equals(HttpSessionUtils.getUserFromSession(session))) {
             this.title = updatedQuestion.title;
             this.contents = updatedQuestion.contents;
         }

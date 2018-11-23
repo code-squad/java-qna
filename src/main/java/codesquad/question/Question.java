@@ -2,10 +2,10 @@ package codesquad.question;
 
 import codesquad.user.User;
 import codesquad.utils.TimeFormatter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 @Entity
 public class Question {
@@ -25,6 +25,7 @@ public class Question {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     private User user;
 
+    @CreationTimestamp
     private LocalDateTime time;
 
     Question() {
@@ -78,7 +79,7 @@ public class Question {
     }
 
     public void setTime(LocalDateTime time) {
-        this.time = LocalDateTime.now();
+        this.time = time;
     }
 
     public boolean update(Question updatedQuestion, User sessionedUser) {

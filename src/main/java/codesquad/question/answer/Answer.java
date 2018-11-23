@@ -4,6 +4,7 @@ import codesquad.question.Question;
 import codesquad.user.User;
 import codesquad.utils.TimeFormatter;
 import org.apache.tomcat.jni.Local;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -22,7 +23,9 @@ public class Answer {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_user"))
     private User user;
 
+    @CreationTimestamp
     private LocalDateTime time;
+
     @Column(nullable = false, length = 500)
     private String comment;
 
@@ -33,7 +36,6 @@ public class Answer {
         this.question = question;
         this.user = user;
         this.comment = comment;
-        this.time = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -65,7 +67,7 @@ public class Answer {
     }
 
     public void setTime(LocalDateTime time) {
-        this.time = LocalDateTime.now();
+        this.time = time;
     }
 
     public String getComment() {

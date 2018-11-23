@@ -1,19 +1,27 @@
 package codesquad.question;
 
 import codesquad.HttpSessionUtils;
+import codesquad.answer.Answer;
+import codesquad.answer.AnswerRepository;
 import codesquad.user.User;
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @RequestMapping("/questions")
 @Controller
 public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
+    @Autowired
+    private AnswerRepository answerRepository;
 
     @PostMapping("")
     public String create(Question question, HttpSession session) {
@@ -40,10 +48,24 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}")
-    public String show(@PathVariable long id, Model model) {
-        model.addAttribute("question", questionRepository.findById(id).orElse(null));
+    public String profile(Model model, @PathVariable long id) {
+        System.out.println("질문 상세 페이지");
+        Question question = questionRepository.findById(id).orElse(null);
+        List<Answer> answers = answerRepository.findByQuestionId(id);
+
+        model.addAttribute("answers", answers);
+        model.addAttribute("countOfAnswers", answers.size());
+        model.addAttribute("question", question);
         return "/qna/show";
     }
+
+//    @GetMapping("/{id}")
+//    public String show(@PathVariable long id, Model model) {
+//        model.addAttribute("question", questionRepository.findById(id).orElse(null));
+//        List<Answer> answers = answerRepository.findByQuestionId(id);
+//        model.addAttribute("answers", answers);
+//        return "/qna/show";
+//    }
 
     @GetMapping("/{id}/form")
     public String updateForm(@PathVariable long id, Model model, HttpSession session) {
@@ -63,9 +85,9 @@ public class QuestionController {
     @PutMapping("/{id}")
     public String update(@PathVariable long id, Question updatedQuestion) {
         Question question = questionRepository.findById(id).orElse(null);
-        question.update(updatedQuestion);
-        questionRepository.save(question);
+        questionRepository.findById(id).orElse(null).update(updatedQuestion);
 
+        questionRepository.save(question);
         return "redirect:/questions/{id}";
     }
 

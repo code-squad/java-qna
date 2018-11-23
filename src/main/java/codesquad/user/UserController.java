@@ -23,25 +23,39 @@ public class UserController {
 
     @PostMapping
     public String create(User user) {
-        System.out.println(user);
+        System.out.println("create user");
+
         userRepository.save(user);
         return "redirect:/users";
     }
 
     @GetMapping
     public String list(Model model) {
+        System.out.println("view user list");
+
         model.addAttribute("users", userRepository.findAll());
         return "/user/list";
     }
 
+    @GetMapping("/form")
+    public String join() {
+        System.out.println("view user sign up form");
+
+        return "user/form";
+    }
+
     @GetMapping("/{id}")
     public String show(@PathVariable long id,Model model) {
+        System.out.println("view user profile");
+
         model.addAttribute("user", userRepository.findById(id).orElse(null));
         return "/user/profile";
     }
 
     @GetMapping("/{id}/form")
     public String updateForm(@PathVariable long id, Model model, HttpSession session) {
+        System.out.println("view user update form");
+
         if(!HttpSessionUtils.isLoggedInUser(session)) {
             return "/user/login";
         }
@@ -58,6 +72,8 @@ public class UserController {
 
     @PutMapping("/{id}")
     public String update(User updatedUser, HttpSession session) {
+        System.out.println("update user");
+
         User loggedInUser = HttpSessionUtils.getUserFromSession(session);
 
         if(!loggedInUser.isMatchPassword(updatedUser.getPassword())) {
@@ -69,8 +85,17 @@ public class UserController {
         return "redirect:/users/";
     }
 
+    @GetMapping("/login")
+    public String loginForm() {
+        System.out.println("view user login form");
+
+        return "/user/login";
+    }
+
     @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
+        System.out.println("user login");
+
         Optional<User> maybeUser = userRepository.findByUserId(userId);
 
         if(!maybeUser.isPresent()) {
@@ -83,24 +108,18 @@ public class UserController {
             return "/user/login_failed";
         }
 
-        System.out.println("로그인 성공");
         session.setAttribute(USER_SESSION_KEY, maybeUser.get());
-
         return "redirect:/";
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
+        System.out.println("user logout");
+
         session.removeAttribute(USER_SESSION_KEY);
         return "redirect:/";
     }
 }
-
-//    MvcConfig에서 지정
-//    @GetMapping("/login")
-//    public String loginForm() {
-//        return "/user/login";
-//    }
 
 //    @GetMapping("/{id}")
 //    public ModelAndView show(@PathVariable long id) {

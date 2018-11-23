@@ -23,9 +23,11 @@ public class User {
     private String email;
 
     void update(User updated) {
-        this.name = updated.name;
-        this.password = updated.password;
-        this.email = updated.email;
+        if(this.id == updated.id) {
+            this.name = updated.name;
+            this.password = updated.password;
+            this.email = updated.email;
+        }
     }
 
     public boolean isMatchId(long id) {

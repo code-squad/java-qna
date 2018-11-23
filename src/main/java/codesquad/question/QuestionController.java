@@ -3,16 +3,12 @@ package codesquad.question;
 import codesquad.HttpSessionUtils;
 import codesquad.answer.Answer;
 import codesquad.answer.AnswerRepository;
-import codesquad.user.User;
-import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @RequestMapping("/questions")
@@ -24,32 +20,36 @@ public class QuestionController {
     private AnswerRepository answerRepository;
 
     @PostMapping("")
-    public String create(Question question, HttpSession session) {
-        //set메서드 사용무방...?
-        question.setWriter(HttpSessionUtils.getUserFromSession(session));
-        questionRepository.save(question);
+    public String create(HttpSession session, String title, String contents) {
+        System.out.println("create question");
+
+        questionRepository.save(new Question(session, title, contents));
         return "redirect:/questions";
     }
 
     @GetMapping("")
     public String list(Model model) {
+        System.out.println("view question list(home)");
+
         model.addAttribute("questions", questionRepository.findAll());
         return "index";
     }
 
     @GetMapping("/form")
     public String questionForm(HttpSession session) {
-        if(HttpSessionUtils.isLoggedInUser(session)) {
-            System.out.println(session);
-            return "qna/form";
+        System.out.println("view question form");
+
+        if(!HttpSessionUtils.isLoggedInUser(session)) {
+            return "redirect:/user/login";
         }
 
-        return "redirect:/user/login";
+        return "/qna/form";
     }
 
     @GetMapping("/{id}")
-    public String profile(Model model, @PathVariable long id) {
-        System.out.println("질문 상세 페이지");
+    public String read(@PathVariable long id, Model model) {
+        System.out.println("view question");
+
         Question question = questionRepository.findById(id).orElse(null);
         List<Answer> answers = answerRepository.findByQuestionId(id);
 
@@ -59,16 +59,10 @@ public class QuestionController {
         return "/qna/show";
     }
 
-//    @GetMapping("/{id}")
-//    public String show(@PathVariable long id, Model model) {
-//        model.addAttribute("question", questionRepository.findById(id).orElse(null));
-//        List<Answer> answers = answerRepository.findByQuestionId(id);
-//        model.addAttribute("answers", answers);
-//        return "/qna/show";
-//    }
-
     @GetMapping("/{id}/form")
     public String updateForm(@PathVariable long id, Model model, HttpSession session) {
+        System.out.println("view question update form");
+
         if(!HttpSessionUtils.isLoggedInUser(session)) {
             return "/user/login";
         }
@@ -84,8 +78,10 @@ public class QuestionController {
 
     @PutMapping("/{id}")
     public String update(@PathVariable long id, Question updatedQuestion) {
+        System.out.println("update question");
+
         Question question = questionRepository.findById(id).orElse(null);
-        questionRepository.findById(id).orElse(null).update(updatedQuestion);
+        question.update(updatedQuestion);
 
         questionRepository.save(question);
         return "redirect:/questions/{id}";
@@ -93,6 +89,8 @@ public class QuestionController {
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable long id, HttpSession session) {
+        System.out.println("delete question");
+
         if(!HttpSessionUtils.isLoggedInUser(session)) {
             return "/user/login";
         }

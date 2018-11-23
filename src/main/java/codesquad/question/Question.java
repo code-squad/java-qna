@@ -1,8 +1,10 @@
 package codesquad.question;
 
+import codesquad.HttpSessionUtils;
 import codesquad.user.User;
 
 import javax.persistence.*;
+import javax.servlet.http.HttpSession;
 
 @Entity
 public class Question {
@@ -20,13 +22,24 @@ public class Question {
     @Lob
     private String contents;
 
-    //TODO: 자신의 글인치 체크 후에 실행되도록
-    public void update(Question updatedQuestion) {
-            this.title = updatedQuestion.title;
-            this.contents = updatedQuestion.contents;
+    public Question() {
+
     }
 
-    public boolean isMatchWriter(User target) {
+    public Question(HttpSession session, String title, String contents) {
+        this.writer = HttpSessionUtils.getUserFromSession(session);
+        this.title = title;
+        this.contents = contents;
+    }
+
+    void update(Question updatedQuestion) {
+        if(updatedQuestion != null && this.writer.equals(updatedQuestion.writer)) {
+            this.title = updatedQuestion.title;
+            this.contents = updatedQuestion.contents;
+        }
+    }
+
+    boolean isMatchWriter(User target) {
         return this.writer.equals(target);
     }
 

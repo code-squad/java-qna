@@ -3,6 +3,7 @@ package codesquad.user;
 import codesquad.qna.Question;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity         //데이터 베이스 맵핑할때 알아서 꺼내줌
 public class User {
@@ -93,11 +94,20 @@ public class User {
         return this.id == newId;
     }
 
-    public boolean matchUserId(String writer) {
-        if (writer.equals(null)) {
-            return false;
-        }
-        return this.userId.equals(writer);
+    public boolean matchUser(User sessionedUser) {
+        return this.id == sessionedUser.id;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return getId() == user.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
 }

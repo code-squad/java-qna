@@ -14,7 +14,12 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/loginForm")
+    @GetMapping("/singUp")
+    public String signUp() {
+        return "/user/form";
+    }
+
+    @GetMapping("/login")
     public String loginForm() {
         return "/user/login";
     }
@@ -23,34 +28,40 @@ public class UserController {
     public String login(String userId, String password, HttpSession session) {
         User maybeUser = userRepository.findByUserId(userId);
         if (maybeUser != null && maybeUser.matchPassword(password)) {
-                session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, maybeUser);
-                return "redirect:/";
+            session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, maybeUser);
+            return "redirect:/";
         }
 //        userRepository.findByUserId(userId).filter(u->u.matchPassword(password)).orElse(null); // findByUserId의 반환값이 optional일때 stream을 쓸수 있다.
-       return "/user/login";
+        return "/user/login";
     }
 
     @PostMapping("")
-    public String userCreate(User user) {
+    public String userCreate(String userId, User user) {
+        User findUser = userRepository.findByUserId(userId);
+        if (findUser != null) {                     // null이 아니면 아이디가 있는 것이므로 에러가 나와야 한다.
+            throw new IllegalArgumentException("아이디가 중복 합니다.");
+        }
         userRepository.save(user);
-        return "redirect:/users";       //행위를 하고 다른 페이지를 보여주고 싶을때
+        return "redirect:/";       //행위를 하고 다른 페이지를 보여주고 싶을때
     }
 
-    @GetMapping("")
-    public String showMemberList(Model model,HttpSession session) {
+    @GetMapping("/list")
+    public String showMemberList(Model model, HttpSession session) {
+        if (!HttpSessionUtils.isNullLoginUser(session)) {
+            return "/user/login";
+        }
         model.addAttribute("users", userRepository.findAll());
         return "/user/list";
     }
 
-    @GetMapping("/{writer}")
-    public String showPersonalInformation(@PathVariable String writer, Model model) {
-//        Optional<User> maybeUser = userRepository.findById(id);
-        model.addAttribute("usersProfile", userRepository.findByUserId(writer));
+    @GetMapping("/{id}")
+    public String showPersonalInformation(@PathVariable long id, Model model) {
+        model.addAttribute("usersProfile", userRepository.findById(id).orElse(null));
         return "/user/profile";
     }
 
     @GetMapping("/{id}/form")
-    public String updatePersonalInformation(@PathVariable Long id, Model model, HttpSession session) {
+    public String updatePersonalInformation(@PathVariable long id, Model model, HttpSession session) {
         if (!HttpSessionUtils.isNullLoginUser(session)) {       // 로그인 안한 상태로 수정을 하려면 로그인을 먼저 해야 한다.
             return "/user/login";
         }
@@ -66,7 +77,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public String redirect(@PathVariable Long id, User updatedUser, HttpSession session) {
+    public String redirect(@PathVariable long id, User updatedUser, HttpSession session) {
         if (!HttpSessionUtils.isNullLoginUser(session)) {
             return "/user/login";
         }

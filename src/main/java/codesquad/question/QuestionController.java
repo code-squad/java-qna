@@ -1,8 +1,6 @@
 package codesquad.question;
 
 import codesquad.config.HttpSessionUtils;
-import codesquad.question.answer.Answer;
-import codesquad.question.answer.AnswerRepository;
 import codesquad.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,15 +8,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
-//    @Autowired
-//    private AnswerRepository answerRepository;
 
     @GetMapping("")
     public String question(HttpSession session) {
@@ -43,7 +38,7 @@ public class QuestionController {
         if(!HttpSessionUtils.isLogin(session)) return "redirect:/user/login";
         Question question = getQuestion(id);
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-        if(!question.matchUser(sessionedUser)) {
+        if(!question.isSameUser(sessionedUser)) {
             return "qna/error";
         };
         model.addAttribute("question", question);
@@ -71,7 +66,7 @@ public class QuestionController {
     public String delete(@PathVariable Long id, HttpSession session) {
         Question question = getQuestion(id);
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-        if(HttpSessionUtils.isLogin(session) && question.matchUser(sessionedUser)) {
+        if(HttpSessionUtils.isLogin(session) && question.isSameUser(sessionedUser)) {
             questionRepository.delete(question);
             return "redirect:/";
         }

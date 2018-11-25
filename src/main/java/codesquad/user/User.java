@@ -40,10 +40,6 @@ public class User {
         return this.id.equals(id);
     }
 
-    public boolean matchUser(User sessionedUser) {
-        return this.id.equals(sessionedUser.id);
-    }
-
     public String getUserId() {
         return userId;
     }
@@ -102,11 +98,11 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) &&
-                Objects.equals(userId, user.userId) &&
-                Objects.equals(password, user.password) &&
-                Objects.equals(name, user.name) &&
-                Objects.equals(email, user.email);
+        return Objects.equals(id, user.id);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

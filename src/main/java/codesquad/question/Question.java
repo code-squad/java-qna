@@ -76,8 +76,8 @@ public class Question {
         this.user = user;
     }
 
-    public boolean matchUser(User sessionedUser) {
-        return user.matchUser(sessionedUser);
+    public boolean isSameUser(User sessionedUser) {
+        return user.equals(sessionedUser);
     }
 
     public String getCreateDate() {
@@ -101,7 +101,7 @@ public class Question {
     }
 
     public boolean update(Question updatedQuestion, User sessionedUser) {
-        if(matchUser(sessionedUser)) {
+        if(isSameUser(sessionedUser)) {
             this.title = updatedQuestion.title;
             this.contents = updatedQuestion.contents;
             return true;

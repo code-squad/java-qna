@@ -7,7 +7,6 @@ import org.junit.Test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,7 +25,7 @@ public class QuestionTest {
 
     @Test
     public void matchId() {
-        assertThat(question1.matchUser(user)).isEqualTo(true);
+        assertThat(question1.isSameUser(user)).isEqualTo(true);
     }
 
     @Test

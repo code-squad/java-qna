@@ -20,5 +20,7 @@ get,post,requestmapping
 경로지정
 자바 빈
 put메소드 쓸때 히든태그만 추가하면 되는지...?
+
+step4 init
 */
 

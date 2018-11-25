@@ -15,7 +15,8 @@ public class AnswerController {
     AnswerRepository answerRepository;
 
     @PostMapping
-    public String create(Answer answer){
+    public String create(Answer answer, HttpSession session){
+        if(!HttpSessionUtils.existLoginUserFromSession(session)) return "redirect:/user/login";
         answerRepository.save(answer);
         return "redirect:";
     }

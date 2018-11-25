@@ -1,6 +1,11 @@
 package codesquad.user;
 
+import codesquad.qna.answers.Answer;
+import codesquad.qna.questions.Question;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -20,8 +25,6 @@ public class User {
 
     @Column(length = 40)
     private String email;
-
-    @OneToMany(mappedBy = "writer")
 
     public String getUserId() {
         return userId;
@@ -68,6 +71,7 @@ public class User {
     }
 
     public void update(User modifiedUser) {
+        if(!modifiedUser.matchId(this.id)) return ;
         this.name = modifiedUser.name;
         this.email = modifiedUser.email;
     }

@@ -1,6 +1,10 @@
 package codesquad.question;
 
+import codesquad.HttpSessionUtils;
+import codesquad.user.User;
+
 import javax.persistence.*;
+import javax.servlet.http.HttpSession;
 
 @Entity
 public class Question {
@@ -8,11 +12,36 @@ public class Question {
     @Id
     private long id;
 
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_user"))
+    private User writer;
+
     @Column(nullable = false, length = 20)
-public class Question {
-    private String writer;
     private String title;
+
+    @Lob
     private String contents;
+
+    public Question() {
+
+    }
+
+    public Question(HttpSession session, String title, String contents) {
+        this.writer = HttpSessionUtils.getUserFromSession(session);
+        this.title = title;
+        this.contents = contents;
+    }
+
+    void update(HttpSession session, Question updatedQuestion) {
+        if(this.writer.equals(HttpSessionUtils.getUserFromSession(session))) {
+            this.title = updatedQuestion.title;
+            this.contents = updatedQuestion.contents;
+        }
+    }
+
+    boolean isMatchWriter(User target) {
+        return this.writer.equals(target);
+    }
 
     public long getId() {
         return id;
@@ -20,12 +49,13 @@ public class Question {
 
     public void setId(long id) {
         this.id = id;
+    }
 
-    public String getWriter() {
+    public User getWriter() {
         return writer;
     }
 
-    public void setWriter(String writer) {
+    public void setWriter(User writer) {
         this.writer = writer;
     }
 
@@ -43,5 +73,15 @@ public class Question {
 
     public void setContents(String contents) {
         this.contents = contents;
+    }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "id=" + id +
+                ", writer=" + writer +
+                ", title='" + title + '\'' +
+                ", contents='" + contents + '\'' +
+                '}';
     }
 }

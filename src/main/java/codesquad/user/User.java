@@ -1,27 +1,41 @@
 package codesquad.user;
 
 import javax.persistence.*;
+import java.util.Objects;
 
-//어노테이션 붙이면 자동으로 디비와 매핑, 데이터를 넣을 때 꺼낼 때
 @Entity
 public class User {
-    //데이터베이스 테이블에는 키가 있어야한다 primary key, 유일한 값
-    //어노테이션 Id, 데이터가 추가 될 때마다 자동으로 1씩 증가하면 데이터마다 다른 Id가질수있음
-    //그 기능이 Gene~
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private long id;
 
-    @Column(nullable = false, length = 20)
+    //TODO : 이미 가입 된 유저아이디를 기입하면 재입력하도록 유도
+    @Column(nullable = false, length = 20, unique = true)
     private String userId;
+
+    @Column(nullable = false, length = 20)
     private String password;
+
+    @Column(nullable = false, length = 20)
     private String name;
+
+    @Column(nullable = false, length = 50)
     private String email;
 
     void update(User updated) {
-        this.setName(updated.name);
-        this.setPassword(updated.password);
-        this.setEmail(updated.email);
+        if(this.id == updated.id) {
+            this.name = updated.name;
+            this.password = updated.password;
+            this.email = updated.email;
+        }
+    }
+
+    public boolean isMatchId(long id) {
+        return this.id == id;
+    }
+
+    public boolean isMatchPassword(String password) {
+        return this.password.equals(password);
     }
 
     public long getId() {
@@ -65,9 +79,27 @@ public class User {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id &&
+                Objects.equals(userId, user.userId) &&
+                Objects.equals(password, user.password) &&
+                Objects.equals(name, user.name) &&
+                Objects.equals(email, user.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, userId, password, name, email);
+    }
+
+    @Override
     public String toString() {
         return "User{" +
-                "userId='" + userId + '\'' +
+                "id=" + id +
+                ", userId='" + userId + '\'' +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +

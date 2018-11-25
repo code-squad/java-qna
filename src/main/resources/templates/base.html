@@ -70,14 +70,21 @@
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="/questions">Posts</a></li>
-                <li><a href="/user/login" role="button">로그인</a></li>
-                <li><a href="/user/join" role="button">회원가입</a></li>
+                <!--세션이 없으면 아래를 보여준다-->
+                {{^loggedInUser}}
+                <li><a href="/users/login" role="button">로그인</a></li>
+                <li><a href="/users/form" role="button">회원가입</a></li>
+                {{/loggedInUser}}
                 <!--
                 <li><a href="#loginModal" role="button" data-toggle="modal">로그인</a></li>
                 <li><a href="#registerModal" role="button" data-toggle="modal">회원가입</a></li>
                 -->
-                <li><a href="#" role="button">로그아웃</a></li>
-                <li><a href="#" role="button">개인정보수정</a></li>
+                <!--세션에 loginUser가 있으면 아래로 보여준다-->
+                {{#loggedInUser}}
+                <li><a href="/users/{{id}}" role="button">{{userId}}({{name}})</a></li>
+                <li><a href="/users/logout" role="button">로그아웃</a></li>
+                <li><a href="/users/{{id}}/form" role="button">개인정보수정</a></li>
+                {{/loggedInUser}}
             </ul>
         </div>
     </div>

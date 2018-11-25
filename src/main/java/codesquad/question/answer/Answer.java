@@ -3,7 +3,6 @@ package codesquad.question.answer;
 import codesquad.question.Question;
 import codesquad.user.User;
 import codesquad.utils.TimeFormatter;
-import org.apache.tomcat.jni.Local;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -24,7 +23,7 @@ public class Answer {
     private User user;
 
     @CreationTimestamp
-    private LocalDateTime time;
+    private LocalDateTime createDate;
 
     @Column(nullable = false, length = 500)
     private String comment;
@@ -62,12 +61,12 @@ public class Answer {
         this.user = user;
     }
 
-    public String getTime() {
-        return TimeFormatter.commonFormat(this.time);
+    public String getCreateDate() {
+        return TimeFormatter.commonFormat(this.createDate);
     }
 
-    public void setTime(LocalDateTime time) {
-        this.time = time;
+    public void setCreateDate(LocalDateTime createDate) {
+        this.createDate = createDate;
     }
 
     public String getComment() {
@@ -84,7 +83,7 @@ public class Answer {
                 "id=" + id +
                 ", question=" + question +
                 ", user=" + user +
-                ", time='" + time + '\'' +
+                ", createDate='" + createDate + '\'' +
                 ", comment='" + comment + '\'' +
                 '}';
     }

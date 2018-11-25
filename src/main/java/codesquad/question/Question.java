@@ -26,7 +26,7 @@ public class Question {
     private User user;
 
     @CreationTimestamp
-    private LocalDateTime time;
+    private LocalDateTime createDate;
 
     Question() {
     }
@@ -74,12 +74,12 @@ public class Question {
         return user.matchUser(sessionedUser);
     }
 
-    public String getTime() {
-        return TimeFormatter.commonFormat(time);
+    public String getCreateDate() {
+        return TimeFormatter.commonFormat(createDate);
     }
 
-    public void setTime(LocalDateTime time) {
-        this.time = time;
+    public void setCreateDate(LocalDateTime createDate) {
+        this.createDate = createDate;
     }
 
     public boolean update(Question updatedQuestion, User sessionedUser) {
@@ -98,7 +98,7 @@ public class Question {
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
                 ", user='" + user + '\'' +
-                ", time='" + time + '\'' +
+                ", createDate='" + createDate + '\'' +
                 '}';
     }
 

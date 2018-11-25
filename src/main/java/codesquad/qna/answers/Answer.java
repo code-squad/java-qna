@@ -32,8 +32,11 @@ public class Answer {
     @LastModifiedBy
     private LocalDateTime curDate;
 
+    private boolean deleted;
+
     public Answer() {
         this.curDate = LocalDateTime.now();
+        this.deleted = false;
     }
 
     public long getId() {
@@ -76,13 +79,23 @@ public class Answer {
         this.curDate = curDate;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
     public void updateContents(String contents, User user){
-        if(!this.matchWriter(user)) throw new IllegalArgumentException("permission denied.");
+        if(!this.matchWriter(user)) throw new IllegalStateException("permission denied. 다른 사람의 글은 수정할 수 없습니다.");
         this.curDate = LocalDateTime.now();
         this.contents = contents;
     }
 
     public boolean matchWriter(User user){
         return this.writer.equals(user);
+    }
+
+    public void delete(User user) {
+        if(!this.matchWriter(user)) throw new IllegalStateException("permission denied. 다른 사람의 글은 삭제할 수 없습니다.");
+        this.deleted = true;
+        this.curDate = LocalDateTime.now();
     }
 }

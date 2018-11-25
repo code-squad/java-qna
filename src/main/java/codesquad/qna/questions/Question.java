@@ -39,9 +39,12 @@ public class Question {
     @OneToMany(mappedBy = "question")
     private List<Answer> answers;
 
+    private boolean deleted;
+
     public Question() {
         this.curDate = LocalDateTime.now();
         this.answers = new ArrayList<>();
+        this.deleted = false;
     }
 
     public String getCurDate() {
@@ -93,11 +96,19 @@ public class Question {
     }
 
     public int getAnswersCount(){
-        return answers.size();
+        int count = 0;
+        for (Answer answer : answers) {
+            if(!answer.isDeleted()) count++;
+        }
+        return count;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
     }
 
     public void update(Question otherQuestion){
-        if(!otherQuestion.matchWriter(this.writer)) throw new IllegalArgumentException("permission denied.");
+        if(!otherQuestion.matchWriter(this.writer)) throw new IllegalStateException("permission denied. 다른 사람의 글은 수정할 수 없습니다.");
         this.title = otherQuestion.title;
         this.contents = otherQuestion.contents;
         this.curDate = otherQuestion.curDate;
@@ -105,5 +116,26 @@ public class Question {
 
     public boolean matchWriter(User user){
         return this.writer.equals(user);
+    }
+
+    public void delete(User user) {
+        if(!this.matchWriter(user)) throw new IllegalStateException("permission denied. 다른 사람의 글은 삭제할 수 없습니다.");
+        this.deleteAnswers(user);
+        this.deleted = true;
+        this.curDate = LocalDateTime.now();
+    }
+
+    private void deleteAnswers(User user){
+        if(!isAnswersPermission(user)) throw new IllegalStateException("permission denied. 다른 사람의 답변이 존재하여 삭제할 수 없습니다.");
+        for (Answer answer : answers) {
+            answer.delete(user);
+        }
+    }
+
+    private boolean isAnswersPermission(User user){
+        for (Answer answer : answers) {
+            if(!answer.matchWriter(user)) return false;
+        }
+        return true;
     }
 }

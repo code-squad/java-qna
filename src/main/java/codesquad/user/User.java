@@ -71,7 +71,9 @@ public class User {
     }
 
     public void update(User modifiedUser) {
-        if(!modifiedUser.isUser(this.userId)) throw new IllegalArgumentException("permission denied.");
+        if(!modifiedUser.isUser(this.userId) || modifiedUser.matchPassword(this.password))
+            throw new IllegalStateException("permission denied.");
+
         this.name = modifiedUser.name;
         this.email = modifiedUser.email;
     }

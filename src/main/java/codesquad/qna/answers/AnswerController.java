@@ -34,20 +34,30 @@ public class AnswerController {
     }
 
     @PutMapping("/{id}")
-    public String updateAnswer(@PathVariable long id, String contents, HttpSession session){
+    public String updateAnswer(@PathVariable long id, String contents, HttpSession session, Model model){
         if(!HttpSessionUtils.existLoginUserFromSession(session)) return "redirect:/user/login";
         Answer answer = answerRepository.findById(id).orElse(null);
-        answer.updateContents(contents, HttpSessionUtils.getLoginUserFromSession(session));
+        try {
+            answer.updateContents(contents, HttpSessionUtils.getLoginUserFromSession(session));
+        } catch (IllegalStateException e){
+            model.addAttribute("errorMessage", e.getMessage());
+            return "qna/modify_failed";
+        }
         answerRepository.save(answer);
         return "redirect:..";
     }
 
     @DeleteMapping("{id}")
-    public String deleteAnswer(@PathVariable long id, HttpSession session){
+    public String deleteAnswer(@PathVariable long id, HttpSession session, Model model){
         if(!HttpSessionUtils.existLoginUserFromSession(session)) return "redirect:/user/login";
         Answer answer = answerRepository.findById(id).orElse(null);
-        if(!answer.matchWriter(HttpSessionUtils.getLoginUserFromSession(session))) return "qna/modify_failed";
-        answerRepository.delete(answer);
+        try{
+            answer.delete(HttpSessionUtils.getLoginUserFromSession(session));
+        } catch (IllegalStateException e){
+            model.addAttribute("errorMessage", e.getMessage());
+            return "qna/modify_failed";
+        }
+        answerRepository.save(answer);
         return "redirect:..";
     }
 }

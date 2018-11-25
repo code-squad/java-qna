@@ -42,11 +42,12 @@ public class UserController {
     @PutMapping("/{id}")
     public String updateUser(@PathVariable long id, User modifiedUser, HttpSession session){
         if(!HttpSessionUtils.existLoginUserFromSession(session)) return "redirect:/user/login";
-        if(!HttpSessionUtils.getLoginUserFromSession(session).matchId(id)) return "user/list_failed";
-
         User user = userRepository.findById(id).orElse(null);
-        if(!user.matchPassword(modifiedUser)) return "user/updateForm_failed";
-        user.update(modifiedUser);
+        try {
+            user.update(modifiedUser);
+        } catch (IllegalStateException e){
+            return "user/updateFrom_failed";
+        }
         userRepository.save(user);
         return "redirect:/users";
     }

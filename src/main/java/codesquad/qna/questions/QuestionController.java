@@ -48,20 +48,30 @@ public class QuestionController {
     }
 
     @PutMapping("/{id}")
-    public String updateQuestion(@PathVariable long id, Question modifiedQuestion, HttpSession session){
+    public String updateQuestion(@PathVariable long id, Question modifiedQuestion, HttpSession session, Model model){
         if(!HttpSessionUtils.existLoginUserFromSession(session)) return "redirect:/user/login";
         Question question = questionRepository.findById(id).orElse(null);
-        question.update(modifiedQuestion);
+        try {
+            question.update(modifiedQuestion);
+        }catch (IllegalStateException e){
+            model.addAttribute("errorMessage", e.getMessage());
+            return "qna/modify_failed";
+        }
         questionRepository.save(question);
         return "redirect:/";
     }
 
     @DeleteMapping("/{id}")
-    public String deleteQuestion(@PathVariable long id, HttpSession session){
+    public String deleteQuestion(@PathVariable long id, HttpSession session, Model model){
         if(!HttpSessionUtils.existLoginUserFromSession(session)) return "redirect:/user/login";
         Question question = questionRepository.findById(id).orElse(null);
-        if(!question.matchWriter(HttpSessionUtils.getLoginUserFromSession(session))) return "qna/modify_failed";
-        questionRepository.delete(question);
+        try {
+            question.delete(HttpSessionUtils.getLoginUserFromSession(session));
+        }catch (IllegalStateException e){
+            model.addAttribute("errorMessage", e.getMessage());
+            return "qna/modify_failed";
+        }
+        questionRepository.save(question);
         return "redirect:/";
     }
 

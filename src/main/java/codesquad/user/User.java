@@ -6,21 +6,25 @@ import javax.persistence.*;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
+
     @Column(nullable=false, length=20, unique=true)
     private String userId;
+
     @Column(nullable=false, length=12)
     private String password;
+
     @Column(nullable=false, length=12)
     private String name;
+
     @Column(nullable=false, length=50)
     private String email;
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -56,24 +60,21 @@ public class User {
         this.email = email;
     }
 
-    public void update(User updatedUser) {
-        setPassword(updatedUser.getPassword());
-        setName(updatedUser.getName());
-        setEmail(updatedUser.getEmail());
+    void update(User updatedUser) {
+        this.setName(updatedUser.getName());
+        this.setPassword(updatedUser.getPassword());
+        this.setEmail(updatedUser.getEmail());
     }
 
-    public boolean matchPassword(String password) {
-        if (password == null) return false;
-        return this.password.equals(password);
-    }
-
-    public boolean matchId(Long id) {
-        if (id == null) return false;
-        return this.id.equals(id);
+    boolean matchId(long id) {
+        return this.id == id;
     }
 
     public boolean matchUserId(String userId) {
-        if (userId == null) return false;
         return this.userId.equals(userId);
+    }
+
+    boolean matchPassword(String password) {
+        return this.password.equals(password);
     }
 }

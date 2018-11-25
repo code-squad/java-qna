@@ -1,21 +1,20 @@
-package codesquad.qna;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+package codesquad.question;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long index;
-    @Column(nullable=false, length=20)
+    private long id;
+
+    @Column(nullable = false, length=20)
     private String writer;
-    @Column(nullable=false, length=100)
+
+    @Column(nullable = false, length=100)
     private String title;
-    @Column(nullable=false, length=1000)
+
+    @Lob
     private String contents;
 
     private Question() {}
@@ -31,12 +30,12 @@ public class Question {
         return new Question(writer, title, contents);
     }
 
-    public Long getIndex() {
-        return index;
+    public long getId() {
+        return id;
     }
 
-    public void setIndex(Long index) {
-        this.index = index;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getWriter() {
@@ -63,8 +62,8 @@ public class Question {
         this.contents = contents;
     }
 
-    public void update(Question updatedQuestion) {
-        setTitle(updatedQuestion.getTitle());
-        setContents(updatedQuestion.getContents());
+    void update(Question updatedQuestion) {
+        this.setTitle(updatedQuestion.getTitle());
+        this.setContents(updatedQuestion.getContents());
     }
 }

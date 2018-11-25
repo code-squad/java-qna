@@ -1,18 +1,18 @@
-package codesquad;
+package codesquad.util;
 
 import codesquad.user.User;
+
 import javax.servlet.http.HttpSession;
 
-public class HttpSessionUtils {
-    public static final String USER_SESSION_KEY = "loginUser";
+public class SessionUtil {
+    public static final String USER_SESSION_KEY = "sessionedUser";
 
-    public static boolean isLoginUser(HttpSession session) {
+    public static boolean isSessionedUser(HttpSession session) {
         return session.getAttribute(USER_SESSION_KEY) != null;
     }
 
     public static User getUserFromSession(HttpSession session) {
-        if (!isLoginUser(session)) return null;
-
+        if (!isSessionedUser(session)) return null;
         return (User)session.getAttribute(USER_SESSION_KEY);
     }
 }

@@ -57,7 +57,7 @@ public class QuestionController {
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
         if(!question.update(updatedQuestion, sessionedUser)) return "qna/error";
         questionRepository.save(question);
-        return "redirect:/questions/" + id;
+        return String.format("redirect:/questions/%s", id);
     }
 
     @GetMapping("/{id}")

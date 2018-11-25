@@ -40,7 +40,7 @@ public class AnswerController {
                 comment
         );
         answerRepository.save(answer);
-        return "redirect:/questions/" + questionId;
+        return String.format("redirect:/questions/", questionId);
     }
 
     @DeleteMapping("/{answerId}")
@@ -50,6 +50,6 @@ public class AnswerController {
         Answer answer = answerRepository.findById(answerId).orElse(null);
         if(!sessionedUser.matchId(answer.getUser().getId())) return "qna/error";
         answerRepository.delete(answer);
-        return "redirect:/questions/" + questionId;
+        return String.format("redirect:/questions/", questionId);
     }
 }

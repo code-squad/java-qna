@@ -1,0 +1,2 @@
+INSERT INTO USER (user_id_fk, user_id, password, name, email) VALUES (1, 'DobyIsFree', '1', '마구니를쫓는자', 'lkhlkh09@slipp.net');
+INSERT INTO USER (user_id_fk, user_id, password, name, email) VALUES (2, 'ButIcannot', '1', '마구니가가득한자', 'sanjigi@slipp.net');

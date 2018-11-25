@@ -1,10 +1,8 @@
 {{#partial "contents"}}
 <script>
+
     function pop() {
-        var source = $('#answerTemplate').html();
-        var template = Handlebars.compile(source);
-        $('#modifyModal').append(source);
-        $('#modifyModal').dialog();
+        $("#main").dialog();
     }
 </script>
 <div class="container" id="main">
@@ -102,9 +100,7 @@
         </div>
     </div>
 </div>
-<div id="modifyModal" title="modal">
 
-</div>
 <script type="text/template" id="answerTemplate">
 	<article class="article">
 		<div class="article-header">
@@ -112,7 +108,7 @@
 				<img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
 			</div>
 			<div class="article-header-text">
-				<a href="#" class="article-author-name">{{sessionUser.name}}</a>
+				<a href="#" class="article-author-name">{0}</a>
 				<div class="article-header-time">{1}</div>
 			</div>
 		</div>

@@ -22,32 +22,26 @@ public class ControllerExceptionHandler {
         return "/abc";
     }
 
-    @ExceptionHandler(value = UserIsNotLoginException.class)
-    public String loginExcetion() {
-        return "redirect:/users/login";
-    }
-
-    @ExceptionHandler(value = LoginUseIsNotMatchException.class)
-    public String notMatchUserExcetion() {
-        return "/user/notMatchUser";
-    }
-
     @ExceptionHandler(value = UserException.class)
-    public String userExceotion() {
-        return "/user/login_failed";
+    public String loginExcetion(RuntimeException ex,Model model) {
+        logger.debug(ex.getMessage());
+        model.addAttribute("errorMessage",ex.getMessage());
+        return "/user/login";
     }
 
     @ExceptionHandler(value = UpdatefailedException.class)
-    public String updatefailedException(Model model, HttpSession session) {
+    public String updatefailedException(RuntimeException ex, Model model, HttpSession session) {
         logger.debug("update_failed");
         model.addAttribute("user", HttpSessionUtils.getUserFormSession(session));
-        return "/user/update_failed";
+        model.addAttribute("errorMessage", ex.getMessage());
+        return "/user/updateForm";
     }
 
     @ExceptionHandler(value = ListFailedException.class)
-    public String listFailedException(Model model) {
+    public String listFailedException(RuntimeException ex, Model model) {
         model.addAttribute("users", userRepository.findAll());
-        return "/user/list_failed";
+        model.addAttribute("errorMessage", ex.getMessage());
+        return "/user/list";
     }
 
 

@@ -46,7 +46,7 @@ public class UserController {
         logger.info("login user");
         User maybeUser = userRepository.findByUserId(userId)
                 .filter(user -> user.matchPassword(password))
-                .orElseThrow(UserException::new);
+                .orElseThrow(() -> new UserException("비밀번호나 아이디가 다릅니다."));
         session.setAttribute(HttpSessionUtils.USER_SESSION_KEY,maybeUser);
         return "redirect:/";
 
@@ -85,7 +85,7 @@ public class UserController {
     @GetMapping("/{id}")
     public String profile(Model model, @PathVariable long id) {
         logger.info("user profile");
-        User user = userRepository.findById(id).orElse(null);
+        User user = userRepository.findById(id).orElseThrow(() -> new UserException("아이디가 없습니다."));
         model.addAttribute("user", user);
         return "user/profile";
     }

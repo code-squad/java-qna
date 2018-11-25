@@ -1,11 +1,13 @@
 package codesquad.answer;
 
 import codesquad.exception.AnswerException;
+import codesquad.exception.UserException;
 import codesquad.question.Question;
-import codesquad.exception.LoginUseIsNotMatchException;
 import codesquad.user.User;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Answer {
@@ -25,6 +27,8 @@ public class Answer {
     @Lob
     private String contents;
 
+    private LocalDateTime date;
+
     public Answer() {
     }
 
@@ -32,6 +36,13 @@ public class Answer {
         this.question = question;
         this.user = user;
         this.contents = contents;
+    }
+
+    public String getFormattedDate() {
+        if (this.date == null) {
+            return "";
+        }
+        return date.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
     }
 
     public long getId() {
@@ -68,7 +79,7 @@ public class Answer {
 
     public void matchSessionUser(User sessionUser) {
         if (!sessionUser.equals(this.user)) {
-            throw new LoginUseIsNotMatchException();
+            throw new UserException("작성자와 아이디가 다릅니다. 다시 로그인 해주세요");
         }
     }
 

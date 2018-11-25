@@ -1,25 +1,22 @@
 package codesquad;
 
+import codesquad.exception.UserException;
 import codesquad.user.User;
-import codesquad.exception.UserIsNotLoginException;
 
 import javax.servlet.http.HttpSession;
 
 public class HttpSessionUtils {
     public static final String USER_SESSION_KEY = "loginUser";
 
-    public static boolean isLoginUser(HttpSession session) {
+    public static void isLoginUser(HttpSession session) {
         Object sessionUser = session.getAttribute(USER_SESSION_KEY);
         if(sessionUser == null) {
-            throw new UserIsNotLoginException();
+            throw new UserException("로그인 하지 않았습니다. 로그인 해주세요");
         }
-        return true;
     }
 
     public static User getUserFormSession(HttpSession session){
-        if (!isLoginUser(session)) {
-            return null;
-        }
+        isLoginUser(session);
         return (User)session.getAttribute(USER_SESSION_KEY);
     }
 }

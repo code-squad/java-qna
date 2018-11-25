@@ -29,7 +29,6 @@ public class QuestionController {
     @GetMapping("/form")
     public String questions(HttpSession session,Model model) {
         logger.info("질문하기");
-        HttpSessionUtils.isLoginUser(session);
         model.addAttribute("User",HttpSessionUtils.getUserFormSession(session));
         return "/qna/form";
     }
@@ -37,8 +36,8 @@ public class QuestionController {
     @PostMapping("")
     public String questions(String title,String contents, HttpSession session) {
         logger.info("qna 인스턴스 생성");
-        User sessionUser = HttpSessionUtils.getUserFormSession(session);
-        Question newQuestion = new Question(sessionUser,title,contents);
+        User loginUser = HttpSessionUtils.getUserFormSession(session);
+        Question newQuestion = new Question(loginUser,title,contents);
 
         questionRepository.save(newQuestion);
         return "redirect:/";
@@ -49,9 +48,6 @@ public class QuestionController {
         logger.info("질문 상세 페이지");
         Question question = questionRepository.findById(id).orElseThrow(QuestionException::new);
 
-        model.addAttribute("answers",answerRepository.findByQuestion(question));
-        // 질문이 댓글의 정보를 리스트로 가지고 있다면 중복으로 이렇게 안해도됨 수정수정
-        model.addAttribute("count",((Collection)answerRepository.findByQuestion(question)).size());
         model.addAttribute("question", question);
 
         return "/qna/show";
@@ -87,9 +83,9 @@ public class QuestionController {
     }
 
     private Question getMatchingQuestion(HttpSession session, @PathVariable long id) {
-        User sessionUser = HttpSessionUtils.getUserFormSession(session);
+        User loginUser = HttpSessionUtils.getUserFormSession(session);
         Question question = questionRepository.findById(id).orElseThrow(QuestionException::new);
-        question.matchWrite(sessionUser);
+        question.matchWrite(loginUser);
         return question;
     }
 

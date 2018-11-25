@@ -2,9 +2,12 @@
 <div class="container" id="main">
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default content-main">
+            {{#user}}
+            {{#errorMessage}}
+            <div class="alert alert-danger" role="alert">{{this}}</div>
+            {{/errorMessage}}
             <form name="question" method="post" action="/users/{{id}}">
                 <input type="hidden" name="_method" value="put"/>
-                {{#user}}
                 <div class="form-group">
                     <label for="userId">사용자 아이디</label>
                     <input class="form-control" id="userId" name="userId" value="{{userId}}" placeholder="User ID" readonly>

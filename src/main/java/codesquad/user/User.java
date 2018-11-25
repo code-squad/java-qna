@@ -62,7 +62,7 @@ public class User {
 
     public void update(User newUser) {
         if (!newUser.matchPassword(this.password)) {
-            throw new UpdatefailedException();
+            throw new UpdatefailedException("비밀번호가 다릅니다. 다시 입력해주세요");
         }
         this.password = newUser.password;
         this.name = newUser.name;
@@ -111,7 +111,7 @@ public class User {
 
     public void matchId(long id) {
         if (this.id != id) {
-            throw new ListFailedException();
+            throw new ListFailedException("본인의 아이디를 선택해 주세요");
         }
 
     }

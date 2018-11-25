@@ -1,5 +1,6 @@
 package codesquad.question;
 
+import codesquad.exception.LoginUseIsNotMatchException;
 import codesquad.user.User;
 
 import javax.persistence.*;
@@ -40,8 +41,15 @@ public class Question {
     }
 
     public void update(Question newQuestion) {
+        if (!newQuestion.matchId(this.id)) {
+            throw new LoginUseIsNotMatchException();
+        }
         this.title = newQuestion.title;
         this.contents = newQuestion.contents;
+    }
+
+    private boolean matchId(long id) {
+        return this.id == id;
     }
 
     public User getWriter() {
@@ -78,11 +86,10 @@ public class Question {
                 '}';
     }
 
-    public boolean matchWrite(User user) {
-        if (user == null) {
-            return false;
+    public void matchWrite(User user) {
+        if (!user.equals(this.writer)) {
+            throw new LoginUseIsNotMatchException();
         }
-        return user.equals(this.writer);
     }
 }
 

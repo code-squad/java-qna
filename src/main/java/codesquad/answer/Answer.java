@@ -1,6 +1,8 @@
 package codesquad.answer;
 
+import codesquad.exception.AnswerException;
 import codesquad.question.Question;
+import codesquad.exception.LoginUseIsNotMatchException;
 import codesquad.user.User;
 
 import javax.persistence.*;
@@ -64,14 +66,17 @@ public class Answer {
         this.contents = contents;
     }
 
-    public boolean matchSessionUser(User sessionUser) {
-        return this.user.equals(sessionUser);
+    public void matchSessionUser(User sessionUser) {
+        if (!sessionUser.equals(this.user)) {
+            throw new LoginUseIsNotMatchException();
+        }
     }
 
     public void update(Answer updatedAnswer) {
-        if (updatedAnswer.matchId(this.id)) {
-            this.contents = updatedAnswer.contents;
+        if (!updatedAnswer.matchId(this.id)) {
+            throw new AnswerException("아이디가 다름");
         }
+        this.contents = updatedAnswer.contents;
     }
 
     private boolean matchId(long id) {

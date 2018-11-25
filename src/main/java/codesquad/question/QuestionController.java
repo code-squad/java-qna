@@ -4,6 +4,7 @@ package codesquad.question;
 
 import codesquad.HttpSessionUtils;
 import codesquad.answer.AnswerRepository;
+import codesquad.exception.QuestionException;
 import codesquad.user.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,9 +29,7 @@ public class QuestionController {
     @GetMapping("/form")
     public String questions(HttpSession session,Model model) {
         logger.info("질문하기");
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            return "redirect:/users/login";
-        }
+        HttpSessionUtils.isLoginUser(session);
         model.addAttribute("User",HttpSessionUtils.getUserFormSession(session));
         return "/qna/form";
     }
@@ -38,9 +37,6 @@ public class QuestionController {
     @PostMapping("")
     public String questions(String title,String contents, HttpSession session) {
         logger.info("qna 인스턴스 생성");
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            return "redirect:/users/login";
-        }
         User sessionUser = HttpSessionUtils.getUserFormSession(session);
         Question newQuestion = new Question(sessionUser,title,contents);
 
@@ -51,28 +47,21 @@ public class QuestionController {
     @GetMapping("/{id}")
     public String profile(Model model, @PathVariable long id) {
         logger.info("질문 상세 페이지");
-        Question question = questionRepository.findById(id).orElse(null);
+        Question question = questionRepository.findById(id).orElseThrow(QuestionException::new);
 
         model.addAttribute("answers",answerRepository.findByQuestion(question));
+        // 질문이 댓글의 정보를 리스트로 가지고 있다면 중복으로 이렇게 안해도됨 수정수정
         model.addAttribute("count",((Collection)answerRepository.findByQuestion(question)).size());
         model.addAttribute("question", question);
+
         return "/qna/show";
     }
 
     @GetMapping("/{id}/form")
     public String updateForm(Model model, @PathVariable long id, HttpSession session) {
         logger.info("qna 수정폼");
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            return "redirect:/users/login";
-        }
-        User sessionUser = HttpSessionUtils.getUserFormSession(session);
-        Question question = questionRepository.findById(id).orElse(null);
 
-        // 아이디가 다를경우 로그아웃 해서 로그인창 띄움 중복 리펙토링 하자
-        if (!question.matchWrite(sessionUser)) {
-            session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
-            return "redirect:/users/login";
-        }
+        Question question = getMatchingQuestion(session, id);
 
         model.addAttribute("question", question);
         return "qna/updateForm";
@@ -81,7 +70,7 @@ public class QuestionController {
     @PutMapping("/{id}")
     public String update(@PathVariable long id, Question newQuestion) {
         logger.info("update");
-        Question question = questionRepository.findById(id).orElse(null);
+        Question question = questionRepository.findById(id).orElseThrow(QuestionException::new);
         question.update(newQuestion);
         questionRepository.save(question);
         return "redirect:/questions/{id}";
@@ -90,19 +79,18 @@ public class QuestionController {
     @DeleteMapping("/{id}")
     public String delete(HttpSession session, @PathVariable long id){
         logger.info("delete");
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            return "redirect:/users/login";
-        }
-        User sessionUser = HttpSessionUtils.getUserFormSession(session);
-        Question question = questionRepository.findById(id).orElse(null);
 
-        //아이디와 질문아이디와 다를경우 로그아웃 하고 로그인 화면 띄움
-        if (!question.matchWrite(sessionUser)) {
-            session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
-            return "/user/update_failed";
-        }
+        Question question = getMatchingQuestion(session, id);
+
         questionRepository.delete(question);
         return "redirect:/";
+    }
+
+    private Question getMatchingQuestion(HttpSession session, @PathVariable long id) {
+        User sessionUser = HttpSessionUtils.getUserFormSession(session);
+        Question question = questionRepository.findById(id).orElseThrow(QuestionException::new);
+        question.matchWrite(sessionUser);
+        return question;
     }
 
 }

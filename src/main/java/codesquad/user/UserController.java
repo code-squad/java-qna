@@ -1,6 +1,7 @@
 package codesquad.user;
 
 import codesquad.HttpSessionUtils;
+import codesquad.exception.UserException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/users")
@@ -43,19 +43,18 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
-        Optional<User> mybeUser = userRepository.findByUserId(userId);
-        if (mybeUser.isPresent()) {
-            User user = mybeUser.get();
-            if (user.matchPassword(password)) {
-                session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
-                return "redirect:/";
-            }
-        }
-        return "/user/login_failed";
+        logger.info("login user");
+        User maybeUser = userRepository.findByUserId(userId)
+                .filter(user -> user.matchPassword(password))
+                .orElseThrow(UserException::new);
+        session.setAttribute(HttpSessionUtils.USER_SESSION_KEY,maybeUser);
+        return "redirect:/";
+
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
+        logger.info("logout user");
         session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
         return "redirect:/";
     }
@@ -63,14 +62,11 @@ public class UserController {
     @GetMapping("/{id}/form")
     public String updateForm(HttpSession session, Model model, @PathVariable long id) {
         logger.info("user update form");
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            return "redirect:/users/login";
-        }
+        HttpSessionUtils.isLoginUser(session);
+
         User loginUser = HttpSessionUtils.getUserFormSession(session);
-        if (!loginUser.matchId(id)) {
-            model.addAttribute("users", userRepository.findAll());
-            return "/user/list_failed";
-        }
+        loginUser.matchId(id);
+
         model.addAttribute("user", loginUser);
         return "user/updateForm";
     }
@@ -78,11 +74,10 @@ public class UserController {
     @PutMapping("/{id}")
     public String update(HttpSession session, User updatedUser) {
         logger.info("update user");
-        User loginUser = (User) session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
-        if (!loginUser.matchPassword(updatedUser)) {
-            return "/user/update_failed";
-        }
+
+        User loginUser = HttpSessionUtils.getUserFormSession(session);
         loginUser.update(updatedUser);
+
         userRepository.save(loginUser);
         return "redirect:/users";
     }

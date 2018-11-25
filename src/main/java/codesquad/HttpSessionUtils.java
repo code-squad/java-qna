@@ -1,6 +1,7 @@
 package codesquad;
 
 import codesquad.user.User;
+import codesquad.exception.UserIsNotLoginException;
 
 import javax.servlet.http.HttpSession;
 
@@ -10,7 +11,7 @@ public class HttpSessionUtils {
     public static boolean isLoginUser(HttpSession session) {
         Object sessionUser = session.getAttribute(USER_SESSION_KEY);
         if(sessionUser == null) {
-            return false;
+            throw new UserIsNotLoginException();
         }
         return true;
     }

@@ -1,5 +1,8 @@
 package codesquad.user;
 
+import codesquad.exception.ListFailedException;
+import codesquad.exception.UpdatefailedException;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -58,11 +61,12 @@ public class User {
 
 
     public void update(User newUser) {
-        if (newUser.matchId(this.id)) {
-            this.password = newUser.password;
-            this.name = newUser.name;
-            this.email = newUser.email;
+        if (!newUser.matchPassword(this.password)) {
+            throw new UpdatefailedException();
         }
+        this.password = newUser.password;
+        this.name = newUser.name;
+        this.email = newUser.email;
     }
 
     public boolean equalsOfString(String o) {
@@ -105,8 +109,11 @@ public class User {
         return this.password.equals(otherUser.password);
     }
 
-    public boolean matchId(long id) {
-        return this.id == id;
+    public void matchId(long id) {
+        if (this.id != id) {
+            throw new ListFailedException();
+        }
+
     }
 
     public boolean matchUserId(String writer) {

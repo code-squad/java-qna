@@ -37,8 +37,7 @@ public class AnswerController {
     public String updateAnswer(@PathVariable long id, String contents, HttpSession session){
         if(!HttpSessionUtils.existLoginUserFromSession(session)) return "redirect:/user/login";
         Answer answer = answerRepository.findById(id).orElse(null);
-        if(!answer.matchWriter(HttpSessionUtils.getLoginUserFromSession(session))) return "qna/modify_failed";
-        answer.updateContents(contents);
+        answer.updateContents(contents, HttpSessionUtils.getLoginUserFromSession(session));
         answerRepository.save(answer);
         return "redirect:..";
     }

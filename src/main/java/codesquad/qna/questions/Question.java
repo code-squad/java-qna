@@ -97,6 +97,7 @@ public class Question {
     }
 
     public void update(Question otherQuestion){
+        if(!otherQuestion.matchWriter(this.writer)) throw new IllegalArgumentException("permission denied.");
         this.title = otherQuestion.title;
         this.contents = otherQuestion.contents;
         this.curDate = otherQuestion.curDate;

@@ -51,8 +51,6 @@ public class QuestionController {
     public String updateQuestion(@PathVariable long id, Question modifiedQuestion, HttpSession session){
         if(!HttpSessionUtils.existLoginUserFromSession(session)) return "redirect:/user/login";
         Question question = questionRepository.findById(id).orElse(null);
-        if(!question.matchWriter(HttpSessionUtils.getLoginUserFromSession(session))) return "qna/modify_failed";
-
         question.update(modifiedQuestion);
         questionRepository.save(question);
         return "redirect:/";

@@ -76,7 +76,8 @@ public class Answer {
         this.curDate = curDate;
     }
 
-    public void updateContents(String contents){
+    public void updateContents(String contents, User user){
+        if(!this.matchWriter(user)) throw new IllegalArgumentException("permission denied.");
         this.curDate = LocalDateTime.now();
         this.contents = contents;
     }

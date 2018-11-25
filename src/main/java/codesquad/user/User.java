@@ -71,7 +71,7 @@ public class User {
     }
 
     public void update(User modifiedUser) {
-        if(!modifiedUser.matchId(this.id)) return ;
+        if(!modifiedUser.isUser(this.userId)) throw new IllegalArgumentException("permission denied.");
         this.name = modifiedUser.name;
         this.email = modifiedUser.email;
     }
@@ -86,10 +86,6 @@ public class User {
 
     public boolean matchId(long id){
         return this.id == id;
-    }
-
-    public boolean matchName(String otherName){
-        return this.name.equals(otherName);
     }
 
     @Override

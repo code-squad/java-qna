@@ -17,8 +17,8 @@ import java.util.List;
 public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
-    @Autowired
-    private AnswerRepository answerRepository;
+//    @Autowired
+//    private AnswerRepository answerRepository;
 
     @GetMapping("")
     public String question(HttpSession session) {
@@ -63,10 +63,7 @@ public class QuestionController {
     @GetMapping("/{id}")
     public String detail(@PathVariable Long id, Model model) {
         Question question = getQuestion(id);
-        List<Answer> answers = answerRepository.findByQuestionId(id);
         model.addAttribute("question", question);
-        model.addAttribute("answers", answers);
-        model.addAttribute("answerSize", answers.size());
         return "qna/show";
     }
 

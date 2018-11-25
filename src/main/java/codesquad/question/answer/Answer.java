@@ -25,7 +25,7 @@ public class Answer {
     @CreationTimestamp
     private LocalDateTime createDate;
 
-    @Column(nullable = false, length = 500)
+    @Lob
     private String comment;
 
     Answer() {

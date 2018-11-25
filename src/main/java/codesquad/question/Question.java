@@ -1,11 +1,13 @@
 package codesquad.question;
 
+import codesquad.question.answer.Answer;
 import codesquad.user.User;
 import codesquad.utils.TimeFormatter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class Question {
@@ -27,6 +29,10 @@ public class Question {
 
     @CreationTimestamp
     private LocalDateTime createDate;
+
+    @OneToMany(mappedBy = "question")
+    @OrderBy("id ASC")
+    private List<Answer> answers;
 
     Question() {
     }
@@ -80,6 +86,18 @@ public class Question {
 
     public void setCreateDate(LocalDateTime createDate) {
         this.createDate = createDate;
+    }
+
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public int getAnswersSize() {
+        return answers.size();
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
     }
 
     public boolean update(Question updatedQuestion, User sessionedUser) {

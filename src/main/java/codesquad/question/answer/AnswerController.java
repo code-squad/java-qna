@@ -6,7 +6,6 @@ import codesquad.question.QuestionRepository;
 import codesquad.user.User;
 import codesquad.user.UserNotFoundException;
 import codesquad.user.UserRepository;
-import codesquad.utils.TimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,7 +39,7 @@ public class AnswerController {
                 comment
         );
         answerRepository.save(answer);
-        return String.format("redirect:/questions/", questionId);
+        return String.format("redirect:/questions/%s", questionId);
     }
 
     @DeleteMapping("/{answerId}")

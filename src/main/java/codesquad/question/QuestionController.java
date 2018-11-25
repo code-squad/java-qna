@@ -1,6 +1,9 @@
 package codesquad.question;
 
+import codesquad.aspect.LoginCheck;
+import codesquad.aspect.WriterCheck;
 import codesquad.user.User;
+import codesquad.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,11 +11,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
-import java.util.Properties;
 
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
+    @Autowired
+    UserRepository userRepository;
     @Autowired
     QuestionRepository questionRepository;
     @Autowired
@@ -25,50 +29,49 @@ public class QuestionController {
     }
 
     @PostMapping
-    public String create(Question question, HttpSession session) {
-        question.setWriter((User) session.getAttribute(User.SESSION_NAME));
+    @LoginCheck
+    public String write(HttpSession session, Question question) {
+        User user = (User) session.getAttribute(User.SESSION_NAME);
+        question.setWriter(user);
+        userRepository.save(user);
         questionRepository.save(question);
         return "redirect:/questions";
     }
 
     @GetMapping("/{index}")
-    public String show(Model model, @PathVariable long index) {
-        Optional<Question> question = questionRepository.findById(index);
-        if (question.isPresent()) {
-            model.addAttribute("question", question.get());
+    public String read(Model model, @PathVariable long index) {
+        Optional<Question> maybeQuestion = questionRepository.findById(index);
+        if (maybeQuestion.isPresent()) {
+            model.addAttribute("question", maybeQuestion.get());
             return "/question/show";
         }
-        return "redirect:/questions";
+        return "redirect:/error?wrong_access";
     }
 
     @GetMapping("/{index}/form")
-    public String update(Model model, @PathVariable long index, HttpSession session) {
-        System.out.println();
-        Optional<Question> question = questionRepository.findById(index);
+    @LoginCheck
+    public String updateForm(HttpSession session, Model model, @PathVariable long index) {
+        Optional<Question> maybeQuestion = questionRepository.findById(index);
         User user = (User) session.getAttribute(User.SESSION_NAME);
-        if (question.isPresent() && question.get().isSameWriter(user)) {
-            model.addAttribute("question", question.get());
+        if (maybeQuestion.isPresent() && maybeQuestion.get().isSameWriter(user)) {
+            model.addAttribute("question", maybeQuestion.get());
             return "/question/update_form";
         }
-        return "redirect:/error";
+        return "redirect:/error?update_form";
     }
 
     @GetMapping("/form")
-    public String form(HttpSession session) {
-        User user = (User) session.getAttribute(User.SESSION_NAME);
-        if (user == null) {
-            return "/users/login";
-        }
+    @LoginCheck
+    public String writeForm(HttpSession session, Model model) {
         return "/question/form";
     }
 
     @PutMapping("/{id}")
-    public String update(@PathVariable long id, HttpSession session, Question updateQuestion) {
+    @LoginCheck
+    @WriterCheck
+    public String update(HttpSession session, @PathVariable long id, Question updateQuestion) {
         Optional<Question> maybeQuestion = questionRepository.findById(id);
         User user = (User) session.getAttribute(User.SESSION_NAME);
-        if (user == null) {
-            return "users/login";
-        }
         if (maybeQuestion.isPresent() && maybeQuestion.get().isSameWriter(user)) {
             updateQuestion.setIndex(maybeQuestion.get());
             questionRepository.save(updateQuestion);
@@ -78,12 +81,10 @@ public class QuestionController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable long id, HttpSession session) {
+    @LoginCheck
+    public String delete(HttpSession session, @PathVariable long id) {
         Optional<Question> question = questionRepository.findById(id);
         User user = (User) session.getAttribute(User.SESSION_NAME);
-        if (user == null) {
-            return "redirect:/users/login";
-        }
         if (question.isPresent() && question.get().isSameWriter(user)) {
             questionRepository.deleteById(id);
             return "redirect:/";
@@ -92,15 +93,16 @@ public class QuestionController {
     }
 
     @PostMapping("/{id}/answers")
-    public String insertAnswer(@PathVariable Long id, Answer answer, HttpSession session) {
+    @LoginCheck
+    public String insertAnswer(HttpSession session, @PathVariable Long id, Answer answer) {
         Optional<Question> maybeQuestion = questionRepository.findById(id);
         answer.setCommenter((User) session.getAttribute(User.SESSION_NAME));
-        answerRepository.save(answer);
-
-        Question question = maybeQuestion.get();
-        question.addAnswer(answer);
-        questionRepository.save(question);
-        return "redirect:/questions/" + id;
+        if (maybeQuestion.isPresent()) {
+            answer.setQuestion(maybeQuestion.get());
+            answerRepository.save(answer);
+            return "redirect:/questions/" + id;
+        }
+        return "redirect:/error";
     }
 
 }

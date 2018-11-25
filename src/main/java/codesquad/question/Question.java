@@ -1,29 +1,33 @@
 package codesquad.question;
 
 import codesquad.user.User;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 @Entity
 public class Question {
     @Id
+    @Column(name = "QUESTION_INDEX")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long index;
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     private User writer;
+    @Column(length = 100)
     private String title;
     @Lob
     private String contents;
-    @OneToMany
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_answer"))
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     private Collection<Answer> answers;
 
     public long getIndex() {
         return index;
+    }
+
+    public void setIndex(Question question) {
+        this.index = question.index;
     }
 
     public void setIndex(long index) {
@@ -62,13 +66,6 @@ public class Question {
         this.answers = answers;
     }
 
-    public void addAnswer(Answer answer) {
-        if (answers == null) {
-            answers = new ArrayList<>();
-        }
-        answers.add(answer);
-    }
-
     @Override
     public String toString() {
         return "Question{" +
@@ -80,9 +77,5 @@ public class Question {
 
     public boolean isSameWriter(User user) {
         return this.writer.equals(user);
-    }
-
-    public void setIndex(Question question) {
-        this.index = question.index;
     }
 }

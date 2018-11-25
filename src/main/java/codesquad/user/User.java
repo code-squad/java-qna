@@ -1,11 +1,7 @@
 package codesquad.user;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
-import java.util.Optional;
 
 @Entity
 public class User {
@@ -13,9 +9,13 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(length = 15)
     private String userId;
+    @Column(length = 15)
     private String password;
+    @Column(length = 15)
     private String name;
+    @Column(length = 25)
     private String email;
 
     public User() {
@@ -78,15 +78,18 @@ public class User {
                 '}';
     }
 
-    public boolean checkPassword(Optional<User> user) {
-        if (user.isPresent() && this.password != null) {
-            return password.equals(user.get().password);
+    public boolean checkPassword(String password) {
+        if (this.password == null) {
+            return false;
         }
-        return false;
+        return this.password.equals(password);
     }
 
-    public boolean checkId(String userId) {
-        return this.userId.equals(userId);
+    public boolean checkPassword(User user) {
+        if (this.password == null) {
+            return false;
+        }
+        return this.password.equals(user.password);
     }
 
     public void fillEmpty(User loginUser) {

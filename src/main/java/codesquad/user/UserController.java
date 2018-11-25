@@ -1,5 +1,6 @@
 package codesquad.user;
 
+import codesquad.aspect.LoginCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,44 +16,47 @@ public class UserController {
     UserRepository userRepository;
 
     @GetMapping
-    public String list(Model model) {
+    public String getAll(Model model) {
         model.addAttribute("users", userRepository.findAll());
         return "user/list";
     }
 
     @PostMapping
-    public String create(User user) {
+    public String signUp(User user) {
         userRepository.save(user);
         return "redirect:/users";
     }
 
     @GetMapping("/{userId}")
-    public String readProfiles(Model model, @PathVariable String userId) {
-        Optional<User> user = userRepository.findByUserId(userId);
-        if (!user.isPresent()) {
-            return "redirect:/";
+    @LoginCheck
+    public String read(HttpSession session, Model model, @PathVariable String userId) {
+        User user = (User) session.getAttribute(User.SESSION_NAME);
+        Optional<User> maybeUser = userRepository.findByUserId(userId);
+        if (maybeUser.isPresent() && user.equals(maybeUser.get())) {
+            model.addAttribute("user", user);
+            return "user/profile";
         }
-        model.addAttribute("user", user.get());
-        return "user/profile";
+            return "redirect:/";
     }
 
     @GetMapping("/{userId}/form")
-    public String updateForm(Model model, @PathVariable String userId) {
+    @LoginCheck
+    public String updateForm(HttpSession session, Model model, @PathVariable String userId) {
         Optional<User> user = userRepository.findByUserId(userId);
-        if (!user.isPresent()) {
-            return "redirect:/users";
+        if (user.isPresent()) {
+            model.addAttribute("user", user.get());
+            return "user/update_form";
         }
-        model.addAttribute("user", user.get());
-        return "user/update_form";
+        return "redirect:/users";
     }
 
     @PutMapping("/{userId}")
-    public String update(@PathVariable String userId, User updateUserInfo, HttpSession session) {
-        User loginUser = (User) session.getAttribute(User.SESSION_NAME);
-        Optional<User> user = userRepository.findByUserId(userId);
-
-        if(loginUser!=null && loginUser.checkId(userId) && updateUserInfo.checkPassword(user)){
-            updateUserInfo.fillEmpty(loginUser);
+    @LoginCheck
+    public String update(HttpSession session, @PathVariable String userId, User updateUserInfo) {
+        User user = (User) session.getAttribute(User.SESSION_NAME);
+        Optional<User> maybeUser = userRepository.findByUserId(userId);
+        if(maybeUser.isPresent() && user.equals(maybeUser.get()) && updateUserInfo.checkPassword(maybeUser.get())){
+            updateUserInfo.fillEmpty(user);
             userRepository.save(updateUserInfo);
             return "redirect:/users";
         }
@@ -67,10 +71,11 @@ public class UserController {
     @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
         Optional<User> maybeUser = userRepository.findByUserId(userId);
-        if (new User(null, password, null, null).checkPassword(maybeUser)) {
+        if (maybeUser.isPresent() && maybeUser.get().checkPassword(password)) {
             session.setAttribute(User.SESSION_NAME, maybeUser.get());
+            return "redirect:/";
         }
-        return "redirect:/";
+        return "redirect:/error";
     }
 
     @GetMapping("/logout")

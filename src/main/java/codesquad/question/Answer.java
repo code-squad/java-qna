@@ -12,7 +12,11 @@ public class Answer {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_commenter"))
     private User commenter;
+    @Column(length = 255)
     private String contents;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_answer"))
+    private Question question;
 
     public long getIndex() {
         return index;
@@ -36,5 +40,13 @@ public class Answer {
 
     public void setContents(String contents) {
         this.contents = contents;
+    }
+
+    public Question getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(Question question) {
+        this.question = question;
     }
 }

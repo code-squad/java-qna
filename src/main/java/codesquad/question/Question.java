@@ -30,7 +30,7 @@ public class Question {
     @CreationTimestamp
     private LocalDateTime createDate;
 
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "question", orphanRemoval = true)
     @OrderBy("id ASC")
     private List<Answer> answers;
 
@@ -92,12 +92,12 @@ public class Question {
         return answers;
     }
 
-    public int getAnswersSize() {
-        return answers.size();
-    }
-
     public void setAnswers(List<Answer> answers) {
         this.answers = answers;
+    }
+
+    public int getAnswersSize() {
+        return answers.size();
     }
 
     public boolean update(Question updatedQuestion, User sessionedUser) {

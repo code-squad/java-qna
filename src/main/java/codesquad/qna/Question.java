@@ -5,8 +5,10 @@ import codesquad.user.User;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 public class Question {
@@ -85,6 +87,16 @@ public class Question {
         return answers;
     }
 
+    public List<Answer> getShowAnswers() {
+        return answers.stream().filter(answer -> !answer.isDeleted()).collect(Collectors.toList());
+//        List<Answer> showAnswers = new ArrayList<>();
+//        for (Answer answer : answers) {
+//            if(!answer.isDeleted()) {
+//                showAnswers.add(answer);
+//            }
+//        }
+//        return showAnswers;
+    }
     public void setAnswers(List<Answer> answers) {
         this.answers = answers;
     }
@@ -93,37 +105,29 @@ public class Question {
         return answers.size();
     }
 
-    public boolean isDeleted() {
-        return deleted;
-    }
-
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }
 
-    public void update(Question modify, User loginUser) {
-        if (this.isSameWriter(loginUser)){
-            this.title = modify.title;
-            this.contents = modify.contents;
-        }
+
+    public void update(Question modify) {
+        this.title = modify.title;
+        this.contents = modify.contents;
     }
 
     public boolean isSameWriter(User loginUser) {
         return this.writer.equals(loginUser);
     }
 
-    public boolean isDeleted(User loginUser) {
-        if(isSameWriter(loginUser)) {
-            System.out.println("삭제");
-            this.deleted = true;
-            for (Answer answer : answers) {
-                if(!answer.isSameWriter(loginUser)) {
-                    return false;
-                }
+    public Result isDeleted() {
+        for (Answer answer : answers) {
+            if(!answer.isSameWriter(this.writer)) {
+                return Result.failed("작성 아이디와 일치하지 않은 댓글이 있어 삭제할 수 없습니다.");
             }
-            return true;
         }
-        return false;
+        System.out.println("삭제");
+        this.deleted = true;
+        return Result.ok();
     }
 
     @Override

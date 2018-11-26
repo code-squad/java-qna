@@ -4,6 +4,7 @@ import codesquad.user.HttpSessionUtils;
 import codesquad.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,7 +36,7 @@ public class AnswerController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
+    public String delete(@PathVariable Long questionId, @PathVariable Long id, HttpSession session, Model model) {
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "user/login";
         }
@@ -43,9 +44,12 @@ public class AnswerController {
         User loginUser = HttpSessionUtils.getUserFormSession(session);
         Answer answer = answerRepository.findById(id).orElse(null);
         if (answer.isSameWriter(loginUser)) {
-            answerRepository.delete(answer);
+            answer.delete();
+            answerRepository.save(answer);
             return String.format("redirect:/questions/%d", questionId);
         }
+
+        model.addAttribute("errorMessage", Result.failed("오류 !! 댓글 작성자만 삭제할 수 있습니다.").getErrorMessage());
         return "qna/delete_failed";
     }
 }

@@ -1,7 +1,12 @@
 {{#partial "content"}}
 <div class="container" id="main">
-    <div class="alert alert-danger" role="alert">작성자 아이디와 일치하지 않아 삭제할 수 없습니다.</div>
+    <div class="col-md-12 col-sm-12 col-lg-12">
+        {{#errorMessage}}
+        <div class="alert alert-danger" role="alert">{{this}}</div>
+        {{/errorMessage}}
+    </div>
 </div>
+
 {{/partial}}
 
 {{> frame/base}}

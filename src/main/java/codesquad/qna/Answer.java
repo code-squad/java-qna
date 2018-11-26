@@ -77,6 +77,22 @@ public class Answer {
         this.id = id;
     }
 
+    public boolean isSameWriter(User loginUser) {
+        return this.writer.equals(loginUser);
+    }
+
+    public void delete() {
+        this.deleted = true;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -99,9 +115,5 @@ public class Answer {
                 ", contents='" + contents + '\'' +
                 ", timer=" + timer +
                 '}';
-    }
-
-    public boolean isSameWriter(User loginUser) {
-        return this.writer.equals(loginUser);
     }
 }

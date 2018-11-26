@@ -80,7 +80,11 @@ public class Question {
         return user.equals(sessionedUser);
     }
 
-    public String getCreateDate() {
+    public LocalDateTime getCreateDate() {
+        return createDate;
+    }
+
+    public String getFormattedCreateDate() {
         return TimeFormatter.commonFormat(createDate);
     }
 

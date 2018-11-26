@@ -17,17 +17,14 @@ public class QuestionController {
 
     @GetMapping("")
     public String question(HttpSession session) {
-        if(!HttpSessionUtils.isLogin(session)) return "redirect:/user/login";
+        if (!HttpSessionUtils.isLogin(session)) return "user/login";
         return "qna/form";
     }
 
     @PostMapping("")
-    public String post(Question question, HttpSession session) {
-        if(!HttpSessionUtils.isLogin(session)) {
-            return "redirect:/user/login";
-        }
+    public String postQuestion(Question question, HttpSession session) {
+        if (!HttpSessionUtils.isLogin(session)) return "user/login";
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-
         question.setUser(sessionedUser);
         questionRepository.save(question);
         return "redirect:/";
@@ -35,46 +32,63 @@ public class QuestionController {
 
     @GetMapping("/{id}/form")
     public String showUpdateForm(@PathVariable Long id, Model model, HttpSession session) {
-        if(!HttpSessionUtils.isLogin(session)) return "redirect:/user/login";
         Question question = getQuestion(id);
-        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-        if(!question.isSameUser(sessionedUser)) {
-            return "qna/error";
-        };
-        model.addAttribute("question", question);
-        return "qna/updateForm";
+        try {
+            hasPermssion(session, question);
+            model.addAttribute("question", question);
+            return "qna/updateForm";
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "user/login";
+        }
     }
 
     @PutMapping("/{id}")
-    public String updateQuestion(@PathVariable Long id, Question updatedQuestion, HttpSession session) {
-        if(!HttpSessionUtils.isLogin(session)) return "redirect:/user/login";
+    public String updateQuestion(@PathVariable Long id, Question updatedQuestion, HttpSession session, Model model) {
         Question question = getQuestion(id);
-        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-        if(!question.update(updatedQuestion, sessionedUser)) return "qna/error";
-        questionRepository.save(question);
-        return String.format("redirect:/questions/%s", id);
+        try {
+            hasPermssion(session, question);
+            question.update(updatedQuestion);
+            questionRepository.save(question);
+            return String.format("redirect:/questions/%s", id);
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "user/login";
+        }
     }
 
     @GetMapping("/{id}")
-    public String detail(@PathVariable Long id, Model model) {
+    public String showQuestion(@PathVariable Long id, Model model) {
         Question question = getQuestion(id);
         model.addAttribute("question", question);
         return "qna/show";
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id, HttpSession session) {
+    public String deleteQuestion(@PathVariable Long id, HttpSession session, Model model) {
         Question question = getQuestion(id);
-        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-        if(HttpSessionUtils.isLogin(session) && question.isSameUser(sessionedUser)) {
+        try {
+            hasPermssion(session, question);
             questionRepository.delete(question);
             return "redirect:/";
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "user/login";
         }
-        return "redirect:/user/login";
+    }
+
+    void hasPermssion(HttpSession session, Question question) {
+        if (!HttpSessionUtils.isLogin(session)) {
+            throw new IllegalStateException("로그인이 필요합니다.");
+        }
+        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+        if (!question.isSameUser(sessionedUser)) {
+            throw new IllegalStateException("다른 사람의 글을 수정 또는 삭제할 수 없습니다.");
+        }
     }
 
     private Question getQuestion(@PathVariable Long id) {
         return questionRepository.findById(id).
-                    orElseThrow(() -> new QuestionNotFoundException("해당 질문을 찾을 수 없습니다."));
+                orElseThrow(() -> new QuestionNotFoundException("해당 질문을 찾을 수 없습니다."));
     }
 }

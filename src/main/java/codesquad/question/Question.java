@@ -100,13 +100,9 @@ public class Question {
         return answers.size();
     }
 
-    public boolean update(Question updatedQuestion, User sessionedUser) {
-        if(isSameUser(sessionedUser)) {
-            this.title = updatedQuestion.title;
-            this.contents = updatedQuestion.contents;
-            return true;
-        }
-        return false;
+    public void update(Question updatedQuestion) {
+        this.title = updatedQuestion.title;
+        this.contents = updatedQuestion.contents;
     }
 
     @Override

@@ -1,10 +1,8 @@
 package codesquad.qna;
 
-import codesquad.user.HttpSessionUtils;
 import codesquad.user.User;
 
 import javax.persistence.*;
-import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -14,7 +12,7 @@ import java.util.Objects;
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long questionId;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
@@ -31,6 +29,9 @@ public class Question {
     private String contents;
 
     private LocalDateTime timer;
+
+    @Column(nullable = false)
+    private boolean deleted;
 
     public Question() {}
 
@@ -57,12 +58,12 @@ public class Question {
         this.contents = contents;
     }
 
-    public Long getQuestionId() {
-        return questionId;
+    public Long getId() {
+        return id;
     }
 
-    public void setQuestionId(Long questionId) {
-        this.questionId = questionId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public User getWriter() {
@@ -92,8 +93,16 @@ public class Question {
         return answers.size();
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     public void update(Question modify, User loginUser) {
-        if (isSameWriter(loginUser)){
+        if (this.isSameWriter(loginUser)){
             this.title = modify.title;
             this.contents = modify.contents;
         }
@@ -101,6 +110,20 @@ public class Question {
 
     public boolean isSameWriter(User loginUser) {
         return this.writer.equals(loginUser);
+    }
+
+    public boolean isDeleted(User loginUser) {
+        if(isSameWriter(loginUser)) {
+            System.out.println("삭제");
+            this.deleted = true;
+            for (Answer answer : answers) {
+                if(!answer.isSameWriter(loginUser)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -117,11 +140,11 @@ public class Question {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Question question = (Question) o;
-        return Objects.equals(questionId, question.questionId);
+        return Objects.equals(id, question.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(questionId);
+        return Objects.hash(id);
     }
 }

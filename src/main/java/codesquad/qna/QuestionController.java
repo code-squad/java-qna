@@ -80,8 +80,13 @@ public class QuestionController {
         }
         User loginUser = HttpSessionUtils.getUserFormSession(session);
         Question question = getQuestionFromId(id);
-        if (question.isSameWriter(loginUser)) {
-            questionRepository.delete(question);
+//        if (question.isSameWriter(loginUser)) {
+//
+//            questionRepository.delete(question);
+//            return "redirect:/";
+//        }
+        if(question.isDeleted(loginUser)) {
+            questionRepository.save(question);
             return "redirect:/";
         }
         return "qna/delete_failed";

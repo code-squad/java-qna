@@ -26,6 +26,9 @@ public class Answer {
 
     private LocalDateTime timer;
 
+    @Column(nullable = false)
+    private boolean deleted = false;
+
     public Answer() {}
 
     public Answer(User writer, String contents, Question question) {

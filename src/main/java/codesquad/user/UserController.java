@@ -53,7 +53,7 @@ public class UserController {
         return "redirect:/user/list";
     }
 
-    @PutMapping("/{pId}/update")
+    @PutMapping("/{pId}")
     private String userUpdate(Model model, User updatedUser, @PathVariable long pId) {
         User user = userRepository.findById(pId).orElseThrow(() -> new IllegalArgumentException());
         model.addAttribute("user", user);

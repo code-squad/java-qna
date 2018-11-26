@@ -1,6 +1,9 @@
 package codesquad.user;
 
+import codesquad.utils.HttpSessionUtils;
+
 import javax.persistence.*;
+import javax.servlet.http.HttpSession;
 
 @Entity
 public class User {
@@ -64,17 +67,18 @@ public class User {
                 '}';
     }
 
-    void update(User newUser) {
-        this.password = newUser.password;
-        this.name = newUser.name;
-        this.email = newUser.email;
+    void update(User updatedUser) {
+        if (!this.userId.equals(updatedUser.userId)) throw new IllegalArgumentException();
+        this.password = updatedUser.password;
+        this.name = updatedUser.name;
+        this.email = updatedUser.email;
     }
 
     boolean matchPassword(String password) {
         return this.password.equals(password);
     }
 
-    boolean matchPassword(User updatedUser){
+    boolean matchPassword(User updatedUser) {
         return this.password.equals(updatedUser.password);
     }
 
@@ -82,7 +86,11 @@ public class User {
         return this.pId == pId;
     }
 
-//    public boolean matchWriter(String writer) {
-//        return this.userId.equals(writer);
-//    }
+    public boolean matchWriter(String writer) {
+        return this.userId.equals(writer);
+    }
+
+    public boolean matchUser(User other) {
+        return this.userId == other.userId;
+    }
 }

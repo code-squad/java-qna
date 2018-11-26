@@ -1,6 +1,10 @@
 package codesquad.question;
 
+import codesquad.user.User;
+import codesquad.utils.HttpSessionUtils;
+
 import javax.persistence.*;
+import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -10,10 +14,15 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long pId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     private String writer;
+
+//    @ManyToOne
+//    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+//    private User writer;
+    
     private String title;
-    @Column(columnDefinition = "TEXT")
+    @Lob
     private String contents;
     private String date;
 
@@ -60,7 +69,8 @@ public class Question {
         this.contents = contents;
     }
 
-    void update(Question updateQuestion) {
+    void update(Question updateQuestion, HttpSession session) {
+        if (!HttpSessionUtils.isValid(session, this)) throw new IllegalArgumentException();
         this.title = updateQuestion.title;
         this.contents = updateQuestion.contents;
     }
@@ -69,7 +79,7 @@ public class Question {
         return this.writer.equals(userId);
     }
 
-//    public boolean matchUserId(User user) {
-//        return user.matchWriter(this.writer);
-//    }
+    public boolean matchUserId(User loginuser) {
+        return loginuser.matchWriter(this.writer);
+    }
 }

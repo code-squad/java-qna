@@ -22,7 +22,6 @@ public class HttpSessionUtils {
             return false;
         }
         User loginUser = getUserFromSession(session);
-        return  question.matchUserId(loginUser.getUserId());
-//        return  question.matchUserId(loginUser);
+        return question.matchUserId(loginUser);
     }
 }

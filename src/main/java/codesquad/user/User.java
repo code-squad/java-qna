@@ -1,6 +1,11 @@
 package codesquad.user;
 
+import codesquad.qna.answers.Answer;
+import codesquad.qna.questions.Question;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -20,8 +25,6 @@ public class User {
 
     @Column(length = 40)
     private String email;
-
-    @OneToMany(mappedBy = "writer")
 
     public String getUserId() {
         return userId;
@@ -68,6 +71,9 @@ public class User {
     }
 
     public void update(User modifiedUser) {
+        if(!modifiedUser.isUser(this.userId) || modifiedUser.matchPassword(this.password))
+            throw new IllegalStateException("permission denied.");
+
         this.name = modifiedUser.name;
         this.email = modifiedUser.email;
     }
@@ -82,10 +88,6 @@ public class User {
 
     public boolean matchId(long id){
         return this.id == id;
-    }
-
-    public boolean matchName(String otherName){
-        return this.name.equals(otherName);
     }
 
     @Override

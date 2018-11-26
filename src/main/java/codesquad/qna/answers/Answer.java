@@ -2,9 +2,13 @@ package codesquad.qna.answers;
 
 import codesquad.qna.questions.Question;
 import codesquad.user.User;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @Entity
@@ -14,27 +18,25 @@ public class Answer {
     private long id;
 
     @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey)
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
     private User writer;
 
     @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey)
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_question"))
     private Question question;
 
-    @Column(length = 10000)
+    @Lob
+    @Column(nullable = false)
     private String contents;
 
-    @Column(length = 20)
-    private String curDate;
+    @LastModifiedBy
+    private LocalDateTime curDate;
+
+    private boolean deleted;
 
     public Answer() {
-        this.setCurDate();
-    }
-
-    private void setCurDate(){
-        Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        this.curDate = sdf.format(date);
+        this.curDate = LocalDateTime.now();
+        this.deleted = false;
     }
 
     public long getId() {
@@ -69,20 +71,35 @@ public class Answer {
         this.contents = contents;
     }
 
-    public String getCurDate() {
+    public LocalDateTime getCurDate() {
         return curDate;
     }
 
-    public void setCurDate(String curDate) {
+    public String getFormattedCurDate() {
+        return this.curDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
+
+    public void setCurDate(LocalDateTime curDate) {
         this.curDate = curDate;
     }
 
-    public void updateContents(String contents){
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void updateContents(String contents, User user){
+        if(!this.matchWriter(user)) throw new IllegalStateException("permission denied. 다른 사람의 글은 수정할 수 없습니다.");
+        this.curDate = LocalDateTime.now();
         this.contents = contents;
-        this.setCurDate();
     }
 
     public boolean matchWriter(User user){
         return this.writer.equals(user);
+    }
+
+    public void delete(User user) {
+        if(!this.matchWriter(user)) throw new IllegalStateException("permission denied. 다른 사람의 글은 삭제할 수 없습니다.");
+        this.deleted = true;
+        this.curDate = LocalDateTime.now();
     }
 }

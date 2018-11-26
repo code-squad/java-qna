@@ -4,6 +4,7 @@
         <div class="panel panel-default qna-list">
             <ul class="list">
                 {{#questions}}
+                {{^deleted}}
                 <li>
                     <div class="wrap">
                         <div class="main">
@@ -12,7 +13,7 @@
                             </strong>
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
-                                <span class="time">{{curDate}}</span>
+                                <span class="time">{{formattedCurDate}}</span>
                                 <a href="/users/{{writer.id}}" class="author">{{writer.name}}</a>
                             </div>
                             <div class="reply" title="댓글">
@@ -22,6 +23,7 @@
                         </div>
                     </div>
                 </li>
+                {{/deleted}}
                 {{/questions}}
             </ul>
             <div class="row">

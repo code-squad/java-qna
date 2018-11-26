@@ -2,8 +2,15 @@ package codesquad.qna.questions;
 
 import codesquad.qna.answers.Answer;
 import codesquad.user.User;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.text.SimpleDateFormat;
@@ -16,30 +23,40 @@ public class Question {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey)
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     private User writer;
 
     @Column(length = 30)
     private String title;
 
-    @Column(length = 10000)
+    @Lob
+    @Column(nullable = false)
     private String contents;
 
-    @Column(length = 20)
-    private String curDate;
+    @LastModifiedBy
+    private LocalDateTime curDate;
 
     @OneToMany(mappedBy = "question")
     private List<Answer> answers;
 
+    private boolean deleted;
+
     public Question() {
-        Date cur = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        this.curDate = sdf.format(cur);
+        this.curDate = LocalDateTime.now();
         this.answers = new ArrayList<>();
+        this.deleted = false;
     }
 
-    public String getCurDate() {
+    public LocalDateTime getCurDate() {
         return curDate;
+    }
+
+    public String getFormattedCurDate() {
+        return this.curDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
+
+    public void setCurDate(LocalDateTime curDate) {
+        this.curDate = curDate;
     }
 
     public User getWriter() {
@@ -83,10 +100,19 @@ public class Question {
     }
 
     public int getAnswersCount(){
-        return answers.size();
+        int count = 0;
+        for (Answer answer : answers) {
+            if(!answer.isDeleted()) count++;
+        }
+        return count;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
     }
 
     public void update(Question otherQuestion){
+        if(!otherQuestion.matchWriter(this.writer)) throw new IllegalStateException("permission denied. 다른 사람의 글은 수정할 수 없습니다.");
         this.title = otherQuestion.title;
         this.contents = otherQuestion.contents;
         this.curDate = otherQuestion.curDate;
@@ -94,5 +120,26 @@ public class Question {
 
     public boolean matchWriter(User user){
         return this.writer.equals(user);
+    }
+
+    public void delete(User user) {
+        if(!this.matchWriter(user)) throw new IllegalStateException("permission denied. 다른 사람의 글은 삭제할 수 없습니다.");
+        this.deleteAnswers(user);
+        this.deleted = true;
+        this.curDate = LocalDateTime.now();
+    }
+
+    private void deleteAnswers(User user){
+        if(!isAnswersPermission(user)) throw new IllegalStateException("permission denied. 다른 사람의 답변이 존재하여 삭제할 수 없습니다.");
+        for (Answer answer : answers) {
+            answer.delete(user);
+        }
+    }
+
+    private boolean isAnswersPermission(User user){
+        for (Answer answer : answers) {
+            if(!answer.matchWriter(user)) return false;
+        }
+        return true;
     }
 }

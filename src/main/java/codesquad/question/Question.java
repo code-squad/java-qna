@@ -1,10 +1,12 @@
 package codesquad.question;
 
-import codesquad.HttpSessionUtils;
 import codesquad.user.User;
+import org.apache.tomcat.jni.Local;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Question {
@@ -22,6 +24,8 @@ public class Question {
     @Lob
     private String contents;
 
+    private LocalDateTime createDate;
+
     public Question() {
 
     }
@@ -30,6 +34,7 @@ public class Question {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
+        this.createDate = LocalDateTime.now();
     }
 
     void update(User writer, Question updatedQuestion) {
@@ -41,6 +46,13 @@ public class Question {
 
     boolean isMatchWriter(User target) {
         return this.writer.equals(target);
+    }
+
+    public String getFormattedCreateDate() {
+        if (createDate == null) {
+            return "";
+        }
+        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
     }
 
     public long getId() {
@@ -73,6 +85,14 @@ public class Question {
 
     public void setContents(String contents) {
         this.contents = contents;
+    }
+
+    public LocalDateTime getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(LocalDateTime createDate) {
+        this.createDate = createDate;
     }
 
     @Override

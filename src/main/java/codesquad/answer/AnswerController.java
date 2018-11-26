@@ -3,6 +3,8 @@ package codesquad.answer;
 import codesquad.HttpSessionUtils;
 import codesquad.question.Question;
 import codesquad.question.QuestionRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +15,8 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/questions/{questionId}/answers")
 public class AnswerController {
+    private static final Logger log = LoggerFactory.getLogger(AnswerController.class);
+
     @Autowired
     private AnswerRepository answerRepository;
     @Autowired
@@ -20,7 +24,7 @@ public class AnswerController {
 
     @PostMapping("")
     public String create(@PathVariable long questionId, HttpSession session, String contents) {
-        System.out.println("create comment");
+        log.debug("create comment");
 
         if (!HttpSessionUtils.isLoggedInUser(session)) {
             return "/user/login";
@@ -30,11 +34,12 @@ public class AnswerController {
         Answer answer = new Answer(question,HttpSessionUtils.getUserFromSession(session),contents);
         answerRepository.save(answer);
         return "redirect:/questions/{questionId}";
+//        return String.format("redirect:/questions/%d", questionId);
     }
 
     @GetMapping("/{id}/form")
     public String updateForm(@PathVariable long questionId, @PathVariable long id, HttpSession session, Model model) {
-        System.out.println("view answer form");
+        log.debug("view answer form");
 
         if (!HttpSessionUtils.isLoggedInUser(session)) {
             return "/user/login";
@@ -52,7 +57,7 @@ public class AnswerController {
 
     @PutMapping("/{id}")
     public String update(@PathVariable long id, HttpSession session, Answer updatedAnswer) {
-        System.out.println("update answer");
+        log.debug("update answer");
 
         if (!HttpSessionUtils.isLoggedInUser(session)) {
             return "/user/login";
@@ -70,7 +75,7 @@ public class AnswerController {
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable long questionId, @PathVariable long id, HttpSession session) {
-        System.out.println("delete comment");
+        log.debug("delete comment");
 
         if(!HttpSessionUtils.isLoggedInUser(session)) {
             return "/user/login";

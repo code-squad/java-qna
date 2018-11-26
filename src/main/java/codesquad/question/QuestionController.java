@@ -27,6 +27,10 @@ public class QuestionController {
     public String create(HttpSession session, String title, String contents) {
         log.debug("create : {}", title);
 
+        if(!HttpSessionUtils.isLoggedInUser(session)) {
+            return "/user/login";
+        }
+
         questionRepository
                 .save(new Question(HttpSessionUtils.getUserFromSession(session), title, contents));
         return "redirect:/questions";
@@ -45,7 +49,7 @@ public class QuestionController {
         log.debug("view question form");
 
         if(!HttpSessionUtils.isLoggedInUser(session)) {
-            return "redirect:/user/login";
+            return "/user/login";
         }
 
         return "/qna/form";

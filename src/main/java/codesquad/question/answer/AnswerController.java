@@ -3,11 +3,13 @@ package codesquad.question.answer;
 import codesquad.config.HttpSessionUtils;
 import codesquad.question.QuestionNotFoundException;
 import codesquad.question.QuestionRepository;
+import codesquad.question.Result;
 import codesquad.user.User;
 import codesquad.user.UserNotFoundException;
 import codesquad.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,13 +28,18 @@ public class AnswerController {
     private AnswerRepository answerRepository;
 
     @PostMapping("")
-    public String isNotLogin(){
+    public String isNotLogin(HttpSession session, Model model) {
+        model.addAttribute("errorMessage", "로그인이 필요합니다.");
         return "user/login";
     }
 
     @PostMapping("/{id}")
-    public String post(@PathVariable Long questionId, @PathVariable Long id, HttpSession session, String comment){
-        if(!HttpSessionUtils.isLogin(session)) return "user/login";
+    public String post(@PathVariable Long questionId, @PathVariable Long id, HttpSession session, String comment, Model model) {
+        Result result = valid(session);
+        if(!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return "user/login";
+        }
         Answer answer = new Answer(
                 questionRepository.findById(questionId).orElseThrow(() -> new QuestionNotFoundException("해당 질문을 찾을 수 없습니다.")),
                 userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다.")),
@@ -43,12 +50,32 @@ public class AnswerController {
     }
 
     @DeleteMapping("/{answerId}")
-    public String delete(@PathVariable Long questionId, @PathVariable Long answerId, HttpSession session) {
-        if(!HttpSessionUtils.isLogin(session)) return "user/login";
-        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+    public String delete(@PathVariable Long questionId, @PathVariable Long answerId, HttpSession session, Model model) {
         Answer answer = answerRepository.findById(answerId).orElse(null);
-        if(!sessionedUser.matchId(answer.getUser().getId())) return "qna/error";
+        Result result = valid(session, answer);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return "user/login";
+        }
         answerRepository.delete(answer);
         return String.format("redirect:/questions/", questionId);
+    }
+
+    private Result valid(HttpSession session) {
+        if (!HttpSessionUtils.isLogin(session)) {
+            return Result.fail("로그인이 필요합니다.");
+        }
+        return Result.ok();
+    }
+
+    private Result valid(HttpSession session, Answer answer) {
+        if (!HttpSessionUtils.isLogin(session)) {
+            return Result.fail("로그인이 필요합니다.");
+        }
+        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+        if (!answer.isSameUser(sessionedUser)) {
+            return Result.fail("다른 사람의 글을 수정 또는 삭제할 수 없습니다.");
+        }
+        return Result.ok();
     }
 }

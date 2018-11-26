@@ -34,7 +34,7 @@ public class Question {
     @OrderBy("id ASC")
     private List<Answer> answers;
 
-    Question() {
+    public Question() {
     }
 
     public Question(Long id, String title, String contents, User user) {

@@ -61,6 +61,10 @@ public class Answer {
         this.user = user;
     }
 
+    public boolean isSameUser(User user) {
+        return this.user.equals(user);
+    }
+
     public String getCreateDate() {
         return TimeFormatter.commonFormat(this.createDate);
     }

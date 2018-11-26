@@ -71,7 +71,11 @@ public class Answer {
         this.contents = contents;
     }
 
-    public String getCurDate() {
+    public LocalDateTime getCurDate() {
+        return curDate;
+    }
+
+    public String getFormattedCurDate() {
         return this.curDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 

@@ -26,14 +26,14 @@ public class Question {
 
     }
 
-    public Question(HttpSession session, String title, String contents) {
-        this.writer = HttpSessionUtils.getUserFromSession(session);
+    public Question(User writer, String title, String contents) {
+        this.writer = writer;
         this.title = title;
         this.contents = contents;
     }
 
-    void update(HttpSession session, Question updatedQuestion) {
-        if(this.writer.equals(HttpSessionUtils.getUserFromSession(session))) {
+    void update(User writer, Question updatedQuestion) {
+        if(this.writer.equals(writer)) {
             this.title = updatedQuestion.title;
             this.contents = updatedQuestion.contents;
         }

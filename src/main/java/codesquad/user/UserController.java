@@ -28,8 +28,6 @@ public class UserController {
     @PostMapping
     public String create(User user) {
         log.debug("create : {}", user);
-//        System.out.println("create user");
-
         userRepository.save(user);
         return "redirect:/users";
     }
@@ -37,7 +35,6 @@ public class UserController {
     @GetMapping
     public String list(Model model) {
         log.debug("view user list");
-//        System.out.println("view user list");
 
         model.addAttribute("users", userRepository.findAll());
         return "/user/list";

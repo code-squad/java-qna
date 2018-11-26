@@ -1,5 +1,8 @@
 package codesquad.user;
 
+import codesquad.exception.ListFailedException;
+import codesquad.exception.UpdatefailedException;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -10,7 +13,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, unique = true)
     private String userId;
     private String password;
     private String name;
@@ -58,6 +61,9 @@ public class User {
 
 
     public void update(User newUser) {
+        if (!newUser.matchPassword(this.password)) {
+            throw new UpdatefailedException("비밀번호가 다릅니다. 다시 입력해주세요");
+        }
         this.password = newUser.password;
         this.name = newUser.name;
         this.email = newUser.email;
@@ -68,8 +74,20 @@ public class User {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id &&
+                Objects.equals(userId, user.userId) &&
+                Objects.equals(password, user.password) &&
+                Objects.equals(name, user.name) &&
+                Objects.equals(email, user.email);
+    }
+
+    @Override
     public int hashCode() {
-        return Objects.hash(userId);
+        return Objects.hash(id, userId, password, name, email);
     }
 
     @Override
@@ -81,5 +99,24 @@ public class User {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 '}';
+    }
+
+    public boolean matchPassword(String password) {
+        return this.password.equals(password);
+    }
+
+    public boolean matchPassword(User otherUser) {
+        return this.password.equals(otherUser.password);
+    }
+
+    public void matchId(long id) {
+        if (this.id != id) {
+            throw new ListFailedException("본인의 아이디를 선택해 주세요");
+        }
+
+    }
+
+    public boolean matchUserId(String writer) {
+        return userId.equals(writer);
     }
 }

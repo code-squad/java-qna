@@ -123,4 +123,9 @@ public class User {
     public int hashCode() {
         return Objects.hash(id, userId, password, name, email);
     }
+
+    public void updateProcess(User updateUserInfo) {
+        this.name = updateUserInfo.name;
+        this.email = updateUserInfo.email;
+    }
 }

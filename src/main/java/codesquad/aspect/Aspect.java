@@ -29,7 +29,7 @@ public class Aspect {
 //            "execution(* codesquad..*.*(javax.servlet.http.HttpSession,..)) && " +
 //            "args(session,..)")
     @Around("checkLogin(session)")
-    public String checkLogin(ProceedingJoinPoint pjp, HttpSession session) throws Throwable {
+    public String checkLoginLogic(ProceedingJoinPoint pjp, HttpSession session) throws Throwable {
         if (session.getAttribute(User.SESSION_NAME) == null) {
             return "redirect:/users/login?debug";
         }

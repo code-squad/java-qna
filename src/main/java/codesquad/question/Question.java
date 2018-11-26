@@ -5,6 +5,7 @@ import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 public class Question {
@@ -20,7 +21,16 @@ public class Question {
     @Lob
     private String contents;
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
-    private Collection<Answer> answers;
+    private List<Answer> answers;
+    private boolean deleted = false;
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 
     public long getIndex() {
         return index;
@@ -58,11 +68,11 @@ public class Question {
         this.contents = contents;
     }
 
-    public Collection<Answer> getAnswers() {
+    public List<Answer> getAnswers() {
         return answers;
     }
 
-    public void setAnswers(Collection<Answer> answers) {
+    public void setAnswers(List<Answer> answers) {
         this.answers = answers;
     }
 
@@ -77,5 +87,11 @@ public class Question {
 
     public boolean isSameWriter(User user) {
         return this.writer.equals(user);
+    }
+
+    public void changeAnswersDeleteState(boolean state) {
+        for (Answer answer : answers) {
+            answer.setDeleted(state);
+        }
     }
 }

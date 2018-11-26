@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -83,14 +84,15 @@ public class QuestionController {
     @DeleteMapping("/{id}")
     @LoginCheck
     public String delete(HttpSession session, @PathVariable long id) {
-        Optional<Question> question = questionRepository.findById(id);
+        Optional<Question> maybeQuestion = questionRepository.findById(id);
         User user = (User) session.getAttribute(User.SESSION_NAME);
-        if (question.isPresent() && question.get().isSameWriter(user)) {
-            questionRepository.deleteById(id);
+        if (maybeQuestion.isPresent() && maybeQuestion.get().isSameWriter(user)) {
+            deleteProcess(maybeQuestion.get(), user);
             return "redirect:/";
         }
         return "redirect:/error";
     }
+
 
     @PostMapping("/{id}/answers")
     @LoginCheck
@@ -103,6 +105,43 @@ public class QuestionController {
             return "redirect:/questions/" + id;
         }
         return "redirect:/error";
+    }
+
+    @DeleteMapping("/{questionId}/answers/{answerId}")
+    @LoginCheck
+    public String insertAnswer(HttpSession session, @PathVariable long questionId, @PathVariable long answerId) {
+        Optional<Answer> maybeAnswer = answerRepository.findById(answerId);
+        User user = (User) session.getAttribute(User.SESSION_NAME);
+        if (maybeAnswer.isPresent() && maybeAnswer.get().isSameWriter(user)) {
+            answerRepository.deleteById(answerId);
+            return "redirect:/questions/" + questionId;
+        }
+        return "/error?insertAnswer";
+    }
+
+    private void deleteProcess(Question question, User user) {
+        if (!isOtherAnswerer(question, user)) {
+            deleteAnswerProcess(question);
+            question.setDeleted(true);
+            questionRepository.save(question);
+        }
+    }
+
+    private void deleteAnswerProcess(Question question) {
+        question.changeAnswersDeleteState(true);
+        for (Answer answer : question.getAnswers()) {
+            answerRepository.save(answer);
+        }
+    }
+
+    private boolean isOtherAnswerer(Question question, User user) {
+        List<Answer> answers = question.getAnswers();
+        for (Answer answer : answers) {
+            if (!answer.isSameWriter(user)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

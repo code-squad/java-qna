@@ -92,6 +92,7 @@ public class User {
         return this.password.equals(user.password);
     }
 
+    //TODO : refactor
     public void fillEmpty(User loginUser) {
         if (this.id == null) {
             this.id = loginUser.id;

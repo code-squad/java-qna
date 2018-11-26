@@ -1,12 +1,15 @@
 package codesquad.question;
 
+import codesquad.answer.Answer;
 import codesquad.user.User;
 import codesquad.utils.HttpSessionUtils;
 
 import javax.persistence.*;
 import javax.servlet.http.HttpSession;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Question {
@@ -14,26 +17,41 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long pId;
 
-    @Column(nullable = false, length = 20)
-    private String writer;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    private User writer;
 
-//    @ManyToOne
-//    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
-//    private User writer;
-    
+    @OneToMany(mappedBy = "question")
+    @OrderBy("pId ASC")
+    private List<Answer> answers;
+
     private String title;
     @Lob
     private String contents;
-    private String date;
+
+    private LocalDateTime date;
 
     public Question() {
-        Date now = new Date();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        this.date = simpleDateFormat.format(now);
+        this.date = LocalDateTime.now();
+    }
+
+    public int getAnswersSize(){
+        return answers.size();
     }
 
     public String getDate() {
-        return date;
+        if (date == null) {
+            return "";
+        }
+        return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    }
+
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
     }
 
     public long getPId() {
@@ -44,11 +62,11 @@ public class Question {
         this.pId = pId;
     }
 
-    public String getWriter() {
+    public User getWriter() {
         return writer;
     }
 
-    public void setWriter(String writer) {
+    public void setWriter(User writer) {
         this.writer = writer;
     }
 
@@ -75,11 +93,40 @@ public class Question {
         this.contents = updateQuestion.contents;
     }
 
-    public boolean matchUserId(String userId) {
+    public boolean matchUser(String userId) {
         return this.writer.equals(userId);
     }
 
-    public boolean matchUserId(User loginuser) {
-        return loginuser.matchWriter(this.writer);
+    public boolean matchUser(User loginUser) {
+        return this.writer.equals(loginUser);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Question question = (Question) o;
+        return pId == question.pId &&
+                Objects.equals(writer, question.writer) &&
+                Objects.equals(title, question.title) &&
+                Objects.equals(contents, question.contents) &&
+                Objects.equals(date, question.date);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pId, writer, title, contents, date);
+    }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "pId=" + pId +
+                ", writer=" + writer +
+                ", answers=" + answers +
+                ", title='" + title + '\'' +
+                ", contents='" + contents + '\'' +
+                ", date=" + date +
+                '}';
     }
 }

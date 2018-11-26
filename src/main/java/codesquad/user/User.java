@@ -1,9 +1,7 @@
 package codesquad.user;
 
-import codesquad.utils.HttpSessionUtils;
-
 import javax.persistence.*;
-import javax.servlet.http.HttpSession;
+import java.util.Objects;
 
 @Entity
 public class User {
@@ -15,6 +13,7 @@ public class User {
     private String userId;
     private String password;
     private String name;
+
     private String email;
 
     public long getPId() {
@@ -92,5 +91,22 @@ public class User {
 
     public boolean matchUser(User other) {
         return this.userId == other.userId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return pId == user.pId &&
+                Objects.equals(userId, user.userId) &&
+                Objects.equals(password, user.password) &&
+                Objects.equals(name, user.name) &&
+                Objects.equals(email, user.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pId, userId, password, name, email);
     }
 }

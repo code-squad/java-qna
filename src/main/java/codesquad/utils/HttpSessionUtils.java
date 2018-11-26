@@ -1,5 +1,6 @@
 package codesquad.utils;
 
+import codesquad.answer.Answer;
 import codesquad.question.Question;
 import codesquad.user.User;
 
@@ -22,6 +23,14 @@ public class HttpSessionUtils {
             return false;
         }
         User loginUser = getUserFromSession(session);
-        return question.matchUserId(loginUser);
+        return question.matchUser(loginUser);
+    }
+
+    public static boolean isValid(HttpSession session, Answer answer) {
+        if (!isLoginUser(session)) {
+            return false;
+        }
+        User loginUser = getUserFromSession(session);
+        return answer.matchUser(loginUser);
     }
 }

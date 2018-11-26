@@ -4,6 +4,8 @@ import codesquad.question.Question;
 import codesquad.user.User;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Answer {
@@ -22,6 +24,8 @@ public class Answer {
     @Lob
     private String contents;
 
+    private LocalDateTime createDate;
+
     public Answer() {
 
     }
@@ -30,6 +34,7 @@ public class Answer {
         this.question = question;
         this.writer = writer;
         this.contents = contents;
+        this.createDate = LocalDateTime.now();
     }
 
     public void update(Answer target) {
@@ -38,6 +43,13 @@ public class Answer {
 
     public boolean isMatchWriter(User target) {
         return this.writer.equals(target);
+    }
+
+    public String getFormattedCreateDate() {
+        if (createDate == null) {
+            return "";
+        }
+        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
     }
 
     public long getId() {

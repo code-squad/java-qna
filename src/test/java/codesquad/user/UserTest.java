@@ -27,7 +27,7 @@ public class UserTest {
 
     @Test
     public void matchId() {
-        assertThat(user1.matchId(new Long(25))).isEqualTo(true);
+        assertThat(user1.matchId(25)).isEqualTo(true);
     }
 
     @Test

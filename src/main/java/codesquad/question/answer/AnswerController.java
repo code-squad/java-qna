@@ -58,7 +58,7 @@ public class AnswerController {
             return "user/login";
         }
         answerRepository.delete(answer);
-        return String.format("redirect:/questions/", questionId);
+        return String.format("redirect:/questions/%s", questionId);
     }
 
     private Result valid(HttpSession session) {

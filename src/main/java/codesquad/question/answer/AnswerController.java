@@ -43,7 +43,8 @@ public class AnswerController {
         Answer answer = new Answer(
                 questionRepository.findById(questionId).orElseThrow(() -> new QuestionNotFoundException("해당 질문을 찾을 수 없습니다.")),
                 userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다.")),
-                comment
+                comment,
+                false
         );
         answerRepository.save(answer);
         return String.format("redirect:/questions/%s", questionId);
@@ -57,7 +58,8 @@ public class AnswerController {
             model.addAttribute("errorMessage", result.getErrorMessage());
             return "user/login";
         }
-        answerRepository.delete(answer);
+        answer.deleted();
+        answerRepository.save(answer);
         return String.format("redirect:/questions/%s", questionId);
     }
 

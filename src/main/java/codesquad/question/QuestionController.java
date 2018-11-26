@@ -34,6 +34,7 @@ public class QuestionController {
         }
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
         question.setUser(sessionedUser);
+        question.setDeleted(false);
         questionRepository.save(question);
         return "redirect:/";
     }
@@ -79,9 +80,9 @@ public class QuestionController {
             model.addAttribute("errorMessage", result.getErrorMessage());
             return "user/login";
         }
-        questionRepository.delete(question);
+        question.deleted();
+        questionRepository.save(question);
         return "redirect:/";
-
     }
 
     private Result valid(HttpSession session) {

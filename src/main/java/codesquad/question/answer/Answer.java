@@ -4,9 +4,11 @@ import codesquad.question.Question;
 import codesquad.user.User;
 import codesquad.utils.TimeFormatter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 public class Answer {
@@ -28,13 +30,16 @@ public class Answer {
     @Lob
     private String comment;
 
+    private boolean deleted;
+
     Answer() {
     }
 
-    public Answer(Question question, User user, String comment) {
+    public Answer(Question question, User user, String comment, boolean deleted) {
         this.question = question;
         this.user = user;
         this.comment = comment;
+        this.deleted = deleted;
     }
 
     public long getId() {
@@ -81,6 +86,18 @@ public class Answer {
         this.comment = comment;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public void deleted() {
+        deleted = true;
+    }
+
     @Override
     public String toString() {
         return "Answer{" +
@@ -90,5 +107,20 @@ public class Answer {
                 ", createDate='" + createDate + '\'' +
                 ", comment='" + comment + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Answer answer = (Answer) o;
+        return id == answer.id &&
+                Objects.equals(question, answer.question) &&
+                Objects.equals(user, answer.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, question, user);
     }
 }

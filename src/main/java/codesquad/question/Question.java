@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class Question {
@@ -30,7 +31,9 @@ public class Question {
     @CreationTimestamp
     private LocalDateTime createDate;
 
-    @OneToMany(mappedBy = "question", orphanRemoval = true)
+    private boolean deleted;
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @OrderBy("id ASC")
     private List<Answer> answers;
 
@@ -96,12 +99,49 @@ public class Question {
         return answers;
     }
 
+    public List<Answer> getNotDeletedAnswers() {
+        return answers.stream()
+                .filter(answer -> !answer.isDeleted())
+                .collect(Collectors.toList());
+    }
+
     public void setAnswers(List<Answer> answers) {
         this.answers = answers;
     }
 
-    public int getAnswersSize() {
-        return answers.size();
+    public long getNotDeletedAnswersSize() {
+        return answers.stream()
+                .filter(answer -> !answer.isDeleted())
+                .count();
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void deleted() throws IllegalStateException {
+        if(!canDeleteAnswer()) {
+            throw new IllegalStateException("다른 유저의 답변이 있어 질문을 삭제할 수 없습니다");
+        }
+        this.deleted = true;
+        setAnswersDeleted();
+    }
+
+    private void setAnswersDeleted() {
+        for (Answer answer : answers) {
+            answer.deleted();
+        }
+    }
+
+    public boolean canDeleteAnswer() {
+        for (Answer answer : answers) {
+            if (!answer.isSameUser(this.user)) return false;
+        }
+        return true;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     public void update(Question updatedQuestion) {
@@ -119,5 +159,4 @@ public class Question {
                 ", createDate='" + createDate + '\'' +
                 '}';
     }
-
 }

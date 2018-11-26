@@ -34,7 +34,7 @@ public class AnswerController {
     }
 
     @PostMapping("/{id}")
-    public String post(@PathVariable Long questionId, @PathVariable Long id, HttpSession session, String comment, Model model) {
+    public String post(@PathVariable long questionId, @PathVariable long id, HttpSession session, String comment, Model model) {
         Result result = valid(session);
         if(!result.isValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());
@@ -50,7 +50,7 @@ public class AnswerController {
     }
 
     @DeleteMapping("/{answerId}")
-    public String delete(@PathVariable Long questionId, @PathVariable Long answerId, HttpSession session, Model model) {
+    public String delete(@PathVariable long questionId, @PathVariable long answerId, HttpSession session, Model model) {
         Answer answer = answerRepository.findById(answerId).orElse(null);
         Result result = valid(session, answer);
         if (!result.isValid()) {

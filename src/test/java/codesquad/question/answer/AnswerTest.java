@@ -16,8 +16,8 @@ public class AnswerTest {
     @Before
     public void setUp() throws Exception {
         Question question = new Question();
-        user = new User(new Long(25), "leeh903", "1234", "이정현", "leejh903@naver.com");
-        user2 = new User(new Long(27), "leeh903", "1234", "이정현", "leejh903@naver.com");
+        user = new User(25, "leeh903", "1234", "이정현", "leejh903@naver.com");
+        user2 = new User(27, "leeh903", "1234", "이정현", "leejh903@naver.com");
         answer = new Answer(question, user, "aaa");
     }
 

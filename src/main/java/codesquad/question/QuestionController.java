@@ -39,7 +39,7 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}/form")
-    public String showUpdateForm(@PathVariable Long id, Model model, HttpSession session) {
+    public String showUpdateForm(@PathVariable long id, Model model, HttpSession session) {
         Question question = getQuestion(id);
         Result result = valid(session, question);
         if (!result.isValid()) {
@@ -51,7 +51,7 @@ public class QuestionController {
     }
 
     @PutMapping("/{id}")
-    public String updateQuestion(@PathVariable Long id, Question updatedQuestion, HttpSession session, Model model) {
+    public String updateQuestion(@PathVariable long id, Question updatedQuestion, HttpSession session, Model model) {
         Question question = getQuestion(id);
         Result result = valid(session, question);
         if (!result.isValid()) {
@@ -65,14 +65,14 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}")
-    public String showQuestion(@PathVariable Long id, Model model) {
+    public String showQuestion(@PathVariable long id, Model model) {
         Question question = getQuestion(id);
         model.addAttribute("question", question);
         return "qna/show";
     }
 
     @DeleteMapping("/{id}")
-    public String deleteQuestion(@PathVariable Long id, HttpSession session, Model model) {
+    public String deleteQuestion(@PathVariable long id, HttpSession session, Model model) {
         Question question = getQuestion(id);
         Result result = valid(session, question);
         if (!result.isValid()) {
@@ -102,7 +102,7 @@ public class QuestionController {
         return Result.ok();
     }
 
-    private Question getQuestion(@PathVariable Long id) {
+    private Question getQuestion(@PathVariable long id) {
         return questionRepository.findById(id).
                 orElseThrow(() -> new QuestionNotFoundException("해당 질문을 찾을 수 없습니다."));
     }

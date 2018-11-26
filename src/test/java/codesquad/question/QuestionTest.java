@@ -18,7 +18,7 @@ public class QuestionTest {
 
     @Before
     public void setUp() throws Exception {
-        user = new User(new Long(27), "brad903", "1234", "브래드", "brad903@naver.com");
+        user = new User(27, "brad903", "1234", "브래드", "brad903@naver.com");
         question1 = new Question();
         question1.setUser(user);
     }

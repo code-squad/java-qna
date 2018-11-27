@@ -7,7 +7,9 @@ import codesquad.user.User;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Entity
@@ -29,9 +31,12 @@ public class Question {
 
     private LocalDateTime date;
 
-    @OneToMany(mappedBy = "question")
+    @Column(nullable = false)
+    private boolean deleted = false;
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("id ASC")
-    private List<Answer> answers;
+    private List<Answer> answers = new ArrayList<>();
 
     public Question() {
     }
@@ -52,11 +57,13 @@ public class Question {
     }
 
     public void update(Question newQuestion) {
-        if (!newQuestion.matchId(this.id)) {
-            throw new UserException("작성자와 아이디가 다릅니다. 다시 로그인 해주세요");
-        }
+        newQuestion.matchWrite(this.writer);
         this.title = newQuestion.title;
         this.contents = newQuestion.contents;
+    }
+
+    public void addAnswer(Answer answer) {
+        this.answers.add(answer);
     }
 
     public String getFormattedDate() {
@@ -82,6 +89,23 @@ public class Question {
         this.writer = writer;
     }
 
+    public void deleted() {
+        if (answers.size() != conutOfMatchUser()) {
+            throw new UserException("다른사람이 쓴 댓글이 있습니다. 삭제가 불가능 합니다.");
+        }
+
+        for (Answer answer : answers) {
+            answer.deleted();
+        }
+        deleted = true;
+    }
+
+    long conutOfMatchUser() {
+        return answers.stream()
+                .filter(answer -> answer.matchUser(writer))
+                .count();
+    }
+
     public String getTitle() {
         return title;
     }
@@ -99,7 +123,9 @@ public class Question {
     }
 
     public List<Answer> getAnswers() {
-        return answers;
+        return answers.stream()
+                .filter(answer -> !answer.isDeleted())
+                .collect(Collectors.toList());
     }
 
     public void setAnswers(List<Answer> answers) {
@@ -109,6 +135,12 @@ public class Question {
     public String getConut() {
         return String.valueOf(answers.size());
     }
+
+    public boolean getDeleted() {
+        return deleted;
+    }
+
+
     @Override
     public String toString() {
         return "Question{" +

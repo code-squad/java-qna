@@ -29,6 +29,9 @@ public class Answer {
 
     private LocalDateTime date;
 
+    @Column(nullable = false)
+    private boolean deleted = false;
+
     public Answer() {
     }
 
@@ -36,6 +39,7 @@ public class Answer {
         this.question = question;
         this.user = user;
         this.contents = contents;
+        this.date = LocalDateTime.now();
     }
 
     public String getFormattedDate() {
@@ -77,15 +81,22 @@ public class Answer {
         this.contents = contents;
     }
 
-    public void matchSessionUser(User sessionUser) {
-        if (!sessionUser.equals(this.user)) {
-            throw new UserException("작성자와 아이디가 다릅니다. 다시 로그인 해주세요");
-        }
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+
+    public boolean matchUser(User user) {
+        return user.equals(this.user);
     }
 
     public void update(Answer updatedAnswer) {
-        if (!updatedAnswer.matchId(this.id)) {
-            throw new AnswerException("아이디가 다름");
+        if (!updatedAnswer.matchUser(this.user)) {
+            throw new UserException("아이디가 다름");
         }
         this.contents = updatedAnswer.contents;
     }
@@ -102,5 +113,9 @@ public class Answer {
                 ", user=" + user +
                 ", contents='" + contents + '\'' +
                 '}';
+    }
+
+    public void deleted() {
+        deleted = true;
     }
 }

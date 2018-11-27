@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Entity
@@ -29,7 +30,10 @@ public class Question {
 
     private LocalDateTime date;
 
-    @OneToMany(mappedBy = "question")
+    @Column(nullable = false)
+    private boolean deleted = false;
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @OrderBy("id ASC")
     private List<Answer> answers;
 
@@ -59,6 +63,10 @@ public class Question {
         this.contents = newQuestion.contents;
     }
 
+    public void addAnswer(Answer answer) {
+        this.answers.add(answer);
+    }
+
     public String getFormattedDate() {
         if (this.date == null) {
             return "";
@@ -82,6 +90,27 @@ public class Question {
         this.writer = writer;
     }
 
+    public void deleted() {
+        if (answers.size() != conutOfMatchUser()) {
+            throw new UserException("다른사람이 쓴 댓글이 있습니다. 삭제가 불가능 합니다.");
+        }
+
+        for (Answer answer : answers) {
+            answer.deleted();
+        }
+        deleted = true;
+    }
+
+    private int conutOfMatchUser() {
+        int countOfMatchUser = 0;
+        for (Answer answer : answers) {
+            if (answer.matchUser(writer)) {
+                countOfMatchUser ++;
+            }
+        }
+        return countOfMatchUser;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -99,7 +128,7 @@ public class Question {
     }
 
     public List<Answer> getAnswers() {
-        return answers;
+        return answers.stream().filter(answer -> !answer.isDeleted()).collect(Collectors.toList());
     }
 
     public void setAnswers(List<Answer> answers) {
@@ -109,6 +138,12 @@ public class Question {
     public String getConut() {
         return String.valueOf(answers.size());
     }
+
+    public boolean getDeleted() {
+        return deleted;
+    }
+
+
     @Override
     public String toString() {
         return "Question{" +

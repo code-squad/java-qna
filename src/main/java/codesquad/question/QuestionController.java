@@ -77,8 +77,8 @@ public class QuestionController {
         logger.info("delete");
 
         Question question = getMatchingQuestion(session, id);
-
-        questionRepository.delete(question);
+        question.deleted();
+        questionRepository.save(question);
         return "redirect:/";
     }
 

@@ -2,6 +2,7 @@ package codesquad.answer;
 
 import codesquad.HttpSessionUtils;
 import codesquad.exception.AnswerException;
+import codesquad.exception.UserException;
 import codesquad.question.QuestionRepository;
 import codesquad.user.User;
 import org.slf4j.Logger;
@@ -58,17 +59,21 @@ public class AnswerController {
         logger.info("answer delete");
 
         Answer answer = getMatchingAnswer(session, id);
-
-        answerRepository.delete(answer);
+        answer.deleted();
+        answerRepository.save(answer);
         return "redirect:/questions/{questionId}";
     }
 
     private Answer getMatchingAnswer(HttpSession session, @PathVariable long id) {
-        User sessionUser = HttpSessionUtils.getUserFormSession(session);
+        User loginUser = HttpSessionUtils.getUserFormSession(session);
         Answer answer = answerRepository.findById(id).orElseThrow(AnswerException::new);
-        answer.matchSessionUser(sessionUser);
+        notMatchUser(answer.matchUser(loginUser));
         return answer;
     }
 
-
+    private void notMatchUser(boolean isMatchUser) {
+        if (!isMatchUser) {
+            throw new UserException("작성자와 아이디가 다릅니다. 다시 로그인 해주세요");
+        }
+    }
 }

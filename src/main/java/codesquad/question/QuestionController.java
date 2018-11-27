@@ -16,18 +16,19 @@ public class QuestionController {
     private QuestionRepository questionRepository;
 
     @GetMapping("/form")
-    public String form() {
+    public String form(HttpSession session) {
+        if (!SessionUtil.isSessionedUser(session)) return "redirect:/users/login";
         return "/qna/form";
     }
 
     @PostMapping("")
     public String create(String title, String contents, HttpSession session) {
-        checkSessionedUser(session);
+        if (!SessionUtil.isSessionedUser(session)) return "redirect:/users/login";
         User sessionedUser = SessionUtil.getUserFromSession(session);
-        Question newQuestion = Question.newInstance(sessionedUser.getUserId(), title, contents);
+        Question newQuestion = Question.newInstance(sessionedUser, title, contents);
         questionRepository.save(newQuestion);
 
-        return "redirect:/questions";
+        return "redirect:/";
     }
 
     @GetMapping("")
@@ -44,7 +45,8 @@ public class QuestionController {
 
     @GetMapping("{id}/form")
     public String updateForm(@PathVariable long id, Model model, HttpSession session) {
-        checkSessionedUser(session);
+        if (!SessionUtil.isSessionedUser(session)) return "redirect:/users/login";
+
         checkUserSelf(id, session);
 
         model.addAttribute("question", questionRepository.findById(id).get());
@@ -53,7 +55,7 @@ public class QuestionController {
 
     @PutMapping("{id}")
     public String update(@PathVariable long id, Question updatedQuestion, HttpSession session) {
-        checkSessionedUser(session);
+        if (!SessionUtil.isSessionedUser(session)) return "redirect:/users/login";
         Question question = checkUserSelf(id, session);
 
         question.update(updatedQuestion);
@@ -64,22 +66,20 @@ public class QuestionController {
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable long id, HttpSession session) {
-        checkSessionedUser(session);
+        if (!SessionUtil.isSessionedUser(session)) return "redirect:/users/login";
         Question question = checkUserSelf(id, session);
 
         questionRepository.delete(question);
         return "redirect:/questions";
     }
 
-    private String checkSessionedUser(HttpSession session) {
-        if (!SessionUtil.isSessionedUser(session)) return "redirect:/users/login";
-        return null;
-    }
-
     private Question checkUserSelf(@PathVariable long id, HttpSession session) {
         Question question = questionRepository.findById(id).orElse(null);
         User sessionedUser = (User)session.getAttribute(SessionUtil.USER_SESSION_KEY);
-        if (!sessionedUser.matchUserId(question.getWriter())) throw new IllegalStateException("You can't edit the other user's question");
+
+        if (!question.isSameWriter(sessionedUser)) {
+            throw new IllegalStateException("You can't edit the other user's question");
+        }
 
         return question;
     }

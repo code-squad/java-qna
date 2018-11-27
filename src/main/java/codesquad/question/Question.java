@@ -1,6 +1,12 @@
 package codesquad.question;
 
+import codesquad.LocalDateTimeConverter;
+import codesquad.user.User;
+import org.springframework.data.annotation.CreatedDate;
+
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Question {
@@ -8,25 +14,31 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false, length=20)
-    private String writer;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    private User writer;
 
     @Column(nullable = false, length=100)
     private String title;
 
     @Lob
+    @Column(nullable = false)
     private String contents;
+
+    @Convert(converter = LocalDateTimeConverter.class)
+    private LocalDateTime createdDate;
 
     private Question() {}
 
-    private Question(String writer, String title, String contents) {
+    private Question(User writer, String title, String contents) {
         super();
         this.writer = writer;
         this.title = title;
         this.contents = contents;
+        this.createdDate = LocalDateTime.now();
     }
 
-    public static Question newInstance(String writer, String title, String contents) {
+    public static Question newInstance(User writer, String title, String contents) {
         return new Question(writer, title, contents);
     }
 
@@ -38,11 +50,11 @@ public class Question {
         this.id = id;
     }
 
-    public String getWriter() {
+    public User getWriter() {
         return writer;
     }
 
-    public void setWriter(String writer) {
+    public void setWriter(User writer) {
         this.writer = writer;
     }
 
@@ -62,8 +74,25 @@ public class Question {
         this.contents = contents;
     }
 
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public String getFormattedCreatedDate() {
+        if (createdDate == null) return "";
+        return createdDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
+    }
+
     void update(Question updatedQuestion) {
         this.setTitle(updatedQuestion.getTitle());
         this.setContents(updatedQuestion.getContents());
+    }
+
+    public boolean isSameWriter(User sessionedUser) {
+        return this.writer.equals(sessionedUser);
     }
 }

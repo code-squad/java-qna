@@ -29,8 +29,14 @@ public class UserController {
     @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
         Optional<User> maybeUser = userRepository.findByUserId(userId);
+
         if (!maybeUser.isPresent() || !maybeUser.get().matchPassword(password)) return "/user/login_failed";
         session.setAttribute(SessionUtil.USER_SESSION_KEY, maybeUser.get());
+
+//        userRepository.findByUserId(userId)
+//                .filter(user -> user.matchPassword(password))
+//                .map(user -> SessionUtil.setUserToSession(session, user))
+//                .orElseThrow(IllegalAccessError::new)
 
         return "redirect:/";
     }
@@ -61,7 +67,7 @@ public class UserController {
 
     @GetMapping("/{id}/form")
     public String updateForm(@PathVariable long id, Model model, HttpSession session) {
-        checkSessionedUser(session);
+        if (!SessionUtil.isSessionedUser(session)) return "redirect:/users/login";
         checkUserSelf(id, session);
 
         model.addAttribute("user", userRepository.findById(id).get());
@@ -70,17 +76,12 @@ public class UserController {
 
     @PutMapping("/{id}")
     public String update(@PathVariable long id, User updatedUser, HttpSession session) {
-        checkSessionedUser(session);
+        if (!SessionUtil.isSessionedUser(session)) return "redirect:/users/login";
         User sessionedUser = checkUserSelf(id, session);
 
         sessionedUser.update(updatedUser);
         userRepository.save(sessionedUser);
         return "redirect:/users";
-    }
-
-    private String checkSessionedUser(HttpSession session) {
-        if (!SessionUtil.isSessionedUser(session)) return "redirect:/users/login";
-        return null;
     }
 
     private User checkUserSelf(@PathVariable long id, HttpSession session) {

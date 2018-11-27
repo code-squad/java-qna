@@ -62,7 +62,7 @@ public class QuestionController {
         log.debug("view question number {}", id);
 
         Question question = questionRepository.findById(id).orElse(null);
-        List<Answer> answers = answerRepository.findByQuestionId(id);
+        List<Answer> answers = answerRepository.findByQuestionIdAndDeleted(id, false);
 
         model.addAttribute("answers", answers);
         model.addAttribute("countOfAnswers", answers.size());

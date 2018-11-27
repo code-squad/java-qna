@@ -26,6 +26,8 @@ public class Answer {
 
     private LocalDateTime createDate;
 
+    private boolean deleted;
+
     public Answer() {
 
     }
@@ -35,10 +37,15 @@ public class Answer {
         this.writer = writer;
         this.contents = contents;
         this.createDate = LocalDateTime.now();
+        this.deleted = false;
     }
 
     public void update(Answer target) {
         this.contents = target.contents;
+    }
+
+    public void delete() {
+        this.deleted = true;
     }
 
     public boolean isMatchWriter(User target) {
@@ -84,6 +91,14 @@ public class Answer {
         this.contents = contents;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     @Override
     public String toString() {
         return "Answer{" +
@@ -91,6 +106,8 @@ public class Answer {
                 ", question=" + question +
                 ", writer=" + writer +
                 ", contents='" + contents + '\'' +
+                ", createDate=" + createDate +
+                ", deleted=" + deleted +
                 '}';
     }
 }

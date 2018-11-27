@@ -17,9 +17,7 @@ public class MainController {
 
     @GetMapping("/")
     public String index(Model model) {
-        logger.trace("이건 안나와야지");
-        logger.debug("이건 나와야지");
-        model.addAttribute("questions", questionRepository.findAll());
+        model.addAttribute("questions", questionRepository.findAllByDeleted(false));
         return "index";
     }
 

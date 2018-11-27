@@ -39,7 +39,9 @@ public class AnswerController {
 
         Answer answer = answerRepository.findById(answerId).orElseThrow(AnswerIdNotMatchException::new);
         if(!SessionUtil.permissionCheck(session, answer.getUser())) return "redirect:/users/login";
-        answerRepository.delete(answer);
+
+        answer.deletedState(SessionUtil.getUserFromSesssion(session));
+        answerRepository.save(answer);
         return  "redirect:/questions/" + question_id;
     }
 

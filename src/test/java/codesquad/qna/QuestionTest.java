@@ -18,4 +18,13 @@ public class QuestionTest {
         logger.debug("now? {}", q.getCreateDate());
         logger.debug("now formatted? {}", q.getFormattedCreateDate());
     }
+
+    @Test
+    public void getNewLineContents() {
+        User user = new User();
+        Question q = new Question(user, "title", "contents\ncontents2\ncontent3");
+
+        logger.debug("newLineContents : {}", q.getNewLineContents());
+    }
+
 }

@@ -1,6 +1,6 @@
 package codesquad.qna;
 
-import codesquad.answer.AnswerRepository;
+import codesquad.exception.QuestionIdNotMatchException;
 import codesquad.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,9 +14,6 @@ import javax.servlet.http.HttpSession;
 public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
-
-    @Autowired
-    private AnswerRepository answerRepository;
 
     @GetMapping("/form")
     public String form(HttpSession session) {
@@ -51,10 +48,10 @@ public class QuestionController {
 
     @PutMapping("/{id}")
     public String update(@PathVariable Long id, Question newQuestion, HttpSession session) {
-        if(!SessionUtil.isLoginUser(session)) return "redirect:/users/login";
+        if (!SessionUtil.isLoginUser(session)) return "redirect:/users/login";
 
         Question question = questionRepository.findById(id).orElseThrow(IllegalAccessError::new);
-        question.update(newQuestion,SessionUtil.getUserFromSesssion(session));
+        question.update(newQuestion, SessionUtil.getUserFromSesssion(session));
         questionRepository.save(question);
         return "redirect:/";
     }
@@ -63,8 +60,13 @@ public class QuestionController {
     public String delete(@PathVariable Long id, HttpSession session) {
         if (!permissionCheck(session, id)) return "redirect:/users/login";
 
-        questionRepository.deleteById(id);
-        return "redirect:/";
+        Question question = questionRepository.findById(id).orElseThrow(QuestionIdNotMatchException::new);
+
+        if (question.deleteState(SessionUtil.getUserFromSesssion(session))) {
+            questionRepository.save(question);
+            return "redirect:/";
+        }
+        return "redirect:/questions/" + id;
     }
 
     private boolean permissionCheck(HttpSession session, Long id) {
@@ -74,5 +76,5 @@ public class QuestionController {
                 .getUser()
         );
     }
-    
+
 }

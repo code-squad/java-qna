@@ -7,6 +7,7 @@ import codesquad.user.User;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,7 +36,7 @@ public class Question {
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("id ASC")
-    private List<Answer> answers;
+    private List<Answer> answers = new ArrayList<>();
 
     public Question() {
     }
@@ -56,9 +57,7 @@ public class Question {
     }
 
     public void update(Question newQuestion) {
-        if (!newQuestion.matchId(this.id)) {
-            throw new UserException("작성자와 아이디가 다릅니다. 다시 로그인 해주세요");
-        }
+        newQuestion.matchWrite(this.writer);
         this.title = newQuestion.title;
         this.contents = newQuestion.contents;
     }
@@ -101,14 +100,10 @@ public class Question {
         deleted = true;
     }
 
-    private int conutOfMatchUser() {
-        int countOfMatchUser = 0;
-        for (Answer answer : answers) {
-            if (answer.matchUser(writer)) {
-                countOfMatchUser ++;
-            }
-        }
-        return countOfMatchUser;
+    long conutOfMatchUser() {
+        return answers.stream()
+                .filter(answer -> answer.matchUser(writer))
+                .count();
     }
 
     public String getTitle() {
@@ -128,7 +123,9 @@ public class Question {
     }
 
     public List<Answer> getAnswers() {
-        return answers.stream().filter(answer -> !answer.isDeleted()).collect(Collectors.toList());
+        return answers.stream()
+                .filter(answer -> !answer.isDeleted())
+                .collect(Collectors.toList());
     }
 
     public void setAnswers(List<Answer> answers) {

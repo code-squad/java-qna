@@ -15,9 +15,26 @@ public class User {
 
     @Column(nullable = false, length = 20, unique = true)
     private String userId;
+
+    @Column(nullable = false, length = 20)
     private String password;
+
+    @Column(nullable = false, length = 15)
     private String name;
+
+    @Column
     private String email;
+
+    public User() {
+    }
+
+    public User(long id ,String userId, String password, String name, String email) {
+        this.id = id;
+        this.userId = userId;
+        this.password = password;
+        this.name = name;
+        this.email = email;
+    }
 
     public long getId() {
         return id;

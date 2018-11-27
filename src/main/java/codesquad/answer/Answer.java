@@ -89,19 +89,14 @@ public class Answer {
         this.deleted = deleted;
     }
 
-    private void trowUserException(User sessionUser) {
-        if (!sessionUser.equals(this.user)) {
-            throw new UserException("작성자와 아이디가 다릅니다. 다시 로그인 해주세요");
-        }
-    }
 
     public boolean matchUser(User user) {
         return user.equals(this.user);
     }
 
     public void update(Answer updatedAnswer) {
-        if (!updatedAnswer.matchId(this.id)) {
-            throw new AnswerException("아이디가 다름");
+        if (!updatedAnswer.matchUser(this.user)) {
+            throw new UserException("아이디가 다름");
         }
         this.contents = updatedAnswer.contents;
     }

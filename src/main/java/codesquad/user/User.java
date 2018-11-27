@@ -1,12 +1,8 @@
 package codesquad.user;
 
-import codesquad.answer.Answer;
 import codesquad.exception.UserIdNotMatchException;
-import codesquad.qna.Question;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 public class User {
@@ -20,12 +16,6 @@ public class User {
     private String password;
     private String name;
     private String email;
-
-    @OneToMany(mappedBy = "user" ,cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<Question> questions = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<Answer> answers = new ArrayList<>();
 
     public long getId() {
         return id;

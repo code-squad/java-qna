@@ -5,6 +5,8 @@ import codesquad.exception.UserIdNotMatchException;
 import codesquad.user.User;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,8 @@ public class Question {
     @Column(nullable = false)
     private String contents;
 
+    private LocalDateTime createDate;
+
     @OneToMany(mappedBy = "question" ,cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Answer> answers = new ArrayList<>();
 
@@ -34,6 +38,7 @@ public class Question {
         this.user = user;
         this.title = title;
         this.contents = contents;
+        this.createDate = LocalDateTime.now();
     }
 
     public long getId() {
@@ -66,6 +71,19 @@ public class Question {
 
     public void setContents(String contents) {
         this.contents = contents;
+    }
+
+    public LocalDateTime getCreateDate() {
+        return createDate;
+    }
+
+    public String getFormattedCreateDate() {
+        if (createDate == null) return "";
+        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
+    }
+
+    public void setCreateDate(LocalDateTime createDate) {
+        this.createDate = createDate;
     }
 
     // domain

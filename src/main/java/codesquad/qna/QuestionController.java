@@ -1,16 +1,13 @@
 package codesquad.qna;
 
-import codesquad.answer.Answer;
 import codesquad.answer.AnswerRepository;
 import codesquad.util.SessionUtil;
-import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 @Controller
 @RequestMapping("/questions")

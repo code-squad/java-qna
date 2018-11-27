@@ -18,28 +18,11 @@ public class Aspect {
     }
 
 
-    //TODO : implement checkWriter AOP
-//    @Pointcut("@annotation(codesquad.aspect.WriterCheck) &&" +
-//            "execution(* codesquad..*.*(javax.servlet.http.HttpSession,Long,..)) &&" +
-//            "args(session,id,..)")
-//    public void checkWriter(HttpSession session, long id) {
-//    }
-
-    //    @Around("@annotation(codesquad.aspect.LoginCheck) && " +
-//            "execution(* codesquad..*.*(javax.servlet.http.HttpSession,..)) && " +
-//            "args(session,..)")
     @Around("checkLogin(session)")
-    public String checkLogin(ProceedingJoinPoint pjp, HttpSession session) throws Throwable {
+    public String checkLoginLogic(ProceedingJoinPoint pjp, HttpSession session) throws Throwable {
         if (session.getAttribute(User.SESSION_NAME) == null) {
             return "redirect:/users/login?debug";
         }
         return (String) pjp.proceed();
     }
-
-//    @Around("checkWriter(session,id)")
-//    public String checkWriter(ProceedingJoinPoint pjp, HttpSession session, long id) throws Throwable {
-//        System.out.println("DEBUGNNN : WRITE CHECK"+session + id);
-//        return (String) pjp.proceed();
-//    }
-
 }

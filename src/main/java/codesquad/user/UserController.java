@@ -36,7 +36,7 @@ public class UserController {
             model.addAttribute("user", user);
             return "user/profile";
         }
-            return "redirect:/";
+        return "redirect:/";
     }
 
     @GetMapping("/{userId}/form")
@@ -55,16 +55,16 @@ public class UserController {
     public String update(HttpSession session, @PathVariable String userId, User updateUserInfo) {
         User user = (User) session.getAttribute(User.SESSION_NAME);
         Optional<User> maybeUser = userRepository.findByUserId(userId);
-        if(maybeUser.isPresent() && user.equals(maybeUser.get()) && updateUserInfo.checkPassword(maybeUser.get())){
-            updateUserInfo.fillEmpty(user);
-            userRepository.save(updateUserInfo);
+        if (maybeUser.isPresent() && user.equals(maybeUser.get()) && updateUserInfo.checkPassword(maybeUser.get())) {
+            user.updateProcess(updateUserInfo);
+            userRepository.save(user);
             return "redirect:/users";
         }
         return "redirect:/error";
     }
 
     @GetMapping("login")
-    public String login(){
+    public String login() {
         return "/user/login";
     }
 

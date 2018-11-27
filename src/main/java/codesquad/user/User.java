@@ -92,23 +92,6 @@ public class User {
         return this.password.equals(user.password);
     }
 
-    public void fillEmpty(User loginUser) {
-        if (this.id == null) {
-            this.id = loginUser.id;
-        }
-        if (this.userId == null) {
-            this.userId = loginUser.userId;
-        }
-        if (this.email == null) {
-            this.email = loginUser.email;
-        }
-        if (this.name == null) {
-            this.name = loginUser.name;
-        }
-        if (this.password == null) {
-            this.password = loginUser.password;
-        }
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -121,5 +104,10 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(id, userId, password, name, email);
+    }
+
+    public void updateProcess(User updateUserInfo) {
+        this.name = updateUserInfo.name;
+        this.email = updateUserInfo.email;
     }
 }

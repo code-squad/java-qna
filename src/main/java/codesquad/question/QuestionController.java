@@ -1,7 +1,6 @@
 package codesquad.question;
 
 import codesquad.aspect.LoginCheck;
-import codesquad.aspect.WriterCheck;
 import codesquad.user.User;
 import codesquad.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +67,6 @@ public class QuestionController {
 
     @PutMapping("/{id}")
     @LoginCheck
-    @WriterCheck
     public String update(HttpSession session, @PathVariable long id, Question updateQuestion) {
         Optional<Question> maybeQuestion = questionRepository.findById(id);
         User user = (User) session.getAttribute(User.SESSION_NAME);
@@ -83,14 +81,15 @@ public class QuestionController {
     @DeleteMapping("/{id}")
     @LoginCheck
     public String delete(HttpSession session, @PathVariable long id) {
-        Optional<Question> question = questionRepository.findById(id);
+        Optional<Question> maybeQuestion = questionRepository.findById(id);
         User user = (User) session.getAttribute(User.SESSION_NAME);
-        if (question.isPresent() && question.get().isSameWriter(user)) {
-            questionRepository.deleteById(id);
+        if (maybeQuestion.isPresent() && maybeQuestion.get().isSameWriter(user)) {
+            maybeQuestion.get().delete(user);
             return "redirect:/";
         }
         return "redirect:/error";
     }
+
 
     @PostMapping("/{id}/answers")
     @LoginCheck
@@ -103,6 +102,18 @@ public class QuestionController {
             return "redirect:/questions/" + id;
         }
         return "redirect:/error";
+    }
+
+    @DeleteMapping("/{questionId}/answers/{answerId}")
+    @LoginCheck
+    public String insertAnswer(HttpSession session, @PathVariable long questionId, @PathVariable long answerId) {
+        Optional<Answer> maybeAnswer = answerRepository.findById(answerId);
+        User user = (User) session.getAttribute(User.SESSION_NAME);
+        if (maybeAnswer.isPresent() && maybeAnswer.get().isSameWriter(user)) {
+            answerRepository.deleteById(answerId);
+            return "redirect:/questions/" + questionId;
+        }
+        return "/error?insertAnswer";
     }
 
 }

@@ -17,6 +17,15 @@ public class Answer {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_answer"))
     private Question question;
+    private boolean deleted;
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 
     public long getIndex() {
         return index;
@@ -48,5 +57,16 @@ public class Answer {
 
     public void setQuestion(Question question) {
         this.question = question;
+    }
+
+    boolean isSameWriter(User user) {
+        if (this.commenter == null) {
+            return false;
+        }
+        return this.commenter.equals(user);
+    }
+
+    void delete() {
+        this.deleted = true;
     }
 }

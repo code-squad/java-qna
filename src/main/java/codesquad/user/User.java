@@ -21,7 +21,8 @@ public class User {
     public User() {
     }
 
-    public User(String userId, String password, String name, String email) {
+    public User(long id, String userId, String password, String name, String email) {
+        this.id = id;
         this.userId = userId;
         this.password = password;
         this.name = name;
@@ -86,10 +87,7 @@ public class User {
     }
 
     public boolean checkPassword(User user) {
-        if (this.password == null) {
-            return false;
-        }
-        return this.password.equals(user.password);
+        return checkPassword(user.password);
     }
 
 
@@ -106,7 +104,7 @@ public class User {
         return Objects.hash(id, userId, password, name, email);
     }
 
-    public void updateProcess(User updateUserInfo) {
+    public void updateNameEmail(User updateUserInfo) {
         this.name = updateUserInfo.name;
         this.email = updateUserInfo.email;
     }

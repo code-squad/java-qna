@@ -3,7 +3,11 @@ package codesquad.question;
 import codesquad.aspect.LoginCheck;
 import codesquad.user.User;
 import codesquad.user.UserRepository;
+import codesquad.util.PagingUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +26,16 @@ public class QuestionController {
     private AnswerRepository answerRepository;
 
     @GetMapping
-    public String list(Model model) {
-        model.addAttribute("questions", questionRepository.findAll());
+    public String main() {
+        return "/questions/list/1";
+    }
+
+    @GetMapping("/list/{pageNo}")
+    public String list(Model model, @PathVariable int pageNo) {
+        Page<Question> currentPage = questionRepository.findAll(
+                PageRequest.of(pageNo - 1, Question.pageSize, new Sort(Sort.Direction.DESC, "index")));
+        model.addAttribute("questions", currentPage);
+        model.addAttribute("pagingUtil", PagingUtil.of(currentPage));
         return "index";
     }
 
@@ -84,7 +96,8 @@ public class QuestionController {
         Optional<Question> maybeQuestion = questionRepository.findById(id);
         User user = (User) session.getAttribute(User.SESSION_NAME);
         if (maybeQuestion.isPresent() && maybeQuestion.get().isSameWriter(user)) {
-            maybeQuestion.get().delete(user);
+            maybeQuestion.get().deleteBy(user);
+            questionRepository.save(maybeQuestion.get());
             return "redirect:/";
         }
         return "redirect:/error";

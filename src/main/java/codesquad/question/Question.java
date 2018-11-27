@@ -7,6 +7,7 @@ import java.util.List;
 
 @Entity
 public class Question {
+    public static final int pageSize = 3;
     @Id
     @Column(name = "QUESTION_INDEX")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +22,18 @@ public class Question {
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     private List<Answer> answers;
     private boolean deleted = false;
+
+    public Question() {
+    }
+
+    public Question(long index, User writer, String title, String contents, List<Answer> answers, boolean deleted) {
+        this.index = index;
+        this.writer = writer;
+        this.title = title;
+        this.contents = contents;
+        this.answers = answers;
+        this.deleted = deleted;
+    }
 
     public boolean isDeleted() {
         return deleted;
@@ -87,7 +100,11 @@ public class Question {
         return this.writer.equals(user);
     }
 
-    void delete(User user) {
+    void deleteBy(User user) {
+        if (!this.writer.equals(user)) {
+            return;
+        }
+
         if (!isOtherAnswerer(user)) {
             this.deleted = true;
             deleteAnswers();

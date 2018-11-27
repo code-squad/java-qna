@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class MainController {
@@ -14,18 +13,9 @@ public class MainController {
     private QnaRepository qnaRepository;
 
     @GetMapping("/")
-    public String index(Model model){
+    public String index(Model model) {
+        System.out.println(qnaRepository.findAll());
         model.addAttribute("quests", qnaRepository.findAll());
         return "/index";
     }
-
-
-
-//    @GetMapping("/index/{{index}}")
-//    public String show(Model model){
-//        model.addAttribute("users", qnaRepository.findAll());
-//        return "/index";
-//    }
-
-
 }

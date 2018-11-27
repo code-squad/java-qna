@@ -1,10 +1,7 @@
-<!DOCTYPE html>
-<html lang="kr">
-{{> base}}
-
+{{#partial "change"}}
 <div class="container" id="main">
     <div class="col-md-6 col-md-offset-3">
-        <div class="panel panel-default content-main">
+        <div class="panel panel-default contents-main">
             <form name="question" method="post" action="/users/{{id}}">
                 <input type="hidden" name="_method" value="PUT" >
                 {{#users}}
@@ -32,6 +29,5 @@
         </div>
     </div>
 </div>
-{{> bootstrap}}
-</body>
-</html>
+{{/partial}}
+{{> base}}

@@ -1,6 +1,7 @@
 package codesquad.base.user;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class User {
@@ -8,8 +9,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, unique = true)
     private String userId;
+
     private String name;
     private String email;
     private String password;
@@ -71,10 +73,9 @@ public class User {
         this.email = updateUser.email;
     }
 
-    public boolean matchPassword(String password){
+    public boolean matchPassword(String password) {
         return this.password.equals(password);
     }
-
 
 }
 

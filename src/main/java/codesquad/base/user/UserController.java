@@ -27,7 +27,7 @@ public class UserController {
         if (maybeUser.isPresent()) {
             User user = maybeUser.get();
             if (user.matchPassword(password)) {
-                session.setAttribute("sessionedUser", user);
+                session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
                 System.out.println("성공!!");
                 return "redirect:/";
             }
@@ -37,7 +37,7 @@ public class UserController {
 
     @GetMapping("/logout")
     public String logout(HttpSession session){
-        session.removeAttribute("sessionedUser");
+        session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
         return "redirect:/";
     }
 

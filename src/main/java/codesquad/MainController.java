@@ -11,9 +11,9 @@ public class MainController {
     @Autowired
     private QuestionRepository questionRepository;
 
-    @GetMapping({"","/","index"})
+    @GetMapping({"", "/", "index"})
     public String index(Model model) {
         model.addAttribute("questions", questionRepository.findAll());
-        return "index";
+        return "forward:/questions";
     }
 }

@@ -26,6 +26,8 @@ public class Question {
 
     private LocalDateTime createDate;
 
+    private boolean deleted;
+
     public Question() {
 
     }
@@ -35,6 +37,7 @@ public class Question {
         this.title = title;
         this.contents = contents;
         this.createDate = LocalDateTime.now();
+        this.deleted = false;
     }
 
     void update(User writer, Question updatedQuestion) {
@@ -42,6 +45,10 @@ public class Question {
             this.title = updatedQuestion.title;
             this.contents = updatedQuestion.contents;
         }
+    }
+
+    void delete() {
+        this.deleted = true;
     }
 
     boolean isMatchWriter(User target) {

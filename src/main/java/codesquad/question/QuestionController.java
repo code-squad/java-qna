@@ -42,7 +42,7 @@ public class QuestionController {
     public String list(Model model) {
         log.debug("view question list");
 
-        model.addAttribute("questions", questionRepository.findAll());
+        model.addAttribute("questions", questionRepository.findByDeleted(false));
         return "index";
     }
 
@@ -116,7 +116,10 @@ public class QuestionController {
             return "/user/login";
         }
 
-        questionRepository.delete(question);
+        question.delete();
+        questionRepository.save(question);
+
+//        questionRepository.delete(question);
         return "redirect:/questions";
     }
 

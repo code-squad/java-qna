@@ -1,10 +1,8 @@
 package codesquad.question;
 
 import codesquad.user.User;
-import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -36,12 +34,12 @@ public class Question {
         return index;
     }
 
-    public void setIndex(Question question) {
-        this.index = question.index;
-    }
-
     public void setIndex(long index) {
         this.index = index;
+    }
+
+    public void setIndex(Question question) {
+        this.index = question.index;
     }
 
     public User getWriter() {
@@ -85,13 +83,29 @@ public class Question {
                 '}';
     }
 
-    public boolean isSameWriter(User user) {
+    boolean isSameWriter(User user) {
         return this.writer.equals(user);
     }
 
-    public void changeAnswersDeleteState(boolean state) {
+    void delete(User user) {
+        if (!isOtherAnswerer(user)) {
+            this.deleted = true;
+            deleteAnswers();
+        }
+    }
+
+    private boolean isOtherAnswerer(User user) {
         for (Answer answer : answers) {
-            answer.setDeleted(state);
+            if (!answer.isSameWriter(user)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void deleteAnswers() {
+        for (Answer answer : answers) {
+            answer.delete();
         }
     }
 }

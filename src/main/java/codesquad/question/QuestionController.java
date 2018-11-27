@@ -1,7 +1,6 @@
 package codesquad.question;
 
 import codesquad.aspect.LoginCheck;
-import codesquad.aspect.WriterCheck;
 import codesquad.user.User;
 import codesquad.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -69,7 +67,6 @@ public class QuestionController {
 
     @PutMapping("/{id}")
     @LoginCheck
-    @WriterCheck
     public String update(HttpSession session, @PathVariable long id, Question updateQuestion) {
         Optional<Question> maybeQuestion = questionRepository.findById(id);
         User user = (User) session.getAttribute(User.SESSION_NAME);
@@ -87,7 +84,7 @@ public class QuestionController {
         Optional<Question> maybeQuestion = questionRepository.findById(id);
         User user = (User) session.getAttribute(User.SESSION_NAME);
         if (maybeQuestion.isPresent() && maybeQuestion.get().isSameWriter(user)) {
-            deleteProcess(maybeQuestion.get(), user);
+            maybeQuestion.get().delete(user);
             return "redirect:/";
         }
         return "redirect:/error";
@@ -117,31 +114,6 @@ public class QuestionController {
             return "redirect:/questions/" + questionId;
         }
         return "/error?insertAnswer";
-    }
-
-    private void deleteProcess(Question question, User user) {
-        if (!isOtherAnswerer(question, user)) {
-            deleteAnswerProcess(question);
-            question.setDeleted(true);
-            questionRepository.save(question);
-        }
-    }
-
-    private void deleteAnswerProcess(Question question) {
-        question.changeAnswersDeleteState(true);
-        for (Answer answer : question.getAnswers()) {
-            answerRepository.save(answer);
-        }
-    }
-
-    private boolean isOtherAnswerer(Question question, User user) {
-        List<Answer> answers = question.getAnswers();
-        for (Answer answer : answers) {
-            if (!answer.isSameWriter(user)) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }

@@ -59,10 +59,14 @@ public class Answer {
         this.question = question;
     }
 
-    public boolean isSameWriter(User user) {
+    boolean isSameWriter(User user) {
         if (this.commenter == null) {
             return false;
         }
         return this.commenter.equals(user);
+    }
+
+    void delete() {
+        this.deleted = true;
     }
 }

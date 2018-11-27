@@ -34,7 +34,6 @@ public class QuestionController {
         }
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
         question.setUser(sessionedUser);
-        question.setDeleted(false);
         questionRepository.save(question);
         return "redirect:/";
     }

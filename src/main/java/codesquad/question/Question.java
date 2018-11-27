@@ -4,6 +4,7 @@ import codesquad.question.answer.Answer;
 import codesquad.user.User;
 import codesquad.utils.TimeFormatter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -31,6 +32,7 @@ public class Question {
     @CreationTimestamp
     private LocalDateTime createDate;
 
+    @JoinColumn(nullable = false)
     private boolean deleted;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE, orphanRemoval = true)
@@ -38,6 +40,7 @@ public class Question {
     private List<Answer> answers;
 
     public Question() {
+        this.deleted = true;
     }
 
     public Question(long id, String title, String contents, User user) {
@@ -45,6 +48,7 @@ public class Question {
         this.title = title;
         this.contents = contents;
         this.user = user;
+        this.deleted = true;
     }
 
     public long getId() {

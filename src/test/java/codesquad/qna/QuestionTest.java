@@ -21,6 +21,6 @@ public class QuestionTest {
 
     @Test
     public void test(){
-        assertThat(question1.matchId(user1)).isEqualTo(true);
+        assertThat(question1.isSameWriter(user1)).isEqualTo(true);
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/users")
@@ -26,13 +27,21 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
-        User maybeUser = userRepository.findByUserId(userId);
-        if (maybeUser != null && maybeUser.matchPassword(password)) {
-            session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, maybeUser);
+        Optional<User> maybeUser = userRepository.findByUserId(userId).filter(user -> user.matchPassword(password));
+        if (maybeUser.isPresent())
             return "redirect:/";
-        }
-//        userRepository.findByUserId(userId).filter(u->u.matchPassword(password)).orElse(null); // findByUserId의 반환값이 optional일때 stream을 쓸수 있다.
-        return "/user/login";
+        return "/user/login_failed";
+
+        User maybeUser = matchIdPassword(userId,password);
+        session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, maybeUser);
+        if (!HttpSessionUtils.isNullLoginUser(session))
+            return "redirect:/";
+        return "/user/login_failed";
+    }
+
+    public User matchIdPassword(String userId,String password){
+        return userRepository.findByUserId(userId)
+                .filter(user -> user.matchPassword(password))
     }
 
     @PostMapping("")

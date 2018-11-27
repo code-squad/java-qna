@@ -8,8 +8,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import javax.swing.text.html.Option;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/qna")
@@ -35,16 +33,15 @@ public class QuestionController {
 
     @GetMapping("{id}/updateForm")
     public String update(@PathVariable long id, HttpSession session, Model model) {
-        if (!HttpSessionUtils.isNullLoginUser(session)) {
-            return "/user/login";
-        }
-        User loginUser = HttpSessionUtils.getUserFromSession(session);
-        Question question = questionRepository.findById(id).orElse(null);
-        if (!question.matchId(loginUser)) {
+        try {
+            Question question = questionRepository.findById(id).orElse(null);
+            hasPermission(session, question) ;
+            model.addAttribute("question", question);
+            return "/qna/updateForm";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("errorMessage", e.getMessage());
             return "/users/login";
         }
-        model.addAttribute("questionInformation", question);
-        return "/qna/updateForm";
     }
 
     @GetMapping("/{id}")            //index에서 질문하기 눌렀을때
@@ -57,32 +54,42 @@ public class QuestionController {
         return "/qna/show";
     }
 
-    @PutMapping("/{id}")
-    public String updatePersonalInformation(@PathVariable long id, Question updatedQuestion,HttpSession session) {
-        if (!HttpSessionUtils.isNullLoginUser(session)) {       // 로그인 안한 상태로 수정을 하려면 로그인을 먼저 해야 한다.
-            return "redirect:/";
+    private boolean hasPermission(HttpSession session, Question question) {
+        if (!HttpSessionUtils.isNullLoginUser(session)) {
+            throw new IllegalStateException("로그인이 필요합니다.");
         }
         User loginUser = HttpSessionUtils.getUserFromSession(session);
-        Question question = questionRepository.findById(id).orElse(null);
-        if (!question.matchId(loginUser)) {                       // 로그인한 사용자가 다른 사람의 정보를 수정할 수 없다.
+        if (question.isSameWriter(loginUser)) {
+            throw new IllegalStateException("자신이 쓴 글만 수정, 삭제가 가능합니다.");
+        }
+        return true;
+    }
+
+    @PutMapping("/{id}")
+    public String updatePersonalInformation(@PathVariable long id, Question updatedQuestion, Model model,HttpSession session) {
+        try {
+            Question question = questionRepository.findById(id).orElse(null);
+            hasPermission(session, question) ;
+            question.update(updatedQuestion);
+            questionRepository.save(question);
+            return String.format("redirect:/qna/%d", id);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("errorMessage", e.getMessage());
             return "/users/login";
         }
-        question.update(updatedQuestion);
-        questionRepository.save(question);
-        return String.format("redirect:/qna/%d",id);
     }
 
     @DeleteMapping("{id}/deleteForm")
-    public String delete(@PathVariable long id, HttpSession session) {
-        if (!HttpSessionUtils.isNullLoginUser(session)) {
+    public String delete(@PathVariable long id, Model model,HttpSession session) {
+        try {
+            Question question = questionRepository.findById(id).orElse(null);
+            hasPermission(session, question) ;
+            questionRepository.delete(question);
             return "redirect:/";
-        }
-        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-        Question question = questionRepository.findById(id).orElse(null);
-        if (!question.matchId(sessionedUser)) {
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("errorMessage", e.getMessage());
             return "/users/login";
         }
-        questionRepository.delete(question);
-        return "redirect:/";
+
     }
 }

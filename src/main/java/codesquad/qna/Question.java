@@ -7,7 +7,6 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Question {
@@ -85,7 +84,7 @@ public class Question {
         this.contents = updateQuestion.contents;
     }
 
-    public boolean matchId(User sessionedUser) {
+    public boolean isSameWriter(User sessionedUser) {
        return writer.matchUser(sessionedUser);
     }
 

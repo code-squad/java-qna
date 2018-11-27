@@ -1,8 +1,10 @@
 package codesquad.question;
 
 import codesquad.HttpSessionUtils;
+import codesquad.Result;
 import codesquad.answer.Answer;
 import codesquad.answer.AnswerRepository;
+import codesquad.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,48 +74,76 @@ public class QuestionController {
     public String updateForm(@PathVariable long id, Model model, HttpSession session) {
         log.debug("view question number {} update form", id);
 
-        if(!HttpSessionUtils.isLoggedInUser(session)) {
-            return "/user/login";
-        }
-
         Question question = questionRepository.findById(id).orElse(null);
-        if(!question.isMatchWriter(HttpSessionUtils.getUserFromSession(session))) {
-            return "/qna/update_failed";
+        Result result = valid(session, question);
+
+        if(!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return "/user/login";
         }
 
         model.addAttribute("question", question);
         return "/qna/update_form";
     }
 
+
     @PutMapping("/{id}")
-    public String update(@PathVariable long id, HttpSession session, Question updatedQuestion) {
+    public String update(@PathVariable long id, HttpSession session, Model model, Question updatedQuestion) {
         log.debug("update question {}", id);
 
-        if(!HttpSessionUtils.isLoggedInUser(session)) {
+        Question question = questionRepository.findById(id).orElse(null);
+        Result result = valid(session, question);
+
+        if(!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
             return "/user/login";
         }
 
-        Question question = questionRepository.findById(id).orElse(null);
         question.update(HttpSessionUtils.getUserFromSession(session), updatedQuestion);
-
         questionRepository.save(question);
         return "redirect:/questions/{id}";
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable long id, HttpSession session) {
+    public String delete(@PathVariable long id, HttpSession session, Model model) {
         log.debug("delete question {}", id);
 
-        if(!HttpSessionUtils.isLoggedInUser(session)) {
-            return "/user/login";
-        }
-
         Question question = questionRepository.findById(id).orElse(null);
-        if(!question.isMatchWriter(HttpSessionUtils.getUserFromSession(session))) {
-            return "/qna/update_failed";
+        Result result = valid(session, question);
+
+        if(!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return "/user/login";
         }
 
         questionRepository.delete(question);
         return "redirect:/questions";
     }
+
+    private Result valid(HttpSession session, Question question) {
+        if(!HttpSessionUtils.isLoggedInUser(session)) {
+            return Result.fail("로그인이 필요합니다.");
+        }
+
+        User loggedInUser = HttpSessionUtils.getUserFromSession(session);
+        if(!question.isMatchWriter(loggedInUser)) {
+            return Result.fail("작성자만 수정, 삭제가 가능합니다.");
+        }
+
+        return Result.ok();
+    }
 }
+
+//    private boolean hasPermission(HttpSession session, Question question) {
+//
+//        if(!HttpSessionUtils.isLoggedInUser(session)) {
+//            throw new IllegalStateException("로그인이 필요합니다.");
+//        }
+//
+//        User loggedInUser = HttpSessionUtils.getUserFromSession(session);
+//        if(!question.isMatchWriter(loggedInUser)) {
+//            throw new IllegalStateException("작성자만 수정, 삭제가 가능합니다.");
+//        }
+//
+//        return true;
+//    }

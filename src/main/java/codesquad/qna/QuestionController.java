@@ -2,12 +2,14 @@ package codesquad.qna;
 
 import codesquad.user.User;
 import codesquad.utility.HttpSessionUtils;
+import jdk.nashorn.internal.ir.Optimistic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/qna")
@@ -23,73 +25,57 @@ public class QuestionController {
         return "redirect:/";        //행위를 하고 다른 페이지를 보여주고 싶을때
     }
 
-    @GetMapping("/qnaForm")
+    @GetMapping("")
     public String form(HttpSession session) {
-        if (!HttpSessionUtils.isNullLoginUser(session)) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
             return "/user/login";
         }
         return "/qna/form";
     }
 
-    @GetMapping("{id}/updateForm")
+    @GetMapping("{id}/update")
     public String update(@PathVariable long id, HttpSession session, Model model) {
-        try {
-            Question question = questionRepository.findById(id).orElse(null);
-            hasPermission(session, question) ;
-            model.addAttribute("question", question);
-            return "/qna/updateForm";
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "/users/login";
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "redirect:/users/login";
         }
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        Optional<Question> maybeQuestion = questionRepository.findById(id).filter(question -> question.isSameWriter(loginUser));
+        if (maybeQuestion.isPresent()){
+            model.addAttribute("updateQuestion",maybeQuestion.get());
+            return "/qna/update";
+        }
+        return String.format("redirect:/qna/%d",id);
     }
 
-    @GetMapping("/{id}")            //index에서 질문하기 눌렀을때
-    public String DetailContents(@PathVariable long id, Model model) {
-        Question questions = questionRepository.findById(id).orElse(null);
-        if (questions == null) {
+    @PutMapping("{id}")
+    public String updateForm(@PathVariable long id,Question newQuestion){
+        Question question = questionRepository.findById(id).get();
+        question.update(newQuestion);
+        questionRepository.save(question);
+        return String.format("redirect:/qna/%d",id);
+    }
+
+    @GetMapping("/{id}")            //index에서 질문제목 눌렀을때
+    public String DetailContents(@PathVariable long id, Model model,HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "redirect:/users/login";
+        }
+        Optional<Question> maybeQuestions = questionRepository.findById(id);
+        if (!maybeQuestions.isPresent()) {
             return "redirect:/";
         }
-        model.addAttribute("questions", questions);
+        model.addAttribute("questions", maybeQuestions.get());
         return "/qna/show";
     }
 
-    private boolean hasPermission(HttpSession session, Question question) {
-        if (!HttpSessionUtils.isNullLoginUser(session)) {
-            throw new IllegalStateException("로그인이 필요합니다.");
-        }
-        User loginUser = HttpSessionUtils.getUserFromSession(session);
-        if (question.isSameWriter(loginUser)) {
-            throw new IllegalStateException("자신이 쓴 글만 수정, 삭제가 가능합니다.");
-        }
-        return true;
-    }
-
-    @PutMapping("/{id}")
-    public String updatePersonalInformation(@PathVariable long id, Question updatedQuestion, Model model,HttpSession session) {
-        try {
-            Question question = questionRepository.findById(id).orElse(null);
-            hasPermission(session, question) ;
-            question.update(updatedQuestion);
-            questionRepository.save(question);
-            return String.format("redirect:/qna/%d", id);
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "/users/login";
-        }
-    }
-
-    @DeleteMapping("{id}/deleteForm")
+    @DeleteMapping("/{id}")
     public String delete(@PathVariable long id, Model model,HttpSession session) {
-        try {
-            Question question = questionRepository.findById(id).orElse(null);
-            hasPermission(session, question) ;
-            questionRepository.delete(question);
-            return "redirect:/";
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "/users/login";
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        Optional<Question> maybeQuestion = questionRepository.findById(id).filter(question -> question.isSameWriter(loginUser));
+        if (!maybeQuestion.isPresent()){
+            return String.format("redirect:/qna/%d",id);
         }
-
+        questionRepository.delete(maybeQuestion.get());
+        return "redirect:/";
     }
 }

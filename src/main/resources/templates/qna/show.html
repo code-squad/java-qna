@@ -27,10 +27,10 @@
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
-                                <a class="link-modify-article" href="/qna/{{id}}/updateForm">수정</a>
+                                <a class="link-modify-article" href="/qna/{{id}}/update">수정</a>
                             </li>
                             <li>
-                                <form class="form-delete" action="/qna/{{id}}/deleteForm" method="POST">
+                                <form class="form-delete" action="/qna/{{id}}" method="POST">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <button class="link-delete-article" type="submit">삭제</button>
                                 </form>
@@ -44,7 +44,7 @@
 
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
-                        <p class="qna-comment-count"><strong></strong>개의 의견</p>
+                        <p class="qna-comment-count"><strong>{{sizeAnswers}}</strong>개의 의견</p>
                         <div class="qna-comment-slipp-articles">
                             {{#answers}}
                             <article class="article" id="answer-1405">
@@ -70,7 +70,7 @@
                                                href="/questions/413/answers/1405/form">수정</a>
                                         </li>
                                         <li>
-                                            <form class="delete-answer-form" action="/questions/413/answers/1405"
+                                            <form class="delete-answer-form" action="/qna/{{question.id}}/answers/{{id}}"
                                                   method="POST">
                                                 <input type="hidden" name="_method" value="DELETE">
                                                 <button type="submit" class="delete-answer-button">삭제</button>

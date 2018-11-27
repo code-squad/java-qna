@@ -30,6 +30,10 @@ public class Question {
     @OrderBy("id ASC")
     private List<Answer> answers;
 
+    public int getSizeAnswers(){
+        return answers.size();
+    }
+
     public List<Answer> getAnswers() {
         return answers;
     }
@@ -87,7 +91,6 @@ public class Question {
     public boolean isSameWriter(User sessionedUser) {
        return writer.matchUser(sessionedUser);
     }
-
 
     public String getFormattedCreateDate(){
         if (createDate == null){

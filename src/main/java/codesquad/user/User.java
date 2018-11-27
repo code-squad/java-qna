@@ -69,17 +69,6 @@ public class User {
         this.email = updateUser.email;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", userId='" + userId + '\'' +
-                ", password='" + password + '\'' +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                '}';
-    }
-
     public boolean matchPassword(String newPassword) {
         if (newPassword == null) {
             return false;
@@ -87,11 +76,8 @@ public class User {
         return this.password.equals(newPassword);
     }
 
-    public boolean matchId(Long newId) {
-        if (newId == null) {
-            return false;
-        }
-        return this.id == newId;
+    public boolean isMatchId(Long id) {
+        return this.id == id;
     }
 
     public boolean matchUser(User sessionedUser) {

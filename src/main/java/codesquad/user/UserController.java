@@ -28,35 +28,22 @@ public class UserController {
     @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
         Optional<User> maybeUser = userRepository.findByUserId(userId).filter(user -> user.matchPassword(password));
-        if (maybeUser.isPresent())
+        if (maybeUser.isPresent()) {
+            session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, maybeUser.get());
             return "redirect:/";
+        }
         return "/user/login_failed";
-
-        User maybeUser = matchIdPassword(userId,password);
-        session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, maybeUser);
-        if (!HttpSessionUtils.isNullLoginUser(session))
-            return "redirect:/";
-        return "/user/login_failed";
-    }
-
-    public User matchIdPassword(String userId,String password){
-        return userRepository.findByUserId(userId)
-                .filter(user -> user.matchPassword(password))
     }
 
     @PostMapping("")
-    public String userCreate(String userId, User user) {
-        User findUser = userRepository.findByUserId(userId);
-        if (findUser != null) {                     // null이 아니면 아이디가 있는 것이므로 에러가 나와야 한다.
-            throw new IllegalArgumentException("아이디가 중복 합니다.");
-        }
+    public String userCreate(User user) {
         userRepository.save(user);
         return "redirect:/";       //행위를 하고 다른 페이지를 보여주고 싶을때
     }
 
-    @GetMapping("/list")
+    @GetMapping("")
     public String showMemberList(Model model, HttpSession session) {
-        if (!HttpSessionUtils.isNullLoginUser(session)) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
             return "/user/login";
         }
         model.addAttribute("users", userRepository.findAll());
@@ -71,32 +58,22 @@ public class UserController {
 
     @GetMapping("/{id}/form")
     public String updatePersonalInformation(@PathVariable long id, Model model, HttpSession session) {
-        if (!HttpSessionUtils.isNullLoginUser(session)) {       // 로그인 안한 상태로 수정을 하려면 로그인을 먼저 해야 한다.
+        if (!HttpSessionUtils.isLoginUser(session)) {
             return "/user/login";
         }
-
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-        if (!sessionedUser.matchId(id)) {                       // 로그인한 사용자가 다른 사람의 정보를 수정할 수 없다.
-            throw new IllegalArgumentException("자신의 정보만 수정할 수 있습니다.");
+        if (!sessionedUser.isMatchId(id)) {
+            return "/users";
         }
-
-//        userRepository.findById(id).orElseThrow(()->new IllegalArgumentException());  //사용자가 존재하지 않으면 에러 반환후 중단
-        model.addAttribute("usersInformation", userRepository.findById(id).orElse(null));    //사용자가 존재 하지 않으면 null반환
+        model.addAttribute("usersInformation", userRepository.findById(id).orElse(null));
         return "/user/updateForm";
     }
 
     @PutMapping("/{id}")
     public String redirect(@PathVariable long id, User updatedUser, HttpSession session) {
-        if (!HttpSessionUtils.isNullLoginUser(session)) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
             return "/user/login";
         }
-
-        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-        if (!sessionedUser.matchId(id)) {
-            throw new IllegalArgumentException("자신의 정보만 수정할 수 있습니다.");
-        }
-
-//        User loginUser = (User) session.getAttribute("loginUser");   //오늘 수업을 통해 세션을 통해 넣고 빼는 것을 배웠다.
         User user = userRepository.findById(id).orElse(null);
         user.update(updatedUser);
         userRepository.save(user);

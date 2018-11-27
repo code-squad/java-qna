@@ -15,7 +15,7 @@ public class Answer {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_question"))
     private Question question;
 
     @ManyToOne
@@ -26,8 +26,6 @@ public class Answer {
     private String contents;
 
     private LocalDateTime createDate;
-
-
 
     public Answer() {
     }
@@ -46,29 +44,6 @@ public class Answer {
         return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Answer)) return false;
-        Answer answer = (Answer) o;
-        return Objects.equals(getId(), answer.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId());
-    }
-
-    @Override
-    public String toString() {
-        return "Answer{" +
-                "id=" + id +
-                ", question=" + question +
-                ", writer=" + writer +
-                ", contents='" + contents + '\'' +
-                ", createDate=" + createDate +
-                '}';
-    }
 
     public String getContents() {
         return contents;
@@ -77,8 +52,6 @@ public class Answer {
     public void setContents(String contents) {
         this.contents = contents;
     }
-
-
 
     public Long getId() {
         return id;
@@ -102,5 +75,18 @@ public class Answer {
 
     public void setWriter(User writer) {
         this.writer = writer;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Answer)) return false;
+        Answer answer = (Answer) o;
+        return Objects.equals(getId(), answer.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }

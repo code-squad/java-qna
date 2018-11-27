@@ -33,7 +33,7 @@ public class Question {
     @Column(nullable = false)
     private boolean deleted = false;
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("id ASC")
     private List<Answer> answers;
 

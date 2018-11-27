@@ -2,7 +2,9 @@ package codesquad.answer;
 
 import codesquad.HttpSessionUtils;
 import codesquad.exception.AnswerException;
+import codesquad.exception.QuestionException;
 import codesquad.exception.UserException;
+import codesquad.question.Question;
 import codesquad.question.QuestionRepository;
 import codesquad.user.User;
 import org.slf4j.Logger;
@@ -28,9 +30,10 @@ public class AnswerController {
     public String create(HttpSession session, @PathVariable long questionId, String contents) {
         logger.info("answer info");
         HttpSessionUtils.isLoginUser(session);
-        questionRepository.findById(questionId).map(qna ->
-                answerRepository.save(new Answer(qna, HttpSessionUtils.getUserFormSession(session), contents))
-        ).orElse(null);
+        Question question = questionRepository.findById(questionId).orElseThrow(QuestionException::new);
+        question.addAnswer(new Answer(question, HttpSessionUtils.getUserFormSession(session), contents));
+
+        questionRepository.save(question);
         return "redirect:/questions/{questionId}";
     }
 

@@ -34,14 +34,13 @@ public class Question {
     private LocalDateTime createDate;
 
     @JoinColumn(nullable = false)
-    private boolean deleted;
+    private boolean deleted = false;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @OrderBy("id ASC")
     private List<Answer> answers;
 
     public Question() {
-        this.deleted = true;
     }
 
     public Question(long id, String title, String contents, User user) {
@@ -49,7 +48,6 @@ public class Question {
         this.title = title;
         this.contents = contents;
         this.user = user;
-        this.deleted = true;
     }
 
     public long getId() {

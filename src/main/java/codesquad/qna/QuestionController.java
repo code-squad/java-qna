@@ -87,7 +87,7 @@ public class QuestionController {
             return "qna/show";
         }
 
-        result = question.isDeleted();
+        result = question.deleted();
         if(!result.isValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());
             model.addAttribute("question", getQuestionFromId(id));

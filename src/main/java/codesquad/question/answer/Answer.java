@@ -2,14 +2,19 @@ package codesquad.question.answer;
 
 import codesquad.question.Question;
 import codesquad.user.User;
+import codesquad.utils.TimeFormatter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 public class Answer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
@@ -19,25 +24,29 @@ public class Answer {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_user"))
     private User user;
 
-    private String time;
-    @Column(nullable = false, length = 500)
+    @CreationTimestamp
+    private LocalDateTime createDate;
+
+    @Lob
     private String comment;
+
+    private boolean deleted;
 
     Answer() {
     }
 
-    public Answer(Question question, User user, String time, String comment) {
+    public Answer(Question question, User user, String comment, boolean deleted) {
         this.question = question;
         this.user = user;
-        this.time = time;
         this.comment = comment;
+        this.deleted = deleted;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -57,12 +66,16 @@ public class Answer {
         this.user = user;
     }
 
-    public String getTime() {
-        return time;
+    public boolean isSameUser(User user) {
+        return this.user.equals(user);
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public String getCreateDate() {
+        return TimeFormatter.commonFormat(this.createDate);
+    }
+
+    public void setCreateDate(LocalDateTime createDate) {
+        this.createDate = createDate;
     }
 
     public String getComment() {
@@ -73,14 +86,41 @@ public class Answer {
         this.comment = comment;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public void deleted() {
+        deleted = true;
+    }
+
     @Override
     public String toString() {
         return "Answer{" +
                 "id=" + id +
                 ", question=" + question +
                 ", user=" + user +
-                ", time='" + time + '\'' +
+                ", createDate='" + createDate + '\'' +
                 ", comment='" + comment + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Answer answer = (Answer) o;
+        return id == answer.id &&
+                Objects.equals(question, answer.question) &&
+                Objects.equals(user, answer.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, question, user);
     }
 }

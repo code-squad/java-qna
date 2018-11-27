@@ -7,7 +7,7 @@ import java.util.Objects;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
     @Column(nullable = false, unique = true, length = 20)
     private String userId;
     @Column(nullable = false, length = 40)
@@ -20,7 +20,7 @@ public class User {
     User() {
     }
 
-    public User(Long id, String userId, String password, String name, String email) {
+    public User(long id, String userId, String password, String name, String email) {
         this.id = id;
         this.userId = userId;
         this.password = password;
@@ -28,20 +28,16 @@ public class User {
         this.email = email;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public boolean matchId(Long id) {
-        return this.id.equals(id);
-    }
-
-    public boolean matchUser(User sessionedUser) {
-        return this.id.equals(sessionedUser.id);
+    public boolean matchId(long id) {
+        return this.id == id;
     }
 
     public String getUserId() {
@@ -102,11 +98,11 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) &&
-                Objects.equals(userId, user.userId) &&
-                Objects.equals(password, user.password) &&
-                Objects.equals(name, user.name) &&
-                Objects.equals(email, user.email);
+        return id == user.id;
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

@@ -28,14 +28,14 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public String showProfile(@PathVariable Long id, Model model) throws UserNotFoundException {
+    public String showProfile(@PathVariable long id, Model model) throws UserNotFoundException {
         User user = getUser(id);
         model.addAttribute("user", user);
         return "user/profile";
     }
 
     @GetMapping("/{id}/form")
-    public String showUserInfo(@PathVariable Long id, Model model, HttpSession session) {
+    public String showUserInfo(@PathVariable long id, Model model, HttpSession session) {
         String validResult = sessionValidCheck(id, session);
         if (validResult != null) return validResult;
 
@@ -44,7 +44,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public String updateUserInfo(@PathVariable Long id, User updatedUser, HttpSession session) throws UserNotFoundException {
+    public String updateUserInfo(@PathVariable long id, User updatedUser, HttpSession session) throws UserNotFoundException {
         String validResult = sessionValidCheck(id, session);
         if (validResult != null) return validResult;
 
@@ -56,12 +56,12 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public String login(String userId, String password, HttpSession session) {  // 전달하는 인자가 많지않을떄는 User 대신 이렇게 하나씩 받을 수 있음
-        Optional<User> maybeUser = userRepository.findByUserId(userId);  // findByUserId 만들어야 할 필요성!
-        if (maybeUser.isPresent()) {  // session을 통해 로그인한 정보를 클라이언트에게 보냄
+    public String login(String userId, String password, HttpSession session) {
+        Optional<User> maybeUser = userRepository.findByUserId(userId);
+        if (maybeUser.isPresent()) {
             User user = maybeUser.get();
             if (user.matchPassword(password)) {
-                session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);  // 서버가 세션 아이디 기억함, 톰캣 서버상에 파일로 저장
+                session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
                 return "redirect:/";
             }
         }
@@ -74,7 +74,7 @@ public class UserController {
         return "redirect:/";
     }
 
-    private String sessionValidCheck(@PathVariable Long id, HttpSession session) {
+    private String sessionValidCheck(@PathVariable long id, HttpSession session) {
         if (!HttpSessionUtils.isLogin(session)) {
             return "redirect:/user/login";
         }
@@ -85,7 +85,7 @@ public class UserController {
         return null;
     }
 
-    private User getUser(@PathVariable Long id) {
+    private User getUser(@PathVariable long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다"));
     }

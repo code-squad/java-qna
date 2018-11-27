@@ -31,15 +31,15 @@
               <div class="col-md-6 text-center">
                   <ul class="pagination center-block" style="display:inline-block;">
                       {{#pagingUtil.prevButton}}
-                      <li><a href="/questions/list/{{pagingUtil.numberOfPrevButton}}">«</a></li>
+                      <li><a href="/questions?page={{pagingUtil.numberOfPrevButton}}">«</a></li>
                       {{/pagingUtil.prevButton}}
 
                       {{#pagingUtil.pagingNumbers}}
-                      <li><a href="/questions/list/{{this}}">{{this}}</a></li>
+                      <li><a href="/questions?page={{this}}">{{this}}</a></li>
                       {{/pagingUtil.pagingNumbers}}
 
                       {{#pagingUtil.nextButton}}
-                      <li><a href="/questions/list/{{pagingUtil.numberOfNextButton}}">»</a></li>
+                      <li><a href="/questions?page={{pagingUtil.numberOfNextButton}}">»</a></li>
                       {{/pagingUtil.nextButton}}
                 </ul>
               </div>

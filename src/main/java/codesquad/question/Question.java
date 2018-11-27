@@ -7,7 +7,6 @@ import java.util.List;
 
 @Entity
 public class Question {
-    public static final int pageSize = 3;
     @Id
     @Column(name = "QUESTION_INDEX")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

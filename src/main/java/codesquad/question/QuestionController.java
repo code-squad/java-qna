@@ -25,15 +25,10 @@ public class QuestionController {
     @Autowired
     private AnswerRepository answerRepository;
 
-    @GetMapping
-    public String main() {
-        return "/questions/list/1";
-    }
-
-    @GetMapping("/list/{pageNo}")
-    public String list(Model model, @PathVariable int pageNo) {
+    @GetMapping()
+    public String list(Model model, Optional<Integer> page) {
         Page<Question> currentPage = questionRepository.findAll(
-                PageRequest.of(pageNo - 1, Question.pageSize, new Sort(Sort.Direction.DESC, "index")));
+                PageRequest.of(page.orElse(1) - 1, PagingUtil.pageSize, new Sort(Sort.Direction.DESC, "index")));
         model.addAttribute("questions", currentPage);
         model.addAttribute("pagingUtil", PagingUtil.of(currentPage));
         return "index";

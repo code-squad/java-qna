@@ -5,6 +5,7 @@ import codesquad.user.User;
 import codesquad.utils.HttpSessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -22,22 +23,24 @@ public class AnswerController {
             return "/user/login";
         }
         answerRepository.save(answer);
-//        return "/qna/show";
-//        return "redirect:/question/{pId}";
         return String.format("redirect:/question/%d", questionPId);
     }
 
-    @GetMapping("/{pId}/update")
-    public String update(@PathVariable long pId, HttpSession session) {
-        Answer answer = answerRepository.findById(pId).get();
+    @GetMapping("/{answerPId}")
+    public String update(@PathVariable long answerPId, @PathVariable long questionPId, HttpSession session) {
+        Answer answer = answerRepository.findById(answerPId).get();
         if (!HttpSessionUtils.isValid(session, answer)) {
             throw new IllegalArgumentException("에러!");
         }
-        return "";
+        return String.format("redirect:/question/%d", questionPId);
     }
 
-    @DeleteMapping("/{answerPId}/delete")
-    public String delete(@PathVariable long answerPId, @PathVariable long questionPId) {
+    @DeleteMapping("/{answerPId}")
+    public String delete(@PathVariable long answerPId, @PathVariable long questionPId, HttpSession session) {
+        Answer answer = answerRepository.findById(answerPId).get();
+        if (!HttpSessionUtils.isValid(session, answer)) {
+            return String.format("redirect:/question/%d", questionPId);
+        }
         answerRepository.delete(answerRepository.findById(answerPId).get());
         return String.format("redirect:/question/%d", questionPId);
     }

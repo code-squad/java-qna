@@ -38,11 +38,11 @@ public class Answer {
         return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }
 
-    public long getpId() {
+    public long getPId() {
         return pId;
     }
 
-    public void setpId(long pId) {
+    public void setPId(long pId) {
         this.pId = pId;
     }
 

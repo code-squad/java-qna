@@ -54,7 +54,7 @@ public class QuestionController {
         return "/qna/updateForm";
     }
 
-    @PutMapping("/{pId}/update")
+    @PutMapping("/{pId}")
     public String questionUpdate(Question updateQuestion, @PathVariable long pId, HttpSession session) {
         Question question = questionRepository.findById(pId).get();
         question.update(updateQuestion, session);
@@ -62,7 +62,7 @@ public class QuestionController {
         return "redirect:/question/{pId}";
     }
 
-    @DeleteMapping("/{pId}/delete")
+    @DeleteMapping("/{pId}")
     public String questionDelete(Model model, @PathVariable long pId, HttpSession session) {
         Question question = questionRepository.findById(pId).get();
         model.addAttribute("question", question);

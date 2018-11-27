@@ -10,7 +10,8 @@ public class HttpSessionUtils {
     public static final String USER_SESSION_KEY = "loginUser";
 
     public static boolean isLoginUser(HttpSession session) {
-        Object loginUser = session.getAttribute(USER_SESSION_KEY);
+//        Object loginUser = session.getAttribute(USER_SESSION_KEY);
+        User loginUser = getUserFromSession(session);
         return !(loginUser == null);
     }
 

@@ -13,7 +13,7 @@
                           <img src="https://graph.facebook.com/v2.3/100000059371774/picture" class="article-author-thumb" alt="">
                       </div>
                       <div class="article-header-text">
-                          <a href="/user/profile/{{writer.pId}}" class="article-author-name">{{writer.name}}</a>
+                          <a href="/user/profile/{{writer.pId}}" class="article-author-name">{{writer.userId}}</a>
                           <a href="/questions/413" class="article-header-time" title="퍼머링크">
                               {{date}}
                               <i class="icon-link"></i>
@@ -29,7 +29,7 @@
                               <a class="link-modify-article" href="/question/{{pId}}/form">수정</a>
                           </li>
                           <li>
-                              <form class="form-delete" action="/question/{{pId}}/delete" method="post">
+                              <form class="form-delete" action="/question/{{pId}}" method="post">
                                   <input type="hidden" name="_method" value="delete">
                                   <button class="link-delete-article" type="submit">삭제</button>
                               </form>
@@ -42,7 +42,7 @@
                 </article>
               <div class="qna-comment">
                   <div class="qna-comment-slipp">
-                      <p class="qna-comment-count"><strong>2</strong>개의 의견</p>
+                      <p class="qna-comment-count"><strong>{{answersSize}}</strong>개의 의견</p>
                       {{#answers}}
                       <div class="qna-comment-slipp-articles">
                           <article class="article" id="answer-1405">
@@ -51,9 +51,9 @@
                                       <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
                                   </div>
                                   <div class="article-header-text">
-                                      <a href="/users/1/자바지기" class="article-author-name">{{writer.userId}}</a>
+                                      <a href="/user/profile/{{writer.pId}}" class="article-author-name">{{writer.userId}}</a>
                                       <a href="#answer-1434" class="article-header-time" title="퍼머링크">
-                                          2016-01-12 14:06
+                                          {{answerDate}}
                                       </a>
                                   </div>
                               </div>
@@ -63,10 +63,10 @@
                               <div class="article-util">
                                   <ul class="article-util-list">
                                       <li>
-                                          <a class="link-modify-article" href="/question/{{question.pId}}/answer/{{answers.pId}}/update">수정</a>
+                                          <a class="link-modify-article" href="/question/{{question.pId}}/answer/{{pId}}">수정</a>
                                       </li>
                                       <li>
-                                          <form class="delete-answer-form" action="/question/{{question.pId}}/answer/{{pId}}/delete" method="POST">
+                                          <form class="delete-answer-form" action="/question/{{question.pId}}/answer/{{pId}}" method="POST">
                                               <input type="hidden" name="_method" value="DELETE">
                                               <button type="submit" class="delete-answer-button">삭제</button>
                                           </form>
@@ -82,7 +82,6 @@
                               <input type="hidden" name = "writer" value="{{loginUser.pId}}">
                               <input type="hidden" name = "question" value="{{question.pId}}">
                               <input type="submit" class="btn btn-success pull-right" value="답변하기"/>
-                              <!--<button class="btn btn-success pull-right">답변하기</button>-->
                               <div class="clearfix" />
                           </form>
                       </div>

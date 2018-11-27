@@ -26,9 +26,18 @@ public class Answer {
     private String contents;
 
     private LocalDateTime date;
+    private boolean deleted = false;
 
     public Answer() {
         this.date = LocalDateTime.now();
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     public String getAnswerDate() {
@@ -108,5 +117,9 @@ public class Answer {
 
     public boolean matchUser(User loginUser) {
         return this.writer.equals(loginUser);
+    }
+
+    public void delete() {
+        this.deleted = true;
     }
 }

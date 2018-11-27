@@ -69,7 +69,8 @@ public class QuestionController {
         if (!HttpSessionUtils.isValid(session, question)) {
             return "/qna/update_failed";
         }
-        questionRepository.delete(question);
+        question.delete();
+        questionRepository.save(question);
         return "redirect:/";
     }
 }

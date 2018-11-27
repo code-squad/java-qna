@@ -30,13 +30,26 @@ public class Question {
     private String contents;
 
     private LocalDateTime date;
+    private boolean deleted = false;
 
     public Question() {
         this.date = LocalDateTime.now();
     }
 
-    public int getAnswersSize(){
-        return answers.size();
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public int getAnswersSize() {
+        int cnt = 0;
+        for (Answer answer : answers) {
+            if (!answer.isDeleted()) cnt++;
+        }
+        return cnt;
     }
 
     public String getDate() {
@@ -128,5 +141,21 @@ public class Question {
                 ", contents='" + contents + '\'' +
                 ", date=" + date +
                 '}';
+    }
+
+    private boolean isNotExistOtherUser() {
+        for (Answer answer : answers) {
+            if (!answer.matchUser(this.writer)) return false;
+        }
+        return true;
+    }
+
+    public void delete() {
+        if (isNotExistOtherUser()) {
+            this.deleted = true;
+            for (Answer answer : answers) {
+                answer.delete();
+            }
+        }
     }
 }

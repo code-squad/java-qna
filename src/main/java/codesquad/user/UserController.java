@@ -1,17 +1,20 @@
 package codesquad.user;
 
 import codesquad.HttpSessionUtil;
+import codesquad.Result;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/users")
 public class UserController {
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     @Autowired
     private UserRepository userRepository;
 
@@ -23,6 +26,15 @@ public class UserController {
 
     @PostMapping("")
     public String create(User user) {
+        /*
+        System.out.println("User : " + user);
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("User : " + user);
+        }
+
+        logger.debug("User : {}", user );
+        */
         userRepository.save(user);
         return "redirect:/users";
     }
@@ -42,35 +54,30 @@ public class UserController {
 
     @PutMapping("/{id}")
     public String updateForm(@PathVariable Long id, User updateUser, HttpSession session) {
-        if (!HttpSessionUtil.isLoginUser(session)) {
-            return "redirect:/user/login";
-        }
+       if (!HttpSessionUtil.isLoginUser(session)) {
+           return "/user/login_failed";
+       }
 
-        User sessionedUser = HttpSessionUtil.getUserFromSession(session);
-        if (!id.equals(sessionedUser.getId())) {
-            throw new IllegalStateException("You can't update the another user");
-        }
+       User loginUser = userRepository.findById(id).orElseThrow(NullPointerException::new);
 
-        User user = userRepository.findById(id).orElseThrow(NullPointerException::new);
-        if (user.matchPassword(updateUser.getPassword())) {
-            user.update(updateUser);
-            userRepository.save(user);
-            return "redirect:/users";
-        }
+        User user = userRepository.findById(id)
+                .filter(user1 -> user1.update(updateUser, loginUser))
+                .orElseThrow(NullPointerException::new);
+        userRepository.save(user);
         return "redirect:/users";
     }
 
     @PostMapping("/login")
     public String login(HttpSession session, String userId, String password) {
-        Optional<User> maybeUser = userRepository.findByUserId(userId);
-        if (maybeUser.isPresent()) {
-            User user = maybeUser.get();
-            if (user.matchPassword(password)) {
-                session.setAttribute(HttpSessionUtil.USER_SESSION_KEY, user);
-                return "redirect:/";
-            }
-        }
-        return "redirect:/user/login";
+        User user = checkLoginUser(userId, password);
+        session.setAttribute(HttpSessionUtil.USER_SESSION_KEY, user);
+        return "redirect:/";
+    }
+
+    private User checkLoginUser(String userId, String password) {
+        return userRepository.findByUserId(userId)
+                .filter(user -> user.matchPassword(password))
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     @GetMapping("/logout")

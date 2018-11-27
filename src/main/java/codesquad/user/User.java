@@ -1,6 +1,7 @@
 package codesquad.user;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class User {
@@ -16,6 +17,9 @@ public class User {
     private String name;
     @Column(nullable = false, length = 100)
     private String email;
+
+    public User() {
+    }
 
     public Long getId() {
         return id;
@@ -57,22 +61,15 @@ public class User {
         this.email = email;
     }
 
-    public void update(User user) {
-        this.password = user.password;
-        this.name = user.name;
-        this.email = user.email;
+    public boolean update(User updateUser, User loginUser) {
+        if (loginUser.matchPassword(password)) {
+            this.password = updateUser.password;
+            this.name = updateUser.name;
+            this.email = updateUser.email;
+            return true;
+        }
+        return false;
     }
-
-    public boolean matchId(Long id) {
-        return this.id.equals(id);
-    }
-
-    public boolean matchUserId(String _userId) {
-        System.out.println("my user : " + _userId);
-        System.out.println("input user : " + userId);
-        return this.userId.equals(_userId);
-    }
-
 
     public boolean matchPassword(String password) {
         return this.password.equals(password);
@@ -87,5 +84,22 @@ public class User {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    public boolean matchId(Long id) {
+        return this.id.equals(id);
     }
 }

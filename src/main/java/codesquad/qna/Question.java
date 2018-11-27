@@ -1,10 +1,12 @@
 package codesquad.qna;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import codesquad.answer.Answer;
+import codesquad.user.User;
+import java.util.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Question {
@@ -12,26 +14,31 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 20)
-    private String writer;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    private User writer;
+
     @Column(nullable = false, length = 100)
     private String title;
-    @Column(nullable = false, length = 10000)
+
+    @Lob
     private String contents;
+
+    private LocalDateTime createDate;
+
+
+    @OneToMany(mappedBy = "question")
+    @OrderBy("id ASC")
+    private List<Answer> answers;
 
     public Question() {
     }
 
-    public Question (String writer, String title, String contents) {
+    public Question (User writer, String title, String contents) {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-    }
-
-    public Question update(Question question) {
-        this.title = question.title;
-        this.contents = question.contents;
-        return this;
+        this.createDate = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -42,11 +49,11 @@ public class Question {
         this.id = id;
     }
 
-    public String getWriter() {
+    public User getWriter() {
         return writer;
     }
 
-    public void setWriter(String writer) {
+    public void setWriter(User writer) {
         this.writer = writer;
     }
 
@@ -64,6 +71,51 @@ public class Question {
 
     public void setContents(String contents) {
         this.contents = contents;
+    }
+
+    public List<Answer> getAnswers() {
+        return  answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
+    }
+
+    public boolean isSameWriter(User loginUser) {
+        return this.writer.equals(loginUser);
+    }
+
+    public boolean checkWriter(User loginUser) {
+        if(isSameWriter(loginUser)) {
+            return true;
+        }
+        return false;
+    }
+
+    public void update(String title, String contents) {
+        this.title = title;
+        this.contents = contents;
+    }
+
+    public boolean update(Question updateQuestion, User loginUser) {
+        if(checkWriter(loginUser)) {
+            this.title = updateQuestion.title;
+            this.contents = updateQuestion.contents;
+            return true;
+        }
+        return false;
+    }
+
+    public String getFormattedCreateDate() {
+        if (createDate == null) {
+            return "";
+        }
+        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
+    }
+
+    public String getAnswersSize() {
+        System.out.println("### " + answers.size());
+        return String.valueOf(answers.size());
     }
 
     @Override

@@ -69,12 +69,12 @@ public class QuestionTest {
         assertThat(question1.canDeleteAnswer()).isEqualTo(true);
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void deleted() {
-        answers = new ArrayList<>(Arrays.asList(answer1, answer2, answer3));
-        question1.setAnswers(answers);
-        question1.deleted();
-    }
+//    @Test(expected = IllegalStateException.class)
+//    public void deleted() {
+//        answers = new ArrayList<>(Arrays.asList(answer1, answer2, answer3));
+//        question1.setAnswers(answers);
+//        question1.deleted(session);
+//    }
 
     @Test
     public void 답변_삭제안된것만_가져오기_다삭제안될었을때() {

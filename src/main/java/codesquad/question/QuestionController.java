@@ -41,7 +41,7 @@ public class QuestionController {
     @GetMapping("/{id}/form")
     public String showUpdateForm(@PathVariable long id, Model model, HttpSession session) {
         Question question = getQuestion(id);
-        Result result = valid(session, question);
+        Result result = question.valid(session);
         if (!result.isValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());
             return "user/login";
@@ -53,12 +53,11 @@ public class QuestionController {
     @PutMapping("/{id}")
     public String updateQuestion(@PathVariable long id, Question updatedQuestion, HttpSession session, Model model) {
         Question question = getQuestion(id);
-        Result result = valid(session, question);
+        Result result = question.update(updatedQuestion, session);
         if (!result.isValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());
             return "user/login";
         }
-        question.update(updatedQuestion);
         questionRepository.save(question);
         return String.format("redirect:/questions/%s", id);
 
@@ -74,12 +73,11 @@ public class QuestionController {
     @DeleteMapping("/{id}")
     public String deleteQuestion(@PathVariable long id, HttpSession session, Model model) {
         Question question = getQuestion(id);
-        Result result = valid(session, question);
+        Result result = question.deleted(session);
         if (!result.isValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());
             return "user/login";
         }
-        question.deleted();
         questionRepository.save(question);
         return "redirect:/";
     }
@@ -87,17 +85,6 @@ public class QuestionController {
     private Result valid(HttpSession session) {
         if (!HttpSessionUtils.isLogin(session)) {
             return Result.fail("로그인이 필요합니다.");
-        }
-        return Result.ok();
-    }
-
-    private Result valid(HttpSession session, Question question) {
-        if (!HttpSessionUtils.isLogin(session)) {
-            return Result.fail("로그인이 필요합니다.");
-        }
-        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-        if (!question.isSameUser(sessionedUser)) {
-            return Result.fail("다른 사람의 글을 수정 또는 삭제할 수 없습니다.");
         }
         return Result.ok();
     }

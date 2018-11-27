@@ -1,12 +1,13 @@
 package codesquad.question;
 
+import codesquad.config.HttpSessionUtils;
 import codesquad.question.answer.Answer;
 import codesquad.user.User;
 import codesquad.utils.TimeFormatter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -123,12 +124,15 @@ public class Question {
         return deleted;
     }
 
-    public void deleted() throws IllegalStateException {
+    Result deleted(HttpSession session) {
+        Result result = valid(session);
+        if(!result.isValid()) return result;
         if(!canDeleteAnswer()) {
-            throw new IllegalStateException("다른 유저의 답변이 있어 질문을 삭제할 수 없습니다");
+            return Result.fail("다른 유저의 답변이 있어 질문을 삭제할 수 없습니다");
         }
         this.deleted = true;
         setAnswersDeleted();
+        return Result.ok();
     }
 
     private void setAnswersDeleted() {
@@ -137,7 +141,7 @@ public class Question {
         }
     }
 
-    public boolean canDeleteAnswer() {
+    boolean canDeleteAnswer() {
         for (Answer answer : answers) {
             if (!answer.isSameUser(this.user)) return false;
         }
@@ -148,9 +152,23 @@ public class Question {
         this.deleted = deleted;
     }
 
-    public void update(Question updatedQuestion) {
+    Result update(Question updatedQuestion, HttpSession session) {
+        Result result = valid(session);
+        if(!result.isValid()) return result;
         this.title = updatedQuestion.title;
         this.contents = updatedQuestion.contents;
+        return Result.ok();
+    }
+
+    Result valid(HttpSession session) {
+        if (!HttpSessionUtils.isLogin(session)) {
+            return Result.fail("로그인이 필요합니다.");
+        }
+        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+        if (!isSameUser(sessionedUser)) {
+            return Result.fail("다른 사람의 글을 수정 또는 삭제할 수 없습니다.");
+        }
+        return Result.ok();
     }
 
     @Override

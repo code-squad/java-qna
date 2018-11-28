@@ -1,8 +1,10 @@
 package codesquad.qna;
 
+import codesquad.user.HttpSessionUtils;
 import codesquad.user.User;
 
 import javax.persistence.*;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -102,30 +104,53 @@ public class Question {
         this.deleted = deleted;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
 
-    public void update(Question modify) {
+    public Result update(Question modify, User loginUser) {
+        Result result = valid(loginUser);
+        if(!result.isValid()) {
+            return Result.failed(result.getErrorMessage());
+        }
         this.title = modify.title;
         this.contents = modify.contents;
+        return Result.ok();
     }
 
     public boolean isSameWriter(User loginUser) {
         return this.writer.equals(loginUser);
     }
 
-    public Result deleted() {
+    public Result deleted(User loginUser) {
+        Result result = valid(loginUser);
+        if(!result.isValid()) {
+            return Result.failed(result.getErrorMessage());
+        }
         for (Answer answer : answers) {
             if(!answer.isSameWriter(this.writer)) {
                 return Result.failed("작성 아이디와 일치하지 않은 댓글이 있어 삭제할 수 없습니다.");
             }
         }
-        return deleteOk();
+        return deleteOk(loginUser);
     }
 
-    private Result deleteOk() {
+    private Result deleteOk(User loginUser) {
         System.out.println("삭제");
         this.deleted = true;
         for (Answer answer : answers) {
-            answer.delete();
+            answer.delete(loginUser);
+        }
+        return Result.ok();
+    }
+
+     Result valid(User loginUser) {
+        if (loginUser == null) {
+            return Result.failed("로그인이 필요합니다.");
+        }
+
+        if (!isSameWriter(loginUser)) {
+            return Result.failed("자신이 쓴 글만 수정, 삭제할 수 있습니다.");
         }
         return Result.ok();
     }

@@ -81,8 +81,12 @@ public class Answer {
         return this.writer.equals(loginUser);
     }
 
-    public void delete() {
-        this.deleted = true;
+    public boolean delete(User loginUser) {
+        if(isSameWriter(loginUser)) {
+            this.deleted = true;
+            return true;
+        }
+        return false;
     }
 
     public boolean isDeleted() {

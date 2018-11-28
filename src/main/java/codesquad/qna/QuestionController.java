@@ -48,13 +48,13 @@ public class QuestionController {
     @PutMapping("/{id}")
     public String modify(Question modifyQuestion, @PathVariable Long id, Model model, HttpSession session) {
         Question question = getQuestionFromId(id);
-        Result result = valid(session, question);
+        User loginUser = HttpSessionUtils.getUserFormSession(session);
+        Result result = question.update(modifyQuestion, loginUser);
         if(!result.isValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());
             return "user/login";
         }
 
-        question.update(modifyQuestion);
         questionRepository.save(question);
         return String.format("redirect:/questions/%d", id);
     }
@@ -62,7 +62,8 @@ public class QuestionController {
     @GetMapping("/{id}/form")
     public String modifyForm(HttpSession session, Model model, @PathVariable Long id) {
         Question question = getQuestionFromId(id);
-        Result result = valid(session, question);
+        User loginUser = HttpSessionUtils.getUserFormSession(session);
+        Result result = question.valid(loginUser);
         if(!result.isValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());
             return "user/login";
@@ -80,14 +81,15 @@ public class QuestionController {
     @DeleteMapping("/{id}")
     public String delete(String writer, @PathVariable Long id, HttpSession session, Model model) {
         Question question = getQuestionFromId(id);
-        Result result = valid(session, question);
+        Result result = valid(session);
+        User loginUser = HttpSessionUtils.getUserFormSession(session);
         if(!result.isValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());
             model.addAttribute("question", getQuestionFromId(id));
             return "qna/show";
         }
 
-        result = question.deleted();
+        result = question.deleted(loginUser);
         if(!result.isValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());
             model.addAttribute("question", getQuestionFromId(id));
@@ -98,15 +100,15 @@ public class QuestionController {
         return "redirect:/";
     }
 
-    private Result valid(HttpSession session, Question question) {
+    private Result valid(HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
             return Result.failed("로그인이 필요합니다.");
         }
 
-        User loginUser = HttpSessionUtils.getUserFormSession(session);
-        if (!question.isSameWriter(loginUser)) {
-            return Result.failed("자신이 쓴 글만 수정, 삭제할 수 있습니다.");
-        }
+//        User loginUser = HttpSessionUtils.getUserFormSession(session);
+//        if (!question.isSameWriter(loginUser)) {
+//            return Result.failed("자신이 쓴 글만 수정, 삭제할 수 있습니다.");
+//        }
         return Result.ok();
     }
 }

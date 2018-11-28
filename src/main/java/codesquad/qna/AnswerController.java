@@ -43,8 +43,7 @@ public class AnswerController {
 
         User loginUser = HttpSessionUtils.getUserFormSession(session);
         Answer answer = answerRepository.findById(id).orElse(null);
-        if (answer.isSameWriter(loginUser)) {
-            answer.delete();
+        if (answer.delete(loginUser)) {
             answerRepository.save(answer);
             return String.format("redirect:/questions/%d", questionId);
         }

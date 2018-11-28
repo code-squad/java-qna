@@ -74,12 +74,15 @@ public class QuestionController {
     public String updateForm(@PathVariable long id, Model model, HttpSession session) {
         log.debug("view question number {} update form", id);
 
-        Question question = questionRepository.findById(id).orElse(null);
-        Result result = valid(session, question);
-
-        if(!result.isValid()) {
-            model.addAttribute("errorMessage", result.getErrorMessage());
+        if(!HttpSessionUtils.isLoggedInUser(session)) {
+            model.addAttribute("errorMessage", "로그인이 필요합니다.");
             return "/user/login";
+        }
+
+        Question question = questionRepository.findById(id).orElse(null);
+        if(!question.isMatchWriter(HttpSessionUtils.getUserFromSession(session))) {
+            model.addAttribute("errorMessage", "작성자만 수정 가능합니다.");
+                return "/user/login";
         }
 
         model.addAttribute("question", question);
@@ -91,15 +94,19 @@ public class QuestionController {
     public String update(@PathVariable long id, HttpSession session, Model model, Question updatedQuestion) {
         log.debug("update question {}", id);
 
-        Question question = questionRepository.findById(id).orElse(null);
-        Result result = valid(session, question);
-
-        if(!result.isValid()) {
-            model.addAttribute("errorMessage", result.getErrorMessage());
+        if(!HttpSessionUtils.isLoggedInUser(session)) {
+            model.addAttribute("errorMessage", "로그인이 필요합니다.");
             return "/user/login";
         }
 
-        question.update(HttpSessionUtils.getUserFromSession(session), updatedQuestion);
+        Question question = questionRepository.findById(id).orElse(null);
+        try {
+            question.update(updatedQuestion);
+        } catch(IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/user/login";
+        }
+
         questionRepository.save(question);
         return "redirect:/questions/{id}";
     }
@@ -108,30 +115,33 @@ public class QuestionController {
     public String delete(@PathVariable long id, HttpSession session, Model model) {
         log.debug("delete question {}", id);
 
-        Question question = questionRepository.findById(id).orElse(null);
-        Result result = valid(session, question);
-
-        if(!result.isValid()) {
-            model.addAttribute("errorMessage", result.getErrorMessage());
+        if(!HttpSessionUtils.isLoggedInUser(session)) {
+            model.addAttribute("errorMessage", "로그인이 필요합니다.");
             return "/user/login";
         }
 
-        question.delete();
-        questionRepository.save(question);
+        Question question = questionRepository.findById(id).orElse(null);
+        try {
+            question.delete(HttpSessionUtils.getUserFromSession(session));
+        } catch(IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/user/login";
+        }
 
+        questionRepository.save(question);
         return "redirect:/questions";
     }
 
-    private Result valid(HttpSession session, Question question) {
-        if(!HttpSessionUtils.isLoggedInUser(session)) {
-            return Result.fail("로그인이 필요합니다.");
-        }
-
-        User loggedInUser = HttpSessionUtils.getUserFromSession(session);
-        if(!question.isMatchWriter(loggedInUser)) {
-            return Result.fail("작성자만 수정, 삭제가 가능합니다.");
-        }
-
-        return Result.ok();
-    }
+//    private Result valid(HttpSession session, Question question) {
+//        if(!HttpSessionUtils.isLoggedInUser(session)) {
+//            return Result.fail("로그인이 필요합니다.");
+//        }
+//
+//        User loggedInUser = HttpSessionUtils.getUserFromSession(session);
+//        if(!question.isMatchWriter(loggedInUser)) {
+//            return Result.fail("작성자만 수정, 삭제가 가능합니다.");
+//        }
+//
+//        return Result.ok();
+//    }
 }

@@ -23,6 +23,16 @@ public class User {
     private String email;
 
 
+    public User() { }
+
+    public User(long id, String userId, String password, String name, String email) {
+        this.id = id;
+        this.userId = userId;
+        this.password = password;
+        this.name = name;
+        this.email = email;
+    }
+
     //TODO 컨트롤러의 로직을 최대한 도메인으로
 
     void update(User updated) {

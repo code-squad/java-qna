@@ -6,6 +6,7 @@ import codesquad.user.User;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 @Entity
 public class Answer {
@@ -41,10 +42,18 @@ public class Answer {
     }
 
     public void update(Answer target) {
+        if(!target.isMatchWriter(this.writer)) {
+            throw new IllegalStateException("작성자만 수정 가능합니다.");
+        }
+
         this.contents = target.contents;
     }
 
-    public void delete() {
+    public void delete(User loggedInUser) {
+        if(!isMatchWriter(loggedInUser)) {
+            throw new IllegalStateException("작성자만 삭제 가능합니다.");
+        }
+
         this.deleted = true;
     }
 
@@ -97,6 +106,24 @@ public class Answer {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Answer answer = (Answer) o;
+        return id == answer.id &&
+                deleted == answer.deleted &&
+                Objects.equals(question, answer.question) &&
+                Objects.equals(writer, answer.writer) &&
+                Objects.equals(contents, answer.contents) &&
+                Objects.equals(createDate, answer.createDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, question, writer, contents, createDate, deleted);
     }
 
     @Override

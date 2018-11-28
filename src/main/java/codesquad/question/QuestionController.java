@@ -1,10 +1,8 @@
 package codesquad.question;
 
 import codesquad.HttpSessionUtils;
-import codesquad.Result;
 import codesquad.answer.Answer;
 import codesquad.answer.AnswerRepository;
-import codesquad.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

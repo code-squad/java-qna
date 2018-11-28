@@ -8,6 +8,7 @@
                 <div class="form-group">
                     <label for="writer">글쓴이</label>
                     <input type="hidden" id="writer" name="writer" value="{{writer.id}}"/>
+                    <!--도메인에 세션을 주지않고 User를 줘서 작성자본인여부를 확인하기때문에 question, answer update폼에 writer 밸류가 필요-->
                     <input class="form-control" value="{{writer.name}}" readonly/>
                 </div>
                 <div class="form-group">

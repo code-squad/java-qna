@@ -70,7 +70,7 @@ public class Question {
 
         if(isAuthorizedAnswers(this.answers)) {
             for (Answer answer : this.answers) {
-                answer.delete();
+                answer.delete(loggedInUser);
             }
             this.deleted = true;
         }

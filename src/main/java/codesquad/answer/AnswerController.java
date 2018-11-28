@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping("/questions/{id}/answers")
+@RequestMapping("/questions/{questionId}/answers")
 public class AnswerController {
     @Autowired
     private QuestionRepository questionRepository;
@@ -25,24 +25,24 @@ public class AnswerController {
     private AnswerRepository answerRepository;
 
     @PostMapping("")
-    public String create(@PathVariable long id, String contents, Model model, HttpSession session) {
+    public String create(@PathVariable long questionId, String contents, Model model, HttpSession session) {
         if (isValid(model, session, null)) return "/user/login";
 
         User sessionedUser = SessionUtil.getUserFromSession(session);
-        Question question = questionRepository.findById(id).get();
+        Question question = questionRepository.findById(questionId).get();
         Answer answer = Answer.newInstance(sessionedUser, question ,contents);
         answerRepository.save(answer);
 
-        return "redirect:/questions/{id}";
+        return "redirect:/questions/{questionId}";
     }
 
     @DeleteMapping("{id}")
-    public String delete(@PathVariable long id, Model model, HttpSession session) {
+    public String delete(@PathVariable long questionId, @PathVariable long id, Model model, HttpSession session) {
         Answer answer = answerRepository.findById(id).orElse(null);
         if (isValid(model, session, answer)) return "/user/login";
 
         answerRepository.delete(answer);
-        return "redirect:/questions/";
+        return "redirect:/questions/{questionId}";
     }
 
 

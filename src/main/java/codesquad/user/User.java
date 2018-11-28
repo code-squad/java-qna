@@ -1,6 +1,9 @@
 package codesquad.user;
 
+import codesquad.qna.Question;
+
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity         //데이터 베이스 맵핑할때 알아서 꺼내줌
 public class User {
@@ -8,7 +11,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, unique = true)
     private String userId;
 
     @Column(nullable = false, length = 20)
@@ -66,15 +69,31 @@ public class User {
         this.email = updateUser.email;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", userId='" + userId + '\'' +
-                ", password='" + password + '\'' +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+    public boolean matchPassword(String newPassword) {
+        if (newPassword == null) {
+            return false;
+        }
+        return this.password.equals(newPassword);
     }
 
+    public boolean isMatchId(Long id) {
+        return this.id == id;
+    }
+
+    public boolean matchUser(User sessionedUser) {
+        return this.id == sessionedUser.id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return getId() == user.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
 }

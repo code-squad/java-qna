@@ -1,27 +1,61 @@
 package codesquad.qna;
 
+import codesquad.answer.Answer;
+import codesquad.user.User;
+
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Entity
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
-    @Column(nullable = false, length = 20)
-    private String writer;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    private User writer;
 
     @Column(nullable = false, length = 50)
     private String title;
 
-    @Column(nullable = false, length = 1500)
+    @Lob
     private String contents;
 
-    public String getWriter() {
+    private LocalDateTime createDate;
+
+    @OneToMany(mappedBy = "question")
+    @OrderBy("id ASC")
+    private List<Answer> answers;
+
+    public int getSizeAnswers(){
+        return answers.size();
+    }
+
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
+    }
+
+    public Question(){}
+
+    public Question(User writer,String title,String contents){
+        this.writer = writer;
+        this.title = title;
+        this.contents = contents;
+        this.createDate = LocalDateTime.now();
+    }
+
+    public User getWriter() {
         return writer;
     }
 
-    public void setWriter(String writer) {
+    public void setWriter(User writer) {
         this.writer = writer;
     }
 
@@ -41,21 +75,28 @@ public class Question {
         this.contents = contents;
     }
 
-    public int getId() {
+    public Long getId() {
         return this.id;
     }
 
-    public void setId(int index) {
+    public void setId(Long index) {
         this.id = index;
     }
 
-    @Override
-    public String toString() {
-        return "Question{" +
-                "id=" + id +
-                ", writer='" + writer + '\'' +
-                ", title='" + title + '\'' +
-                ", contents='" + contents + '\'' +
-                '}';
+    public void update(Question updateQuestion) {
+        this.title = updateQuestion.title;
+        this.contents = updateQuestion.contents;
     }
+
+    public boolean isSameWriter(User sessionedUser) {
+       return writer.matchUser(sessionedUser);
+    }
+
+    public String getFormattedCreateDate(){
+        if (createDate == null){
+            return "";
+        }
+        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
+    }
+
 }

@@ -1,9 +1,12 @@
 package codesquad.question;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import codesquad.answer.Answer;
+import codesquad.user.User;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Entity
 public class Question {
@@ -11,9 +14,42 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String writer;
+    @OneToMany(mappedBy = "question")
+    @OrderBy("id ASC")
+    private List<Answer> answers;
+
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    private User writer;
     private String title;
+    private LocalDateTime createDate;
     private String contents;
+
+    public Question() {
+    }
+
+    public Question(User writer, String title, String contents) {
+        this.writer = writer;
+        this.title = title;
+        this.contents = contents;
+        this.createDate = LocalDateTime.now();
+    }
+
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
+    }
+
+    public User getWriter() {
+        return writer;
+    }
+
+    public void setWriter(User writer) {
+        this.writer = writer;
+    }
 
     public long getId() {
         return id;
@@ -31,19 +67,24 @@ public class Question {
         this.title = title;
     }
 
-    public String getWriter() {
-        return writer;
-    }
-
-    public void setWriter(String writer) {
-        this.writer = writer;
-    }
-
     public String getContents() {
         return contents;
     }
 
     public void setContents(String contents) {
         this.contents = contents;
+    }
+
+    public boolean matchUserId(String userId) {
+        return this.writer.getUserId().equals(userId);
+    }
+
+    public void update(Question newQuestion) {
+        this.title = newQuestion.title;
+        this.contents = newQuestion.contents;
+    }
+
+    public String getDate() {
+        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
     }
 }

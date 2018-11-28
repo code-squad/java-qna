@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpSession;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/qna/{questionId}/answers")
@@ -31,9 +32,12 @@ public class AnswerController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable long questionId, @PathVariable long id) {
-        Answer answer = answerRepository.findById(id).get();
-        answerRepository.delete(answer);
+    public String delete(@PathVariable long questionId, @PathVariable long id,HttpSession session) {
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        Optional<Answer> replyOwner = answerRepository.findById(id).filter(answer -> answer.isWriter(loginUser));
+        if (replyOwner.isPresent()){
+            answerRepository.delete(replyOwner.get());
+        }
         return String.format("redirect:/qna/%d", questionId);
     }
 }

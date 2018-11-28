@@ -44,6 +44,9 @@ public class Answer {
         return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
     }
 
+    public boolean isWriter(User loginUser){
+        return writer == loginUser;
+    }
 
     public String getContents() {
         return contents;

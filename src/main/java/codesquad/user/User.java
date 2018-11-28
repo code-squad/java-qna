@@ -22,6 +22,9 @@ public class User {
     @Column(nullable = false, length = 50)
     private String email;
 
+
+    //TODO 컨트롤러의 로직을 최대한 도메인으로
+
     void update(User updated) {
         if(this.id == updated.id) {
             this.name = updated.name;
@@ -83,16 +86,12 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id &&
-                Objects.equals(userId, user.userId) &&
-                Objects.equals(password, user.password) &&
-                Objects.equals(name, user.name) &&
-                Objects.equals(email, user.email);
+        return id == user.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userId, password, name, email);
+        return Objects.hash(id);
     }
 
     @Override

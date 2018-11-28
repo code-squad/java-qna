@@ -119,7 +119,6 @@ public class QuestionController {
         question.delete();
         questionRepository.save(question);
 
-//        questionRepository.delete(question);
         return "redirect:/questions";
     }
 
@@ -136,17 +135,3 @@ public class QuestionController {
         return Result.ok();
     }
 }
-
-//    private boolean hasPermission(HttpSession session, Question question) {
-//
-//        if(!HttpSessionUtils.isLoggedInUser(session)) {
-//            throw new IllegalStateException("로그인이 필요합니다.");
-//        }
-//
-//        User loggedInUser = HttpSessionUtils.getUserFromSession(session);
-//        if(!question.isMatchWriter(loggedInUser)) {
-//            throw new IllegalStateException("작성자만 수정, 삭제가 가능합니다.");
-//        }
-//
-//        return true;
-//    }

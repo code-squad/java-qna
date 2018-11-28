@@ -76,8 +76,9 @@
                 <li><a href="#registerModal" role="button" data-toggle="modal">회원가입</a></li>
                 -->
                 {{#sessionedUser}}
-                <li><a href="/users/logout" role="button">로그아웃</a></li>
+                <li><a href="/users/{{id}}" role="button">{{userId}}({{name}})</a></li>
                 <li><a href="/users/{{id}}/form" role="button">개인정보수정</a></li>
+                <li><a href="/users/logout" role="button">로그아웃</a></li>
                 {{/sessionedUser}}
             </ul>
         </div>

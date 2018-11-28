@@ -19,7 +19,7 @@ public class QuestionController {
     @PostMapping("")
     public String create(Question question, HttpSession session) {
         User loginUser = HttpSessionUtils.getUserFromSession(session);
-        question.setWriter(loginUser.getUserId());
+        question.setWriter(loginUser);
         questionRepository.save(question);
         return "redirect:/question/list";
     }
@@ -54,22 +54,23 @@ public class QuestionController {
         return "/qna/updateForm";
     }
 
-    @PutMapping("/{pId}/update")
-    public String questionUpdate(Question updateQuestion, @PathVariable long pId) {
+    @PutMapping("/{pId}")
+    public String questionUpdate(Question updateQuestion, @PathVariable long pId, HttpSession session) {
         Question question = questionRepository.findById(pId).get();
-        question.update(updateQuestion);
+        question.update(updateQuestion, session);
         questionRepository.save(question);
         return "redirect:/question/{pId}";
     }
 
-    @DeleteMapping("/{pId}/delete")
+    @DeleteMapping("/{pId}")
     public String questionDelete(Model model, @PathVariable long pId, HttpSession session) {
         Question question = questionRepository.findById(pId).get();
         model.addAttribute("question", question);
         if (!HttpSessionUtils.isValid(session, question)) {
             return "/qna/update_failed";
         }
-        questionRepository.delete(question);
+        question.delete();
+        questionRepository.save(question);
         return "redirect:/";
     }
 }

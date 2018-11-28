@@ -1,6 +1,7 @@
 package codesquad.user;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class User {
@@ -12,6 +13,7 @@ public class User {
     private String userId;
     private String password;
     private String name;
+
     private String email;
 
     public long getPId() {
@@ -64,17 +66,18 @@ public class User {
                 '}';
     }
 
-    void update(User newUser) {
-        this.password = newUser.password;
-        this.name = newUser.name;
-        this.email = newUser.email;
+    void update(User updatedUser) {
+        if (!this.userId.equals(updatedUser.userId)) throw new IllegalArgumentException();
+        this.password = updatedUser.password;
+        this.name = updatedUser.name;
+        this.email = updatedUser.email;
     }
 
     boolean matchPassword(String password) {
         return this.password.equals(password);
     }
 
-    boolean matchPassword(User updatedUser){
+    boolean matchPassword(User updatedUser) {
         return this.password.equals(updatedUser.password);
     }
 
@@ -82,7 +85,28 @@ public class User {
         return this.pId == pId;
     }
 
-//    public boolean matchWriter(String writer) {
-//        return this.userId.equals(writer);
-//    }
+    public boolean matchWriter(String writer) {
+        return this.userId.equals(writer);
+    }
+
+    public boolean matchUser(User other) {
+        return this.userId == other.userId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return pId == user.pId &&
+                Objects.equals(userId, user.userId) &&
+                Objects.equals(password, user.password) &&
+                Objects.equals(name, user.name) &&
+                Objects.equals(email, user.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pId, userId, password, name, email);
+    }
 }

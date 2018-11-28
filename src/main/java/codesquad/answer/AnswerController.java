@@ -38,7 +38,8 @@ public class AnswerController {
         Answer answer = answerRepository.findById(id).orElse(null);
         if (isValid(model, session, answer)) return "/user/login";
 
-        answerRepository.delete(answer);
+        answer.delete();
+        answerRepository.save(answer);
         return "redirect:/questions/{questionId}";
     }
 
@@ -60,7 +61,7 @@ public class AnswerController {
         }
         User sessionedUser = SessionUtil.getUserFromSession(session);
         if (!answer.isSameWriter(sessionedUser)) {
-            return Result.fail("You can't edit the other user's question");
+            return Result.fail("You can't edit the other user's answer");
         }
 
         return Result.success();

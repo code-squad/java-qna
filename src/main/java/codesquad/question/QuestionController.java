@@ -1,5 +1,7 @@
 package codesquad.question;
 
+import codesquad.answer.Answer;
+import codesquad.answer.AnswerRepository;
 import codesquad.exception.Result;
 import codesquad.user.User;
 import codesquad.util.SessionUtil;
@@ -9,12 +11,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private AnswerRepository answerRepository;
 
     @GetMapping("/form")
     public String form(Model model, HttpSession session) {
@@ -41,7 +47,12 @@ public class QuestionController {
 
     @GetMapping("/{id}")
     public String show(@PathVariable long id, Model model) {
+        List<Answer> answers = answerRepository.findByQuestionIdAndDeleted(id, false);
+
+        model.addAttribute("answers", answers);
+        model.addAttribute("answersSize", answers.size());
         model.addAttribute("question", questionRepository.findById(id).get());
+
         return "/qna/show";
     }
 
@@ -71,7 +82,13 @@ public class QuestionController {
         Question question = questionRepository.findById(id).orElse(null);
         if (isValid(model, session, question)) return "/user/login";
 
-        question.delete();
+        List<Answer> answers = answerRepository.findByQuestionIdAndDeleted(id, false);
+
+        model.addAttribute("answers", answers);
+        model.addAttribute("answersSize", answers.size());
+        model.addAttribute("question", questionRepository.findById(id).get());
+        if (isdeleteValid(model, question)) return "/qna/show";
+
         questionRepository.save(question);
 
         return "redirect:/questions";
@@ -99,5 +116,15 @@ public class QuestionController {
         }
 
         return Result.success();
+    }
+
+    private boolean isdeleteValid(Model model, Question question) {
+        Result result = question.delete();
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return true;
+        }
+
+        return false;
     }
 }

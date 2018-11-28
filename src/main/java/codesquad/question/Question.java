@@ -1,6 +1,7 @@
 package codesquad.question;
 
 import codesquad.answer.Answer;
+import codesquad.exception.Result;
 import codesquad.user.User;
 
 import javax.persistence.*;
@@ -30,7 +31,7 @@ public class Question {
 
     private boolean deleted;
 
-    @OneToMany(mappedBy="question")
+    @OneToMany(mappedBy="question", cascade = CascadeType.REMOVE)
     @OrderBy("id ASC")
     private List<Answer> answers;
 
@@ -108,6 +109,14 @@ public class Question {
         return updatedDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     public List<Answer> getAnswers() {
         return answers;
     }
@@ -122,15 +131,21 @@ public class Question {
         this.setUpdatedDate(LocalDateTime.now());
     }
 
-    void delete() {
+    Result delete() {
+        if (answers == null) this.deleted = true;
+        for (Answer answer : answers) {
+            if (!answer.isSameWriter(writer)) {
+                if(answer.isDeleted()) continue;
+                return Result.fail("Because the other user's answer exist, you can't edit the question.");
+            }
+        }
+        for (Answer answer : answers) answer.delete();
         this.deleted = true;
+
+        return Result.success();
     }
 
     public boolean isSameWriter(User sessionedUser) {
         return this.writer.equals(sessionedUser);
-    }
-
-    public int getAnswersSize() {
-        return answers.size();
     }
 }

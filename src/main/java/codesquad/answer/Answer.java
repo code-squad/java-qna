@@ -29,6 +29,8 @@ public class Answer {
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
 
+    private boolean deleted;
+
     private Answer() {}
 
     private Answer(User writer, Question question, String contents) {
@@ -37,6 +39,7 @@ public class Answer {
         this.contents = contents;
         this.createdDate = LocalDateTime.now();
         this.updatedDate = LocalDateTime.now();
+        this.deleted = false;
     }
 
     public static Answer newInstance(User writer, Question question, String contents) {
@@ -101,7 +104,19 @@ public class Answer {
         return updatedDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
     }
 
-    boolean isSameWriter(User sessionedUser) {
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public void delete() {
+        this.deleted = true;
+    }
+
+    public boolean isSameWriter(User sessionedUser) {
         return this.writer.equals(sessionedUser);
     }
 
@@ -120,7 +135,7 @@ public class Answer {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, writer, question, contents, createdDate, updatedDate);
+        return Objects.hash(id, writer, question, contents, createdDate, updatedDate, deleted);
     }
 
     @Override
@@ -132,6 +147,7 @@ public class Answer {
                 ", contents='" + contents + '\'' +
                 ", createdDate=" + createdDate +
                 ", updatedDate=" + updatedDate +
+                ", deleted=" + deleted +
                 '}';
     }
 }

@@ -35,7 +35,7 @@ public class QuestionController {
 
     @GetMapping("")
     public String list(Model model) {
-        model.addAttribute("questions", questionRepository.findAll());
+        model.addAttribute("questions", questionRepository.findByDeleted(false));
         return "/index";
     }
 
@@ -71,7 +71,8 @@ public class QuestionController {
         Question question = questionRepository.findById(id).orElse(null);
         if (isValid(model, session, question)) return "/user/login";
 
-        questionRepository.delete(question);
+        question.delete();
+        questionRepository.save(question);
 
         return "redirect:/questions";
     }

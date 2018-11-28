@@ -28,6 +28,8 @@ public class Question {
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
 
+    private boolean deleted;
+
     @OneToMany(mappedBy="question")
     @OrderBy("id ASC")
     private List<Answer> answers;
@@ -41,6 +43,7 @@ public class Question {
         this.contents = contents;
         this.createdDate = LocalDateTime.now();
         this.updatedDate = LocalDateTime.now();
+        this.deleted = false;
     }
 
     public static Question newInstance(User writer, String title, String contents) {
@@ -117,6 +120,10 @@ public class Question {
         this.setTitle(updatedQuestion.getTitle());
         this.setContents(updatedQuestion.getContents());
         this.setUpdatedDate(LocalDateTime.now());
+    }
+
+    void delete() {
+        this.deleted = true;
     }
 
     public boolean isSameWriter(User sessionedUser) {

@@ -13,7 +13,7 @@ public class MainController {
 
     @GetMapping({"", "/", "/index"})
     public String home(Model model) {
-        model.addAttribute("questions", questionRepository.findAll());
+        model.addAttribute("questions", questionRepository.findByDeleted(false));
         return "/index";
     }
 }

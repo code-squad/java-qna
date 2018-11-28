@@ -19,6 +19,16 @@ public class Answer {
     private Question question;
     private boolean deleted;
 
+    public Answer(){}
+
+    public Answer(long index, User commenter, String contents, Question question, boolean deleted) {
+        this.index = index;
+        this.commenter = commenter;
+        this.contents = contents;
+        this.question = question;
+        this.deleted = deleted;
+    }
+
     public boolean isDeleted() {
         return deleted;
     }

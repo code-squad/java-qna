@@ -56,7 +56,7 @@ public class UserController {
         User user = (User) session.getAttribute(User.SESSION_NAME);
         Optional<User> maybeUser = userRepository.findByUserId(userId);
         if (maybeUser.isPresent() && user.equals(maybeUser.get()) && updateUserInfo.checkPassword(maybeUser.get())) {
-            user.updateProcess(updateUserInfo);
+            user.updateNameEmail(updateUserInfo);
             userRepository.save(user);
             return "redirect:/users";
         }

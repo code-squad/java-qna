@@ -1,5 +1,6 @@
 package codesquad.question;
 
+import codesquad.exception.Result;
 import codesquad.user.User;
 import codesquad.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +17,15 @@ public class QuestionController {
     private QuestionRepository questionRepository;
 
     @GetMapping("/form")
-    public String form(HttpSession session) {
-        if (!SessionUtil.isSessionedUser(session)) return "redirect:/users/login";
+    public String form(Model model, HttpSession session) {
+        if (isValid(model, session, null)) return "/user/login";
         return "/qna/form";
     }
 
     @PostMapping("")
-    public String create(String title, String contents, HttpSession session) {
-        if (!SessionUtil.isSessionedUser(session)) return "redirect:/users/login";
+    public String create(String title, String contents, Model model, HttpSession session) {
+        if (isValid(model, session, null)) return "/user/login";
+
         User sessionedUser = SessionUtil.getUserFromSession(session);
         Question newQuestion = Question.newInstance(sessionedUser, title, contents);
         questionRepository.save(newQuestion);
@@ -45,18 +47,18 @@ public class QuestionController {
 
     @GetMapping("{id}/form")
     public String updateForm(@PathVariable long id, Model model, HttpSession session) {
-        if (!SessionUtil.isSessionedUser(session)) return "redirect:/users/login";
-
-        checkUserSelf(id, session);
+        Question question = questionRepository.findById(id).orElse(null);
+        if (isValid(model, session, question)) return "/user/login";
 
         model.addAttribute("question", questionRepository.findById(id).get());
+
         return "/qna/updatedForm";
     }
 
     @PutMapping("{id}")
-    public String update(@PathVariable long id, Question updatedQuestion, HttpSession session) {
-        if (!SessionUtil.isSessionedUser(session)) return "redirect:/users/login";
-        Question question = checkUserSelf(id, session);
+    public String update(@PathVariable long id, Model model, Question updatedQuestion, HttpSession session) {
+        Question question = questionRepository.findById(id).orElse(null);
+        if (isValid(model, session, question)) return "/user/login";
 
         question.update(updatedQuestion);
         questionRepository.save(question);
@@ -65,22 +67,36 @@ public class QuestionController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable long id, HttpSession session) {
-        if (!SessionUtil.isSessionedUser(session)) return "redirect:/users/login";
-        Question question = checkUserSelf(id, session);
+    public String delete(@PathVariable long id, Model model, HttpSession session) {
+        Question question = questionRepository.findById(id).orElse(null);
+        if (isValid(model, session, question)) return "/user/login";
 
         questionRepository.delete(question);
+
         return "redirect:/questions";
     }
 
-    private Question checkUserSelf(@PathVariable long id, HttpSession session) {
-        Question question = questionRepository.findById(id).orElse(null);
-        User sessionedUser = (User)session.getAttribute(SessionUtil.USER_SESSION_KEY);
+    private boolean isValid(Model model, HttpSession session, Question question) {
+        Result result = valid(session, question);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return true;
+        }
+        return false;
+    }
 
+    private Result valid(HttpSession session, Question question) {
+        if (!SessionUtil.isSessionedUser(session)) {
+            return Result.fail("You need login");
+        }
+        if(question == null) {
+            return Result.success();
+        }
+        User sessionedUser = SessionUtil.getUserFromSession(session);
         if (!question.isSameWriter(sessionedUser)) {
-            throw new IllegalStateException("You can't edit the other user's question");
+            return Result.fail("You can't edit the other user's question");
         }
 
-        return question;
+        return Result.success();
     }
 }

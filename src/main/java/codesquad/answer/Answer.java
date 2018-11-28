@@ -101,6 +101,10 @@ public class Answer {
         return updatedDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
     }
 
+    boolean isSameWriter(User sessionedUser) {
+        return this.writer.equals(sessionedUser);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

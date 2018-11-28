@@ -122,4 +122,8 @@ public class Question {
     public boolean isSameWriter(User sessionedUser) {
         return this.writer.equals(sessionedUser);
     }
+
+    public int getAnswersSize() {
+        return answers.size();
+    }
 }

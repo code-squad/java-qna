@@ -1,5 +1,6 @@
 package codesquad.user;
 
+import codesquad.exception.Result;
 import codesquad.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -67,26 +68,41 @@ public class UserController {
 
     @GetMapping("/{id}/form")
     public String updateForm(@PathVariable long id, Model model, HttpSession session) {
-        if (!SessionUtil.isSessionedUser(session)) return "redirect:/users/login";
-        checkUserSelf(id, session);
+        if (isValid(model, session, id)) return "/user/login";
 
         model.addAttribute("user", userRepository.findById(id).get());
         return "/user/updateForm";
     }
 
     @PutMapping("/{id}")
-    public String update(@PathVariable long id, User updatedUser, HttpSession session) {
-        if (!SessionUtil.isSessionedUser(session)) return "redirect:/users/login";
-        User sessionedUser = checkUserSelf(id, session);
+    public String update(@PathVariable long id, User updatedUser, Model model, HttpSession session) {
+        if (isValid(model, session, id)) return "/user/login";
+        User sessionedUser = SessionUtil.getUserFromSession(session);
 
         sessionedUser.update(updatedUser);
         userRepository.save(sessionedUser);
         return "redirect:/users";
     }
 
-    private User checkUserSelf(@PathVariable long id, HttpSession session) {
-        User sessionedUser = (User)session.getAttribute(SessionUtil.USER_SESSION_KEY);
-        if (!sessionedUser.matchId(id)) throw new IllegalStateException("You can't edit the other user's info");
-        return sessionedUser;
+
+    private boolean isValid(Model model, HttpSession session, long id) {
+        Result result = valid(session, id);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return true;
+        }
+        return false;
+    }
+
+    private Result valid(HttpSession session, long id) {
+        if (!SessionUtil.isSessionedUser(session)) {
+            return Result.fail("You need login");
+        }
+        User sessionedUser = SessionUtil.getUserFromSession(session);
+        if (!sessionedUser.matchId(id)) {
+            return Result.fail("You can't edit the other user's info");
+        }
+
+        return Result.success();
     }
 }

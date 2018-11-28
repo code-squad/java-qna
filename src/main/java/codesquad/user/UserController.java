@@ -28,17 +28,11 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(String userId, String password, HttpSession session) {
+    public String login(String userId, String password, Model model, HttpSession session) {
         Optional<User> maybeUser = userRepository.findByUserId(userId);
+        if (isLoginValid(model, password, maybeUser)) return "/user/login";
 
-        if (!maybeUser.isPresent() || !maybeUser.get().matchPassword(password)) return "/user/login_failed";
         session.setAttribute(SessionUtil.USER_SESSION_KEY, maybeUser.get());
-
-//        userRepository.findByUserId(userId)
-//                .filter(user -> user.matchPassword(password))
-//                .map(user -> SessionUtil.setUserToSession(session, user))
-//                .orElseThrow(IllegalAccessError::new)
-
         return "redirect:/";
     }
 
@@ -68,7 +62,7 @@ public class UserController {
 
     @GetMapping("/{id}/form")
     public String updateForm(@PathVariable long id, Model model, HttpSession session) {
-        if (isValid(model, session, id)) return "/user/login";
+        if (isPermissionValid(model, session, id)) return "/user/login";
 
         model.addAttribute("user", userRepository.findById(id).get());
         return "/user/updateForm";
@@ -76,7 +70,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     public String update(@PathVariable long id, User updatedUser, Model model, HttpSession session) {
-        if (isValid(model, session, id)) return "/user/login";
+        if (isPermissionValid(model, session, id)) return "/user/login";
         User sessionedUser = SessionUtil.getUserFromSession(session);
 
         sessionedUser.update(updatedUser);
@@ -84,9 +78,8 @@ public class UserController {
         return "redirect:/users";
     }
 
-
-    private boolean isValid(Model model, HttpSession session, long id) {
-        Result result = valid(session, id);
+    private boolean isPermissionValid(Model model, HttpSession session, long id) {
+        Result result = permissionValid(session, id);
         if (!result.isValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());
             return true;
@@ -94,13 +87,33 @@ public class UserController {
         return false;
     }
 
-    private Result valid(HttpSession session, long id) {
+    private Result permissionValid(HttpSession session, long id) {
         if (!SessionUtil.isSessionedUser(session)) {
             return Result.fail("You need login");
         }
         User sessionedUser = SessionUtil.getUserFromSession(session);
         if (!sessionedUser.matchId(id)) {
             return Result.fail("You can't edit the other user's info");
+        }
+
+        return Result.success();
+    }
+
+    private boolean isLoginValid(Model model, String password, Optional<User> maybeUser) {
+        Result result = loginValid(password, maybeUser);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return true;
+        }
+        return false;
+    }
+
+    private Result loginValid(String password, Optional<User> maybeUser) {
+        if (!maybeUser.isPresent()) {
+            return Result.fail("Id doesn't exist");
+        }
+        if (!maybeUser.get().matchPassword(password)) {
+            return Result.fail("Wrong password");
         }
 
         return Result.success();

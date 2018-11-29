@@ -3,6 +3,7 @@ package codesquad.question;
 import codesquad.answer.Answer;
 import codesquad.exception.UserException;
 import codesquad.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -34,6 +35,7 @@ public class Question {
     @Column(nullable = false)
     private boolean deleted = false;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("id ASC")
     private List<Answer> answers = new ArrayList<>();

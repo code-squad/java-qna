@@ -82,10 +82,6 @@ public class Answer {
         return createdDate;
     }
 
-    public void setCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
     public String getFormattedCreatedDate() {
         if (createdDate == null) return "";
         return createdDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
@@ -93,10 +89,6 @@ public class Answer {
 
     public LocalDateTime getUpdatedDate() {
         return updatedDate;
-    }
-
-    public void setUpdatedDate(LocalDateTime updatedDate) {
-        this.updatedDate = updatedDate;
     }
 
     public String getFormattedUpdatedDate() {

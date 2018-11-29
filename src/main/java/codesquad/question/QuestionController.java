@@ -1,21 +1,23 @@
 package codesquad.question;
 
-import codesquad.answer.Answer;
 import codesquad.answer.AnswerRepository;
 import codesquad.exception.Result;
 import codesquad.user.User;
 import codesquad.util.SessionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
+    private static final Logger log = LoggerFactory.getLogger(QuestionController.class);
+    
     @Autowired
     private QuestionRepository questionRepository;
 
@@ -34,6 +36,7 @@ public class QuestionController {
 
         User sessionedUser = SessionUtil.getUserFromSession(session);
         Question newQuestion = Question.newInstance(sessionedUser, title, contents);
+        log.debug("newQuestion : {}", newQuestion);
         questionRepository.save(newQuestion);
 
         return "redirect:/";
@@ -41,16 +44,15 @@ public class QuestionController {
 
     @GetMapping("")
     public String list(Model model) {
+        log.info("list");
         model.addAttribute("questions", questionRepository.findByDeleted(false));
+
         return "/index";
     }
 
     @GetMapping("/{id}")
     public String show(@PathVariable long id, Model model) {
-        List<Answer> answers = answerRepository.findByQuestionIdAndDeleted(id, false);
-
-        model.addAttribute("answers", answers);
-        model.addAttribute("answersSize", answers.size());
+        log.info("show");
         model.addAttribute("question", questionRepository.findById(id).get());
 
         return "/qna/show";
@@ -82,10 +84,6 @@ public class QuestionController {
         Question question = questionRepository.findById(id).orElse(null);
         if (isValid(model, session, question)) return "/user/login";
 
-        List<Answer> answers = answerRepository.findByQuestionIdAndDeleted(id, false);
-
-        model.addAttribute("answers", answers);
-        model.addAttribute("answersSize", answers.size());
         model.addAttribute("question", questionRepository.findById(id).get());
         if (isdeleteValid(model, question)) return "/qna/show";
 

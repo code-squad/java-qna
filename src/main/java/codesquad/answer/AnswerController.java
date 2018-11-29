@@ -5,6 +5,8 @@ import codesquad.question.Question;
 import codesquad.question.QuestionRepository;
 import codesquad.user.User;
 import codesquad.util.SessionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +17,8 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/questions/{questionId}/answers")
 public class AnswerController {
+    private static final Logger log = LoggerFactory.getLogger(AnswerController.class);
+
     @Autowired
     private QuestionRepository questionRepository;
 

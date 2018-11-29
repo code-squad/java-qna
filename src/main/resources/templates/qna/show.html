@@ -50,13 +50,12 @@
                         </ul>
                     </div>
                 </article>
-                {{/question}}
 
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
-                        <p class="qna-comment-count"><strong>{{answersSize}}</strong>개의 의견</p>
+                        <p class="qna-comment-count"><strong>{{sizeOfAnswer}}</strong>개의 의견</p>
                         <div class="qna-comment-slipp-articles">
-                            {{#answers}}
+                            {{#notDeletedAnswers}}
                             <article class="article" id="answer-1405">
                                 <div class="article-header">
                                     <div class="article-header-thumb">
@@ -89,9 +88,9 @@
                                     </ul>
                                 </div>
                             </article>
-                            {{/answers}}
+                            {{/notDeletedAnswers}}
 
-                            <form class="submit-write" method="POST" action="/questions/{{id}}/answers">
+                            <form class="submit-write" method="POST" action="/api/questions/{{id}}/answers">
                                 <div class="form-group" style="padding:14px;">
                                     <textarea class="form-control" placeholder="Update your status" name="contents"></textarea>
                                 </div>
@@ -102,6 +101,7 @@
                     </div>
                 </div>
             </div>
+            {{/question}}
         </div>
     </div>
 </div>

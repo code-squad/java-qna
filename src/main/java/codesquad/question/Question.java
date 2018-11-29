@@ -3,11 +3,14 @@ package codesquad.question;
 import codesquad.answer.Answer;
 import codesquad.exception.Result;
 import codesquad.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Question {
@@ -147,5 +150,57 @@ public class Question {
 
     public boolean isSameWriter(User sessionedUser) {
         return this.writer.equals(sessionedUser);
+    }
+
+    public List<Answer> getNotDeletedAnswers() {
+        List<Answer> notDeletedAnswers = new ArrayList<>();
+        for (Answer answer : answers) {
+            if(!answer.isDeleted()) notDeletedAnswers.add(answer);
+        }
+
+        return notDeletedAnswers;
+    }
+
+    public int getSizeOfAnswer() {
+        List<Answer> notDeletedAnswers = new ArrayList<>();
+        for (Answer answer : answers) {
+            if(!answer.isDeleted()) notDeletedAnswers.add(answer);
+        }
+
+        return notDeletedAnswers.size();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Question question = (Question) o;
+        return id == question.id &&
+                deleted == question.deleted &&
+                Objects.equals(writer, question.writer) &&
+                Objects.equals(title, question.title) &&
+                Objects.equals(contents, question.contents) &&
+                Objects.equals(createdDate, question.createdDate) &&
+                Objects.equals(updatedDate, question.updatedDate) &&
+                Objects.equals(answers, question.answers);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, writer, title, contents, createdDate, updatedDate, deleted, answers);
+    }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "id=" + id +
+                ", writer=" + writer +
+                ", title='" + title + '\'' +
+                ", contents='" + contents + '\'' +
+                ", createdDate=" + createdDate +
+                ", updatedDate=" + updatedDate +
+                ", deleted=" + deleted +
+                ", answers=" + answers +
+                '}';
     }
 }

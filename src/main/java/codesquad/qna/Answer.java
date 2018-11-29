@@ -26,6 +26,9 @@ public class Answer {
 
     private LocalDateTime timer;
 
+    @Column(nullable = false)
+    private boolean deleted = false;
+
     public Answer() {}
 
     public Answer(User writer, String contents, Question question) {
@@ -74,6 +77,26 @@ public class Answer {
         this.id = id;
     }
 
+    public boolean isSameWriter(User loginUser) {
+        return this.writer.equals(loginUser);
+    }
+
+    public boolean delete(User loginUser) {
+        if(isSameWriter(loginUser)) {
+            this.deleted = true;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -96,9 +119,5 @@ public class Answer {
                 ", contents='" + contents + '\'' +
                 ", timer=" + timer +
                 '}';
-    }
-
-    public boolean isSameWriter(User loginUser) {
-        return this.writer.equals(loginUser);
     }
 }

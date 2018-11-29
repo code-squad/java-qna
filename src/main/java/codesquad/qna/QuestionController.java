@@ -49,24 +49,29 @@ public class QuestionController {
     public String modify(Question modifyQuestion, @PathVariable Long id, Model model, HttpSession session) {
         Question question = getQuestionFromId(id);
         User loginUser = HttpSessionUtils.getUserFormSession(session);
-        question.update(modifyQuestion, loginUser);
+        Result result = question.update(modifyQuestion, loginUser);
+        if(!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return "user/login";
+        }
+
         questionRepository.save(question);
-        model.addAttribute("list", question);
         return String.format("redirect:/questions/%d", id);
     }
 
     @GetMapping("/{id}/form")
     public String modifyForm(HttpSession session, Model model, @PathVariable Long id) {
-        if (!HttpSessionUtils.isLoginUser(session)) {
+        Question question = getQuestionFromId(id);
+        User loginUser = HttpSessionUtils.getUserFormSession(session);
+        Result result = question.valid(loginUser);
+        if(!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
             return "user/login";
         }
-        User loginUser = HttpSessionUtils.getUserFormSession(session);
-        Question question = getQuestionFromId(id);
-        if (question.isSameWriter(loginUser)) {
-            model.addAttribute("modifyForm", question);
-            return "qna/modifyForm";
-        }
-        return "qna/modify_failed";
+
+        model.addAttribute("modifyForm", question);
+        return "qna/modifyForm";
+
     }
 
     private Question getQuestionFromId(Long id) {
@@ -74,16 +79,36 @@ public class QuestionController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(String writer, @PathVariable Long id, HttpSession session) {
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            return "user/login";
-        }
-        User loginUser = HttpSessionUtils.getUserFormSession(session);
+    public String delete(String writer, @PathVariable Long id, HttpSession session, Model model) {
         Question question = getQuestionFromId(id);
-        if (question.isSameWriter(loginUser)) {
-            questionRepository.delete(question);
-            return "redirect:/";
+        Result result = valid(session);
+        User loginUser = HttpSessionUtils.getUserFormSession(session);
+        if(!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            model.addAttribute("question", getQuestionFromId(id));
+            return "qna/show";
         }
-        return "qna/delete_failed";
+
+        result = question.deleted(loginUser);
+        if(!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            model.addAttribute("question", getQuestionFromId(id));
+            return "qna/show";
+        }
+
+        questionRepository.save(question);
+        return "redirect:/";
+    }
+
+    private Result valid(HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return Result.failed("로그인이 필요합니다.");
+        }
+
+//        User loginUser = HttpSessionUtils.getUserFormSession(session);
+//        if (!question.isSameWriter(loginUser)) {
+//            return Result.failed("자신이 쓴 글만 수정, 삭제할 수 있습니다.");
+//        }
+        return Result.ok();
     }
 }

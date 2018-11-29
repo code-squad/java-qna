@@ -4,6 +4,9 @@ import codesquad.config.HttpSessionUtils;
 import codesquad.question.answer.Answer;
 import codesquad.user.User;
 import codesquad.utils.TimeFormatter;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -98,10 +101,12 @@ public class Question {
         this.createDate = createDate;
     }
 
+    @JsonIgnore
     public List<Answer> getAnswers() {
         return answers;
     }
 
+    @JsonIgnore
     public List<Answer> getNotDeletedAnswers() {
         return answers.stream()
                 .filter(answer -> !answer.isDeleted())

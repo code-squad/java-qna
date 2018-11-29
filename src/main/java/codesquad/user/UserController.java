@@ -1,6 +1,8 @@
 package codesquad.user;
 
 import codesquad.HttpSessionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,20 +20,21 @@ import static codesquad.HttpSessionUtils.USER_SESSION_KEY;
 @Controller
 @RequestMapping("/users")
 public class UserController {
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
+
     @Autowired
     private UserRepository userRepository;
 
     @PostMapping
-    public String create(User user) {
-        System.out.println("create user");
-
+    public String create(User user, Model model) {
+        log.debug("create : {}", user);
         userRepository.save(user);
-        return "redirect:/users";
+        return "redirect:/users/";
     }
 
     @GetMapping
     public String list(Model model) {
-        System.out.println("view user list");
+        log.debug("view user list");
 
         model.addAttribute("users", userRepository.findAll());
         return "/user/list";
@@ -39,14 +42,14 @@ public class UserController {
 
     @GetMapping("/form")
     public String join() {
-        System.out.println("view user sign up form");
+        log.debug("view user sign up form");
 
-        return "user/form";
+        return "/user/form";
     }
 
     @GetMapping("/{id}")
     public String show(@PathVariable long id,Model model) {
-        System.out.println("view user profile");
+        log.debug("view user profile");
 
         model.addAttribute("user", userRepository.findById(id).orElse(null));
         return "/user/profile";
@@ -54,7 +57,7 @@ public class UserController {
 
     @GetMapping("/{id}/form")
     public String updateForm(@PathVariable long id, Model model, HttpSession session) {
-        System.out.println("view user update form");
+        log.debug("view user update form");
 
         if(!HttpSessionUtils.isLoggedInUser(session)) {
             return "/user/login";
@@ -72,7 +75,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     public String update(User updatedUser, HttpSession session) {
-        System.out.println("update user");
+        log.debug("update user");
 
         User loggedInUser = HttpSessionUtils.getUserFromSession(session);
 
@@ -87,24 +90,24 @@ public class UserController {
 
     @GetMapping("/login")
     public String loginForm() {
-        System.out.println("view user login form");
+        log.debug("view user login form");
 
         return "/user/login";
     }
 
     @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
-        System.out.println("user login");
+        log.debug("user login");
 
         Optional<User> maybeUser = userRepository.findByUserId(userId);
 
         if(!maybeUser.isPresent()) {
-            System.out.println("아이디 불일치");
+            log.debug("아이디 불일치");
             return "/user/login_failed";
         }
 
         if(!maybeUser.get().isMatchPassword(password)) {
-            System.out.println("비밀번호 불일치");
+            log.debug("비밀번호 불일치");
             return "/user/login_failed";
         }
 
@@ -114,7 +117,7 @@ public class UserController {
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        System.out.println("user logout");
+        log.debug("user logout");
 
         session.removeAttribute(USER_SESSION_KEY);
         return "redirect:/";

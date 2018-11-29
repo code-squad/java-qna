@@ -3,6 +3,8 @@ package codesquad.question;
 import codesquad.HttpSessionUtils;
 import codesquad.answer.Answer;
 import codesquad.answer.AnswerRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +16,8 @@ import java.util.List;
 @RequestMapping("/questions")
 @Controller
 public class QuestionController {
+    private static final Logger log = LoggerFactory.getLogger(QuestionController.class);
+
     @Autowired
     private QuestionRepository questionRepository;
     @Autowired
@@ -21,26 +25,31 @@ public class QuestionController {
 
     @PostMapping("")
     public String create(HttpSession session, String title, String contents) {
-        System.out.println("create question");
+        log.debug("create : {}", title);
 
-        questionRepository.save(new Question(session, title, contents));
+        if(!HttpSessionUtils.isLoggedInUser(session)) {
+            return "/user/login";
+        }
+
+        questionRepository
+                .save(new Question(HttpSessionUtils.getUserFromSession(session), title, contents));
         return "redirect:/questions";
     }
 
     @GetMapping("")
     public String list(Model model) {
-        System.out.println("view question list(home)");
+        log.debug("view question list");
 
-        model.addAttribute("questions", questionRepository.findAll());
+        model.addAttribute("questions", questionRepository.findByDeleted(false));
         return "index";
     }
 
     @GetMapping("/form")
     public String questionForm(HttpSession session) {
-        System.out.println("view question form");
+        log.debug("view question form");
 
         if(!HttpSessionUtils.isLoggedInUser(session)) {
-            return "redirect:/user/login";
+            return "/user/login";
         }
 
         return "/qna/form";
@@ -48,10 +57,10 @@ public class QuestionController {
 
     @GetMapping("/{id}")
     public String read(@PathVariable long id, Model model) {
-        System.out.println("view question");
+        log.debug("view question number {}", id);
 
         Question question = questionRepository.findById(id).orElse(null);
-        List<Answer> answers = answerRepository.findByQuestionId(id);
+        List<Answer> answers = answerRepository.findByQuestionIdAndDeleted(id, false);
 
         model.addAttribute("answers", answers);
         model.addAttribute("countOfAnswers", answers.size());
@@ -61,50 +70,76 @@ public class QuestionController {
 
     @GetMapping("/{id}/form")
     public String updateForm(@PathVariable long id, Model model, HttpSession session) {
-        System.out.println("view question update form");
+        log.debug("view question number {} update form", id);
 
         if(!HttpSessionUtils.isLoggedInUser(session)) {
+            model.addAttribute("errorMessage", "로그인이 필요합니다.");
             return "/user/login";
         }
 
         Question question = questionRepository.findById(id).orElse(null);
         if(!question.isMatchWriter(HttpSessionUtils.getUserFromSession(session))) {
-            return "/qna/update_failed";
+            model.addAttribute("errorMessage", "작성자만 수정 가능합니다.");
+                return "/user/login";
         }
 
         model.addAttribute("question", question);
         return "/qna/update_form";
     }
 
+
     @PutMapping("/{id}")
-    public String update(@PathVariable long id, HttpSession session, Question updatedQuestion) {
-        System.out.println("update question");
+    public String update(@PathVariable long id, HttpSession session, Model model, Question updatedQuestion) {
+        log.debug("update question {}", id);
 
         if(!HttpSessionUtils.isLoggedInUser(session)) {
+            model.addAttribute("errorMessage", "로그인이 필요합니다.");
             return "/user/login";
         }
 
         Question question = questionRepository.findById(id).orElse(null);
-        question.update(session, updatedQuestion);
+        try {
+            question.update(updatedQuestion);
+        } catch(IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/user/login";
+        }
 
         questionRepository.save(question);
         return "redirect:/questions/{id}";
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable long id, HttpSession session) {
-        System.out.println("delete question");
+    public String delete(@PathVariable long id, HttpSession session, Model model) {
+        log.debug("delete question {}", id);
 
         if(!HttpSessionUtils.isLoggedInUser(session)) {
+            model.addAttribute("errorMessage", "로그인이 필요합니다.");
             return "/user/login";
         }
 
         Question question = questionRepository.findById(id).orElse(null);
-        if(!question.isMatchWriter(HttpSessionUtils.getUserFromSession(session))) {
-            return "/qna/update_failed";
+        try {
+            question.delete(HttpSessionUtils.getUserFromSession(session));
+        } catch(IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/user/login";
         }
 
-        questionRepository.delete(question);
+        questionRepository.save(question);
         return "redirect:/questions";
     }
+
+//    private Result valid(HttpSession session, Question question) {
+//        if(!HttpSessionUtils.isLoggedInUser(session)) {
+//            return Result.fail("로그인이 필요합니다.");
+//        }
+//
+//        User loggedInUser = HttpSessionUtils.getUserFromSession(session);
+//        if(!question.isMatchWriter(loggedInUser)) {
+//            return Result.fail("작성자만 수정, 삭제가 가능합니다.");
+//        }
+//
+//        return Result.ok();
+//    }
 }

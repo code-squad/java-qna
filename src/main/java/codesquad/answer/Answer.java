@@ -1,14 +1,11 @@
 package codesquad.answer;
 
-import codesquad.AbstractEntity;
-import codesquad.exception.UserIdNotMatchException;
+import codesquad.domain.AbstractEntity;
 import codesquad.qna.Question;
 import codesquad.user.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Answer extends AbstractEntity {

@@ -1,4 +1,4 @@
-package codesquad;
+package codesquad.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.CreatedDate;

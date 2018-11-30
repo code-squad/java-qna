@@ -1,6 +1,6 @@
 package codesquad.qna;
 
-import codesquad.AbstractEntity;
+import codesquad.domain.AbstractEntity;
 import codesquad.answer.Answer;
 import codesquad.exception.UserIdNotMatchException;
 import codesquad.user.User;

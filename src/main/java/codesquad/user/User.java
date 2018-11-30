@@ -1,6 +1,6 @@
 package codesquad.user;
 
-import codesquad.AbstractEntity;
+import codesquad.domain.AbstractEntity;
 import codesquad.exception.UserIdNotMatchException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -11,7 +11,6 @@ public class QnaApplication {
     private static final Logger log = getLogger(QnaApplication.class);
 
     public static void main(String[] args) {
-        log.info("aaaaaaa");
         SpringApplication.run(QnaApplication.class, args);
     }
 }

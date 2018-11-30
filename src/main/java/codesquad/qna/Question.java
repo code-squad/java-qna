@@ -5,6 +5,7 @@ import codesquad.exception.UserIdNotMatchException;
 import codesquad.user.User;
 import codesquad.util.RegexParser;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -17,25 +18,31 @@ import java.util.stream.Collectors;
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty
     private long id;
 
     @ManyToOne
+    @JsonProperty
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_user"))
     private User user;
 
+    @JsonProperty
     private String title;
 
     @Lob
+    @JsonProperty
     @Column(nullable = false)
     private String contents;
 
+    @JsonProperty
     private LocalDateTime createDate;
 
+    @JsonProperty
     private boolean deleted = false;
 
     @JsonIgnore
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @OrderBy("id ASC")
+    @OrderBy("id DESC")
     private List<Answer> answers = new ArrayList<>();
 
     public Question() {

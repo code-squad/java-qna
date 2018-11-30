@@ -23,8 +23,8 @@ public class QuestionTest {
         Question question = new Question(user1, "으하하하", "후훗");
         question.addAnswer(answer1);
         System.out.println(question.getAnswers());
-        System.out.println(question.getConut());
-        assertThat(question.getConut()).isEqualTo("1");
+        System.out.println(question.getCount());
+        assertThat(question.getCount()).isEqualTo("1");
 
     }
 
@@ -66,7 +66,7 @@ public class QuestionTest {
             question1.addAnswer(answer1);
 
         }
-        assertThat(question1.getConut()).isEqualTo(String.valueOf(n));
+        assertThat(question1.getCount()).isEqualTo(String.valueOf(n));
     }
 
 

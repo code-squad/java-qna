@@ -77,7 +77,9 @@
                               </div>
                           </article>
                           {{/answers}}
-                          <form class="submit-write" name="question" method="post" action="/api/questions/{{id}}/answers">
+                      </div>
+
+                      <form class="submit-write" name="question" method="post" action="/api/questions/{{id}}/answers">
                               <div class="form-group" style="padding:14px;">
                                   <textarea name="contents" class="form-control" placeholder="Update your status"></textarea>
                                   <br>
@@ -92,7 +94,6 @@
                               <a href="/questions/{{id}}/answers/create" class="btn btn-primary pull-right" role="button">답변하기</a>
                               <div class="clearfix" />
                           </form>-->
-                      </div>
                   </div>
               </div>
               {{/question}}

@@ -67,6 +67,8 @@ public class QuestionController {
     public String update(@PathVariable long id, Question newQuestion) {
         logger.info("update");
         Question question = questionRepository.findById(id).orElseThrow(QuestionException::new);
+        // user를 못받는다.
+
         question.update(newQuestion);
         questionRepository.save(question);
         return "redirect:/questions/{id}";

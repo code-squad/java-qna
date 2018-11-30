@@ -134,7 +134,7 @@ public class Question {
         this.answers = answers;
     }
 
-    public String getConut() {
+    public String getCount  () {
         return String.valueOf(answers.size());
     }
 

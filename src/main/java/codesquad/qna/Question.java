@@ -1,5 +1,6 @@
 package codesquad.qna;
 
+import codesquad.AbstractEntity;
 import codesquad.answer.Answer;
 import codesquad.exception.UserIdNotMatchException;
 import codesquad.user.User;
@@ -8,18 +9,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
-public class Question {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty
-    private long id;
+public class Question extends AbstractEntity {
 
     @ManyToOne
     @JsonProperty
@@ -33,9 +28,6 @@ public class Question {
     @JsonProperty
     @Column(nullable = false)
     private String contents;
-
-    @JsonProperty
-    private LocalDateTime createDate;
 
     @JsonProperty
     private boolean deleted = false;
@@ -52,15 +44,6 @@ public class Question {
         this.user = user;
         this.title = title;
         this.contents = contents;
-        this.createDate = LocalDateTime.now();
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public User getUser() {
@@ -91,25 +74,12 @@ public class Question {
         this.contents = contents;
     }
 
-    public LocalDateTime getCreateDate() {
-        return createDate;
-    }
-
-    public String getFormattedCreateDate() {
-        if (createDate == null) return "";
-        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
-    }
-
     public boolean isDeleted() {
         return deleted;
     }
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
-    }
-
-    public void setCreateDate(LocalDateTime createDate) {
-        this.createDate = createDate;
     }
 
     public List<Answer> getAnswers() {
@@ -142,7 +112,7 @@ public class Question {
         if (!user.equals(deleteUser)) return false;
 
         for (Answer answer : answers) {
-            if(!answer.deletedState(deleteUser))
+            if (!answer.deletedState(deleteUser))
                 return false;
         }
 

@@ -1,32 +1,32 @@
 package codesquad.answer;
 
+import codesquad.AbstractEntity;
 import codesquad.exception.UserIdNotMatchException;
 import codesquad.qna.Question;
 import codesquad.user.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Entity
-public class Answer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
+public class Answer extends AbstractEntity {
+    @JsonProperty
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_question"))
     private Question question;
 
+    @JsonProperty
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_user"))
     private User user;
 
+    @JsonProperty
     @Column(nullable = false, length = 300)
     private String contents;
 
-    private LocalDateTime createDate;
-
+    @JsonProperty
     private boolean deleted = false;
 
     public Answer() {
@@ -36,11 +36,6 @@ public class Answer {
         this.question = question;
         this.user = user;
         this.contents = contents;
-        this.createDate = LocalDateTime.now();
-    }
-
-    public long getId() {
-        return id;
     }
 
     public String getContents() {
@@ -65,19 +60,6 @@ public class Answer {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public LocalDateTime getCreateDate() {
-        return createDate;
-    }
-
-    public String getFormattedCreateDate() {
-        if (createDate == null) return "";
-        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
-    }
-
-    public void setCreateDate(LocalDateTime createDate) {
-        this.createDate = createDate;
     }
 
     public boolean isDeleted() {

@@ -1,5 +1,5 @@
 // answer 생성
-$(".submit-write button[type=submit]").click(addAnswer);
+$(".submit-write button[type='submit']").on("click", addAnswer);
 
 function addAnswer(e) {
     e.preventDefault(e);
@@ -14,25 +14,21 @@ function addAnswer(e) {
         url : url,
         data : queryString,
         dataType : 'json',
-        error: onError,
-        success : onSuccess
+        error: function (xhr, status) {
+            console.log("error");
+        },
+        success : function (data, status) {
+            console.log(data);
+            var answerTemplate = $("#answerTemplate").html();
+            var template = answerTemplate.format(data.user.userId, data.formattedCreateDate, data.contents, data.question.id, data.id);
+            $(".question-comment-slipp-articles").prepend(template);
+            $("textarea[name=contents]").val(""); // contents 내용 초기화
+        }
     });
 }
 
-function onError() {
-    console.log('error');
-}
-
-function onSuccess(data, status) {
-    console.log(data);
-    var answerTemplate = $("#answerTemplate").html();
-    var template = answerTemplate.format(data.user.userId, data.formattedCreateDate, data.contents, data.question.id, data.id);
-    $(".question-comment-slipp-articles").prepend(template);
-    $("textarea[name=contents]").val(""); // contents 내용 초기화
-}
-
 // answer 삭제
-$("a.link-delete-article").click(deleteAnswer);
+$(".question-comment-slipp-articles").on("click", "a.link-delete-article", deleteAnswer);
 
 function deleteAnswer(e) {
     e.preventDefault();
@@ -59,7 +55,6 @@ function deleteAnswer(e) {
         }
     });
 }
-
 
 String.prototype.format = function() {
   var args = arguments;

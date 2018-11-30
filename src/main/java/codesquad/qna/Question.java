@@ -4,6 +4,7 @@ import codesquad.answer.Answer;
 import codesquad.exception.UserIdNotMatchException;
 import codesquad.user.User;
 import codesquad.util.RegexParser;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -32,6 +33,7 @@ public class Question {
 
     private boolean deleted = false;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @OrderBy("id ASC")
     private List<Answer> answers = new ArrayList<>();
@@ -115,6 +117,7 @@ public class Question {
         return getAliveAnswers().size();
     }
 
+    @JsonIgnore
     public List<Answer> getAliveAnswers() {
         return this.answers.stream().filter(a -> !a.isDeleted()).collect(Collectors.toList());
     }

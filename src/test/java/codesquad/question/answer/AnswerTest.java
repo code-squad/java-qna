@@ -18,7 +18,7 @@ public class AnswerTest {
         Question question = new Question();
         user = new User(25, "leeh903", "1234", "이정현", "leejh903@naver.com");
         user2 = new User(27, "leeh903", "1234", "이정현", "leejh903@naver.com");
-        answer = new Answer(question, user, "aaa", false);
+        answer = new Answer(question, user, "aaa");
     }
 
     @Test

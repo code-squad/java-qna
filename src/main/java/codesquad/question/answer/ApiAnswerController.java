@@ -24,7 +24,7 @@ public class ApiAnswerController {
     private AnswerRepository answerRepository;
 
     @PostMapping("")
-    public Object post(@PathVariable long questionId, HttpSession session, String comment, Model model) {
+    public Object post(@PathVariable long questionId, HttpSession session, String comment) {
         Result result = valid(session);
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
         if(!result.isValid()) {

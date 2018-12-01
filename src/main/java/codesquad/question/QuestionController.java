@@ -1,5 +1,6 @@
 package codesquad.question;
 
+import codesquad.aspect.SessionCheck;
 import codesquad.config.HttpSessionUtils;
 import codesquad.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,22 +17,12 @@ public class QuestionController {
     private QuestionRepository questionRepository;
 
     @GetMapping("")
-    public String question(HttpSession session, Model model) {
-        Result result = valid(session);
-        if (!result.isValid()) {
-            model.addAttribute("errorMessage", result.getErrorMessage());
-            return "user/login";
-        }
+    public String question(@SessionCheck HttpSession session, Model model) {
         return "qna/form";
     }
 
     @PostMapping("")
-    public String postQuestion(Question question, HttpSession session, Model model) {
-        Result result = valid(session);
-        if (!result.isValid()) {
-            model.addAttribute("errorMessage", result.getErrorMessage());
-            return "user/login";
-        }
+    public String postQuestion(@SessionCheck HttpSession session, Model model, Question question) {
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
         question.setUser(sessionedUser);
         questionRepository.save(question);
@@ -80,13 +71,6 @@ public class QuestionController {
         }
         questionRepository.save(question);
         return "redirect:/";
-    }
-
-    private Result valid(HttpSession session) {
-        if (!HttpSessionUtils.isLogin(session)) {
-            return Result.fail("로그인이 필요합니다.");
-        }
-        return Result.ok();
     }
 
     private Question getQuestion(@PathVariable long id) {

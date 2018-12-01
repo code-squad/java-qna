@@ -64,11 +64,10 @@ public class QuestionController {
     }
 
     @PutMapping("/{id}")
-    public String update(@PathVariable long id, Question newQuestion) {
+    public String update(@PathVariable long id, Question newQuestion, HttpSession session) {
         logger.info("update");
+        newQuestion.setWriter(HttpSessionUtils.getUserFormSession(session));
         Question question = questionRepository.findById(id).orElseThrow(QuestionException::new);
-        // user를 못받는다.
-
         question.update(newQuestion);
         questionRepository.save(question);
         return "redirect:/questions/{id}";

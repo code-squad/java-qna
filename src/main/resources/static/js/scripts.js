@@ -1,4 +1,3 @@
-console.log("aaaa");
 $(".submit-write button[type=submit]").click(addAnswer);
 function addAnswer(e) {
     console.log('되라');
@@ -16,24 +15,53 @@ function addAnswer(e) {
         data : queryString,
         dataType : 'json',
         error: onError,
-        success : onSuccess,
+        success : onSuccess
     });
 }
-
+//ApiAnswerController 에서 만들어져 data 에 json 파일로 담긴다.
 function onError() {
-    window.location.href = '/users/login';
     console.log('error');
+    alert("로그인 해주세요 ");
+    window.location.href = '/users/login';
 }
 
 
 function onSuccess(data, status) {
     console.log(data);
+    console.log(status);
     var answerTemplate = $("#answerTemplate").html();
     var template = answerTemplate.format(data.user.userId, data.formattedDate, data.contents, data.question.id, data.id);
     $(".qna-comment-slipp-articles").append(template);
+
+    $(".qna-comment-count-num").html(data.question.count)
     $("textarea[name=contents]").val("");
 }
 
+
+$(".link-deleted-article").click(deletedAnswer);
+function deletedAnswer(e) {
+    console.log('deletedAnswer');
+    e.preventDefault();
+
+    var deleteBtn = $(this);
+    var url = deleteBtn.attr('href');
+    console.log("url : " + url);
+
+    $.ajax({
+            type : 'delete',
+            url : url,
+            dataType : 'json',
+            error: function (xhr,status) {
+                console.log('error');
+            },
+            success : function (data, status) {
+                console.log('success');
+                if (data.valid) {
+                    deleteBtn.closest('article').remove();
+                }
+            }
+        });
+}
 
 String.prototype.format = function() {
   var args = arguments;

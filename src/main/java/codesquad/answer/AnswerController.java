@@ -49,8 +49,10 @@ public class AnswerController {
     }
 
     @PutMapping("/{id}")
-    public String update(@PathVariable long id, Answer updatedAnswer) {
+    public String update(@PathVariable long id, Answer updatedAnswer, HttpSession session) {
         logger.info("answer update");
+        logger.debug("answer = {}",updatedAnswer);
+        updatedAnswer.setUser(HttpSessionUtils.getUserFormSession(session));
         Answer answer = answerRepository.findById(id).orElseThrow(AnswerException::new);
         answer.update(updatedAnswer);
         answerRepository.save(answer);

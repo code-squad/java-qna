@@ -29,13 +29,12 @@ public class SessionAspect {
 
     @Around("questionSession(session, model) || userSession(session, model)")
     public Object checkSession(ProceedingJoinPoint jp, HttpSession session, Model model) throws Throwable {
-        Object[] objects = jp.getArgs();
         Result result = valid(session);
         if (!result.isValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());
             return "user/login";
         }
-        return jp.proceed(objects);
+        return jp.proceed();
     }
 
     private Result valid(HttpSession session) {

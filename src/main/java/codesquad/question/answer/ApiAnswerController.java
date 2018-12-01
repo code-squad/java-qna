@@ -9,10 +9,7 @@ import codesquad.user.UserNotFoundException;
 import codesquad.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -31,8 +28,7 @@ public class ApiAnswerController {
         Result result = valid(session);
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
         if(!result.isValid()) {
-//            throw new IllegalArgumentException(result.getErrorMessage());
-            return result.getErrorMessage();
+            throw new IllegalArgumentException(result.getErrorMessage());
         }
         Answer answer = new Answer(
                 questionRepository.findById(questionId).orElseThrow(() -> new QuestionNotFoundException("해당 질문을 찾을 수 없습니다.")),
@@ -48,5 +44,11 @@ public class ApiAnswerController {
             return Result.fail("로그인이 필요합니다.");
         }
         return Result.ok();
+    }
+
+    @ExceptionHandler(value = IllegalArgumentException.class)
+    public String longException(RuntimeException e, Model model) {
+        model.addAttribute("error", e.getMessage());
+        return e.getMessage();
     }
 }

@@ -30,16 +30,15 @@ public class Answer {
     @Lob
     private String comment;
 
-    private boolean deleted;
+    private boolean deleted = false;
 
     Answer() {
     }
 
-    public Answer(Question question, User user, String comment, boolean deleted) {
+    public Answer(Question question, User user, String comment) {
         this.question = question;
         this.user = user;
         this.comment = comment;
-        this.deleted = deleted;
     }
 
     public long getId() {

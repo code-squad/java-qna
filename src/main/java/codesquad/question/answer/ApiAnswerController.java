@@ -33,8 +33,7 @@ public class ApiAnswerController {
         Answer answer = new Answer(
                 questionRepository.findById(questionId).orElseThrow(() -> new QuestionNotFoundException("해당 질문을 찾을 수 없습니다.")),
                 userRepository.findById(sessionedUser.getId()).orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다.")),
-                comment,
-                false
+                comment
         );
         return answerRepository.save(answer);
     }

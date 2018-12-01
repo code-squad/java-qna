@@ -33,23 +33,6 @@ public class AnswerController {
         return "user/login";
     }
 
-    @PostMapping("/{id}")
-    public String post(@PathVariable long questionId, @PathVariable long id, HttpSession session, String comment, Model model) {
-        Result result = valid(session);
-        if(!result.isValid()) {
-            model.addAttribute("errorMessage", result.getErrorMessage());
-            return "user/login";
-        }
-        Answer answer = new Answer(
-                questionRepository.findById(questionId).orElseThrow(() -> new QuestionNotFoundException("해당 질문을 찾을 수 없습니다.")),
-                userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다.")),
-                comment,
-                false
-        );
-        answerRepository.save(answer);
-        return String.format("redirect:/questions/%s", questionId);
-    }
-
     @DeleteMapping("/{answerId}")
     public String delete(@PathVariable long questionId, @PathVariable long answerId, HttpSession session, Model model) {
         Answer answer = answerRepository.findById(answerId).orElse(null);

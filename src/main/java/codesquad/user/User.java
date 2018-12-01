@@ -1,23 +1,33 @@
 package codesquad.user;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
 @Entity
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @NotBlank
     @Column(nullable = false, unique = true, length = 20)
     private String userId;
+
+    @NotBlank
     @Column(nullable = false, length = 40)
     private String password;
+
+    @NotBlank
     @Column(nullable = false, length = 30)
     private String name;
+
+    @NotBlank
     @Column(nullable = false, length = 30)
     private String email;
 
-    User() {
+    public User() {
     }
 
     public User(long id, String userId, String password, String name, String email) {

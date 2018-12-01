@@ -4,13 +4,10 @@ import codesquad.config.HttpSessionUtils;
 import codesquad.question.answer.Answer;
 import codesquad.user.User;
 import codesquad.utils.TimeFormatter;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;

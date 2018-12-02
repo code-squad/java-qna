@@ -1,14 +1,12 @@
 $(".submit-write button[type=submit]").click(addAnswer);
+$(".delete-answer-form button[type=submit]").click(deleteAnswer);
 
 function addAnswer(e) {
-    console.log("add answer");
     e.preventDefault();
 
     var queryString = $(".submit-write").serialize();
-    console.log("query : "+ queryString);
 
     var url = $(".submit-write").attr("action");
-    console.log("url : " + url);
 
     $.ajax({
         type : 'post',
@@ -16,18 +14,34 @@ function addAnswer(e) {
         data : queryString,
         dataType : 'json',
         error: onError,
-        success : onSuccess,
+        success : onSuccess
     });
+}
+
+function deleteAnswer(e) {
+    e.preventDefault();
+
+    var deleteBtn = $(this).parent();
+    var url = deleteBtn.attr("action");
+    console.log(url);
+
+    $.ajax({
+            type : 'delete',
+            url : url,
+//            data : queryString,
+            dataType : 'json',
+            error: onError,
+            success : deleteBtn.closest('article.article').remove()  // 삭제
+        });
 }
 
 function onError(data, status) {
     alert(data.responseText);
 }
 function onSuccess(data, status) {
-    console.log(data);
     var answerTemplate = $("#answerTemplate").html();
     var template = answerTemplate.format(data.user.id, data.user.name, data.createDate, data.comment, data.question.id, data.id);
-    $(".qna-comment-slipp-articles").append(template); // prepend
+    $(".qna-comment-slipp-articles").append(template);
     $("textarea[name=comment]").val("");
     $(".qna-comment-count strong").html(data.question.notDeletedAnswersSize);
 }

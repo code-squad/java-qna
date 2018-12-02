@@ -25,18 +25,6 @@ public class AnswerController {
     @Autowired
     private AnswerRepository answerRepository;
 
-    @PostMapping("")
-    public String create(@PathVariable long questionId, String contents, Model model, HttpSession session) {
-        if (isValid(model, session, null)) return "/user/login";
-
-        User sessionedUser = SessionUtil.getUserFromSession(session);
-        Question question = questionRepository.findById(questionId).get();
-        Answer answer = Answer.newInstance(sessionedUser, question ,contents);
-        answerRepository.save(answer);
-
-        return "redirect:/questions/{questionId}";
-    }
-
     @DeleteMapping("{id}")
     public String delete(@PathVariable long id, Model model, HttpSession session) {
         Answer answer = answerRepository.findById(id).orElse(null);
@@ -59,9 +47,6 @@ public class AnswerController {
     private Result valid(HttpSession session, Answer answer) {
         if (!SessionUtil.isSessionedUser(session)) {
             return Result.fail("You need login");
-        }
-        if(answer == null) {
-            return Result.success();
         }
         User sessionedUser = SessionUtil.getUserFromSession(session);
         if (!answer.isSameWriter(sessionedUser)) {

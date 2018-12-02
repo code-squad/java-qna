@@ -120,6 +120,7 @@ public class Question {
         this.deleted = deleted;
     }
 
+    @JsonIgnore
     public List<Answer> getAnswers() {
         return answers;
     }
@@ -152,6 +153,7 @@ public class Question {
         return this.writer.equals(sessionedUser);
     }
 
+    @JsonIgnore
     public List<Answer> getNotDeletedAnswers() {
         List<Answer> notDeletedAnswers = new ArrayList<>();
         for (Answer answer : answers) {

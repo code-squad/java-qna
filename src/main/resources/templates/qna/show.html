@@ -89,15 +89,14 @@
                                 </div>
                             </article>
                             {{/notDeletedAnswers}}
-
-                            <form class="submit-write" method="POST" action="/api/questions/{{id}}/answers">
-                                <div class="form-group" style="padding:14px;">
-                                    <textarea class="form-control" placeholder="Update your status" name="contents"></textarea>
-                                </div>
-                                <button class="btn btn-success pull-right" type="submit">답변하기</button>
-                                <div class="clearfix" />
-                            </form>
                         </div>
+                        <form class="answer-write" method="POST" action="/api/questions/{{id}}/answers">
+                            <div class="form-group" style="padding:14px;">
+                                <textarea class="form-control" placeholder="Update your status" name="contents"></textarea>
+                            </div>
+                            <button class="btn btn-success pull-right" type="submit">답변하기</button>
+                            <div class="clearfix" />
+                        </form>
                     </div>
                 </div>
             </div>
@@ -115,18 +114,19 @@
             <div class="article-header-text">
                 <a href="#" class="article-author-name">{0}</a>
                 <div class="article-header-time">{1}</div>
+                <div class="article-header-time">{2}</div>
             </div>
         </div>
         <div class="article-doc comment-doc">
-            {2}
+            {3}
         </div>
         <div class="article-util">
             <ul class="article-util-list">
                 <li>
-                    <a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
+                    <a class="link-modify-article" href="/api/qna/updateAnswer/{4}">수정</a>
                 </li>
                 <li>
-                    <form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
+                    <form class="delete-answer-form" action="/api/questions/{4}/answers/{5}" method="POST">
                         <input type="hidden" name="_method" value="DELETE">
                         <button type="submit" class="delete-answer-button">삭제</button>
                     </form>

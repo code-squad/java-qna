@@ -24,8 +24,8 @@ public class Answer {
 
     @Lob
     private String contents;
-
     private LocalDateTime createDate;
+    private boolean deleted = false;
 
     public Answer() {
     }
@@ -84,8 +84,20 @@ public class Answer {
         return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
     }
 
-    public boolean isSameWriter(User loginUser) {
-        return writer.equals(loginUser);
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public boolean isSameWriter(User otherUser) {
+        return writer.equals(otherUser);
+    }
+
+    public void delete() {
+        this.deleted = true;
     }
 
     @Override

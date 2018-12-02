@@ -2,11 +2,14 @@ package codesquad.qna;
 
 import codesquad.answer.Answer;
 import codesquad.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
 
 @Entity
 public class Question {
@@ -20,15 +23,14 @@ public class Question {
 
     @Column(nullable = false, length = 100)
     private String title;
-
     @Lob
     private String contents;
-
     private LocalDateTime createDate;
+    private boolean deleted;
 
-
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     @OrderBy("id ASC")
+    @JsonIgnore
     private List<Answer> answers;
 
     public Question() {
@@ -81,15 +83,16 @@ public class Question {
         this.answers = answers;
     }
 
-    public boolean isSameWriter(User loginUser) {
-        return this.writer.equals(loginUser);
+    public boolean isDeleted() {
+        return deleted;
     }
 
-    public boolean checkWriter(User loginUser) {
-        if(isSameWriter(loginUser)) {
-            return true;
-        }
-        return false;
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public boolean isSameWriter(User loginUser) {
+        return this.writer.equals(loginUser);
     }
 
     public void update(String title, String contents) {
@@ -98,7 +101,7 @@ public class Question {
     }
 
     public boolean update(Question updateQuestion, User loginUser) {
-        if(checkWriter(loginUser)) {
+        if(isSameWriter(loginUser)) {
             this.title = updateQuestion.title;
             this.contents = updateQuestion.contents;
             return true;
@@ -118,6 +121,10 @@ public class Question {
         return String.valueOf(answers.size());
     }
 
+    public boolean isEmptyAnswers() {
+        return answers.isEmpty();
+    }
+
     @Override
     public String toString() {
         return "Question{" +
@@ -126,5 +133,22 @@ public class Question {
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
                 '}';
+    }
+
+    public boolean delete() {
+        // 비었으면
+        if (answers.isEmpty()) {
+            return true;
+        }
+        for (Answer answer : answers) {
+            if (!answer.isSameWriter(writer)) {
+                return false;
+            }
+        }
+
+        answers.forEach(Answer::delete);
+        deleted = true;
+
+        return true;
     }
 }

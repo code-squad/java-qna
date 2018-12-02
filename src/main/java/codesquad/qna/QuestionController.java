@@ -12,15 +12,28 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
-    private static final Logger logger = LoggerFactory.getLogger(QuestionController.class);
+    private static final Logger logger = getLogger(QuestionController.class);
+
+
     @Autowired
     private QuestionRepository questionRepository;
 
     @GetMapping("")
     public String form(HttpSession session) {
+
+        logger.trace("TRACE MESSAGE");
+        logger.debug("DEBUG MESSAGE");
+        logger.info("INFO MESSAGE");
+        logger.warn("WARN MESSAGE");
+        logger.error("ERROR MESSAGE");
+
+
+
         if(!HttpSessionUtil.isLoginUser(session)) {
             return "/user/login_failed";
         }
@@ -80,7 +93,12 @@ public class QuestionController {
             model.addAttribute("errorMessage", result.getErrorMessage());
             return "/user/login_failed";
         }
+        if (!question.delete()) {
+            model.addAttribute("errorMessage", "작성자가 작성하지 않은 댓글이 있습니다. 삭제가 불가능합니다.");
+            return "/user/login_failed";
+        }
         questionRepository.delete(question);
+
         return "redirect:/";
     }
 

@@ -9,8 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class QnaApplication {
     private static final Logger logger = LoggerFactory.getLogger(QnaApplication.class);
     public static void main(String[] args) {
-        System.out.println("## Logging Library ##");
-        logger.debug("## Logging Library ## ");
         SpringApplication.run(QnaApplication.class, args);
     }
 }

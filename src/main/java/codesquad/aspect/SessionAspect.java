@@ -1,7 +1,7 @@
 package codesquad.aspect;
 
 import codesquad.config.HttpSessionUtils;
-import codesquad.question.Result;
+import codesquad.utils.Result;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;

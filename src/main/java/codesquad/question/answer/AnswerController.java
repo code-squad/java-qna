@@ -1,11 +1,9 @@
 package codesquad.question.answer;
 
 import codesquad.config.HttpSessionUtils;
-import codesquad.question.QuestionNotFoundException;
 import codesquad.question.QuestionRepository;
-import codesquad.question.Result;
+import codesquad.utils.Result;
 import codesquad.user.User;
-import codesquad.user.UserNotFoundException;
 import codesquad.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

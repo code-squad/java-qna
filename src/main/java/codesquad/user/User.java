@@ -1,5 +1,7 @@
 package codesquad.user;
 
+import codesquad.utils.Result;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Objects;
@@ -46,10 +48,6 @@ public class User {
         this.id = id;
     }
 
-    public boolean matchId(long id) {
-        return this.id == id;
-    }
-
     public String getUserId() {
         return userId;
     }
@@ -64,6 +62,10 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean matchPassword(String password) {
+        return this.password.equals(password);
     }
 
     public String getName() {
@@ -82,14 +84,21 @@ public class User {
         this.email = email;
     }
 
-    public void update(User userUpdated) {
-        this.password = userUpdated.password;
-        this.name = userUpdated.name;
-        this.email = userUpdated.email;
+    public Result update(User updatedUser, User sessionedUser) {
+        if(!this.equals(sessionedUser)) {
+            return Result.fail("다른 유저의 정보에 접근할 수 없습니다");
+        }
+        this.password = updatedUser.password;
+        this.name = updatedUser.name;
+        this.email = updatedUser.email;
+        return Result.ok();
     }
 
-    public boolean matchPassword(String password) {
-        return this.password.equals(password);
+    public Result isSameUser(long id) {
+        if (this.id != id) {
+            return Result.fail("다른 유저의 정보에 접근할 수 없습니다");
+        }
+        return Result.ok();
     }
 
     @Override

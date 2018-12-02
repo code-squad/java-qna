@@ -1,4 +1,6 @@
-package codesquad.question;
+package codesquad.utils;
+
+import java.util.Objects;
 
 public class Result {
     private boolean isValid;
@@ -23,5 +25,19 @@ public class Result {
 
     public String getErrorMessage() {
         return this.errorMessage;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Result result = (Result) o;
+        return isValid == result.isValid &&
+                Objects.equals(errorMessage, result.errorMessage);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(isValid, errorMessage);
     }
 }

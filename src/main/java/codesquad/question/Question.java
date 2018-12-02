@@ -38,6 +38,8 @@ public class Question {
     @OrderBy("id ASC")
     private List<Answer> answers;
 
+    private int countOfAnswer;
+
     private Question() {}
 
     private Question(User writer, String title, String contents) {
@@ -48,6 +50,7 @@ public class Question {
         this.createdDate = LocalDateTime.now();
         this.updatedDate = LocalDateTime.now();
         this.deleted = false;
+        this.countOfAnswer = 0;
     }
 
     public static Question newInstance(User writer, String title, String contents) {
@@ -129,6 +132,14 @@ public class Question {
         this.answers = answers;
     }
 
+    public int getCountOfAnswer() {
+        return countOfAnswer;
+    }
+
+    public void setCountOfAnswer(int countOfAnswer) {
+        this.countOfAnswer = countOfAnswer;
+    }
+
     void update(Question updatedQuestion) {
         this.setTitle(updatedQuestion.getTitle());
         this.setContents(updatedQuestion.getContents());
@@ -163,13 +174,12 @@ public class Question {
         return notDeletedAnswers;
     }
 
-    public int getSizeOfAnswer() {
-        List<Answer> notDeletedAnswers = new ArrayList<>();
-        for (Answer answer : answers) {
-            if(!answer.isDeleted()) notDeletedAnswers.add(answer);
-        }
+    public void addAnswer() {
+        this.countOfAnswer += 1;
+    }
 
-        return notDeletedAnswers.size();
+    public void deletedAnswer() {
+        this.countOfAnswer -= 1;
     }
 
     @Override

@@ -48,6 +48,9 @@ public class AnswerController {
         if (!SessionUtil.isSessionedUser(session)) {
             return Result.fail("You need login");
         }
+        if(answer == null) {
+            return Result.success();
+        }
         User sessionedUser = SessionUtil.getUserFromSession(session);
         if (!answer.isSameWriter(sessionedUser)) {
             return Result.fail("You can't edit the other user's answer");

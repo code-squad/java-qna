@@ -7,10 +7,7 @@ import codesquad.user.User;
 import codesquad.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -25,29 +22,35 @@ public class ApiAnswerController {
 
     @PostMapping("")
     public Answer create(@PathVariable long questionId, String contents, Model model, HttpSession session) {
-        if (isValid(model, session)) return null;
-        // issue : result를 사용한 채로, null이 아닌 로그인 페이지로 어떻게 이동할 것인가?
+        if (!SessionUtil.isSessionedUser(session)) {
+            return null;
+        }
 
         User sessionedUser = SessionUtil.getUserFromSession(session);
         Question question = questionRepository.findById(questionId).get();
         Answer answer = Answer.newInstance(sessionedUser, question, contents);
-
+        question.addAnswer();
         return answerRepository.save(answer);
     }
 
-    private boolean isValid(Model model, HttpSession session) {
-        Result result = valid(session);
-        if (!result.isValid()) {
-            model.addAttribute("errorMessage", result.getErrorMessage());
-            return true;
-        }
-        return false;
-    }
-
-    private Result valid(HttpSession session) {
+    @DeleteMapping("{id}")
+    public Result delete(@PathVariable long questionId, @PathVariable long id, HttpSession session) {
         if (!SessionUtil.isSessionedUser(session)) {
             return Result.fail("You need login");
         }
+
+        Answer answer = answerRepository.findById(id).orElse(null);
+        User sessionedUser = SessionUtil.getUserFromSession(session);
+        if (!answer.isSameWriter(sessionedUser)) {
+            return Result.fail("You can't edit the other user's answer");
+        }
+
+        answer.delete();
+        answerRepository.save(answer);
+
+        Question question = questionRepository.findById(questionId).get();
+        question.deletedAnswer();
+        questionRepository.save(question);
 
         return Result.success();
     }

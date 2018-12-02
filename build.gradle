@@ -33,4 +33,7 @@ dependencies {
     testCompile('org.assertj:assertj-core:3.10.0')
     testCompile('org.apache.httpcomponents:httpclient:4.5.6')
     compile('org.springframework.boot:spring-boot-devtools')
+
+    compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.5.0'
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.5.0'
 }

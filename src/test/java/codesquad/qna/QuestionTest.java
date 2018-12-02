@@ -15,7 +15,7 @@ public class QuestionTest {
         User user = new User();
         Question q = new Question(user, "title", "contents");
 
-        logger.debug("now? {}", q.getCreateDate());
+//        logger.debug("now? {}", q.getCreateDate());
         logger.debug("now formatted? {}", q.getFormattedCreateDate());
     }
 

@@ -1,39 +1,40 @@
 package codesquad.qna;
 
+import codesquad.domain.AbstractEntity;
 import codesquad.answer.Answer;
 import codesquad.exception.UserIdNotMatchException;
 import codesquad.user.User;
 import codesquad.util.RegexParser;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
-public class Question {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+public class Question extends AbstractEntity {
 
     @ManyToOne
+    @JsonProperty
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_user"))
     private User user;
 
+    @JsonProperty
     private String title;
 
     @Lob
+    @JsonProperty
     @Column(nullable = false)
     private String contents;
 
-    private LocalDateTime createDate;
-
+    @JsonProperty
     private boolean deleted = false;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @OrderBy("id ASC")
+    @OrderBy("id DESC")
     private List<Answer> answers = new ArrayList<>();
 
     public Question() {
@@ -43,15 +44,6 @@ public class Question {
         this.user = user;
         this.title = title;
         this.contents = contents;
-        this.createDate = LocalDateTime.now();
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public User getUser() {
@@ -82,25 +74,12 @@ public class Question {
         this.contents = contents;
     }
 
-    public LocalDateTime getCreateDate() {
-        return createDate;
-    }
-
-    public String getFormattedCreateDate() {
-        if (createDate == null) return "";
-        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
-    }
-
     public boolean isDeleted() {
         return deleted;
     }
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
-    }
-
-    public void setCreateDate(LocalDateTime createDate) {
-        this.createDate = createDate;
     }
 
     public List<Answer> getAnswers() {
@@ -115,6 +94,7 @@ public class Question {
         return getAliveAnswers().size();
     }
 
+    @JsonIgnore
     public List<Answer> getAliveAnswers() {
         return this.answers.stream().filter(a -> !a.isDeleted()).collect(Collectors.toList());
     }
@@ -132,7 +112,7 @@ public class Question {
         if (!user.equals(deleteUser)) return false;
 
         for (Answer answer : answers) {
-            if(!answer.deletedState(deleteUser))
+            if (!answer.deletedState(deleteUser))
                 return false;
         }
 

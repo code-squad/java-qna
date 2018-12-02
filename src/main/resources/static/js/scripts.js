@@ -1,5 +1,5 @@
-$(".submit-write button[type=submit]").click(addAnswer);
-$(".delete-answer-form button[type=submit]").click(deleteAnswer);
+$(".submit-write button[type=submit]").on("click", addAnswer);
+$(".qna-comment-slipp-articles").on("click", ".delete-answer-form button[type=submit]", deleteAnswer);
 
 function addAnswer(e) {
     e.preventDefault();
@@ -23,20 +23,24 @@ function deleteAnswer(e) {
 
     var deleteBtn = $(this).parent();
     var url = deleteBtn.attr("action");
-    console.log(url);
 
     $.ajax({
             type : 'delete',
             url : url,
-//            data : queryString,
             dataType : 'json',
             error: onError,
-            success : deleteBtn.closest('article.article').remove()  // 삭제
+            success : function test(data, status) {
+                          deleteBtn.closest('article').remove();  // 삭제
+                          var answerSize = $(".qna-comment-count strong");
+                          var beforeValue = parseInt(answerSize.html());
+                          answerSize.html(beforeValue - 1);
+
+                     }
         });
 }
 
 function onError(data, status) {
-    alert(data.responseText);
+    alert(data.responseJSON.errorMessage);
 }
 function onSuccess(data, status) {
     var answerTemplate = $("#answerTemplate").html();

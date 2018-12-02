@@ -2,6 +2,7 @@ package codesquad.question.answer;
 
 import codesquad.question.Question;
 import codesquad.user.User;
+import codesquad.utils.Result;
 import codesquad.utils.TimeFormatter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SQLDelete;
@@ -94,7 +95,14 @@ public class Answer {
     }
 
     public void deleted() {
-        deleted = true;
+        this.deleted = true;
+    }
+
+    public Result deleted(User sessionedUser) {
+        if(sessionedUser == null) return Result.fail("로그인이 필요합니다.");
+        if(!this.user.equals(sessionedUser)) return Result.fail("다른 사람의 글을 수정 또는 삭제할 수 없습니다.");
+        this.deleted = true;
+        return Result.ok();
     }
 
     @Override

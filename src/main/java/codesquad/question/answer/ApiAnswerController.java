@@ -8,6 +8,8 @@ import codesquad.user.User;
 import codesquad.user.UserNotFoundException;
 import codesquad.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,18 +26,30 @@ public class ApiAnswerController {
     private AnswerRepository answerRepository;
 
     @PostMapping("")
-    public Object post(@PathVariable long questionId, HttpSession session, String comment) {
+    public ResponseEntity post(@PathVariable long questionId, HttpSession session, String comment) {
         Result result = valid(session);
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
         if(!result.isValid()) {
-            throw new IllegalArgumentException(result.getErrorMessage());
+            return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
         }
         Answer answer = new Answer(
                 questionRepository.findById(questionId).orElseThrow(() -> new QuestionNotFoundException("해당 질문을 찾을 수 없습니다.")),
                 userRepository.findById(sessionedUser.getId()).orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다.")),
                 comment
         );
-        return answerRepository.save(answer);
+        return new ResponseEntity<>(answerRepository.save(answer), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{answerId}")
+    public ResponseEntity delete(HttpSession session, Model model, @PathVariable long questionId, @PathVariable long answerId) {
+        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+        Answer answer = answerRepository.findById(answerId).orElseThrow(() -> new AnswerNotFoundException("해당 답변을 찾을 수 없습니다."));
+        Result result = answer.deleted(sessionedUser);
+        if(!result.isValid()) {
+            return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+        }
+        answerRepository.save(answer);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     private Result valid(HttpSession session) {
@@ -45,9 +59,9 @@ public class ApiAnswerController {
         return Result.ok();
     }
 
-    @ExceptionHandler(value = IllegalArgumentException.class)
-    public String longException(RuntimeException e, Model model) {
-        model.addAttribute("error", e.getMessage());
-        return e.getMessage();
+    @ExceptionHandler(value = {QuestionNotFoundException.class, UserNotFoundException.class})
+    public ResponseEntity exceptionHandler(RuntimeException e) {
+        Result result = new Result(false, e.getMessage());
+        return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
     }
 }

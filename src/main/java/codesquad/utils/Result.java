@@ -6,7 +6,7 @@ public class Result {
     private boolean isValid;
     private String errorMessage;
 
-    private Result(boolean isValid, String errorMessage) {
+    public Result(boolean isValid, String errorMessage) {
         this.isValid = isValid;
         this.errorMessage = errorMessage;
     }

@@ -1,5 +1,5 @@
-$(".answer-write button[type=submit]").click(addAnswer);
-$(".link-delete-article").click(deleteAnswer);
+$(".answer-write button[type=submit]").on("click", addAnswer);
+$(".qna-comment-slipp-articles").on("click", "a.link-delete-article", deleteAnswer);
 
 function addAnswer(e) {
     e.preventDefault();
@@ -14,8 +14,8 @@ function addAnswer(e) {
         error: onError,
         success : function (data, status) {
             var answerTemplate = $("#answerTemplate").html();
-            var template = answerTemplate.format(data.writer.userId, data.formattedCreatedDate, data.formattedUpdatedDate, data.contents, data.question.id, data.id);
-            $(".qna-comment-slipp-articles").append(template); //prepend는 맨위에 붙음
+            var template = answerTemplate.format(data.writer.userId, data.formattedCreatedDate, data.formattedModifiedDate, data.contents, data.question.id, data.id);
+            $(".qna-comment-slipp-articles").append(template);
             $(".answer-write textarea[name=contents]").val("");
         }
     });

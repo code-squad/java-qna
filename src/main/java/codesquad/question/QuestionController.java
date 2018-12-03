@@ -1,21 +1,23 @@
 package codesquad.question;
 
-import codesquad.answer.Answer;
 import codesquad.answer.AnswerRepository;
 import codesquad.exception.Result;
 import codesquad.user.User;
 import codesquad.util.SessionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
+    private static final Logger log = LoggerFactory.getLogger(QuestionController.class);
+    
     @Autowired
     private QuestionRepository questionRepository;
 
@@ -24,16 +26,20 @@ public class QuestionController {
 
     @GetMapping("/form")
     public String form(Model model, HttpSession session) {
-        if (isValid(model, session, null)) return "/user/login";
+        Result resultOfSessioned = valid(session);
+        if (isValid(model, resultOfSessioned)) return "/user/login";
+
         return "/qna/form";
     }
 
     @PostMapping("")
     public String create(String title, String contents, Model model, HttpSession session) {
-        if (isValid(model, session, null)) return "/user/login";
+        Result resultOfSessioned = valid(session);
+        if (isValid(model, resultOfSessioned)) return "/user/login";
 
         User sessionedUser = SessionUtil.getUserFromSession(session);
         Question newQuestion = Question.newInstance(sessionedUser, title, contents);
+        log.debug("newQuestion : {}", newQuestion);
         questionRepository.save(newQuestion);
 
         return "redirect:/";
@@ -41,16 +47,15 @@ public class QuestionController {
 
     @GetMapping("")
     public String list(Model model) {
+        log.info("list");
         model.addAttribute("questions", questionRepository.findByDeleted(false));
+
         return "/index";
     }
 
     @GetMapping("/{id}")
     public String show(@PathVariable long id, Model model) {
-        List<Answer> answers = answerRepository.findByQuestionIdAndDeleted(id, false);
-
-        model.addAttribute("answers", answers);
-        model.addAttribute("answersSize", answers.size());
+        log.info("show");
         model.addAttribute("question", questionRepository.findById(id).get());
 
         return "/qna/show";
@@ -58,8 +63,8 @@ public class QuestionController {
 
     @GetMapping("{id}/form")
     public String updateForm(@PathVariable long id, Model model, HttpSession session) {
-        Question question = questionRepository.findById(id).orElse(null);
-        if (isValid(model, session, question)) return "/user/login";
+        Result resultOfSessioned = valid(session);
+        if (isValid(model, resultOfSessioned)) return "/user/login";
 
         model.addAttribute("question", questionRepository.findById(id).get());
 
@@ -69,9 +74,13 @@ public class QuestionController {
     @PutMapping("{id}")
     public String update(@PathVariable long id, Model model, Question updatedQuestion, HttpSession session) {
         Question question = questionRepository.findById(id).orElse(null);
-        if (isValid(model, session, question)) return "/user/login";
+        Result resultOfSessioned = valid(session);
+        if (isValid(model, resultOfSessioned)) return "/user/login";
 
-        question.update(updatedQuestion);
+        User sessionedUser = SessionUtil.getUserFromSession(session);
+        Result result = question.update(updatedQuestion, sessionedUser);
+        if (isValid(model, result)) return "/user/login";
+
         questionRepository.save(question);
 
         return "redirect:/questions/{id}";
@@ -80,22 +89,20 @@ public class QuestionController {
     @DeleteMapping("/{id}")
     public String delete(@PathVariable long id, Model model, HttpSession session) {
         Question question = questionRepository.findById(id).orElse(null);
-        if (isValid(model, session, question)) return "/user/login";
+        Result resultOfSessioned = valid(session);
+        if (isValid(model, resultOfSessioned)) return "/user/login";
 
-        List<Answer> answers = answerRepository.findByQuestionIdAndDeleted(id, false);
-
-        model.addAttribute("answers", answers);
-        model.addAttribute("answersSize", answers.size());
         model.addAttribute("question", questionRepository.findById(id).get());
-        if (isdeleteValid(model, question)) return "/qna/show";
+        User sessionedUser = SessionUtil.getUserFromSession(session);
+        Result result = question.delete(sessionedUser);
+        if (isValid(model, result)) return "/qna/show";
 
         questionRepository.save(question);
 
         return "redirect:/questions";
     }
 
-    private boolean isValid(Model model, HttpSession session, Question question) {
-        Result result = valid(session, question);
+    private boolean isValid(Model model, Result result) {
         if (!result.isValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());
             return true;
@@ -103,28 +110,10 @@ public class QuestionController {
         return false;
     }
 
-    private Result valid(HttpSession session, Question question) {
+    private Result valid(HttpSession session) {
         if (!SessionUtil.isSessionedUser(session)) {
             return Result.fail("You need login");
         }
-        if(question == null) {
-            return Result.success();
-        }
-        User sessionedUser = SessionUtil.getUserFromSession(session);
-        if (!question.isSameWriter(sessionedUser)) {
-            return Result.fail("You can't edit the other user's question");
-        }
-
         return Result.success();
-    }
-
-    private boolean isdeleteValid(Model model, Question question) {
-        Result result = question.delete();
-        if (!result.isValid()) {
-            model.addAttribute("errorMessage", result.getErrorMessage());
-            return true;
-        }
-
-        return false;
     }
 }

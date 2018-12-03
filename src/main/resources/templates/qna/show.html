@@ -25,7 +25,7 @@
                                 <i class="icon-link"></i>
                             </a>
                             <a href="#" class="article-header-time" title="퍼머링크2">
-                                {{formattedUpdatedDate}}
+                                {{formattedModifiedDate}}
                                 <i class="icon-link"></i>
                             </a>
                         </div>
@@ -50,13 +50,12 @@
                         </ul>
                     </div>
                 </article>
-                {{/question}}
 
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
-                        <p class="qna-comment-count"><strong>{{answersSize}}</strong>개의 의견</p>
+                        <p class="qna-comment-count"><strong>{{countOfAnswer}}</strong>개의 의견</p>
                         <div class="qna-comment-slipp-articles">
-                            {{#answers}}
+                            {{#notDeletedAnswers}}
                             <article class="article" id="answer-1405">
                                 <div class="article-header">
                                     <div class="article-header-thumb">
@@ -68,7 +67,7 @@
                                             {{formattedCreatedDate}}
                                         </a>
                                         <a href="#answer-1434" class="article-header-time" title="퍼머링크">
-                                            {{formattedUpdatedDate}}
+                                            {{formattedModifiedDate}}
                                         </a>
                                     </div>
                                 </div>
@@ -81,27 +80,24 @@
                                             <a class="link-modify-article" href="/questions/413/answers/1405/form">수정</a>
                                         </li>
                                         <li>
-                                            <form class="delete-answer-form" action="/questions/{{question.id}}/answers/{{id}}" method="POST">
-                                                <input type="hidden" name="_method" value="DELETE">
-                                                <button type="submit" class="delete-answer-button">삭제</button>
-                                            </form>
+                                            <a class="link-delete-article" href="/api/questions/{{question.id}}/answers/{{id}}">삭제</a>
                                         </li>
                                     </ul>
                                 </div>
                             </article>
-                            {{/answers}}
-
-                            <form class="submit-write" method="POST" action="/questions/{{id}}/answers">
-                                <div class="form-group" style="padding:14px;">
-                                    <textarea class="form-control" placeholder="Update your status" name="contents"></textarea>
-                                </div>
-                                <button class="btn btn-success pull-right" type="submit">답변하기</button>
-                                <div class="clearfix" />
-                            </form>
+                            {{/notDeletedAnswers}}
                         </div>
+                        <form class="answer-write" method="POST" action="/api/questions/{{id}}/answers">
+                            <div class="form-group" style="padding:14px;">
+                                <textarea class="form-control" placeholder="Update your status" name="contents"></textarea>
+                            </div>
+                            <button class="btn btn-success pull-right" type="submit">답변하기</button>
+                            <div class="clearfix" />
+                        </form>
                     </div>
                 </div>
             </div>
+            {{/question}}
         </div>
     </div>
 </div>
@@ -115,21 +111,19 @@
             <div class="article-header-text">
                 <a href="#" class="article-author-name">{0}</a>
                 <div class="article-header-time">{1}</div>
+                <div class="article-header-time">{2}</div>
             </div>
         </div>
         <div class="article-doc comment-doc">
-            {2}
+            {3}
         </div>
         <div class="article-util">
             <ul class="article-util-list">
                 <li>
-                    <a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
+                    <a class="link-modify-article" href="/api/qna/updateAnswer/{4}">수정</a>
                 </li>
                 <li>
-                    <form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
-                        <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit" class="delete-answer-button">삭제</button>
-                    </form>
+                    <a class="link-delete-article" href="/api/questions/{4}/answers/{5}">삭제</a>
                 </li>
             </ul>
         </div>

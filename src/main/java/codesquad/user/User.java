@@ -1,14 +1,10 @@
 package codesquad.user;
 
+import codesquad.AbstractEntity;
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
+public class User extends AbstractEntity {
     @Column(nullable=false, length=20, unique=true)
     private String userId;
 
@@ -20,14 +16,6 @@ public class User {
 
     @Column(nullable=false, length=50)
     private String email;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getUserId() {
         return userId;
@@ -68,7 +56,7 @@ public class User {
     }
 
     boolean matchId(long id) {
-        return this.id == id;
+        return this.getId() == id;
     }
 
     public boolean matchUserId(String userId) {
@@ -80,15 +68,13 @@ public class User {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return id == user.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
+    public String toString() {
+        return "User{" +
+                super.toString() +
+                "userId='" + userId + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

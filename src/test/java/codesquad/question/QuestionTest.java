@@ -26,9 +26,9 @@ public class QuestionTest {
         user1 = new User(27, "brad903", "1234", "브래드", "brad903@naver.com");
         user2 = new User(28, "brad903", "1234", "브래드", "brad903@naver.com");
         question1 = new Question(1, "aaa", "bbb", user1);
-        answer1 = new Answer(question1, user1, "aaa", false);
-        answer2 = new Answer(question1, user1, "aaa", false);
-        answer3 = new Answer(question1, user2, "aaa", false);
+        answer1 = new Answer(question1, user1, "aaa");
+        answer2 = new Answer(question1, user1, "aaa");
+        answer3 = new Answer(question1, user2, "aaa");
     }
 
     @Test
@@ -78,8 +78,8 @@ public class QuestionTest {
 
     @Test
     public void 답변_삭제안된것만_가져오기_다삭제안될었을때() {
-        Answer answer4 = new Answer(question1, user2, "aaa", false);
-        Answer answer5 = new Answer(question1, user2, "aaa", false);
+        Answer answer4 = new Answer(question1, user2, "aaa");
+        Answer answer5 = new Answer(question1, user2, "aaa");
         answers = new ArrayList<>(Arrays.asList(answer1, answer2, answer3, answer4, answer5));
         question1.setAnswers(answers);
         assertThat(question1.getNotDeletedAnswers()).isEqualTo(answers);
@@ -87,9 +87,11 @@ public class QuestionTest {
 
     @Test
     public void 답변_삭제안된것만_가져오기_삭제된것있을때() {
-        Answer answer4 = new Answer(question1, user2, "aaa", true);
-        Answer answer5 = new Answer(question1, user2, "aaa", true);
+        Answer answer4 = new Answer(question1, user2, "aaa");
+        Answer answer5 = new Answer(question1, user2, "aaa");
         answers = new ArrayList<>(Arrays.asList(answer1, answer2, answer3, answer4, answer5));
+        answer4.setDeleted(true);
+        answer5.setDeleted(true);
         question1.setAnswers(answers);
         List<Answer> newAnswers = new ArrayList<>(Arrays.asList(answer1, answer2, answer3));
         assertThat(question1.getNotDeletedAnswers()).isEqualTo(newAnswers);

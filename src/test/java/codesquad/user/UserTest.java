@@ -1,5 +1,6 @@
 package codesquad.user;
 
+import codesquad.utils.Result;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,15 +20,21 @@ public class UserTest {
 
     @Test
     public void 사용자정보_업데이트() {
-        user1.update(user2);
+        user1.update(user2, user1);
         assertThat(user1.getEmail()).isEqualTo(user2.getEmail());
         assertThat(user1.getName()).isEqualTo(user2.getName());
         assertThat(user1.getId()).isEqualTo(user1.getId());
     }
 
     @Test
+    public void 세션유저와_유저와_같지않을때() {
+        Result result = user1.update(user2, user3);
+        assertThat(result.isValid()).isEqualTo(false);
+    }
+
+    @Test
     public void matchId() {
-        assertThat(user1.matchId(25)).isEqualTo(true);
+        assertThat(user2.isSameUser(27)).isEqualTo(Result.ok());
     }
 
     @Test

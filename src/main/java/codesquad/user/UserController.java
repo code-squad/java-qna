@@ -1,6 +1,9 @@
 package codesquad.user;
 
+import codesquad.aspect.SessionCheck;
 import codesquad.config.HttpSessionUtils;
+import codesquad.utils.Result;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,9 +12,13 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 @Controller
 @RequestMapping("/users")
 public class UserController {
+    private static final Logger log = getLogger(UserController.class);
+
     @Autowired
     private UserRepository userRepository;
 
@@ -35,21 +42,25 @@ public class UserController {
     }
 
     @GetMapping("/{id}/form")
-    public String showUserInfo(@PathVariable long id, Model model, HttpSession session) {
-        String validResult = sessionValidCheck(id, session);
-        if (validResult != null) return validResult;
-
+    public String showUserInfo(@SessionCheck HttpSession session, Model model, @PathVariable long id) {
+        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+        Result result = sessionedUser.isSameUser(id);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return "user/login";
+        }
         model.addAttribute("user", getUser(id));
         return "user/updateForm";
     }
 
     @PutMapping("/{id}")
-    public String updateUserInfo(@PathVariable long id, User updatedUser, HttpSession session) throws UserNotFoundException {
-        String validResult = sessionValidCheck(id, session);
-        if (validResult != null) return validResult;
-
+    public String updateUserInfo(@SessionCheck HttpSession session, Model model, @PathVariable long id, User updatedUser) {
         User user = getUser(id);
-        user.update(updatedUser);
+        Result result = user.update(updatedUser, HttpSessionUtils.getUserFromSession(session));
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return "user/login";
+        }
         userRepository.save(user);
         return "redirect:/users";
     }
@@ -72,17 +83,6 @@ public class UserController {
     public String logout(HttpSession session) {
         session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
         return "redirect:/";
-    }
-
-    private String sessionValidCheck(@PathVariable long id, HttpSession session) {
-        if (!HttpSessionUtils.isLogin(session)) {
-            return "redirect:/user/login";
-        }
-        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-        if (!sessionedUser.matchId(id)) {
-            return "common/wrongApproach";
-        }
-        return null;
     }
 
     private User getUser(@PathVariable long id) {

@@ -72,7 +72,8 @@
                                                href="/users/{{user.id}}">수정</a>
                                         </li>
                                         <li>
-                                            <form class="delete-answer-form" action="/questions/{{question.id}}/answers/{{id}}"
+                                            <form class="delete-answer-form"
+                                                  action="/api/questions/{{question.id}}/answers/{{id}}"
                                                   method="POST">
                                                 <input type="hidden" name="_method" value="DELETE">
                                                 <button type="submit" class="delete-answer-button">삭제</button>
@@ -83,16 +84,17 @@
                             </article>
                             {{/notDeletedAnswers}}
 
+                        </div>
                             <!--답변 다는 공간-->
-                            <form class="submit-write" method="post" action="/questions/{{id}}/answers/{{loginUser.id}}">
+                            <form class="submit-write" method="post"
+                                  action="/api/questions/{{id}}/answers">
                                 <div class="form-group" style="padding:14px;">
-                                    <textarea class="form-control" id="comment" name="comment" placeholder="Update your status"></textarea>
+                                    <textarea class="form-control" id="comment" name="comment"
+                                              placeholder="Update your status"></textarea>
                                 </div>
                                 <button class="btn btn-success pull-right" type="submit">답변하기</button>
                                 <div class="clearfix"/>
                             </form>
-
-                        </div>
                     </div>
                 </div>
             </div>
@@ -105,23 +107,26 @@
     <article class="article">
         <div class="article-header">
             <div class="article-header-thumb">
-                <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
+                <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb"
+                     alt="">
             </div>
             <div class="article-header-text">
-                <a href="#" class="article-author-name">{0}</a>
-                <div class="article-header-createDate">{1}</div>
+                <a href="/users/{0}" class="article-author-name">{1}</a>
+                <a href="#">
+                    <div class="article-header-createDate">{2}</div>
+                </a>
             </div>
         </div>
         <div class="article-doc comment-doc">
-            {2}
+            {3}
         </div>
         <div class="article-util">
             <ul class="article-util-list">
                 <li>
-                    <a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
+                    <a class="link-modify-article" href="/api/qna/updateAnswer/{4}">수정</a>
                 </li>
                 <li>
-                    <form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
+                    <form class="delete-answer-form" action="/api/questions/{4}/answers/{5}" method="POST">
                         <input type="hidden" name="_method" value="DELETE">
                         <button type="submit" class="delete-answer-button">삭제</button>
                     </form>
@@ -129,6 +134,9 @@
             </ul>
         </div>
     </article>
+    </div>
+    </div>
+    </div>
 </script>
 {{/partial}}
 

@@ -1,13 +1,13 @@
 package codesquad.question;
 
-import codesquad.config.HttpSessionUtils;
 import codesquad.question.answer.Answer;
 import codesquad.user.User;
+import codesquad.utils.Result;
 import codesquad.utils.TimeFormatter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -98,10 +98,12 @@ public class Question {
         this.createDate = createDate;
     }
 
+    @JsonIgnore
     public List<Answer> getAnswers() {
         return answers;
     }
 
+    @JsonIgnore
     public List<Answer> getNotDeletedAnswers() {
         return answers.stream()
                 .filter(answer -> !answer.isDeleted())
@@ -122,10 +124,10 @@ public class Question {
         return deleted;
     }
 
-    Result deleted(HttpSession session) {
-        Result result = valid(session);
-        if(!result.isValid()) return result;
-        if(!canDeleteAnswer()) {
+    Result deleted(User sessionedUser) {
+        Result result = valid(sessionedUser);
+        if (!result.isValid()) return result;
+        if (!canDeleteAnswer()) {
             return Result.fail("다른 유저의 답변이 있어 질문을 삭제할 수 없습니다");
         }
         this.deleted = true;
@@ -150,19 +152,15 @@ public class Question {
         this.deleted = deleted;
     }
 
-    Result update(Question updatedQuestion, HttpSession session) {
-        Result result = valid(session);
-        if(!result.isValid()) return result;
+    Result update(Question updatedQuestion, User sessionedUser) {
+        Result result = valid(sessionedUser);
+        if (!result.isValid()) return result;
         this.title = updatedQuestion.title;
         this.contents = updatedQuestion.contents;
         return Result.ok();
     }
 
-    Result valid(HttpSession session) {
-        if (!HttpSessionUtils.isLogin(session)) {
-            return Result.fail("로그인이 필요합니다.");
-        }
-        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+    Result valid(User sessionedUser) {
         if (!isSameUser(sessionedUser)) {
             return Result.fail("다른 사람의 글을 수정 또는 삭제할 수 없습니다.");
         }

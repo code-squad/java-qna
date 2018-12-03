@@ -27,7 +27,6 @@ public class ApiAnswerController {
         User loginUser = HttpSessionUtils.getLoginUserFromSession(session);
         Question theQuestion = questionRepository.findById(questionId).orElse(null);
         Answer theAnswer = new Answer(loginUser, theQuestion, contents);
-        System.out.println("hello World");
         return answerRepository.save(theAnswer);
     }
 
@@ -57,17 +56,17 @@ public class ApiAnswerController {
 //        return "redirect:..";
 //    }
 //
-//    @DeleteMapping("{id}")
-//    public String deleteAnswer(@PathVariable long id, HttpSession session, Model model){
-//        if(!HttpSessionUtils.existLoginUserFromSession(session)) return "redirect:/user/login";
-//        Answer answer = answerRepository.findById(id).orElse(null);
-//        try{
-//            answer.delete(HttpSessionUtils.getLoginUserFromSession(session));
-//        } catch (IllegalStateException e){
-//            model.addAttribute("errorMessage", e.getMessage());
-//            return "qna/modify_failed";
-//        }
-//        answerRepository.save(answer);
-//        return "redirect:..";
-//    }
+    @DeleteMapping("{id}")
+    public Boolean deleteAnswer(@PathVariable long id, HttpSession session, Model model){
+        if(!HttpSessionUtils.existLoginUserFromSession(session)) return new Boolean(false);
+        Answer answer = answerRepository.findById(id).orElse(null);
+        try{
+            answer.delete(HttpSessionUtils.getLoginUserFromSession(session));
+        } catch (IllegalStateException e){
+            model.addAttribute("errorMessage", e.getMessage());
+            return new Boolean(false);
+        }
+        answerRepository.save(answer);
+        return new Boolean(true);
+    }
 }

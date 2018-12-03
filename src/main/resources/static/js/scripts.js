@@ -1,4 +1,4 @@
-$(".submit-write button[type=submit]").click(addAnswer);
+$(".submit-write button[type='submit']").on("click", addAnswer);
 
 function addAnswer(e){
     e.preventDefault();
@@ -13,25 +13,56 @@ function addAnswer(e){
         url : url,
         data : queryString,
         dataType : 'json',
-        error: onError,
-        success : onSuccess,
+        error: function() {
+            console.log("hello Error");
+        },
+        success : function(data) {
+            console.log(data);
+            var answerTemplate = $("#answerTemplate").html();
+            var template = answerTemplate.format(data.writer.name, data.formattedCurDate, data.contents, data.question.id, data.id, data.writer.id);
+
+            $("#appendAnswerData").append(template);
+            $("textarea[name=contents]").val("");
+
+            console.log("hello Success");
+        }
     });
 }
 
-function onError(){
-    console.log("hello Error");
+$(".qna-comment-slipp-articles").on("click", ".delete-answer-form button[type='submit']", deleteAnswer);
+
+function deleteAnswer(e){
+    e.preventDefault();
+    console.log("hello world")
+
+
+    var deleteButton = $(this);
+    console.log("deleteButton : " + deleteButton);
+
+    var url = deleteButton.parent().attr("action");
+    console.log(deleteButton.parent().attr("action"));
+
+    $.ajax({
+        type : 'delete',
+        url : url,
+        dataType : 'json',
+        error : function(){
+            console.log("hello error");
+        },
+        success : function(data){
+            console.log("data : " + data);
+            if(data === true){
+                deleteButton.closest("article").remove();
+                console.log("complete");
+            }
+            else {
+                alert("permission denied.");
+            }
+        }
+    });
 }
 
-function onSuccess(data){
-    console.log(data);
-    var answerTemplate = $("#answerTemplate").html();
-    var template = answerTemplate.format(data.writer.name, data.formattedCurDate, data.contents, data.question.id, data.id);
 
-    $("#appendAnswerData").append(template);
-    $("textarea[name=contents]").val("");
-
-    console.log("hello Success");
-}
 
 String.prototype.format = function() {
   var args = arguments;

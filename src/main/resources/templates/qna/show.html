@@ -67,7 +67,7 @@
                                           <a class="link-modify-article" href="/questions/{{question.id}}/answers/{{id}}/form">수정</a>
                                       </li>
                                       <li>
-                                          <form class="delete-answer-form" action="/questions/{{question.id}}/answers/{{id}}" method="POST">
+                                          <form class="delete-answer-form" action="/api/questions/{{question.id}}/answers/{{id}}" method="POST">
                                               <input type="hidden" name="_method" value="DELETE">
                                               <button type="submit" class="delete-answer-button">삭제</button>
                                           </form>
@@ -100,7 +100,7 @@
                 <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
             </div>
             <div class="article-header-text">
-                <a href="#" class="article-author-name">{0}</a>
+                <a href="/users/{5}" class="article-author-name">{0}</a>
                 <div class="article-header-time">{1}</div>
             </div>
         </div>
@@ -115,7 +115,7 @@
                 <li>
                     <form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
                         <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit" class="delete-answer-button">삭제</button>
+                        <button type="submit" class="delete-answer-button" >삭제</button>
                     </form>
                 </li>
             </ul>

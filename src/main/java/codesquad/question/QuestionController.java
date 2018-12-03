@@ -112,16 +112,16 @@ public class QuestionController {
         return "redirect:/error";
     }
 
-    @DeleteMapping("/{questionId}/answers/{answerId}")
-    @LoginCheck
-    public String insertAnswer(HttpSession session, @PathVariable long questionId, @PathVariable long answerId) {
-        Optional<Answer> maybeAnswer = answerRepository.findById(answerId);
-        User user = (User) session.getAttribute(User.SESSION_NAME);
-        if (maybeAnswer.isPresent() && maybeAnswer.get().isSameWriter(user)) {
-            answerRepository.deleteById(answerId);
-            return "redirect:/questions/" + questionId;
-        }
-        return "/error?insertAnswer";
-    }
+//    @DeleteMapping("/{questionId}/answers/{answerId}")
+//    @LoginCheck
+//    public String insertAnswer(HttpSession session, @PathVariable long questionId, @PathVariable long answerId) {
+//        Optional<Answer> maybeAnswer = answerRepository.findById(answerId);
+//        User user = (User) session.getAttribute(User.SESSION_NAME);
+//        if (maybeAnswer.isPresent() && maybeAnswer.get().isSameWriter(user)) {
+//            answerRepository.deleteById(answerId);
+//            return "redirect:/questions/" + questionId;
+//        }
+//        return "/error?insertAnswer";
+//    }
 
 }

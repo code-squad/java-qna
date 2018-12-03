@@ -1,6 +1,6 @@
-INSERT INTO USER (id, user_id, password, name, email) VALUES (1, 'aaa', 'aaa', '자바지기', 'javajigi@slipp.net');
-INSERT INTO USER (id, user_id, password, name, email) VALUES (2, 'bbb', 'bbb', '산지기', 'sanjigi@slipp.net');
-INSERT INTO USER (id, user_id, password, name, email) VALUES (3, 'ccc', 'ccc', 'asdf', 'a@a.net');
+INSERT INTO USER (id, user_id, password, name, email) VALUES (1, 'aaa', 'aaa', 'abc', 'javajigi@slipp.net');
+INSERT INTO USER (id, user_id, password, name, email) VALUES (2, 'bbb', 'bbb', 'bca', 'sanjigi@slipp.net');
+INSERT INTO USER (id, user_id, password, name, email) VALUES (3, 'ccc', 'ccc', 'cab', 'a@a.net');
 
 INSERT INTO QUESTION (question_index, contents, deleted, title, writer_id) VALUES (1, '1번글', false, '1 title1', 1);
 INSERT INTO QUESTION (question_index, contents, deleted, title, writer_id) VALUES (2, '2번글', false, '1 title2', 1);

@@ -1,6 +1,9 @@
 package codesquad.question;
 
 import codesquad.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.persistence.*;
 
@@ -17,7 +20,7 @@ public class Answer {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_answer"))
     private Question question;
-    private boolean deleted;
+    private boolean deleted = false;
 
     public Answer(){}
 
@@ -27,6 +30,12 @@ public class Answer {
         this.contents = contents;
         this.question = question;
         this.deleted = deleted;
+    }
+
+    public Answer(User loginUser, Question question, String contents) {
+        this.commenter = loginUser;
+        this.question = question;
+        this.contents = contents;
     }
 
     public boolean isDeleted() {
@@ -69,11 +78,16 @@ public class Answer {
         this.question = question;
     }
 
-    boolean isSameWriter(User user) {
+    public boolean isSameWriter(User user) {
         if (this.commenter == null) {
             return false;
         }
         return this.commenter.equals(user);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
     }
 
     void delete() {

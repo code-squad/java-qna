@@ -58,12 +58,8 @@ public class QuestionController {
     @GetMapping("/{id}")
     public String read(@PathVariable long id, Model model) {
         log.debug("view question number {}", id);
-
+        
         Question question = questionRepository.findById(id).orElse(null);
-        List<Answer> answers = answerRepository.findByQuestionIdAndDeleted(id, false);
-
-        model.addAttribute("answers", answers);
-        model.addAttribute("countOfAnswers", answers.size());
         model.addAttribute("question", question);
         return "/qna/show";
     }

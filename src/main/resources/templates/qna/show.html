@@ -49,9 +49,9 @@
 
               <div class="qna-comment">
                   <div class="qna-comment-slipp">
-                      <p class="qna-comment-count"><strong>{{countOfAnswers}}</strong>개의 의견</p>
+                      <p class="qna-comment-count"><strong>{{question.countOfAnswer}}</strong>개의 의견</p>
                       <div class="qna-comment-slipp-articles">
-                          {{#answers}}
+                          {{#question.answers}}
                           <article class="article" id="answer-1405">
                               <div class="article-header">
                                   <div class="article-header-thumb">
@@ -85,7 +85,7 @@
                                   </ul>
                               </div>
                           </article>
-                          {{/answers}}
+                          {{/question.answers}}
                       </div>
                           <form class="submit-write" method="post" action="/api/questions/{{id}}/answers">
                           <div class="form-group" style="padding:14px;">

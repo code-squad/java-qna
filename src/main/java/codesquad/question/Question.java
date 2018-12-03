@@ -1,6 +1,9 @@
 package codesquad.question;
 
 import codesquad.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.persistence.*;
 import java.util.List;
@@ -18,6 +21,7 @@ public class Question {
     private String title;
     @Lob
     private String contents;
+    @JsonIgnore
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     private List<Answer> answers;
     private boolean deleted = false;
@@ -88,14 +92,10 @@ public class Question {
 
     @Override
     public String toString() {
-        return "Question{" +
-                "writer='" + writer + '\'' +
-                ", title='" + title + '\'' +
-                ", contents='" + contents + '\'' +
-                '}';
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
     }
 
-    boolean isSameWriter(User user) {
+    public boolean isSameWriter(User user) {
         return this.writer.equals(user);
     }
 

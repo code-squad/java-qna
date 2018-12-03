@@ -69,7 +69,7 @@ public class AnswerController {
 
         Answer answer = answerRepository.findById(id).orElse(null);
         try {
-            answer.update(updatedAnswer);
+            answer.update(HttpSessionUtils.getUserFromSession(session), updatedAnswer);
         } catch(IllegalStateException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "/user/login";

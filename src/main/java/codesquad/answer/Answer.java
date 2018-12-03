@@ -2,6 +2,7 @@ package codesquad.answer;
 
 import codesquad.question.Question;
 import codesquad.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -41,8 +42,8 @@ public class Answer {
         this.deleted = false;
     }
 
-    public void update(Answer target) {
-        if(!target.isMatchWriter(this.writer)) {
+    public void update(User loggedInUser, Answer target) {
+        if(!loggedInUser.equals(this.writer)) {
             throw new IllegalStateException("작성자만 수정 가능합니다.");
         }
 

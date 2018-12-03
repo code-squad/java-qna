@@ -99,7 +99,7 @@ public class QuestionController {
 
         Question question = questionRepository.findById(id).orElse(null);
         try {
-            question.update(updatedQuestion);
+            question.update(HttpSessionUtils.getUserFromSession(session), updatedQuestion);
         } catch(IllegalStateException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "/user/login";

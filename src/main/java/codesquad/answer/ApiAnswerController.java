@@ -30,6 +30,7 @@ public class ApiAnswerController {
         User loginUser = HttpSessionUtils.getUserFromSession(session);
         Question question = questionRepository.findById(questionId).orElse(null);
         Answer answer = new Answer(question, loginUser, contents);
+        question.addAnswer();
         return answerRepository.save(answer);
     }
 }

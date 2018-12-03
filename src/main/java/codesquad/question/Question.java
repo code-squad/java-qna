@@ -30,6 +30,8 @@ public class Question {
     @Lob
     private String contents;
 
+    private Integer countOfAnswer = 0;
+
     private LocalDateTime createDate;
 
     private boolean deleted;
@@ -51,8 +53,8 @@ public class Question {
         return this.writer.equals(target);
     }
 
-    void update(Question updatedQuestion) {
-        if(!updatedQuestion.isMatchWriter(this.writer)) {
+    void update(User loggedInUser, Question updatedQuestion) {
+        if(!loggedInUser.equals(this.writer)) {
             throw new IllegalStateException("작성자만 수정 가능합니다.");
         }
 
@@ -92,6 +94,14 @@ public class Question {
         }
 
         return true;
+    }
+
+    public void addAnswer() {
+        this.countOfAnswer += 1;
+    }
+
+    public void deleteAnswer() {
+        this.countOfAnswer -= 1;
     }
 
     public String getFormattedCreateDate() {
@@ -155,6 +165,14 @@ public class Question {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public Integer getCountOfAnswer() {
+        return countOfAnswer;
+    }
+
+    public void setCountOfAnswer(Integer countOfAnswer) {
+        this.countOfAnswer = countOfAnswer;
     }
 
     @Override

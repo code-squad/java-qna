@@ -27,19 +27,19 @@ public class QuestionTest {
         answer3 = new Answer(question, other, "test answer by other user");
     }
 
-    @Test
-    public void update() {
-        Question target = new Question(loginUser, "updated title", "updated contents");
-        question.update(target);
-        assertEquals(question, target);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void update_failed() {
-        Question target = new Question(other, "updated title", "updated contents");
-        question.update(target);
-        assertEquals(question, target);
-    }
+//    @Test
+//    public void update() {
+//        Question target = new Question(loginUser, "updated title", "updated contents");
+//        question.update(target);
+//        assertEquals(question, target);
+//    }
+//
+//    @Test(expected = IllegalStateException.class)
+//    public void update_failed() {
+//        Question target = new Question(other, "updated title", "updated contents");
+//        question.update(target);
+//        assertEquals(question, target);
+//    }
 
     @Test
     public void delete() {

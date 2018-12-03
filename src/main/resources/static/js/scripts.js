@@ -15,6 +15,7 @@ function addAnswer(e) {
         data : queryString,
         dataType : 'json',
         error: function () {
+//        TODO : 어떤식으로 활용?
             alert("error");
         },
         success : function (data, status) {

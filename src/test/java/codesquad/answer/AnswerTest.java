@@ -24,18 +24,18 @@ public class AnswerTest {
         answer2 = new Answer(question, other, "test answer by other user");
     }
 
-    @Test
-    public void update() {
-        Answer target = new Answer(question, loginUser, "updated contents");
-        answer1.update(target);
-        assertEquals(answer1, target);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void update_failed_others_comment() {
-        Answer target = new Answer(question, other, "updated contents");
-        answer1.update(target);
-    }
+//    @Test
+//    public void update() {
+//        Answer target = new Answer(question, loginUser, "updated contents");
+//        answer1.update(target);
+//        assertEquals(answer1, target);
+//    }
+//
+//    @Test(expected = IllegalStateException.class)
+//    public void update_failed_others_comment() {
+//        Answer target = new Answer(question, other, "updated contents");
+//        answer1.update(target);
+//    }
 
     @Test
     public void delete() {

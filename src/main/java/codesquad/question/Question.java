@@ -3,6 +3,7 @@ package codesquad.question;
 import codesquad.answer.Answer;
 import codesquad.user.User;
 import codesquad.utils.HttpSessionUtils;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.servlet.http.HttpSession;
@@ -23,6 +24,7 @@ public class Question {
 
     @OneToMany(mappedBy = "question")
     @OrderBy("pId ASC")
+    @JsonIgnore
     private List<Answer> answers;
 
     private String title;

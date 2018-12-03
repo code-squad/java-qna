@@ -2,7 +2,6 @@ package codesquad.answer;
 
 import codesquad.question.Question;
 import codesquad.user.User;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

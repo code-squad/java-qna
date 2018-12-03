@@ -1,36 +1,27 @@
 package codesquad.question;
 
-import codesquad.AbstractEntitiy;
+import codesquad.AbstractEntity;
 import codesquad.answer.Answer;
 import codesquad.exception.Result;
 import codesquad.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
-public class Question extends AbstractEntitiy {
+public class Question extends AbstractEntity {
     @ManyToOne
-    @JsonProperty
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     private User writer;
 
-    @JsonProperty
     @Column(nullable = false, length=100)
     private String title;
 
     @Lob
-    @JsonProperty
     @Column(nullable = false)
     private String contents;
 
-    @JsonProperty
     private boolean deleted;
 
     @JsonIgnore
@@ -38,7 +29,6 @@ public class Question extends AbstractEntitiy {
     @OrderBy("id ASC")
     private List<Answer> answers;
 
-    @JsonProperty
     private int countOfAnswer;
 
     private Question() {}

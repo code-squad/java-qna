@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
-
 @Controller
 @RequestMapping("/users")
 public class UserController {

@@ -1,26 +1,19 @@
 package codesquad.user;
 
-import codesquad.AbstractEntitiy;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
+import codesquad.AbstractEntity;
 import javax.persistence.*;
 
 @Entity
-public class User extends AbstractEntitiy {
-    @JsonProperty
+public class User extends AbstractEntity {
     @Column(nullable=false, length=20, unique=true)
     private String userId;
 
-    @JsonIgnore
     @Column(nullable=false, length=12)
     private String password;
 
-    @JsonProperty
     @Column(nullable=false, length=12)
     private String name;
 
-    @JsonProperty
     @Column(nullable=false, length=50)
     private String email;
 

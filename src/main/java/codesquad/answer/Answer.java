@@ -1,33 +1,24 @@
 package codesquad.answer;
 
-import codesquad.AbstractEntitiy;
+import codesquad.AbstractEntity;
 import codesquad.question.Question;
 import codesquad.user.User;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 
 @Entity
-public class Answer extends AbstractEntitiy {
+public class Answer extends AbstractEntity {
     @ManyToOne
-    @JsonProperty
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
     private User writer;
 
     @ManyToOne
-    @JsonProperty
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
     private Question question;
 
     @Lob
-    @JsonProperty
     @Column(nullable = false)
     private String contents;
 
-    @JsonProperty
     private boolean deleted;
 
     private Answer() {}

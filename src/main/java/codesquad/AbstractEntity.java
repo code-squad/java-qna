@@ -1,6 +1,5 @@
 package codesquad;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -12,26 +11,19 @@ import java.util.Objects;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public class AbstractEntitiy {
+public class AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty
     private long id;
 
     @CreatedDate
-    @JsonProperty
     private LocalDateTime createdDate;
 
     @LastModifiedDate
-    @JsonProperty
     private LocalDateTime modifiedDate;
 
     public long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getFormattedCreatedDate() {
@@ -51,7 +43,7 @@ public class AbstractEntitiy {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AbstractEntitiy that = (AbstractEntitiy) o;
+        AbstractEntity that = (AbstractEntity) o;
         return id == that.id;
     }
 
@@ -62,7 +54,7 @@ public class AbstractEntitiy {
 
     @Override
     public String toString() {
-        return "AbstractEntitiy{" +
+        return "AbstractEntity{" +
                 "id=" + id +
                 ", createdDate=" + createdDate +
                 ", modifiedDate=" + modifiedDate +

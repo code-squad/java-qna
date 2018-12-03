@@ -6,7 +6,6 @@ import codesquad.question.QuestionRepository;
 import codesquad.user.User;
 import codesquad.util.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -21,7 +20,7 @@ public class ApiAnswerController {
     private AnswerRepository answerRepository;
 
     @PostMapping("")
-    public Answer create(@PathVariable long questionId, String contents, Model model, HttpSession session) {
+    public Answer create(@PathVariable long questionId, String contents, HttpSession session) {
         if (!SessionUtil.isSessionedUser(session)) {
             return null;
         }

@@ -39,6 +39,14 @@ public class Answer {
         this.deleted = false;
     }
 
+    public Answer(User writer, Question question, String contents) {
+        this.writer = writer;
+        this.question = question;
+        this.contents = contents;
+        this.curDate = LocalDateTime.now();
+        this.deleted = false;
+    }
+
     public long getId() {
         return id;
     }

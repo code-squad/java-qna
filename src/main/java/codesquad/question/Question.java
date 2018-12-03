@@ -2,6 +2,7 @@ package codesquad.question;
 
 import codesquad.answer.Answer;
 import codesquad.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ public class Question {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_user"))
     private User writer;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "question", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     private List<Answer> answers;
 

@@ -1,6 +1,7 @@
 package codesquad.answer;
 
 import codesquad.AbstractEntity;
+import codesquad.exception.Result;
 import codesquad.question.Question;
 import codesquad.user.User;
 import javax.persistence.*;
@@ -66,8 +67,13 @@ public class Answer extends AbstractEntity {
         this.deleted = deleted;
     }
 
-    public void delete() {
+    public boolean delete(User sessionedUser) {
+        if(!isSameWriter(sessionedUser)) {
+            return false;
+        }
+
         this.deleted = true;
+        return true;
     }
 
     public boolean isSameWriter(User sessionedUser) {

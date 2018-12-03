@@ -95,12 +95,21 @@ public class Question extends AbstractEntity {
         this.countOfAnswer = countOfAnswer;
     }
 
-    void update(Question updatedQuestion) {
+    Result update(Question updatedQuestion, User sessionedUser) {
+        if(!isSameWriter(sessionedUser)) {
+           return Result.fail("You can't edit the other user's question");
+        }
+
         this.setTitle(updatedQuestion.getTitle());
         this.setContents(updatedQuestion.getContents());
+        return Result.success();
     }
 
-    Result delete() {
+    Result delete(User sessionedUser) {
+        if(!isSameWriter(sessionedUser)) {
+            return Result.fail("You can't edit the other user's question");
+        }
+
         if (answers == null) this.deleted = true;
         for (Answer answer : answers) {
             if (!answer.isSameWriter(writer)) {
@@ -108,7 +117,7 @@ public class Question extends AbstractEntity {
                 return Result.fail("Because the other user's answer exist, you can't edit the question.");
             }
         }
-        for (Answer answer : answers) answer.delete();
+        for (Answer answer : answers) answer.delete(sessionedUser);
         this.deleted = true;
 
         return Result.success();

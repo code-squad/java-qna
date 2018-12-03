@@ -22,6 +22,7 @@ public class ApiAnswerController {
     @PostMapping("")
     public Answer create(@PathVariable long questionId, String contents, HttpSession session) {
         if (!SessionUtil.isSessionedUser(session)) {
+            // 현 상황에서 Result 활용할 수 있는 방법은?
             return null;
         }
 
@@ -29,6 +30,7 @@ public class ApiAnswerController {
         Question question = questionRepository.findById(questionId).get();
         Answer answer = Answer.newInstance(sessionedUser, question, contents);
         question.addAnswer();
+
         return answerRepository.save(answer);
     }
 
@@ -40,11 +42,10 @@ public class ApiAnswerController {
 
         Answer answer = answerRepository.findById(id).orElse(null);
         User sessionedUser = SessionUtil.getUserFromSession(session);
-        if (!answer.isSameWriter(sessionedUser)) {
+
+        if (!answer.delete(sessionedUser)) {
             return Result.fail("You can't edit the other user's answer");
         }
-
-        answer.delete();
         answerRepository.save(answer);
 
         Question question = questionRepository.findById(questionId).get();

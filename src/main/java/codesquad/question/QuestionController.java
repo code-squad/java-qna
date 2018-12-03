@@ -58,7 +58,7 @@ public class QuestionController {
     @GetMapping("/{id}")
     public String read(@PathVariable long id, Model model) {
         log.debug("view question number {}", id);
-        
+
         Question question = questionRepository.findById(id).orElse(null);
         model.addAttribute("question", question);
         return "/qna/show";

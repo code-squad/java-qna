@@ -21,11 +21,20 @@ function addAnswer(e) {
         success : function (data, status) {
             console.log(data);
             var answerTemplate = $("#answerTemplate").html();
-            var template = answerTemplate.format(data.writer.name, data.formattedCreateDate, data.contents, data.question.id, data.id);
+            var template = answerTemplate.format(data.writer.name, data.formattedCreateDate, data.contents, data.question.id);
             $(".qna-comment-slipp-articles").append(template);
             $("textarea[name=contents]").val("");
         }
     });
+}
+
+$("a.link-delete-article").click(deleteAnswer);
+
+function deleteAnswer(e) {
+    e.preventDefault();
+
+    var url = $(this).attr("href");
+    console.log("url : " + url);
 }
 
 String.prototype.format = function() {

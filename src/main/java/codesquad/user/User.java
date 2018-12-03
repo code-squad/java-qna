@@ -1,5 +1,7 @@
 package codesquad.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -13,6 +15,7 @@ public class User {
     @Column(nullable = false, length = 20, unique = true)
     private String userId;
 
+    @JsonIgnore
     @Column(nullable = false, length = 20)
     private String password;
 

@@ -13,7 +13,7 @@ public class ExceptionController {
 
     @ExceptionHandler(value = IllegalArgumentException.class)
     public String exception(RuntimeException e, Model model) {
-        log.info("에러잡았다.");
+        log.info("예외 컨트롤러에서 에러잡았다.");
         model.addAttribute("error", e.getMessage());
         return "/user/login";
     }

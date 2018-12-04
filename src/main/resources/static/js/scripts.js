@@ -1,16 +1,19 @@
 $(".submit-write input[type = submit]").click(addAnswers);
 
 function addAnswers(e) {
+    console.log("add answer");
     e.preventDefault();
 
-    var qureyString = $(".submit-write").serialize();
+    var queryString = $(".submit-write").serialize();
+    console.log("query : " + queryString);
 
     var url = $(".submit-write").attr("action");
+    console.log("url : " + url);
 
     $.ajax ({
     type : 'post' ,
     url : url,
-    data : qureyString,
+    data : queryString,
     dataType : 'json' ,
     error : onError,
     success : onSuccess,
@@ -18,17 +21,46 @@ function addAnswers(e) {
 }
 function onError() {
     console.log("error");
-    alert("error");
+    alert("로그인을 해주세요.");
 }
 
-function onSuccess(data,status) {
-    console.log(status);
+function onSuccess(data, status) {
+    console.log(data);
+    $(".qna-comment-count strong").html(data.question.answerSize);
     var answerTemplate = $("#answerTemplate").html();
-    var template = answerTemplate.format(data.writer.userId, data.date, data.contents, data.question.id, data.id);
+    var template = answerTemplate.format(data.writer.userId, data.date, data.contents, data.question.id, data.id, data.writer.id);
     $(".qna-comment-slipp-articles").append(template);
-    $("textarea[name = contents]").val("");
+    $("textarea[name=contents]").val("");
 }
 
+$(".delete-answer-form").click(deleteAnswers);
+
+function deleteAnswers(e) {
+
+    var deleteBtn = $(this);
+    console.log("delete");
+    e.preventDefault();
+
+    var url = deleteBtn.attr("action");
+    console.log("url : " + url);
+
+    $.ajax({
+        type : 'delete',
+        url : url,
+        dataType : 'json',
+        error : function(xhr, status) {
+            console.log("delete error!");
+            alert("error!");
+        },
+        success : function(data, status) {
+            console.log("success!");
+            alert("success");
+            if(data.valid) {
+                deleteBtn.closest("article").remove();
+            }
+        }
+    })
+}
 
 String.prototype.format = function() {
   var args = arguments;

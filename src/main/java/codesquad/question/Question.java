@@ -2,6 +2,7 @@ package codesquad.question;
 
 import codesquad.answer.Answer;
 import codesquad.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ public class Question {
 
     @OneToMany(mappedBy = "question")
     @OrderBy("id ASC")
+    @JsonIgnore
     private List<Answer> answers;
 
     @ManyToOne
@@ -34,6 +36,7 @@ public class Question {
         this.contents = contents;
         this.createDate = LocalDateTime.now();
     }
+
 
     public List<Answer> getAnswers() {
         return answers;
@@ -86,5 +89,9 @@ public class Question {
 
     public String getDate() {
         return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
+    }
+
+    public int getAnswerSize() {
+        return answers.size();
     }
 }

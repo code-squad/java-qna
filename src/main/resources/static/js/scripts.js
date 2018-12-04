@@ -1,7 +1,7 @@
 function loginError(){
     console.log("로그인 에러");
     alert("로그인이 필요합니다.");
-    location.href = '/user/loginForm';
+    location.href = '/users/loginForm';
 }
 
 $(".submit-write input[type=submit]").click(addAnswer);     //$뒤 html태그에서 클릭의 이벤트가 발생시 addAnswer메소드를 실행하라

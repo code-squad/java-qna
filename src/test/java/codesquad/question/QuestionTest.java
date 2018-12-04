@@ -30,7 +30,7 @@ public class QuestionTest {
     @Test
     public void 질문_삭제_답변X() {
         question.setAnswers(answers);
-        question.delete();
+        question.delete(loginUser);
         assertThat(question.isDeleted()).isEqualTo(true);
     }
 
@@ -42,7 +42,7 @@ public class QuestionTest {
 
         answers.add(answer1);
         question.setAnswers(answers);
-        question.delete();
+        question.delete(loginUser);
         assertThat(question.isDeleted()).isEqualTo(true);
     }
 
@@ -57,7 +57,7 @@ public class QuestionTest {
         answers.add(answer1);
         answers.add(answer2);
         question.setAnswers(answers);
-        question.delete();
+        question.delete(loginUser);
         assertThat(question.isDeleted()).isEqualTo(false);
     }
 }

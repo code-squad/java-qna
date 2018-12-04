@@ -6,7 +6,6 @@ import codesquad.utils.HttpSessionUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -146,7 +145,9 @@ public class Question {
                 ", answers=" + answers +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
+                ", answersSize=" + answersSize +
                 ", date=" + date +
+                ", deleted=" + deleted +
                 '}';
     }
 
@@ -157,11 +158,11 @@ public class Question {
         return true;
     }
 
-    public void delete() {
+    public void delete(User loginUser) {
         if (isNotExistOtherUser()) {
             this.deleted = true;
             for (Answer answer : answers) {
-                answer.delete();
+                answer.delete(loginUser);
             }
         }
     }

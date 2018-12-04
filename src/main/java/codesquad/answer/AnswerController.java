@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping("/question/{questionPId}/answer")
+@RequestMapping("/questions/{questionPId}/answer")
 public class AnswerController {
 
     @Autowired
@@ -23,11 +23,11 @@ public class AnswerController {
     public String create(@PathVariable long questionPId, Answer answer, HttpSession session) {
         Question question = questionRepository.findById(questionPId).get();
         if (!HttpSessionUtils.isLoginUser(session)) {
-            return "/user/login";
+            return "/users/login";
         }
         answerRepository.save(answer);
         question.plusAnswersSize();
-        return String.format("redirect:/question/%d", questionPId);
+        return String.format("redirect:/questions/%d", questionPId);
     }
 
     @DeleteMapping("/{answerPId}")
@@ -35,12 +35,12 @@ public class AnswerController {
         Answer answer = answerRepository.findById(answerPId).get();
         Question question = questionRepository.findById(questionPId).get();
         if (!HttpSessionUtils.isValid(session, answer)) {
-            return String.format("redirect:/question/%d", questionPId);
+            return String.format("redirect:/questions/%d", questionPId);
         }
-        answer.delete();
+        answer.delete(HttpSessionUtils.getUserFromSession(session));
         question.minusAnswersSize();
         answerRepository.save(answer);
-        return String.format("redirect:/question/%d", questionPId);
+        return String.format("redirect:/questions/%d", questionPId);
     }
 
 
@@ -51,6 +51,6 @@ public class AnswerController {
 //            throw new IllegalArgumentException("에러!");
 //        }
 
-//        return String.format("redirect:/question/%d", questionPId);
+//        return String.format("redirect:/questions/%d", questionPId);
 //    }
 }

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping("/question")
+@RequestMapping("/questions")
 public class QuestionController {
 
     @Autowired
@@ -21,7 +21,7 @@ public class QuestionController {
         User loginUser = HttpSessionUtils.getUserFromSession(session);
         question.setWriter(loginUser);
         questionRepository.save(question);
-        return "redirect:/question/list";
+        return "redirect:/questions/list";
     }
 
     @GetMapping("/list")
@@ -59,7 +59,7 @@ public class QuestionController {
         Question question = questionRepository.findById(pId).get();
         question.update(updateQuestion, HttpSessionUtils.getUserFromSession(session));
         questionRepository.save(question);
-        return "redirect:/question/{pId}";
+        return "redirect:/questions/{pId}";
     }
 
     @DeleteMapping("/{pId}")
@@ -69,7 +69,7 @@ public class QuestionController {
         if (!HttpSessionUtils.isValid(session, question)) {
             return "/qna/update_failed";
         }
-        question.delete();
+        question.delete(HttpSessionUtils.getUserFromSession(session));
         questionRepository.save(question);
         return "redirect:/";
     }

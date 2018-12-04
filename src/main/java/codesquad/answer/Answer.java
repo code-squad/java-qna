@@ -2,6 +2,7 @@ package codesquad.answer;
 
 import codesquad.question.Question;
 import codesquad.user.User;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -108,7 +109,6 @@ public class Answer {
         return "Answer{" +
                 "pId=" + pId +
                 ", writer=" + writer +
-                ", question=" + question +
                 ", contents='" + contents + '\'' +
                 ", date=" + date +
                 '}';
@@ -118,7 +118,9 @@ public class Answer {
         return this.writer.equals(loginUser);
     }
 
-    public void delete() {
-        this.deleted = true;
+    public void delete(User loginUser) {
+        if (this.writer.matchUser(loginUser)) {
+            this.deleted = true;
+        }
     }
 }

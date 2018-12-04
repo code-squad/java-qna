@@ -10,7 +10,7 @@ import surpport.Result;
 import javax.servlet.http.HttpSession;
 
 @RestController //json변환
-@RequestMapping("/api/question/{questionPId}/answer")
+@RequestMapping("/api/questions/{questionPId}/answer")
 public class ApiAnswerController {
     @Autowired
     private AnswerRepository answerRepository;
@@ -36,7 +36,7 @@ public class ApiAnswerController {
         if (!HttpSessionUtils.isValid(session, answer)) {
             return Result.fail("다른사람의 답변을 수정 또는 삭제할 수 없습니다.");
         }
-        answer.delete();
+        answer.delete(HttpSessionUtils.getUserFromSession(session));
         question.minusAnswersSize();
         answerRepository.save(answer);
         return Result.ok();

@@ -14,8 +14,6 @@ import javax.servlet.http.HttpSession;
 @RestController
 @RequestMapping("/api/questions/{questionId}/answers")
 public class ApiAnswerController {
-
-
     @Autowired
     private QuestionRepository questionRepository;
 

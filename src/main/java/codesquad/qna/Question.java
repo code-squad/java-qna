@@ -3,12 +3,14 @@ package codesquad.qna;
 import codesquad.answer.Answer;
 import codesquad.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.stream.Collectors;
 
 
 @Entity
@@ -27,6 +29,9 @@ public class Question {
     private String contents;
     private LocalDateTime createDate;
     private boolean deleted;
+
+    @JsonProperty
+    private int countOfAnswer = 0;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     @OrderBy("id ASC")
@@ -76,7 +81,7 @@ public class Question {
     }
 
     public List<Answer> getAnswers() {
-        return  answers;
+        return  answers.stream().filter(x -> !x.isDeleted()).collect(Collectors.toList());
     }
 
     public void setAnswers(List<Answer> answers) {
@@ -89,6 +94,10 @@ public class Question {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public int getCountOfAnswer() {
+        return countOfAnswer;
     }
 
     public boolean isSameWriter(User loginUser) {
@@ -117,8 +126,8 @@ public class Question {
     }
 
     public String getAnswersSize() {
-        System.out.println("### " + answers.size());
-        return String.valueOf(answers.size());
+        System.out.println("### size " + answers.stream().filter(x -> !x.isDeleted()).count());
+        return String.valueOf(answers.stream().filter(x -> !x.isDeleted()).count());
     }
 
     public boolean isEmptyAnswers() {
@@ -138,6 +147,7 @@ public class Question {
     public boolean delete() {
         // 비었으면
         if (answers.isEmpty()) {
+            deleted = true;
             return true;
         }
         for (Answer answer : answers) {
@@ -150,5 +160,13 @@ public class Question {
         deleted = true;
 
         return true;
+    }
+
+    public void addAnswer() {
+        this.countOfAnswer += 1;
+    }
+
+    public void deleteAnswer() {
+        this.countOfAnswer -= 1;
     }
 }

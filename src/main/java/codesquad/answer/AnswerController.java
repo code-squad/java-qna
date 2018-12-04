@@ -44,7 +44,8 @@ public class AnswerController {
             model.addAttribute("errorMessage", result.getErrorMessage());
             return "/user/login_failed";
         }
-        answerRepository.deleteById(id);
+        answer.delete();
+        answerRepository.save(answer);
         return String.format("redirect:/questions/%d", questionId);
     }
 

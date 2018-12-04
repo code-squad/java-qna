@@ -1,20 +1,31 @@
 package codesquad.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 public class User {
     @Id
+    @JsonProperty
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonProperty
     @Column(nullable = false, length = 20, unique = true)
     private String userId;
+
+    @JsonIgnore
     @Column(nullable = false, length = 20)
     private String password;
+
+    @JsonProperty
     @Column(nullable = false, length = 20)
     private String name;
+
+    @JsonProperty
     @Column(nullable = false, length = 100)
     private String email;
 

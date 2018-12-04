@@ -97,7 +97,8 @@ public class QuestionController {
             model.addAttribute("errorMessage", "작성자가 작성하지 않은 댓글이 있습니다. 삭제가 불가능합니다.");
             return "/user/login_failed";
         }
-        questionRepository.delete(question);
+        question.delete();
+        questionRepository.save(question);
 
         return "redirect:/";
     }

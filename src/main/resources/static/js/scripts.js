@@ -1,4 +1,4 @@
-$(".submit-write button[type=submit]").click(addAnswer);
+$(".submit-write button[type=submit]").on("click", addAnswer);
 
 function addAnswer(e) {
     e.preventDefault();
@@ -24,11 +24,14 @@ function addAnswer(e) {
             var template = answerTemplate.format(data.writer.name, data.formattedCreateDate, data.contents, data.question.id, data.id);
             $(".qna-comment-slipp-articles").append(template);
             $("textarea[name=contents]").val("");
+
+            //의견개수 동적반영
+            $("p.qna-comment-count").text(data.question.countOfAnswer + "개의 의견");
         }
     });
 }
 
-$("a.link-delete-article").click(deleteAnswer);
+$(".qna-comment-slipp-articles").on("click", "a.link-delete-article", deleteAnswer);
 
 function deleteAnswer(e) {
     e.preventDefault();
@@ -50,6 +53,7 @@ function deleteAnswer(e) {
             if(data.valid) {
             //자기자신으로부터 가장 가까운 article을 찾아가기
                 deleteBtn.closest("article").remove();
+            //TODO : 삭제 시 의견개수 동적반영 어떻게?
             } else {
                 alert(data.errorMessage);
             }

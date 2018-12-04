@@ -26,6 +26,10 @@ public class HttpSessionUtils {
         return question.matchUser(loginUser);
     }
 
+    public static boolean isValid(User loginUser, Question question) {
+        return question.matchUser(loginUser);
+    }
+
     public static boolean isValid(HttpSession session, Answer answer) {
         if (!isLoginUser(session)) {
             return false;

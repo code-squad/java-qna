@@ -32,7 +32,8 @@ function addAnswer(e) {
         }});
 }
 
-$(".delete-answer-form button[type=submit]").click(deleteAnswer);
+//$(".delete-answer-form button[type=submit]").click(deleteAnswer);
+$(".qna-comment-slipp-articles").on("click", ".delete-answer-form button[type='submit']", deleteAnswer);
 function deleteAnswer(e){
     e.preventDefault();
 
@@ -40,28 +41,38 @@ function deleteAnswer(e){
 //    var loginUser = $.session.get('loginUser');
 //    console.log(loginUser);
 
-    var url = $(this).parent().attr("action");   //this
-//    var deleteBtn = $(this);
-//    console.log(deleteBtn);
-//    var url = $(".delete-answer-form").attr("action");
+    var deleteBtn = $(this);
+    var url = deleteBtn.parent().attr("action");
+//    var url = $(this).parent().attr("action");   //this
+    console.log("this : " + deleteBtn);
     console.log("url : " + url);
-
     console.log("delete click!");
     $.ajax({
             type : 'delete',
             url : url,
             dataType : 'json',
             error : function(xhr, status){
+                console.log(status);
                 alert("수정 또는 삭제할 수 없습니다");
             },
             success : function(data, status){
-                console.log("data");
-                if (data.valid) {
-                                deleteBtn.closest("article").remove();
-                            } else {
-                                alert(data.errorMessage);
-                            }
+                console.log(status);
+                console.log(data);
+                if(data.valid) {
+                    deleteBtn.closest("article").remove();
+                    console.log(data.answersSize);
+                    $(".qna-comment-count strong").html(calculateAnswerSize());
+                }
+                else {
+                    alert(data.errorMessage);
+                }
             }});
+}
+
+function calculateAnswerSize() {
+    var answersSize = $(".qna-comment-count strong").html();
+    answersSize = parseInt(answersSize);
+    return --answersSize;
 }
 
 String.prototype.format = function() {

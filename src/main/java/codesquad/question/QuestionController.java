@@ -57,7 +57,7 @@ public class QuestionController {
     @PutMapping("/{pId}")
     public String questionUpdate(Question updateQuestion, @PathVariable long pId, HttpSession session) {
         Question question = questionRepository.findById(pId).get();
-        question.update(updateQuestion, session);
+        question.update(updateQuestion, HttpSessionUtils.getUserFromSession(session));
         questionRepository.save(question);
         return "redirect:/question/{pId}";
     }

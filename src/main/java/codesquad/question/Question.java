@@ -31,6 +31,7 @@ public class Question {
     @Lob
     private String contents;
 
+    private int answersSize = 0;
     private LocalDateTime date;
     private boolean deleted = false;
 
@@ -47,11 +48,15 @@ public class Question {
     }
 
     public int getAnswersSize() {
-        int cnt = 0;
-        for (Answer answer : answers) {
-            if (!answer.isDeleted()) cnt++;
-        }
-        return cnt;
+        return answersSize;
+    }
+
+    public void plusAnswersSize() {
+        this.answersSize++;
+    }
+
+    public void minusAnswersSize() {
+        this.answersSize--;
     }
 
     public String getDate() {
@@ -102,8 +107,8 @@ public class Question {
         this.contents = contents;
     }
 
-    void update(Question updateQuestion, HttpSession session) {
-        if (!HttpSessionUtils.isValid(session, this)) throw new IllegalArgumentException();
+    void update(Question updateQuestion, User loginUser) {
+        if (!HttpSessionUtils.isValid(loginUser, this)) throw new IllegalArgumentException();
         this.title = updateQuestion.title;
         this.contents = updateQuestion.contents;
     }

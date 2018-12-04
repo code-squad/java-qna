@@ -43,7 +43,10 @@ public class QuestionController {
         if(!HttpSessionUtils.existLoginUserFromSession(session)) return "redirect:/user/login";
         Question question = questionRepository.findById(id).orElse(null);
         model.addAttribute("question", question);
-        if(!question.matchWriter(HttpSessionUtils.getLoginUserFromSession(session))) return "qna/show_failed";
+        if(!question.matchWriter(HttpSessionUtils.getLoginUserFromSession(session))) {
+            model.addAttribute("errorMessage", "permission denied. 다른 사용자의 글은 수정할 수 없습니다.");
+            return "qna/modify_failed";
+        }
         return "qna/updateForm";
     }
 

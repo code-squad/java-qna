@@ -28,7 +28,8 @@ public class AnswerController {
         model.addAttribute("answer", answer);
         if(!answer.matchWriter(HttpSessionUtils.getLoginUserFromSession(session))) {
             model.addAttribute("question", answer.getQuestion());
-            return "qna/show_failed";
+            model.addAttribute("errorMessage", "permission denied. 다른 사용자의 글은 수정할 수 없습니다.");
+            return "qna/modify_failed";
         }
         return "qna/answerForm";
     }

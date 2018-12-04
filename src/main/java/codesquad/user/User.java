@@ -1,5 +1,6 @@
 package codesquad.user;
 
+import codesquad.AbstractEntity;
 import codesquad.qna.answers.Answer;
 import codesquad.qna.questions.Question;
 
@@ -9,11 +10,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // 자동으로 1씩 증가하며 아이디를 부여.
-    private long id;
-
+public class User extends AbstractEntity {
     @Column(unique = true, nullable = false, length = 20)
     private String userId;
 
@@ -58,14 +55,6 @@ public class User {
         this.email = email;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public boolean isUser(String userId){
         return userId.equals(this.userId);
     }
@@ -86,35 +75,16 @@ public class User {
         return user.matchPassword(this.password);
     }
 
-    public boolean matchId(long id){
-        return this.id == id;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", userId='" + userId + '\'' +
-                ", password='" + password + '\'' +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                '}';
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id &&
-                Objects.equals(userId, user.userId) &&
-                Objects.equals(password, user.password) &&
-                Objects.equals(name, user.name) &&
-                Objects.equals(email, user.email);
+        return Objects.equals(userId, user.userId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userId, password, name, email);
+        return Objects.hash(userId);
     }
 }

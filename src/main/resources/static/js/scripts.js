@@ -24,7 +24,7 @@ function addAnswer(e){
             if(data.valid){
                 var answer = data.data;
                 var answerTemplate = $("#answerTemplate").html();
-                var template = answerTemplate.format(answer.writer.name, answer.formattedCurDate, answer.contents, answer.question.id, answer.id, answer.writer.id);
+                var template = answerTemplate.format(answer.writer.name, answer.formattedModifiedDate, answer.contents, answer.question.id, answer.id, answer.writer.id);
 
                 $("#appendAnswerData").append(template);
                 $("textarea[name=contents]").val("");

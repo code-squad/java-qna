@@ -1,5 +1,6 @@
 package codesquad.qna.questions;
 
+import codesquad.AbstractEntity;
 import codesquad.qna.answers.Answer;
 import codesquad.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -18,11 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Entity
-public class Question {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
+public class Question extends AbstractEntity {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     private User writer;
@@ -34,9 +31,6 @@ public class Question {
     @Column(nullable = false)
     private String contents;
 
-    @LastModifiedBy
-    private LocalDateTime curDate;
-
     @OneToMany(mappedBy = "question")
     @JsonIgnore
     private List<Answer> answers;
@@ -44,21 +38,8 @@ public class Question {
     private boolean deleted;
 
     public Question() {
-        this.curDate = LocalDateTime.now();
         this.answers = new ArrayList<>();
         this.deleted = false;
-    }
-
-    public LocalDateTime getCurDate() {
-        return curDate;
-    }
-
-    public String getFormattedCurDate() {
-        return this.curDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-    }
-
-    public void setCurDate(LocalDateTime curDate) {
-        this.curDate = curDate;
     }
 
     public User getWriter() {
@@ -85,14 +66,6 @@ public class Question {
         this.contents = contents;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public List<Answer> getAnswers() {
         return answers;
     }
@@ -117,7 +90,6 @@ public class Question {
         if(!otherQuestion.matchWriter(this.writer)) throw new IllegalStateException("permission denied. 다른 사람의 글은 수정할 수 없습니다.");
         this.title = otherQuestion.title;
         this.contents = otherQuestion.contents;
-        this.curDate = otherQuestion.curDate;
     }
 
     public boolean matchWriter(User user){
@@ -128,7 +100,6 @@ public class Question {
         if(!this.matchWriter(user)) throw new IllegalStateException("permission denied. 다른 사람의 글은 삭제할 수 없습니다.");
         this.deleteAnswers(user);
         this.deleted = true;
-        this.curDate = LocalDateTime.now();
     }
 
     private void deleteAnswers(User user){

@@ -1,5 +1,6 @@
 package codesquad.qna.answers;
 
+import codesquad.AbstractEntity;
 import codesquad.qna.questions.Question;
 import codesquad.user.User;
 import org.springframework.data.annotation.CreatedDate;
@@ -12,10 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @Entity
-public class Answer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+public class Answer extends AbstractEntity {
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
@@ -29,13 +27,9 @@ public class Answer {
     @Column(nullable = false)
     private String contents;
 
-    @LastModifiedBy
-    private LocalDateTime curDate;
-
     private boolean deleted;
 
     public Answer() {
-        this.curDate = LocalDateTime.now();
         this.deleted = false;
     }
 
@@ -43,16 +37,7 @@ public class Answer {
         this.writer = writer;
         this.question = question;
         this.contents = contents;
-        this.curDate = LocalDateTime.now();
         this.deleted = false;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public User getWriter() {
@@ -79,25 +64,12 @@ public class Answer {
         this.contents = contents;
     }
 
-    public LocalDateTime getCurDate() {
-        return curDate;
-    }
-
-    public String getFormattedCurDate() {
-        return this.curDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-    }
-
-    public void setCurDate(LocalDateTime curDate) {
-        this.curDate = curDate;
-    }
-
     public boolean isDeleted() {
         return deleted;
     }
 
     public void updateContents(String contents, User user){
         if(!this.matchWriter(user)) throw new IllegalStateException("permission denied. 다른 사람의 글은 수정할 수 없습니다.");
-        this.curDate = LocalDateTime.now();
         this.contents = contents;
     }
 
@@ -108,6 +80,5 @@ public class Answer {
     public void delete(User user) {
         if(!this.matchWriter(user)) throw new IllegalStateException("permission denied. 다른 사람의 글은 삭제할 수 없습니다.");
         this.deleted = true;
-        this.curDate = LocalDateTime.now();
     }
 }

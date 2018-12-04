@@ -13,18 +13,28 @@ function addAnswer(e){
         url : url,
         data : queryString,
         dataType : 'json',
-        error: function() {
-            console.log("hello Error");
+        error: function(xhr) {
+            console.log("error xhr");
+            console.log(xhr);
+            alert("error!")
         },
         success : function(data) {
+            console.log("success");
             console.log(data);
-            var answerTemplate = $("#answerTemplate").html();
-            var template = answerTemplate.format(data.writer.name, data.formattedCurDate, data.contents, data.question.id, data.id, data.writer.id);
+            if(data.valid){
+                var answer = data.data;
+                var answerTemplate = $("#answerTemplate").html();
+                var template = answerTemplate.format(answer.writer.name, answer.formattedCurDate, answer.contents, answer.question.id, answer.id, answer.writer.id);
 
-            $("#appendAnswerData").append(template);
-            $("textarea[name=contents]").val("");
+                $("#appendAnswerData").append(template);
+                $("textarea[name=contents]").val("");
+                increaseAnswerCount();
+                console.log("hello Success");
+            } else {
+                alert(data.errorMessage);
+                $("textarea[name=contents]").val("");
+            }
 
-            console.log("hello Success");
         }
     });
 }
@@ -48,21 +58,33 @@ function deleteAnswer(e){
         dataType : 'json',
         error : function(){
             console.log("hello error");
+            alert("error!");
         },
         success : function(data){
-            console.log("data : " + data);
-            if(data === true){
+            console.log("success");
+            console.log(data);
+            var valid = data.valid;
+            if(valid){
                 deleteButton.closest("article").remove();
+                decreaseAnswerCount();
                 console.log("complete");
             }
             else {
-                alert("permission denied.");
+                alert(data.errorMessage);
             }
         }
     });
 }
 
+function increaseAnswerCount(question){
+    var curCount = parseInt($(".qna-comment-count strong").html());
+    $(".qna-comment-count strong").html(curCount + 1);
+}
 
+function decreaseAnswerCount(question){
+    var curCount = parseInt($(".qna-comment-count strong").html());
+    $(".qna-comment-count strong").html(curCount - 1);
+}
 
 String.prototype.format = function() {
   var args = arguments;

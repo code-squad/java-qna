@@ -1,6 +1,7 @@
 package codesquad.user;
 
-import codesquad.qna.Question;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -9,18 +10,23 @@ import java.util.Objects;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty
     private long id;
 
     @Column(nullable = false, length = 20, unique = true)
+    @JsonProperty
     private String userId;
 
     @Column(nullable = false, length = 20)
+    @JsonIgnore
     private String password;
 
     @Column(nullable = false, length = 20)
+    @JsonProperty
     private String name;
 
     @Column(nullable = false, length = 20)
+    @JsonProperty
     private String email;
 
     public long getId() {

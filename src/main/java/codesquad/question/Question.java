@@ -1,21 +1,15 @@
 package codesquad.question;
 
+import codesquad.AbstractEntity;
 import codesquad.answer.Answer;
 import codesquad.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
-public class Question {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
-    private long id;
-
+public class Question extends AbstractEntity {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_user"))
     private User writer;
@@ -32,20 +26,14 @@ public class Question {
 
     private Integer countOfAnswer = 0;
 
-    private LocalDateTime createDate;
-
     private boolean deleted;
 
-    public Question() {
-        this.createDate = LocalDateTime.now();
-        this.deleted = false;
-    }
+    public Question() {}
 
     public Question(User writer, String title, String contents) {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-        this.createDate = LocalDateTime.now();
         this.deleted = false;
     }
 
@@ -60,7 +48,6 @@ public class Question {
 
         this.title = updatedQuestion.title;
         this.contents = updatedQuestion.contents;
-        this.createDate = updatedQuestion.createDate;
     }
 
     void delete(User loggedInUser) {
@@ -104,21 +91,6 @@ public class Question {
         this.countOfAnswer -= 1;
     }
 
-    public String getFormattedCreateDate() {
-        if (createDate == null) {
-            return "";
-        }
-        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public User getWriter() {
         return writer;
     }
@@ -151,14 +123,6 @@ public class Question {
         this.contents = contents;
     }
 
-    public LocalDateTime getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(LocalDateTime createDate) {
-        this.createDate = createDate;
-    }
-
     public boolean isDeleted() {
         return deleted;
     }
@@ -176,33 +140,13 @@ public class Question {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Question question = (Question) o;
-        return id == question.id &&
-                deleted == question.deleted &&
-                Objects.equals(writer, question.writer) &&
-                Objects.equals(answers, question.answers) &&
-                Objects.equals(title, question.title) &&
-                Objects.equals(contents, question.contents) &&
-                Objects.equals(createDate, question.createDate);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, writer, answers, title, contents, createDate, deleted);
-    }
-
-    @Override
     public String toString() {
         return "Question{" +
-                "id=" + id +
+                "id=" + getId() +
                 ", writer=" + writer +
                 ", answers=" + answers +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
-                ", createDate=" + createDate +
                 ", deleted=" + deleted +
                 '}';
     }

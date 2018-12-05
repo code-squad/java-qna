@@ -1,5 +1,6 @@
 package codesquad.answer;
 
+import codesquad.AbstractEntity;
 import codesquad.question.Question;
 import codesquad.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -10,11 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 @Entity
-public class Answer {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
-    private long id;
-
+public class Answer extends AbstractEntity {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
     private Question question;
@@ -26,8 +23,6 @@ public class Answer {
     @Lob
     private String contents;
 
-    private LocalDateTime createDate;
-
     private boolean deleted;
 
     public Answer() {
@@ -38,7 +33,6 @@ public class Answer {
         this.question = question;
         this.writer = writer;
         this.contents = contents;
-        this.createDate = LocalDateTime.now();
         this.deleted = false;
     }
 
@@ -60,21 +54,6 @@ public class Answer {
 
     public boolean isMatchWriter(User target) {
         return this.writer.equals(target);
-    }
-
-    public String getFormattedCreateDate() {
-        if (createDate == null) {
-            return "";
-        }
-        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public Question getQuestion() {
@@ -110,31 +89,12 @@ public class Answer {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Answer answer = (Answer) o;
-        return id == answer.id &&
-                deleted == answer.deleted &&
-                Objects.equals(question, answer.question) &&
-                Objects.equals(writer, answer.writer) &&
-                Objects.equals(contents, answer.contents) &&
-                Objects.equals(createDate, answer.createDate);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, question, writer, contents, createDate, deleted);
-    }
-
-    @Override
     public String toString() {
         return "Answer{" +
-                "id=" + id +
+                "id=" + getId() +
                 ", question=" + question +
                 ", writer=" + writer +
                 ", contents='" + contents + '\'' +
-                ", createDate=" + createDate +
                 ", deleted=" + deleted +
                 '}';
     }

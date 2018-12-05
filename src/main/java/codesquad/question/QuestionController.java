@@ -1,7 +1,6 @@
 package codesquad.question;
 
 import codesquad.HttpSessionUtils;
-import codesquad.answer.Answer;
 import codesquad.answer.AnswerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 @RequestMapping("/questions")
 @Controller

@@ -21,7 +21,7 @@ function addAnswer(e) {
         success : function (data, status) {
             console.log(data);
             var answerTemplate = $("#answerTemplate").html();
-            var template = answerTemplate.format(data.writer.name, data.formattedCreateDate, data.contents, data.question.id, data.id);
+            var template = answerTemplate.format(data.writer.name, data.formattedModifiedDate, data.contents, data.question.id, data.id);
             $(".qna-comment-slipp-articles").append(template);
             $("textarea[name=contents]").val("");
 

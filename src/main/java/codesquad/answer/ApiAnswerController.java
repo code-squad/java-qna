@@ -32,7 +32,9 @@ public class ApiAnswerController {
         if (!HttpSessionUtils.isLoginUser(session)) {
             return Result.fail("please access your id");
         }
-        if (!HttpSessionUtils.getUserFromSession(session).equals()) {
+        Answer answer = answerRepository.findById(id).orElse(null);
+        User user = HttpSessionUtils.getUserFromSession(session);
+        if (!answer.isSameWriter(user)) {
             return Result.fail("you can't delete other's information");
         }
         answerRepository.deleteById(id);

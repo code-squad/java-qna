@@ -23,11 +23,24 @@ public class Question {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     private User writer;
+
     private String title;
+
     private LocalDateTime createDate;
+
     private String contents;
 
+    private Integer answerCount = 0;
+
     public Question() {
+    }
+
+    public Integer getAnswerCount() {
+        return answerCount;
+    }
+
+    public void setAnswerCount(Integer answerCount) {
+        this.answerCount = answerCount;
     }
 
     public Question(User writer, String title, String contents) {
@@ -42,16 +55,16 @@ public class Question {
         return answers;
     }
 
+    public void setWriter(User writer) {
+        this.writer = writer;
+    }
+
     public void setAnswers(List<Answer> answers) {
         this.answers = answers;
     }
 
     public User getWriter() {
         return writer;
-    }
-
-    public void setWriter(User writer) {
-        this.writer = writer;
     }
 
     public long getId() {

@@ -1,4 +1,4 @@
-$(".submit-write input[type = submit]").click(addAnswers);
+$(".submit-write input[type='submit']").on("click", addAnswers);
 
 function addAnswers(e) {
     console.log("add answer");
@@ -33,11 +33,10 @@ function onSuccess(data, status) {
     $("textarea[name=contents]").val("");
 }
 
-$(".delete-answer-form").click(deleteAnswers);
-
+$(".qna-comment-slipp-articles").on("click", ".delete-answer-form button[type='submit']", deleteAnswers);
 function deleteAnswers(e) {
 
-    var deleteBtn = $(this);
+    var deleteBtn = $(this).parent();
     console.log("delete");
     e.preventDefault();
 
@@ -49,6 +48,7 @@ function deleteAnswers(e) {
         url : url,
         dataType : 'json',
         error : function(xhr, status) {
+            console.log(xhr);
             console.log("delete error!");
             alert("error!");
         },

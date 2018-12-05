@@ -38,7 +38,7 @@ public class ApiAnswerController {
         Answer answer = answerRepository.findById(id).orElseThrow(NullPointerException::new);
         Result result = valid(session, answer);
         if (!result.isValid()) {
-            return result;
+            return Result.fail("로그인이 실패하였습니다.");
 
         }
         answer.delete();
@@ -46,7 +46,7 @@ public class ApiAnswerController {
         question.deleteAnswer();
         questionRepository.save(question);
         answerRepository.save(answer);
-        return Result.ok();
+        return Result.ok(question);
     }
 
     private Result valid(HttpSession session, Answer answer) {

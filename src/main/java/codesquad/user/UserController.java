@@ -27,9 +27,6 @@ public class UserController {
 
     @PostMapping("")
     public String create(User user) {
-
-        System.out.println("User : " + user);
-
         if (logger.isDebugEnabled()) {
             logger.debug("User : " + user);
         }

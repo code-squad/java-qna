@@ -56,14 +56,14 @@ function deleteAnswer(e) {
         success : function (data, status) {
             console.log(data);
             if (data.valid) {
+                  console.log(data);
                 deleteBtn.closest("article").remove();
-                 $(".qna-comment-count strong").html(data.question.answersSize);
+                 $(".qna-comment-count strong").html(data.object.countOfAnswer);
             } else {
                 alert(data.errorMessage);
             }
         }
       });
-
 
 /*
     var queryString = $(".delete-answer-form").serialize();

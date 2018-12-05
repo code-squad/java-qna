@@ -125,15 +125,8 @@ public class Question extends AbstractEntity {
                 return false;
             }
         }
-
         answers.forEach(Answer::delete);
-
-        answers.forEach(x -> x.delete());
-
-
-
         deleted = true;
-
         return true;
     }
 

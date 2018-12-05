@@ -32,8 +32,6 @@ public class QuestionController {
         logger.warn("WARN MESSAGE");
         logger.error("ERROR MESSAGE");
 
-
-
         if(!HttpSessionUtil.isLoginUser(session)) {
             return "/user/login_failed";
         }

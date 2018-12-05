@@ -1,9 +1,15 @@
-package codesquad.domain.comment;
+package codesquad.domain.qna.comment;
 
 import codesquad.domain.qna.Question;
 import codesquad.domain.user.User;
+import codesquad.domain.util.Session;
+import codesquad.domain.util.TimeFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
 
 @Entity
 public class Comment {
@@ -18,22 +24,25 @@ public class Comment {
     @Column(nullable = false)
     private String contents;
 
-    @Column(nullable = false)
-    private String reportingDate;
+    @Column(nullable = true)
+    @CreationTimestamp
+    private LocalDateTime createdDateTime;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "QUESTION_ID_FK")
     private Question question;
+
+    @Column(nullable = true)
+    private boolean identification;
 
     public Comment() {
 
     }
 
-    public Comment(Long commentId, User user, String contents, String reportingDate, Question question) {
+    public Comment(Long commentId, User user, String contents, Question question) {
         this.commentId = commentId;
         this.user = user;
         this.contents = contents;
-        this.reportingDate = reportingDate;
         this.question = question;
     }
 
@@ -46,11 +55,7 @@ public class Comment {
     }
 
     public String getReportingDate() {
-        return reportingDate;
-    }
-
-    public void setReportingDate(String reportingDate) {
-        this.reportingDate = reportingDate;
+        return TimeFormat.getTimeFormat(createdDateTime);
     }
 
     public User getUser() {
@@ -79,17 +84,28 @@ public class Comment {
 
     public void updateComment(Comment comment) {
         this.contents = comment.contents;
-        this.reportingDate = comment.reportingDate;
+    }
+
+    /* 피드백1) 자신의 댓글인지 확인하는 메소드 추가! */
+    public void identification(HttpSession httpSession) {
+        User sessionUser = Session.obtainUser(httpSession);
+        if(Session.obtainUser(httpSession) != null) {
+            identification = sessionUser.equals(user);
+        }
+    }
+
+    public boolean getIdentification() {
+        return identification;
     }
 
     @Override
+    @JsonIgnore
     public String toString() {
         return "Comment{" +
                 "commentId=" + commentId +
-                ", user=" + user +
                 ", contents='" + contents + '\'' +
-                ", reportingDate='" + reportingDate + '\'' +
-                ", question=" + question +
+                ", createdDateTime=" + createdDateTime +
+                ", identification=" + identification +
                 '}';
     }
 }

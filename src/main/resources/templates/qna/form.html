@@ -2,7 +2,7 @@
 <div class="container" id="main">
    <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
       <div class="panel panel-default content-main">
-          <form id="question" name="question" method="post" action="/qna/inquire">
+          <form id="question" name="question" method="post" action="/qna">
               <div class="form-group">
                   <label for="writer">글쓴이</label>
                   <input class="form-control" id="writer" name="writer" placeholder="글쓴이" value="{{sessionUser.userId}}" readonly="true"/>
@@ -15,9 +15,8 @@
                   <label for="contents">내용</label>
                   <textarea name="contents" id="contents" rows="5" class="form-control" value="Detail More"></textarea>
               </div>
-              <input type="hidden" name="reportingDate" id="reportingDate" value="" />
               <input type="hidden" name="user" value="{{sessionUser.id}}" />
-              <button class="btn btn-success clearfix pull-right" onclick="submitForm()">질문하기</button>
+              <button class="btn btn-success clearfix pull-right">질문하기</button>
               <div class="clearfix" />
           </form>
         </div>

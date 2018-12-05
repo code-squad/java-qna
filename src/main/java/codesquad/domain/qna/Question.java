@@ -1,8 +1,14 @@
 package codesquad.domain.qna;
 
-import codesquad.domain.comment.Comment;
+import codesquad.domain.qna.comment.Comment;
 import codesquad.domain.user.User;
+import codesquad.domain.util.TimeFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
+import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,31 +25,37 @@ public class Question {
     @Column(nullable = false)
     private String title;
 
+    @Lob /* 피드백5) 본문내용 글자수를 위해 Lob 어노테이션 설정! */
     @Column(nullable = false)
     private String contents;
 
-    @Column(nullable = false)
-    private String reportingDate;
+    @Column
+    @CreationTimestamp
+    private LocalDateTime createdDateTime;
 
     @OneToOne
     @JoinColumn(name = "USER_ID_FK")
     private User user;
 
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonIgnore
+    @OrderBy("createdDateTime desc")
+    private List<Comment> comments = new ArrayList<>();
+
     @Column
-    private int countOfComment;
+    private Boolean deleted = false;
 
     public Question() {
 
     }
 
-    public Question(Long id, String writer, String title, String contents, String reportingDate, User user, int countOfComment) {
+    public Question(Long id, String writer, String title, String contents, User user, List<Comment> comments, int countOfComment) {
         this.id = id;
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-        this.reportingDate = reportingDate;
         this.user = user;
-        this.countOfComment = countOfComment;
+        this.comments = comments;
     }
 
     public String getWriter() {
@@ -71,11 +83,7 @@ public class Question {
     }
 
     public String getReportingDate() {
-        return reportingDate;
-    }
-
-    public void setReportingDate(String reportingDate) {
-        this.reportingDate = reportingDate;
+        return TimeFormat.getTimeFormat(createdDateTime);
     }
 
     public User getUser() {
@@ -88,7 +96,6 @@ public class Question {
 
     public void updateQuestion(Question question) {
         this.contents = question.contents;
-        this.reportingDate = question.reportingDate;
         this.title = question.title;
     }
 
@@ -100,16 +107,38 @@ public class Question {
         this.id = id;
     }
 
-    public int getCountOfComment() {
-        return countOfComment;
+    public List<Comment> getComments() {
+        return comments;
     }
 
-    public void setCountOfComment(int countOfComment) {
-        this.countOfComment = countOfComment;
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
-    public void operateComment(int count) {
-        this.countOfComment += count;
+    public int getCommentsCount() {
+        return this.comments.size();
+    }
+    /* 피드백4) 본인에 글인지 확인을 위한 메소드 */
+    public boolean identification(User user) {
+        return this.user.equals(user);
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        deleted = deleted;
+    }
+
+    public void deletionProcess() {
+        this.deleted = true;
+    }
+
+    public void identificationComment(HttpSession httpSession) {
+        for(Comment comment : comments) {
+            comment.identification(httpSession);
+        }
     }
 
     @Override
@@ -119,8 +148,9 @@ public class Question {
                 ", writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
-                ", reportingDate='" + reportingDate + '\'' +
+                ", createdDateTime=" + createdDateTime +
                 ", user=" + user +
+                ", comments=" + comments +
                 '}';
     }
 }

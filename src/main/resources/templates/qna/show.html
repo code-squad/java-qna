@@ -1,138 +1,162 @@
 {{#partial "contents"}}
-<script>
-    function pop() {
-        var source = $('#answerTemplate').html();
-        var template = Handlebars.compile(source);
-        $('#modifyModal').append(source);
-        $('#modifyModal').dialog();
-    }
-</script>
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-12">
         <div class="panel panel-default">
-          <header class="qna-header">
-              <h2 class="qna-title">{{question.title}}</h2>
-          </header>
-          <div class="content-main">
-              <article class="article">
-                  <div class="article-header">
-                      <div class="article-header-thumb">
-                          <img src="https://graph.facebook.com/v2.3/100000059371774/picture" class="article-author-thumb" alt="">
-                      </div>
-                      <div class="article-header-text">
-                          <a href="/user/profile/{{question.user.id}}" class="article-author-name">{{question.writer}}</a>
-                          <a href="/questions/413" class="article-header-time" title="퍼머링크">
-                              {{question.reportingDate}}
-                              <i class="icon-link"></i>
-                          </a>
-                      </div>
-                  </div>
-                  <div class="article-doc">
-                      <p> {{question.contents}} </p>
-                  </div>
-                  <div class="article-util">
-                      <ul class="article-util-list">
-                          {{#isSession}}
-                          <li>
-                              <a class="link-modify-article" href="/qna/modify/{{question.id}}">수정</a>
-                          </li>
-                          <li>
-                              <form class="form-delete" action="/qna/delete/{{question.id}}" method="POST">
-                                  <input type="hidden" name="_method" value="DELETE">
-                                  <button class="link-delete-article" type="submit">삭제</button>
-                              </form>
-                          </li>
-                          {{/isSession}}
-                          <li>
-                              <a class="link-modify-article" href="/">목록</a>
-                          </li>
-                      </ul>
-                  </div>
-              </article>
+            <header class="qna-header">
+                <h2 class="qna-title">{{question.title}}</h2>
+            </header>
+            <div class="content-main">
+                <article class="article">
+                    <div class="article-header">
+                        <div class="article-header-thumb">
+                            <img src="https://graph.facebook.com/v2.3/100000059371774/picture"
+                                 class="article-author-thumb" alt="">
+                        </div>
+                        <div class="article-header-text">
+                            <a href="/user/{{question.user.id}}" class="article-author-name">{{question.writer}}</a>
+                            <a href="/questions/413" class="article-header-time" title="퍼머링크">
+                                {{question.reportingDate}}
+                                <i class="icon-link"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="article-doc">
+                        <p> {{question.contents}} </p>
+                    </div>
+                    <div class="article-util">
+                        <ul class="article-util-list">
+                            {{#isQuestionUser}}
+                            <li>
+                                <a class="link-modify-article" href="/qna/{{question.id}}/inquireForm">수정</a>
+                            </li>
+                            <li>
+                                <form class="form-delete" action="/qna/{{question.id}}" method="POST">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button class="link-delete-article" type="submit">삭제</button>
+                                </form>
+                            </li>
+                            {{/isQuestionUser}}
+                            <li>
+                                <a class="link-modify-article" href="/">목록</a>
+                            </li>
+                        </ul>
+                    </div>
+                </article>
 
-              <div class="qna-comment">
-                  <div class="qna-comment-slipp">
-                      <p class="qna-comment-count"><strong>{{commentsCount}}</strong>개의 의견</p>
-                      <div class="qna-comment-slipp-articles">
-                          {{#comments}}
-                          <article class="article" id="answer-{{commentId}}">
-                              <div class="article-header">
-                                  <div class="article-header-thumb">
-                                      <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
-                                  </div>
-                                  <div class="article-header-text">
-                                      <a href="/user/profile/{{user.id}}" class="article-author-name">{{user.userId}}</a>
-                                      <a href="#answer-1434" class="article-header-time" title="퍼머링크">
-                                          {{reportingDate}}
-                                      </a>
-                                  </div>
-                              </div>
-                              <div class="article-doc comment-doc">
-                                  <p>{{contents}}</p>
-                              </div>
-                              <div class="article-util">
-                                  <ul class="article-util-list">
-                                      <li>
-                                          <a class="link-modify-article" onclick="pop()">수정</a>
-                                      </li>
-                                      <li>
-                                          <form class="form-delete" action="/comment/delete/{{question.id}}/{{id}}" method="POST">
-                                              <input type="hidden" name="_method" value="DELETE">
-                                              <button type="submit" class="delete-answer-button">삭제</button>
-                                          </form>
-                                      </li>
-                                  </ul>
-                              </div>
-                          </article>
-                          {{/comments}}
-                          <form id="comment" class="submit-write" method="post" action="/comment/write/{{question.id}}">
-                              <div class="form-group" style="padding:14px;">
-                                  <textarea class="form-control" placeholder="Update your status" name="contents"></textarea>
-                              </div>
-                              <input type="hidden" name="reportingDate" id="reportingDate" value=""/>
-                              <input type="hidden" name="user" id="user" value="{{sessionUser.id}}"/>
-                              <input type="hidden" name="question" id="question" value="{{question.id}}"/>
-                              <button class="btn btn-success pull-right" type="button" onclick="submitComment()">답변하기</button>
-                              <div class="clearfix" />
-                          </form>
-                      </div>
-                  </div>
-              </div>
-          </div>
+                <div class="qna-comment">
+                    <div class="qna-comment-slipp">
+                        <p class="qna-comment-count"><strong>{{commentsCount}}</strong>개의 의견</p>
+                        <div class="qna-comment-slipp-articles">
+                            {{#question.comments}}
+                            <article class="article" id="article-{{commentId}}">
+                                <div class="article-header">
+                                    <div class="article-header-thumb">
+                                        <img src="https://graph.facebook.com/v2.3/1324855987/picture"
+                                             class="article-author-thumb" alt="">
+                                    </div>
+                                    <div class="article-header-text">
+                                        <a href="/user/{{user.id}}" class="article-author-name">{{user.userId}}</a>
+                                        <a href="#answer-1434" class="article-header-time" title="퍼머링크">
+                                            {{reportingDate}}
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="article-doc comment-doc">
+                                    <p>{{contents}}</p>
+                                </div>
+                                {{#identification}}
+                                <div class="article-util">
+                                    <ul class="article-util-list">
+                                        <li>
+                                            <a class="link-modify-article pop" href="/api/comment/{{commentId}}">수정</a>
+                                        </li>
+                                        <li>
+                                            <form class="form-delete" action="/api/comment/{{id}}"
+                                                  method="POST">
+                                                <input type="hidden" name="_method" value="DELETE">
+                                                <button type="submit" class="delete-answer-button">삭제</button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                                {{/identification}}
+                            </article>
+                            {{/question.comments}}
+                            <form id="comment" name="comment" class="submit-write" method="post" action="/api/comment">
+                                <div class="form-group" style="padding:14px;">
+                                    <textarea class="form-control" placeholder="Update your status"
+                                              name="contents"></textarea>
+                                </div>
+                                <input type="hidden" name="user" id="user" value="{{sessionUser.id}}"/>
+                                <input type="hidden" name="question" id="question" value="{{question.id}}"/>
+                                <button class="btn btn-success pull-right" type="submit">답변하기</button>
+                                <div class="clearfix"/>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-<div id="modifyModal" title="modal">
+<div id="modifyModal" title="답변 수정" style="width:400px;">
 
 </div>
-<script type="text/template" id="answerTemplate">
-	<article class="article">
-		<div class="article-header">
-			<div class="article-header-thumb">
-				<img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
-			</div>
-			<div class="article-header-text">
-				<a href="#" class="article-author-name">{{sessionUser.name}}</a>
-				<div class="article-header-time">{1}</div>
-			</div>
-		</div>
-		<div class="article-doc comment-doc">
-			{2}
-		</div>
-		<div class="article-util">
-		<ul class="article-util-list">
-			<li>
-				<a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
-			</li>
-			<li>
-				<form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
-					<input type="hidden" name="_method" value="DELETE">
-                     <button type="submit" class="delete-answer-button">삭제</button>
-				</form>
-			</li>
-		</ul>
-		</div>
-	</article>
+<!-- 수정 모달 템플릿 -->
+<script type="text/template" id="commentModifyTemplate">
+    <article class="article">
+        <div class="article-header">
+            <div class="article-header-thumb">
+                <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
+            </div>
+            <div class="article-header-text">
+                <a href="/user/\{{id}}" class="article-author-name">\{{userId}}</a>
+            </div>
+        </div>
+        <div class="article-doc comment-doc">
+            <form class="modify-comment-form" name="modify-comment" method="post"
+                  action="/api/comment/\{{commentId}}">
+                <div class="form-group" style="padding:14px;">
+                    <textarea class="form-control" placeholder="Update your status"
+                              name="contents">\{{contents}}</textarea>
+                </div>
+                <input type="hidden" name="user" value="{{sessionUser.id}}"/>
+                <input type="hidden" name="_method" value="PUT"/>
+                <button type="button" class="btn btn-success pull-right" onclick="modifyComment()">수정하기</button>
+                <div class="clearfix"/>
+            </form>
+        </div>
+    </article>
+</script>
+<!-- 댓글 작성 추가 템플릿 -->
+<script type="text/template" id="commentTemplate">
+    <article id="article-{5}">
+        <div class="article-header">
+            <div class="article-header-thumb">
+                <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
+            </div>
+            <div class="article-header-text">
+                <a href="/user/{0}" class="article-author-name">{1}</a>
+                <div class="article-header-time">{2}</div>
+            </div>
+        </div>
+        <div class="article-doc comment-doc">
+            <p> {3} </p>
+        </div>
+        <div class="article-util">
+            <ul class="article-util-list">
+                <li>
+                    <a class="link-modify-article pop" href="/api/comment/{5}">수정</a>
+                </li>
+                <li>
+                    <form class="form-delete" action="/api/comment/{5}" method="POST">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit" class="delete-answer-button">삭제</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </article>
 </script>
 {{/partial}}
 {{> tiles/base}}

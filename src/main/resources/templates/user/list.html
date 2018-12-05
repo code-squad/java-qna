@@ -12,10 +12,10 @@
                 {{#users}}
                 <tr>
                     <th scope="row">{{@index_1}}</th>
-                    <td><a href="/users/{{id}}" />{{userId}}</td>
+                    <td><a href="/user/{{id}}" />{{userId}}</td>
                     <td>{{name}}</td>
                     <td>{{email}}</td>
-                    <td><a href="/modify/{{id}}" class="btn btn-success" role="button">수정</a></td>
+                    <td><a href="/user/{{id}}/joinForm" class="btn btn-success" role="button">수정</a></td>
                 </tr>
               {{/users}}
               </tbody>

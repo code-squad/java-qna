@@ -2,7 +2,7 @@
 <div class="container" id="main">
    <div class="col-md-6 col-md-offset-3">
       <div class="panel panel-default content-main">
-          <form name="question" method="post" action="{{actionPath}}">
+          <form name="join" method="post" action="{{actionPath}}">
               <div class="form-group">
                   <label for="userId">사용자 아이디</label>
                   <input class="form-control" id="userId" name="userId" placeholder="User ID" value="{{user.userId}}" {{readOnly}}>
@@ -19,7 +19,7 @@
                   <label for="email">이메일</label>
                   <input type="email" class="form-control" id="email" name="email" placeholder="Email" value="{{user.email}}">
               </div>
-              <input type="hidden" name="id" value="{{user.id}}" /> <!--hidden 값이 필요한 이유는? -->
+              <input type="hidden" name="id" value="{{user.id}}" />
               <button type="submit" class="btn btn-success clearfix pull-right">
                   {{buttonName}}
               </button>

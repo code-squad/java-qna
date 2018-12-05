@@ -1,11 +1,8 @@
-package codesquad.domain.comment.dao;
+package codesquad.domain.qna.comment.dao;
 
-import codesquad.domain.comment.Comment;
+import codesquad.domain.qna.comment.Comment;
 import codesquad.domain.qna.Question;
-import codesquad.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 

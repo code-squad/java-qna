@@ -2,12 +2,15 @@ package codesquad.domain.user;
 
 import codesquad.domain.user.dao.UserRepository;
 import codesquad.domain.util.Session;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 /* Controller 역할 부여를 위한 어노테이션 */
 @RequestMapping("/user")
@@ -23,65 +26,60 @@ public class UserController {
     @Autowired
     UserRepository userRepository;
 
-    @PostMapping("/create")
+    private static final Logger logger = getLogger(UserController.class);
+    
+    @PostMapping("")
     public String create(User user) {
-        System.out.println("회원가입!");
+        logger.info("회원가입!");
         try {
             userRepository.save(user);
         } catch (Exception e) {
-            System.out.println("회원가입 -> 아이디 중복!");
-            // 중복가입에 대한 처리 후, 이전에 입력했던 데이터를 그대로 보관하는 방법을 잘 몰라서... 미적용... //
-            // 세션보관은 뭔가.. 맞지 않아보임.. --> Ajax는 기억이 나지 않음... //
+            logger.info("회원가입 -> 아이디 중복!");
             return "redirect:/user/form";
         }
         return "redirect:/";
     }
 
-    @PutMapping("/form/{id}")
+    @PutMapping("/{id}")
     public String modify(@PathVariable Long id, User updatedUser) {
-        System.out.println("회원정보 수정!");
+        logger.info("회원정보 수정!");
         User user = userRepository.findById(id).orElse(null);
         user.update(updatedUser);
         userRepository.save(user);
         return "redirect:/";
     }
 
-    @GetMapping("/form")
+    @GetMapping("/joinForm")
     public String form(Model model) {
-        System.out.println("회원가입 페이지 이동!");
-        model.addAttribute("actionPath", "/user/create");
+        logger.info("회원가입 페이지 이동!");
+        model.addAttribute("actionPath", "/user");
         model.addAttribute("buttonName", "회원가입");
         model.addAttribute("methodType", "POST");
         return "/user/form";
     }
 
-    @GetMapping("/list")
+    @GetMapping()
     public String list(Model model) {
-        System.out.println("회원전체목록 조회!");
+        logger.info("회원전체목록 조회!");
         model.addAttribute("users", userRepository.findAll()); // 반환하는 웹 페이지에 변수를 전달
         return "/user/list";
     }
 
-    @GetMapping("/profile/{id}")
+    @GetMapping("/{id}")
     public String information(@PathVariable("id") Long id, Model model) {
-        System.out.println("프로필 정보 확인");
+        logger.info("프로필 정보 확인");
         model.addAttribute("user", userRepository.findById(id).orElse(null));
         return "/user/profile";
     }
 
-    public boolean isIdentification(User user, Long id) {
-        return user.identification(id);
-    }
-
-    @GetMapping("/modify/{id}")
+    @GetMapping("/{id}/joinForm")
     public String modify(@PathVariable("id") Long id, Model model, HttpSession session) {
-        System.out.println("회원정보 수정 페이지 이동!");
-        User sessionUser = (User)session.getAttribute(Session.SESSION_NAME);
-        if(sessionUser == null || !isIdentification(sessionUser, id)) {
+        logger.info("회원정보 수정 페이지 이동!");
+        if(!Session.isUser(session, id)) {
             return "redirect:/user/loginForm";
         }
         model.addAttribute("user", userRepository.findById(id).orElse(null));
-        model.addAttribute("actionPath", String.format("/user/form/%d", Long.valueOf(id)));
+        model.addAttribute("actionPath", String.format("/user/%d", Long.valueOf(id)));
         model.addAttribute("buttonName", "회원정보수정");
         model.addAttribute("methodType", "PUT");
         model.addAttribute("readOnly", "readonly");
@@ -90,17 +88,21 @@ public class UserController {
 
     @GetMapping("/loginForm")
     public String loginForm() {
-        System.out.println("로그인 화면 이동!");
+        logger.info("로그인 화면 이동!");
         return "/user/login";
     }
 
     @PostMapping("/login")
     public String login(String userId, String password, HttpSession httpSession) {
-        System.out.println("로그인 처리!");
+        logger.info("로그인 처리!");
         User user = userRepository.findByUserId(userId);
+        if(user == null) {
+            logger.info("잘못된 아이디!");
+            return "/user/login_failed";
+        }
         if(!user.isValidPassword(password)) {
-            System.out.println("로그인 실패!");
-            return "/user/loginForm";
+            logger.info("잘못된 패스워드!");
+            return "/user/login_failed";
         }
         Session.registerSession(httpSession, user);
         return "redirect:/";
@@ -108,7 +110,7 @@ public class UserController {
 
     @GetMapping("/logout")
     public String logout(HttpSession httpSession) {
-        System.out.println("로그아웃!");
+        logger.info("로그아웃!");
         Session.removeSession(httpSession);
         return "redirect:/";
     }

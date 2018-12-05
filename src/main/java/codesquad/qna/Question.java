@@ -1,23 +1,17 @@
 package codesquad.qna;
 
+import codesquad.AbstractEntity;
 import codesquad.answer.Answer;
 import codesquad.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
-public class Question {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty
-    private long id;
-
+public class Question extends AbstractEntity {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     @JsonProperty
@@ -33,8 +27,6 @@ public class Question {
 
     @JsonProperty
     private Integer countOfAnswer = 0;
-
-    private LocalDateTime createDate;
 
     @JsonIgnore
     @OneToMany(mappedBy = "question")
@@ -62,7 +54,6 @@ public class Question {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-        this.createDate = LocalDateTime.now();
     }
 
     public User getWriter() {
@@ -87,14 +78,6 @@ public class Question {
 
     public void setContents(String contents) {
         this.contents = contents;
-    }
-
-    public Long getId() {
-        return this.id;
-    }
-
-    public void setId(Long index) {
-        this.id = index;
     }
 
     public Integer getCountOfAnswer() {
@@ -122,13 +105,6 @@ public class Question {
 
     public boolean isSameWriter(User sessionedUser) {
         return writer.matchUser(sessionedUser);
-    }
-
-    public String getFormattedCreateDate() {
-        if (createDate == null) {
-            return "";
-        }
-        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
     }
 
     public void increaseAnswerCount() {

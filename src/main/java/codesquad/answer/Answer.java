@@ -1,5 +1,6 @@
 package codesquad.answer;
 
+import codesquad.AbstractEntity;
 import codesquad.qna.Question;
 import codesquad.user.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,15 +10,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
-public class Answer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty
-    private Long id;
-
+public class Answer extends AbstractEntity {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_question"))
     @JsonProperty
@@ -34,11 +29,9 @@ public class Answer {
 
     private LocalDateTime createDate;
 
-
     private boolean deleted = false;
 
-    public Answer() {
-    }
+    public Answer() {}
 
     public Answer(User writer, Question question, String contents) {
         this.writer = writer;
@@ -47,13 +40,9 @@ public class Answer {
         this.createDate = LocalDateTime.now();
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+//    public Long getId() {
+//        return this.getId();
+//    }
 
     public Question getQuestion() {
 
@@ -105,15 +94,11 @@ public class Answer {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Answer)) return false;
-        Answer answer = (Answer) o;
-        return Objects.equals(getId(), answer.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId());
+    public String toString() {
+        return "Answer{" +
+                super.toString() +
+                ", writer=" + writer +
+                ", contents='" + contents + '\'' +
+                '}';
     }
 }

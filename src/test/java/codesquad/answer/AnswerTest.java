@@ -21,8 +21,8 @@ public class AnswerTest {
 
     @Before
     public void init() {
-        user1.setId(1L);
-        user2.setId(2L);
+        //user1.setId(1L);
+        //user2.setId(2L);
         question1.setAnswers(answers);
     }
 

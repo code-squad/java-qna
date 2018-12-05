@@ -35,7 +35,8 @@ function onSuccessAddAnswer(data, status) {
     $("textarea[name=contents]").val("");
 }
 
-$("a.link-delete-article").click(deleteAnswer);
+//$("a.link-delete-article").click(deleteAnswer);
+$(".qna-comment-slipp-articles").on("click", "a.link-delete-article", deleteAnswer);
 
 function deleteAnswer(e) {
       console.log("deleteAnswer");
@@ -56,6 +57,7 @@ function deleteAnswer(e) {
             console.log(data);
             if (data.valid) {
                 deleteBtn.closest("article").remove();
+                 $(".qna-comment-count strong").html(data.question.answersSize);
             } else {
                 alert(data.errorMessage);
             }

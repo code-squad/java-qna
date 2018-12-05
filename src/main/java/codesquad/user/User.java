@@ -1,18 +1,13 @@
 package codesquad.user;
 
+import codesquad.AbstractEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
-public class User {
-    @Id
-    @JsonProperty
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class User extends AbstractEntity {
     @JsonProperty
     @Column(nullable = false, length = 20, unique = true)
     private String userId;
@@ -32,20 +27,11 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String userId, String password, String name, String email) {
-        this.id = id;
+    public User(String userId, String password, String name, String email) {
         this.userId = userId;
         this.password = password;
         this.name = name;
         this.email = email;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getUserId() {
@@ -94,31 +80,18 @@ public class User {
         return this.password.equals(password);
     }
 
+    public boolean matchId(Long id) {
+        return this.getId().equals(id);
+    }
+
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                super.toString() +
                 ", userId='" + userId + '\'' +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    public boolean matchId(Long id) {
-        return this.id.equals(id);
     }
 }

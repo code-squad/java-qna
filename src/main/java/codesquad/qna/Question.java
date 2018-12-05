@@ -1,5 +1,6 @@
 package codesquad.qna;
 
+import codesquad.AbstractEntity;
 import codesquad.answer.Answer;
 import codesquad.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -9,16 +10,11 @@ import java.util.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
 
 
 @Entity
-public class Question {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Question extends AbstractEntity {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     private User writer;
@@ -27,7 +23,6 @@ public class Question {
     private String title;
     @Lob
     private String contents;
-    private LocalDateTime createDate;
     private boolean deleted;
 
     @JsonProperty
@@ -45,15 +40,6 @@ public class Question {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-        this.createDate = LocalDateTime.now();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public User getWriter() {
@@ -118,13 +104,6 @@ public class Question {
         return false;
     }
 
-    public String getFormattedCreateDate() {
-        if (createDate == null) {
-            return "";
-        }
-        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
-    }
-
     public String getAnswersSize() {
         System.out.println("### size " + answers.stream().filter(x -> !x.isDeleted()).count());
         return String.valueOf(answers.stream().filter(x -> !x.isDeleted()).count());
@@ -134,22 +113,13 @@ public class Question {
         return answers.isEmpty();
     }
 
-    @Override
-    public String toString() {
-        return "Question{" +
-                "id=" + id +
-                ", writer='" + writer + '\'' +
-                ", title='" + title + '\'' +
-                ", contents='" + contents + '\'' +
-                '}';
-    }
-
     public boolean delete() {
         // 비었으면
         if (answers.isEmpty()) {
             deleted = true;
             return true;
         }
+
         for (Answer answer : answers) {
             if (!answer.isSameWriter(writer)) {
                 return false;
@@ -157,6 +127,11 @@ public class Question {
         }
 
         answers.forEach(Answer::delete);
+
+        answers.forEach(x -> x.delete());
+
+
+
         deleted = true;
 
         return true;
@@ -168,5 +143,15 @@ public class Question {
 
     public void deleteAnswer() {
         this.countOfAnswer -= 1;
+    }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                super.toString() +
+                ", writer='" + writer + '\'' +
+                ", title='" + title + '\'' +
+                ", contents='" + contents + '\'' +
+                '}';
     }
 }

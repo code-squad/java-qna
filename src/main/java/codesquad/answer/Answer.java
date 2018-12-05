@@ -1,19 +1,13 @@
 package codesquad.answer;
 
+import codesquad.AbstractEntity;
 import codesquad.qna.Question;
 import codesquad.user.User;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 
 @Entity
-public class Answer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Answer extends AbstractEntity {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
     private User writer;
@@ -24,7 +18,6 @@ public class Answer {
 
     @Lob
     private String contents;
-    private LocalDateTime createDate;
     private boolean deleted = false;
 
     public Answer() {
@@ -34,15 +27,6 @@ public class Answer {
         this.writer = writer;
         this.question = question;
         this.contents = contents;
-        this.createDate = LocalDateTime.now();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public User getWriter() {
@@ -69,21 +53,6 @@ public class Answer {
         this.contents = contents;
     }
 
-    public LocalDateTime getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(LocalDateTime createDate) {
-        this.createDate = createDate;
-    }
-
-    public String getFormattedCreateDate() {
-        if (createDate == null) {
-            return "";
-        }
-        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
-    }
-
     public boolean isDeleted() {
         return deleted;
     }
@@ -101,25 +70,12 @@ public class Answer {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Answer answer = (Answer) o;
-        return Objects.equals(id, answer.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @Override
     public String toString() {
         return "Answer{" +
-                "id=" + id +
+                super.toString() +
                 ", writer=" + writer +
                 ", contents='" + contents + '\'' +
-                ", createDate=" + createDate +
+                ", createDate=" + getFormattedCreateDate() +
                 '}';
     }
 }

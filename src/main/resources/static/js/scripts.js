@@ -26,7 +26,8 @@ function onError() {
 
 function onSuccess(data, status) {
     console.log(data);
-    $(".qna-comment-count strong").html(data.question.answerSize);
+    $(".qna-comment-count strong").html(data.question.answerCount);
+    console.log(data.question.answerCount);
     var answerTemplate = $("#answerTemplate").html();
     var template = answerTemplate.format(data.writer.userId, data.date, data.contents, data.question.id, data.id, data.writer.id);
     $(".qna-comment-slipp-articles").append(template);
@@ -52,10 +53,13 @@ function deleteAnswers(e) {
             console.log("delete error!");
             alert("error!");
         },
-        success : function(data, status) {
+        success : function(data, status, xhr) {
+            console.log(xhr);
             console.log("success!");
             alert("success");
             if(data.valid) {
+                console.log(data);
+                $(".qna-comment-count strong").html(data.object.answerCount);
                 deleteBtn.closest("article").remove();
             }
         }

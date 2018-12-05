@@ -104,7 +104,11 @@ public class Question {
         return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
     }
 
-    public int getAnswerSize() {
-        return answers.size();
+    public void increaseAnswer() {
+        this.answerCount += 1;
+    }
+
+    public void decreaseAnswer() {
+        this.answerCount -= 1;
     }
 }

@@ -24,6 +24,8 @@ public class ApiAnswerController {
     public Answer create(@PathVariable long questionId , HttpSession session, String contents) {
         User user = HttpSessionUtils.getUserFromSession(session);
         Question question = qnaRepository.findById(questionId).orElseThrow(() -> new IllegalArgumentException("no!"));
+        question.increaseAnswer();
+        qnaRepository.save(question);
         return answerRepository.save(new Answer(user, question, contents));
     }
 
@@ -37,8 +39,11 @@ public class ApiAnswerController {
         if (!answer.isSameWriter(user)) {
             return Result.fail("you can't delete other's information");
         }
+        Question question = qnaRepository.findById(questionId).orElse(null);
+        question.decreaseAnswer();
+        qnaRepository.save(question);
         answerRepository.deleteById(id);
-        return Result.ok();
+        return Result.ok(question);
     }
 
 }

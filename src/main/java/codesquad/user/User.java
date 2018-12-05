@@ -1,13 +1,12 @@
 package codesquad.user;
 
+import codesquad.AbstractEntity;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-public class User {
-    @Id //기본키
-    @GeneratedValue(strategy = GenerationType.IDENTITY)    //db에 자동으로 새로 추가된 데이터의 userId 번호+1
-    private long pId;
+public class User extends AbstractEntity {
 
     @Column(nullable = false, length = 20, unique = true)
     private String userId;
@@ -15,14 +14,6 @@ public class User {
     private String name;
 
     private String email;
-
-    public long getPId() {
-        return pId;
-    }
-
-    public void setPId(long pId) {
-        this.pId = pId;
-    }
 
     public String getUserId() {
         return userId;
@@ -56,16 +47,6 @@ public class User {
         this.email = email;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "userId='" + userId + '\'' +
-                ", password='" + password + '\'' +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                '}';
-    }
-
     void update(User updatedUser) {
         if (!this.userId.equals(updatedUser.userId)) throw new IllegalArgumentException();
         this.password = updatedUser.password;
@@ -82,7 +63,7 @@ public class User {
     }
 
     boolean matchPId(long pId) {
-        return this.pId == pId;
+        return getPId() == pId;
     }
 
     public boolean matchWriter(String writer) {
@@ -90,23 +71,16 @@ public class User {
     }
 
     public boolean matchUser(User other) {
-        return this.userId == other.userId;
+        return this.userId.equals(other.userId);
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return pId == user.pId &&
-                Objects.equals(userId, user.userId) &&
-                Objects.equals(password, user.password) &&
-                Objects.equals(name, user.name) &&
-                Objects.equals(email, user.email);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(pId, userId, password, name, email);
+    public String toString() {
+        return "User{" +
+                "userId='" + userId + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

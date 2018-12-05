@@ -25,7 +25,7 @@ function addAnswer(e) {
            console.log(status);
            console.log(data);
            var answerTemplate = $("#answerTemplate").html();
-           var template = answerTemplate.format(data.writer.pid, data.writer.userId, data.answerDate, data.contents, data.question.pid, data.pid);
+           var template = answerTemplate.format(data.writer.pid, data.writer.userId, data.date, data.contents, data.question.pid, data.pid);
            $(".qna-comment-slipp-articles").append(template);
            $(".qna-comment-count strong").html(data.question.answersSize);
            $("textarea[name=contents]").val("");
@@ -37,13 +37,8 @@ $(".qna-comment-slipp-articles").on("click", ".delete-answer-form button[type='s
 function deleteAnswer(e){
     e.preventDefault();
 
-//    세션안의 로그인 유저 정보를 어떻게 가져옴?
-//    var loginUser = $.session.get('loginUser');
-//    console.log(loginUser);
-
     var deleteBtn = $(this);
     var url = deleteBtn.parent().attr("action");
-//    var url = $(this).parent().attr("action");   //this
     console.log("this : " + deleteBtn);
     console.log("url : " + url);
     console.log("delete click!");

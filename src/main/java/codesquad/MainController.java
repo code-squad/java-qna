@@ -7,7 +7,7 @@
 //public class MainController {
 //    @GetMapping("/")
 //    public String index() {
-//        return "forward:/question/list";
+//        return "forward:/questions/list";
 //    }
 //}
 

@@ -37,7 +37,7 @@
             </form>
             <ul class="nav navbar-nav navbar-right">
                 {{#loginUser}}
-                <li><a href="/user/profile/{{pId}}" role="button">{{name}} 님</a></li>
+                <li><a href="/users/profile/{{pId}}" role="button">{{name}} 님</a></li>
                 {{/loginUser}}
                 <li>
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-bell"></i></a>
@@ -46,7 +46,7 @@
                         <li><a href="https://facebook.com" target="_blank">Facebook</a></li>
                     </ul>
                 </li>
-                <li><a href="/user/list"><i class="glyphicon glyphicon-user"></i></a></li>
+                <li><a href="/users/list"><i class="glyphicon glyphicon-user"></i></a></li>
             </ul>
         </div>
     </div>
@@ -71,12 +71,12 @@
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="/">Posts</a></li>
                 {{^loginUser}}
-                <li><a href="/user/loginForm" role="button">로그인</a></li>
-                <li><a href="/user/form" role="button">회원가입</a></li>
+                <li><a href="/users/loginForm" role="button">로그인</a></li>
+                <li><a href="/users/form" role="button">회원가입</a></li>
                 {{/loginUser}}
                 {{#loginUser}}
-                <li><a href="/user/logout" role="button">로그아웃</a></li>
-                <li><a href="/user/{{pId}}/form" role="button">개인정보수정</a></li>
+                <li><a href="/users/logout" role="button">로그아웃</a></li>
+                <li><a href="/users/{{pId}}/form" role="button">개인정보수정</a></li>
                 {{/loginUser}}
             </ul>
         </div>
@@ -90,9 +90,9 @@
 
 {{#block "footer"}}
 <!-- script references -->
-<script src="../js/jquery-2.2.0.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
-<script src="../js/scripts.js"></script>
+<script src="/js/jquery-2.2.0.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/scripts.js"></script>
 {{/block}}
 
 </body>

@@ -13,9 +13,9 @@
                           <img src="https://graph.facebook.com/v2.3/100000059371774/picture" class="article-author-thumb" alt="">
                       </div>
                       <div class="article-header-text">
-                          <a href="/user/profile/{{writer.pId}}" class="article-author-name">{{writer.userId}}</a>
+                          <a href="/users/profile/{{writer.pId}}" class="article-author-name">{{writer.userId}}</a>
                           <a href="/questions/413" class="article-header-time" title="퍼머링크">
-                              {{date}}
+                              {{modifiedDate}}
                               <i class="icon-link"></i>
                           </a>
                       </div>
@@ -26,10 +26,10 @@
                   <div class="article-util">
                       <ul class="article-util-list">
                           <li>
-                              <a class="link-modify-article" href="/question/{{pId}}/form">수정</a>
+                              <a class="link-modify-article" href="/questions/{{pId}}/form">수정</a>
                           </li>
                           <li>
-                              <form class="form-delete" action="/question/{{pId}}" method="post">
+                              <form class="form-delete" action="/questions/{{pId}}" method="post">
                                   <input type="hidden" name="_method" value="delete">
                                   <button class="link-delete-article" type="submit">삭제</button>
                               </form>
@@ -43,18 +43,18 @@
               <div class="qna-comment">
                   <div class="qna-comment-slipp">
                       <p class="qna-comment-count"><strong>{{answersSize}}</strong>개의 의견</p>
-                      {{#answers}}
-                      {{^deleted}}
                       <div class="qna-comment-slipp-articles">
+                          {{#answers}}
+                          {{^deleted}}
                           <article class="article" id="answer-1405">
                               <div class="article-header">
                                   <div class="article-header-thumb">
                                       <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
                                   </div>
                                   <div class="article-header-text">
-                                      <a href="/user/profile/{{writer.pId}}" class="article-author-name">{{writer.userId}}</a>
+                                      <a href="/users/profile/{{writer.pId}}" class="article-author-name">{{writer.userId}}</a>
                                       <a href="#answer-1434" class="article-header-time" title="퍼머링크">
-                                          {{answerDate}}
+                                          {{modifiedDate}}
                                       </a>
                                   </div>
                               </div>
@@ -64,10 +64,10 @@
                               <div class="article-util">
                                   <ul class="article-util-list">
                                       <li>
-                                          <a class="link-modify-article" href="/question/{{question.pId}}/answer/{{pId}}">수정</a>
+                                          <a class="link-modify-article" href="/questions/{{question.pId}}/answer/{{pId}}">수정</a>
                                       </li>
                                       <li>
-                                          <form class="delete-answer-form" action="/question/{{question.pId}}/answer/{{pId}}" method="POST">
+                                          <form class="delete-answer-form" action="/api/questions/{{question.pId}}/answer/{{pId}}" method="POST">
                                               <input type="hidden" name="_method" value="DELETE">
                                               <button type="submit" class="delete-answer-button">삭제</button>
                                           </form>
@@ -77,16 +77,17 @@
                           </article>
                           {{/deleted}}
                           {{/answers}}
-                          <form class="submit-write" method="post" action="/question/{{pId}}/answer">
-                              <div class="form-group" style="padding:14px;">
-                                  <textarea class="form-control" placeholder="Update your status" name="contents"></textarea>
-                              </div>
-                              <input type="hidden" name = "writer" value="{{loginUser.pId}}">
-                              <input type="hidden" name = "question" value="{{question.pId}}">
-                              <input type="submit" class="btn btn-success pull-right" value="답변하기"/>
-                              <div class="clearfix" />
-                          </form>
                       </div>
+                      <!--json방식은 action url에 api를 붙여주도록 지향한다-->
+                      <form class="submit-write" method="post" action="/api/questions/{{pId}}/answer">
+                          <div class="form-group" style="padding:14px;">
+                              <textarea class="form-control" placeholder="Update your status" name="contents"></textarea>
+                          </div>
+                          <input type="hidden" name = "writer" value="{{loginUser.pId}}">
+                          <input type="hidden" name = "question" value="{{question.pId}}">
+                          <input type="submit" class="btn btn-success pull-right" value="답변하기"/>
+                          <div class="clearfix" />
+                      </form>
                   </div>
               </div>
               {{/question}}
@@ -96,18 +97,18 @@
 </div>
 
 <script type="text/template" id="answerTemplate">
-	<article class="article">
+    <article class="article">
 		<div class="article-header">
 			<div class="article-header-thumb">
 				<img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
 			</div>
 			<div class="article-header-text">
-				<a href="#" class="article-author-name">{0}</a>
-				<div class="article-header-time">{1}</div>
+				<a href="/users/profile/{0}" class="article-author-name">{1}</a>
+                <div class="article-header-time">{2}</div>
 			</div>
 		</div>
 		<div class="article-doc comment-doc">
-			{2}
+			{3}
 		</div>
 		<div class="article-util">
 		<ul class="article-util-list">
@@ -115,7 +116,7 @@
 				<a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
 			</li>
 			<li>
-				<form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
+				<form class="delete-answer-form" action="/api/questions/{4}/answer/{5}" method="POST">
 					<input type="hidden" name="_method" value="DELETE">
                      <button type="submit" class="delete-answer-button">삭제</button>
 				</form>

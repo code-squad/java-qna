@@ -1,21 +1,16 @@
 package codesquad.question;
 
+import codesquad.AbstractEntity;
 import codesquad.answer.Answer;
 import codesquad.user.User;
 import codesquad.utils.HttpSessionUtils;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import javax.servlet.http.HttpSession;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
-public class Question {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long pId;
+public class Question extends AbstractEntity {
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
@@ -23,17 +18,18 @@ public class Question {
 
     @OneToMany(mappedBy = "question")
     @OrderBy("pId ASC")
+    @JsonIgnore
     private List<Answer> answers;
 
     private String title;
     @Lob
     private String contents;
 
-    private LocalDateTime date;
+    private int answersSize = 0;
     private boolean deleted = false;
 
     public Question() {
-        this.date = LocalDateTime.now();
+
     }
 
     public boolean isDeleted() {
@@ -45,18 +41,15 @@ public class Question {
     }
 
     public int getAnswersSize() {
-        int cnt = 0;
-        for (Answer answer : answers) {
-            if (!answer.isDeleted()) cnt++;
-        }
-        return cnt;
+        return answersSize;
     }
 
-    public String getDate() {
-        if (date == null) {
-            return "";
-        }
-        return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    public void plusAnswersSize() {
+        this.answersSize++;
+    }
+
+    public void minusAnswersSize() {
+        this.answersSize--;
     }
 
     public List<Answer> getAnswers() {
@@ -65,14 +58,6 @@ public class Question {
 
     public void setAnswers(List<Answer> answers) {
         this.answers = answers;
-    }
-
-    public long getPId() {
-        return pId;
-    }
-
-    public void setPId(long pId) {
-        this.pId = pId;
     }
 
     public User getWriter() {
@@ -100,8 +85,8 @@ public class Question {
         this.contents = contents;
     }
 
-    void update(Question updateQuestion, HttpSession session) {
-        if (!HttpSessionUtils.isValid(session, this)) throw new IllegalArgumentException();
+    void update(Question updateQuestion, User loginUser) {
+        if (!HttpSessionUtils.isValid(loginUser, this)) throw new IllegalArgumentException();
         this.title = updateQuestion.title;
         this.contents = updateQuestion.contents;
     }
@@ -115,31 +100,16 @@ public class Question {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Question question = (Question) o;
-        return pId == question.pId &&
-                Objects.equals(writer, question.writer) &&
-                Objects.equals(title, question.title) &&
-                Objects.equals(contents, question.contents) &&
-                Objects.equals(date, question.date);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(pId, writer, title, contents, date);
-    }
-
-    @Override
     public String toString() {
         return "Question{" +
-                "pId=" + pId +
+                "pId=" + getPId() +
                 ", writer=" + writer +
                 ", answers=" + answers +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
-                ", date=" + date +
+                ", answersSize=" + answersSize +
+                ", date=" + getDate() +
+                ", deleted=" + deleted +
                 '}';
     }
 
@@ -150,11 +120,11 @@ public class Question {
         return true;
     }
 
-    public void delete() {
+    public void delete(User loginUser) {
         if (isNotExistOtherUser()) {
             this.deleted = true;
             for (Answer answer : answers) {
-                answer.delete();
+                answer.delete(loginUser);
             }
         }
     }

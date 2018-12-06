@@ -35,7 +35,6 @@ public class ApiAnswerController {
 
     @DeleteMapping("/{id}")
     public Result delete(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
-        System.out.println("isDelete :    SDddfgkjrlkgjofijlkfjblkjd");
         if (!HttpSessionUtils.isLoginUser(session)) {
             return Result.fail("로그인 해야 합니다.");
         }
@@ -49,7 +48,6 @@ public class ApiAnswerController {
         Question question = questionRepository.findById(questionId).orElse(null);
         question.decreaseAnswerCount();
         answer.changeDeletedTrue();
-//        questionRepository.save(question);
         answerRepository.save(answer);
         return Result.ok();
     }

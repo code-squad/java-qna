@@ -82,7 +82,7 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}")            //index에서 질문의 제목 눌렀을때
-    public String DetailContents(@PathVariable long id, Model model, HttpSession session) {
+    public String detailContents(@PathVariable long id, Model model, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/users/login";
         }
@@ -106,6 +106,4 @@ public class QuestionController {
         questionRepository.save(question);
         return "redirect:/";
     }
-
-
 }

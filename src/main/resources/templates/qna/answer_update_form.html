@@ -5,7 +5,7 @@
             {{#answer}}
             <form name="question" method="post" action="/questions/{{question.id}}/answers/{{id}}">
                 <input type="hidden" name="_method" value="PUT" />
-                <input type="hidden" id="writer" name="writer" value="{{writer.id}}"/>
+                <!--<input type="hidden" id="writer" name="writer" value="{{writer.id}}"/>-->
                 <div class="form-group">
                     <label for="contents">내용</label>
                     <textarea name="contents" id="contents" rows="5" class="form-control">{{contents}}</textarea>

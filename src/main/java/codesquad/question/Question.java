@@ -1,24 +1,20 @@
 package codesquad.question;
 
+import codesquad.AbstractEntity;
 import codesquad.answer.Answer;
 import codesquad.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
-public class Question {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
-    private long id;
-
+public class Question extends AbstractEntity {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_user"))
     private User writer;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "question", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     private List<Answer> answers;
 
@@ -28,20 +24,16 @@ public class Question {
     @Lob
     private String contents;
 
-    private LocalDateTime createDate;
+    private Integer countOfAnswer = 0;
 
     private boolean deleted;
 
-    public Question() {
-        this.createDate = LocalDateTime.now();
-        this.deleted = false;
-    }
+    public Question() {}
 
     public Question(User writer, String title, String contents) {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-        this.createDate = LocalDateTime.now();
         this.deleted = false;
     }
 
@@ -49,14 +41,13 @@ public class Question {
         return this.writer.equals(target);
     }
 
-    void update(Question updatedQuestion) {
-        if(!updatedQuestion.isMatchWriter(this.writer)) {
+    void update(User loggedInUser, Question updatedQuestion) {
+        if(!loggedInUser.equals(this.writer)) {
             throw new IllegalStateException("작성자만 수정 가능합니다.");
         }
 
         this.title = updatedQuestion.title;
         this.contents = updatedQuestion.contents;
-        this.createDate = updatedQuestion.createDate;
     }
 
     void delete(User loggedInUser) {
@@ -92,19 +83,12 @@ public class Question {
         return true;
     }
 
-    public String getFormattedCreateDate() {
-        if (createDate == null) {
-            return "";
-        }
-        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
+    public void addAnswer() {
+        this.countOfAnswer += 1;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
+    public void deleteAnswer() {
+        this.countOfAnswer -= 1;
     }
 
     public User getWriter() {
@@ -139,14 +123,6 @@ public class Question {
         this.contents = contents;
     }
 
-    public LocalDateTime getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(LocalDateTime createDate) {
-        this.createDate = createDate;
-    }
-
     public boolean isDeleted() {
         return deleted;
     }
@@ -155,34 +131,22 @@ public class Question {
         this.deleted = deleted;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Question question = (Question) o;
-        return id == question.id &&
-                deleted == question.deleted &&
-                Objects.equals(writer, question.writer) &&
-                Objects.equals(answers, question.answers) &&
-                Objects.equals(title, question.title) &&
-                Objects.equals(contents, question.contents) &&
-                Objects.equals(createDate, question.createDate);
+    public Integer getCountOfAnswer() {
+        return countOfAnswer;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, writer, answers, title, contents, createDate, deleted);
+    public void setCountOfAnswer(Integer countOfAnswer) {
+        this.countOfAnswer = countOfAnswer;
     }
 
     @Override
     public String toString() {
         return "Question{" +
-                "id=" + id +
+                "id=" + getId() +
                 ", writer=" + writer +
                 ", answers=" + answers +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
-                ", createDate=" + createDate +
                 ", deleted=" + deleted +
                 '}';
     }

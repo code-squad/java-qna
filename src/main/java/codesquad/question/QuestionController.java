@@ -1,7 +1,6 @@
 package codesquad.question;
 
 import codesquad.HttpSessionUtils;
-import codesquad.answer.Answer;
 import codesquad.answer.AnswerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 @RequestMapping("/questions")
 @Controller
@@ -60,10 +58,6 @@ public class QuestionController {
         log.debug("view question number {}", id);
 
         Question question = questionRepository.findById(id).orElse(null);
-        List<Answer> answers = answerRepository.findByQuestionIdAndDeleted(id, false);
-
-        model.addAttribute("answers", answers);
-        model.addAttribute("countOfAnswers", answers.size());
         model.addAttribute("question", question);
         return "/qna/show";
     }
@@ -99,7 +93,7 @@ public class QuestionController {
 
         Question question = questionRepository.findById(id).orElse(null);
         try {
-            question.update(updatedQuestion);
+            question.update(HttpSessionUtils.getUserFromSession(session), updatedQuestion);
         } catch(IllegalStateException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "/user/login";

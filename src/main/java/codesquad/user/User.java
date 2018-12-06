@@ -1,35 +1,28 @@
 package codesquad.user;
 
-import codesquad.qna.Question;
+import codesquad.AbstractEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity         //데이터 베이스 맵핑할때 알아서 꺼내줌
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
+public class User extends AbstractEntity {
     @Column(nullable = false, length = 20, unique = true)
+    @JsonProperty
     private String userId;
 
     @Column(nullable = false, length = 20)
+    @JsonIgnore
     private String password;
 
     @Column(nullable = false, length = 20)
+    @JsonProperty
     private String name;
 
     @Column(nullable = false, length = 20)
+    @JsonProperty
     private String email;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getUserId() {
         return userId;
@@ -77,23 +70,21 @@ public class User {
     }
 
     public boolean isMatchId(Long id) {
-        return this.id == id;
+        return this.getId() == id;
     }
 
     public boolean matchUser(User sessionedUser) {
-        return this.id == sessionedUser.id;
+        return this.getId() == sessionedUser.getId();
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
-        User user = (User) o;
-        return getId() == user.getId();
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId());
+    public String toString() {
+        return "User{" +
+                super.toString() + '\'' +
+                "userId='" + userId + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

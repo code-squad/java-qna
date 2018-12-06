@@ -1,5 +1,6 @@
 package codesquad;
 
+import codesquad.qna.Question;
 import codesquad.qna.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,7 +14,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(Model model) {
-        model.addAttribute("questions", questionRepository.findAll());
+        model.addAttribute("questions", questionRepository.findByDeleted(false));
         return "index";
     }
 }

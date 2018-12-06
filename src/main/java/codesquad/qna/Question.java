@@ -1,34 +1,36 @@
 package codesquad.qna;
 
+import codesquad.AbstractEntity;
 import codesquad.answer.Answer;
 import codesquad.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.stream.Collectors;
+
 
 @Entity
-public class Question {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Question extends AbstractEntity {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     private User writer;
 
     @Column(nullable = false, length = 100)
     private String title;
-
     @Lob
     private String contents;
+    private boolean deleted;
 
-    private LocalDateTime createDate;
+    @JsonProperty
+    private int countOfAnswer = 0;
 
-
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     @OrderBy("id ASC")
+    @JsonIgnore
     private List<Answer> answers;
 
     public Question() {
@@ -38,15 +40,6 @@ public class Question {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-        this.createDate = LocalDateTime.now();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public User getWriter() {
@@ -74,22 +67,27 @@ public class Question {
     }
 
     public List<Answer> getAnswers() {
-        return  answers;
+        return  answers.stream().filter(x -> !x.isDeleted()).collect(Collectors.toList());
     }
 
     public void setAnswers(List<Answer> answers) {
         this.answers = answers;
     }
 
-    public boolean isSameWriter(User loginUser) {
-        return this.writer.equals(loginUser);
+    public boolean isDeleted() {
+        return deleted;
     }
 
-    public boolean checkWriter(User loginUser) {
-        if(isSameWriter(loginUser)) {
-            return true;
-        }
-        return false;
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public int getCountOfAnswer() {
+        return countOfAnswer;
+    }
+
+    public boolean isSameWriter(User loginUser) {
+        return this.writer.equals(loginUser);
     }
 
     public void update(String title, String contents) {
@@ -98,7 +96,7 @@ public class Question {
     }
 
     public boolean update(Question updateQuestion, User loginUser) {
-        if(checkWriter(loginUser)) {
+        if(isSameWriter(loginUser)) {
             this.title = updateQuestion.title;
             this.contents = updateQuestion.contents;
             return true;
@@ -106,22 +104,44 @@ public class Question {
         return false;
     }
 
-    public String getFormattedCreateDate() {
-        if (createDate == null) {
-            return "";
-        }
-        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
+    public String getAnswersSize() {
+        System.out.println("### size " + answers.stream().filter(x -> !x.isDeleted()).count());
+        return String.valueOf(answers.stream().filter(x -> !x.isDeleted()).count());
     }
 
-    public String getAnswersSize() {
-        System.out.println("### " + answers.size());
-        return String.valueOf(answers.size());
+    public boolean isEmptyAnswers() {
+        return answers.isEmpty();
+    }
+
+    public boolean delete() {
+        // 비었으면
+        if (answers.isEmpty()) {
+            deleted = true;
+            return true;
+        }
+
+        for (Answer answer : answers) {
+            if (!answer.isSameWriter(writer)) {
+                return false;
+            }
+        }
+        answers.forEach(Answer::delete);
+        deleted = true;
+        return true;
+    }
+
+    public void addAnswer() {
+        this.countOfAnswer += 1;
+    }
+
+    public void deleteAnswer() {
+        this.countOfAnswer -= 1;
     }
 
     @Override
     public String toString() {
         return "Question{" +
-                "id=" + id +
+                super.toString() +
                 ", writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +

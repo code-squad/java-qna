@@ -68,23 +68,26 @@
                                           <a class="link-modify-article" href="/questions/413/answers/1405/form">수정</a>
                                       </li>
                                       <li>
-                                          <form class="delete-answer-form" action="/questions/{{question.id}}/answers/{{id}}" method="POST">
+                                          <a class="link-delete-article" href="/api/questions/{{question.id}}/answers/{{id}}">삭제</a>
+
+                                          <!--
+                                          <form class="delete-answer-form" action="/api/questions/{{question.id}}/answers/{{id}}" method="POST">
                                               <input type="hidden" name="_method" value="DELETE">
                                               <button type="submit" class="delete-answer-button">삭제</button>
-                                          </form>
+                                          </form> -->
                                       </li>
                                   </ul>
                               </div>
                           </article>
                           {{/answers}}
-                          <form class="submit-write" method="post" action="/questions/{{id}}/answers">
-                              <div class="form-group" style="padding:14px;">
-                                  <textarea class="form-control" placeholder="Update your status" name="contents"></textarea>
-                              </div>
-                              <input type="submit" class="btn btn-success pull-right" value="답변하기"/>
-                              <div class="clearfix" />
-                          </form>
                       </div>
+                      <form class="submit-write" method="post" action="/api/questions/{{id}}/answers">
+                          <div class="form-group" style="padding:14px;">
+                              <textarea class="form-control" placeholder="Update your status" name="contents"></textarea>
+                          </div>
+                          <button type="submit" class="btn btn-success pull-right" >답변하기 </button>
+                          <div class="clearfix" />
+                      </form>
                   </div>
               </div>
               {{/question}}
@@ -112,11 +115,12 @@
 			<li>
 				<a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
 			</li>
-			<li>
-				<form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
-					<input type="hidden" name="_method" value="DELETE">
-                     <button type="submit" class="delete-answer-button">삭제</button>
-				</form>
+            <li>
+                <a class="link-delete-article" href="/api/questions/{3}/answers/{4}">삭제</a>
+                <!-- <form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="delete-answer-button">삭제</button> -->
+                </form>
 			</li>
 		</ul>
 		</div>

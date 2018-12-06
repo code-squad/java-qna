@@ -6,18 +6,14 @@ import codesquad.qna.Question;
 import codesquad.qna.QuestionRepository;
 import codesquad.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
-@Controller
-@RequestMapping("/questions/{questionId}/answers")
-public class AnswerController {
+@RestController //json
+@RequestMapping("/api/questions/{questionId}/answers")
+public class ApiAnswerController {
     @Autowired
     private QuestionRepository questionRepository;
 
@@ -25,27 +21,32 @@ public class AnswerController {
     private AnswerRepository answerRepository;
 
     @PostMapping("")
-    public String create(@PathVariable Long questionId, String contents, HttpSession session) {
+    public Answer create(@PathVariable Long questionId, String contents, HttpSession session) {
         if (!HttpSessionUtil.isLoginUser(session)) {
-            return "/user/login";
+            return null;
         }
+
         User loginUser = HttpSessionUtil.getUserFromSession(session);
-        Question question = questionRepository.findById(questionId).orElseThrow(NullPointerException::new);
+        Question question = questionRepository.findById(questionId).orElse(null);
         Answer answer = new Answer(loginUser, question, contents);
-        answerRepository.save(answer);
-        return String.format("redirect:/questions/%d", questionId);
+        question.addAnswer();
+        return answerRepository.save(answer);
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long questionId, @PathVariable Long id, HttpSession session, Model model) {
+    public Result delete(@PathVariable Long questionId, @PathVariable Long id, HttpSession session, Model model) {
         Answer answer = answerRepository.findById(id).orElseThrow(NullPointerException::new);
         Result result = valid(session, answer);
         if (!result.isValid()) {
-            model.addAttribute("errorMessage", result.getErrorMessage());
-            return "/user/login_failed";
+            return Result.fail("로그인이 실패하였습니다.");
+
         }
-        answerRepository.deleteById(id);
-        return String.format("redirect:/questions/%d", questionId);
+        answer.delete();
+        Question question = questionRepository.findById(questionId).orElseThrow(NullPointerException::new);
+        question.deleteAnswer();
+        questionRepository.save(question);
+        answerRepository.save(answer);
+        return Result.ok(question);
     }
 
     private Result valid(HttpSession session, Answer answer) {

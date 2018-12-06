@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("/users")
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
     @Autowired
     private UserRepository userRepository;
 
@@ -26,15 +27,15 @@ public class UserController {
 
     @PostMapping("")
     public String create(User user) {
-        /*
-        System.out.println("User : " + user);
-
         if (logger.isDebugEnabled()) {
             logger.debug("User : " + user);
         }
 
         logger.debug("User : {}", user );
-        */
+
+        logger.warn("test1");
+        logger.info("test2");
+        logger.error("test");
         userRepository.save(user);
         return "redirect:/users";
     }

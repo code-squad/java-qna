@@ -2,6 +2,7 @@ package codesquad.question;
 
 import codesquad.answer.Answer;
 import codesquad.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,16 +17,30 @@ public class Question {
 
     @OneToMany(mappedBy = "question")
     @OrderBy("id ASC")
+    @JsonIgnore
     private List<Answer> answers;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     private User writer;
+
     private String title;
+
     private LocalDateTime createDate;
+
     private String contents;
 
+    private Integer answerCount = 0;
+
     public Question() {
+    }
+
+    public Integer getAnswerCount() {
+        return answerCount;
+    }
+
+    public void setAnswerCount(Integer answerCount) {
+        this.answerCount = answerCount;
     }
 
     public Question(User writer, String title, String contents) {
@@ -35,8 +50,13 @@ public class Question {
         this.createDate = LocalDateTime.now();
     }
 
+
     public List<Answer> getAnswers() {
         return answers;
+    }
+
+    public void setWriter(User writer) {
+        this.writer = writer;
     }
 
     public void setAnswers(List<Answer> answers) {
@@ -45,10 +65,6 @@ public class Question {
 
     public User getWriter() {
         return writer;
-    }
-
-    public void setWriter(User writer) {
-        this.writer = writer;
     }
 
     public long getId() {
@@ -86,5 +102,13 @@ public class Question {
 
     public String getDate() {
         return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
+    }
+
+    public void increaseAnswer() {
+        this.answerCount += 1;
+    }
+
+    public void decreaseAnswer() {
+        this.answerCount -= 1;
     }
 }

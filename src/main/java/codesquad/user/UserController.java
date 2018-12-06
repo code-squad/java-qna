@@ -68,7 +68,10 @@ public class UserController {
     }
 
     @GetMapping("/password/{id}")
-    public String password(Model model, @PathVariable Long id) {
+    public String password(Model model, @PathVariable Long id, HttpSession session) {
+        if (HttpSessionUtils.isLoginUser(session)) {
+            throw new IllegalArgumentException("before change your profile, please access your id.");
+        }
         model.addAttribute("user", userRepository.findById(id).orElse(null));
         return "/user/password";
     }

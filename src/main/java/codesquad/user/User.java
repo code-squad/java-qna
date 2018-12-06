@@ -1,5 +1,7 @@
 package codesquad.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -9,12 +11,17 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     @Column(nullable = false, length = 20, unique = true)
     private String userId;
+
     @Column(nullable = false, length = 20)
+    @JsonIgnore
     private String password;
+
     @Column(nullable = false, length = 20)
     private String name;
+
     @Column(nullable = false, length = 30)
     private String email;
 
@@ -58,6 +65,7 @@ public class User {
     public boolean matchPassword(String password) {
         return this.password.equals(password);
     }
+
     public User update(User newUser) {
         this.password = newUser.password;
         this.name = newUser.name;

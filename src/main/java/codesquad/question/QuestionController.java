@@ -41,7 +41,7 @@ public class QuestionController {
         if (HttpSessionUtils.isLoginUser(session)) {
             return "/qna/form";
         }
-        return "user/login";
+        return "/user/login";
     }
 
     @GetMapping("/{pId}/form")

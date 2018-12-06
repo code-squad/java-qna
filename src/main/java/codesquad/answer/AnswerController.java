@@ -23,14 +23,14 @@ public class AnswerController {
     public String create(@PathVariable long questionPId, Answer answer, HttpSession session) {
         Question question = questionRepository.findById(questionPId).get();
         if (!HttpSessionUtils.isLoginUser(session)) {
-            return "/users/login";
+            return "/user/login";
         }
         answerRepository.save(answer);
         question.plusAnswersSize();
         return String.format("redirect:/questions/%d", questionPId);
     }
 
-    @DeleteMapping("/{answerPId}")
+    @DeleteMapping("/{answerPIEd}")
     public String delete(@PathVariable long answerPId, @PathVariable long questionPId, HttpSession session) {
         Answer answer = answerRepository.findById(answerPId).get();
         Question question = questionRepository.findById(questionPId).get();

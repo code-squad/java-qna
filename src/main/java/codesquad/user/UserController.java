@@ -41,7 +41,7 @@ public class UserController {
 
     @GetMapping("/form")
     public String userForm() {
-        return "/users/form";
+        return "/user/form";
     }
 
     @GetMapping("/{pId}/form")

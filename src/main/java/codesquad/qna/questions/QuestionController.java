@@ -2,6 +2,10 @@ package codesquad.qna.questions;
 
 import codesquad.util.HttpSessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +31,8 @@ public class QuestionController {
     }
 
     @GetMapping
-    public String showQuestions(Model model){
+    public String showQuestions(Model model, @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 2)Pageable pageable){
+        Page<Question> pages =  questionRepository.findAll(pageable);
         model.addAttribute("questions", questionRepository.findAll());
         return "index";
     }

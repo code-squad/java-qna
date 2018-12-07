@@ -23,7 +23,7 @@ public class MainController {
     private QuestionRepository questionRepository;
 
     @GetMapping("/")
-    public String start(Model model, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC, size = 2) Pageable pageable){
+    public String start(Model model, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC, size = 15) Pageable pageable){
         Page<Question> pages =  questionRepository.findAllByDeleted(false, pageable);
         logger.debug("pages Total : {}", pages.getTotalPages());
         logger.debug("curPage : {}", pageable.getPageNumber());

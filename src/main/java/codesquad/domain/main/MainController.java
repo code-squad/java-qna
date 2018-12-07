@@ -1,14 +1,11 @@
 package codesquad.domain.main;
 
-import codesquad.domain.qna.Question;
-import codesquad.domain.qna.dao.QnARepository;
+import codesquad.domain.qna.dao.QuestionRepository;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -16,7 +13,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class MainController {
 
     @Autowired
-    private QnARepository qnARepository;
+    private QuestionRepository qnARepository;
 
     private static final Logger logger = getLogger(MainController.class);
 

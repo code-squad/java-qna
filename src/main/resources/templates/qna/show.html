@@ -13,7 +13,7 @@
                                  class="article-author-thumb" alt="">
                         </div>
                         <div class="article-header-text">
-                            <a href="/user/{{question.user.id}}" class="article-author-name">{{question.writer}}</a>
+                            <a href="/users/{{question.user.id}}" class="article-author-name">{{question.writer}}</a>
                             <a href="/questions/413" class="article-header-time" title="퍼머링크">
                                 {{question.reportingDate}}
                                 <i class="icon-link"></i>
@@ -27,10 +27,10 @@
                         <ul class="article-util-list">
                             {{#isQuestionUser}}
                             <li>
-                                <a class="link-modify-article" href="/qna/{{question.id}}/inquireForm">수정</a>
+                                <a class="link-modify-article" href="/questions/{{question.id}}/inquireForm">수정</a>
                             </li>
                             <li>
-                                <form class="form-delete" action="/qna/{{question.id}}" method="POST">
+                                <form class="form-delete" action="/questions/{{question.id}}" method="POST">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <button class="link-delete-article" type="submit">삭제</button>
                                 </form>
@@ -48,6 +48,7 @@
                         <p class="qna-comment-count"><strong>{{commentsCount}}</strong>개의 의견</p>
                         <div class="qna-comment-slipp-articles">
                             {{#question.comments}}
+                            {{^deleted}}
                             <article class="article" id="article-{{commentId}}">
                                 <div class="article-header">
                                     <div class="article-header-thumb">
@@ -55,7 +56,7 @@
                                              class="article-author-thumb" alt="">
                                     </div>
                                     <div class="article-header-text">
-                                        <a href="/user/{{user.id}}" class="article-author-name">{{user.userId}}</a>
+                                        <a href="/users/{{user.id}}" class="article-author-name">{{user.userId}}</a>
                                         <a href="#answer-1434" class="article-header-time" title="퍼머링크">
                                             {{reportingDate}}
                                         </a>
@@ -68,28 +69,30 @@
                                 <div class="article-util">
                                     <ul class="article-util-list">
                                         <li>
-                                            <a class="link-modify-article pop" href="/api/comment/{{commentId}}">수정</a>
+                                            <a class="link-modify-article pop" href="/api/comments/{{commentId}}">수정</a>
                                         </li>
                                         <li>
-                                            <form class="form-delete" action="/api/comment/{{id}}"
+                                            <form class="form-delete" action="/api/comments/{{commentId}}"
                                                   method="POST">
                                                 <input type="hidden" name="_method" value="DELETE">
-                                                <button type="submit" class="delete-answer-button">삭제</button>
+                                                <button type="button" class="delete-answer-button">삭제</button>
                                             </form>
+
                                         </li>
                                     </ul>
                                 </div>
                                 {{/identification}}
                             </article>
+                            {{/deleted}}
                             {{/question.comments}}
-                            <form id="comment" name="comment" class="submit-write" method="post" action="/api/comment">
+                            <form id="comment" name="comment" class="submit-write" method="post" action="/api/comments">
                                 <div class="form-group" style="padding:14px;">
                                     <textarea class="form-control" placeholder="Update your status"
                                               name="contents"></textarea>
                                 </div>
                                 <input type="hidden" name="user" id="user" value="{{sessionUser.id}}"/>
                                 <input type="hidden" name="question" id="question" value="{{question.id}}"/>
-                                <button class="btn btn-success pull-right" type="submit">답변하기</button>
+                                <button class="btn btn-success pull-right" type="submit" {{isWrite}}>답변하기</button>
                                 <div class="clearfix"/>
                             </form>
                         </div>
@@ -110,12 +113,12 @@
                 <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
             </div>
             <div class="article-header-text">
-                <a href="/user/\{{id}}" class="article-author-name">\{{userId}}</a>
+                <a href="/users/\{{id}}" class="article-author-name">\{{userId}}</a>
             </div>
         </div>
         <div class="article-doc comment-doc">
             <form class="modify-comment-form" name="modify-comment" method="post"
-                  action="/api/comment/\{{commentId}}">
+                  action="/api/comments/\{{commentId}}">
                 <div class="form-group" style="padding:14px;">
                     <textarea class="form-control" placeholder="Update your status"
                               name="contents">\{{contents}}</textarea>
@@ -136,7 +139,7 @@
                 <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
             </div>
             <div class="article-header-text">
-                <a href="/user/{0}" class="article-author-name">{1}</a>
+                <a href="/users/{0}" class="article-author-name">{1}</a>
                 <div class="article-header-time">{2}</div>
             </div>
         </div>
@@ -146,10 +149,10 @@
         <div class="article-util">
             <ul class="article-util-list">
                 <li>
-                    <a class="link-modify-article pop" href="/api/comment/{5}">수정</a>
+                    <a class="link-modify-article pop" href="/api/comments/{5}">수정</a>
                 </li>
                 <li>
-                    <form class="form-delete" action="/api/comment/{5}" method="POST">
+                    <form class="form-delete" action="/api/comments/{5}" method="POST">
                         <input type="hidden" name="_method" value="DELETE">
                         <button type="submit" class="delete-answer-button">삭제</button>
                     </form>

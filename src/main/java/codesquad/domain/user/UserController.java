@@ -1,7 +1,9 @@
 package codesquad.domain.user;
 
 import codesquad.domain.user.dao.UserRepository;
+import codesquad.domain.util.Result;
 import codesquad.domain.util.Session;
+import codesquad.domain.util.SessionMaintenanceException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,52 +11,42 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.constraints.Null;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-/* Controller 역할 부여를 위한 어노테이션 */
-@RequestMapping("/user")
+@RequestMapping("/users")
 @Controller
 public class UserController {
-    // Ram 메모리에 저장이 되기 때문에 서버 재구동 시, 모두 초기화 //
-    // Ram 메모리는 가격이 비싸고, 빠른 처리속도 제공 //
-    // 하드디스크는 가격이 싸고, 느린 처리속도 제공 //
-    // 서버구동에도 영향을 받지않고 데이터를 조작하기 위해서는 데이터베이스 필요 //
-
-    /* Post : 클라이언트에서 서버로 데이터를 보내는 방식 / Get : 클라이언트에서 서버로 데이터를 받는 방식 */
 
     @Autowired
     UserRepository userRepository;
 
     private static final Logger logger = getLogger(UserController.class);
-    
-    @PostMapping("")
-    public String create(User user) {
-        logger.info("회원가입!");
-        try {
-            userRepository.save(user);
-        } catch (Exception e) {
-            logger.info("회원가입 -> 아이디 중복!");
-            return "redirect:/user/form";
-        }
-        return "redirect:/";
-    }
 
     @PutMapping("/{id}")
-    public String modify(@PathVariable Long id, User updatedUser) {
-        logger.info("회원정보 수정!");
-        User user = userRepository.findById(id).orElse(null);
-        user.update(updatedUser);
-        userRepository.save(user);
-        return "redirect:/";
+    public String modify(@PathVariable Long id, User updatedUser, HttpSession httpSession, Model model) {
+        try {
+            Session.isSession(httpSession);
+            logger.info("회원정보 수정!");
+            User user = userRepository.findById(id).orElse(null);
+            user.update(updatedUser);
+            userRepository.save(user);
+            return "redirect:/";
+        } catch (SessionMaintenanceException sme) {
+            model.addAttribute("result", Result.fail("로그인이 필요한 서비스입니다!"));
+            return "/user/login_failed";
+        }
     }
 
     @GetMapping("/joinForm")
     public String form(Model model) {
         logger.info("회원가입 페이지 이동!");
-        model.addAttribute("actionPath", "/user");
+        model.addAttribute("actionPath", "/users");
         model.addAttribute("buttonName", "회원가입");
         model.addAttribute("methodType", "POST");
+        model.addAttribute("buttonEnable","disabled");
+        model.addAttribute("formName", "join");
         return "/user/form";
     }
 
@@ -75,14 +67,21 @@ public class UserController {
     @GetMapping("/{id}/joinForm")
     public String modify(@PathVariable("id") Long id, Model model, HttpSession session) {
         logger.info("회원정보 수정 페이지 이동!");
-        if(!Session.isUser(session, id)) {
-            return "redirect:/user/loginForm";
+        try {
+            model.addAttribute("user", userRepository.findById(id).orElse(null));
+            model.addAttribute("actionPath", String.format("/users/%d", Long.valueOf(id)));
+            model.addAttribute("buttonName", "회원정보수정");
+            model.addAttribute("methodType", "PUT");
+            model.addAttribute("readOnly", "readonly");
+            model.addAttribute("result", Result.ok());
+            model.addAttribute("formName", "update");
+        } catch (NullPointerException npe) {
+            model.addAttribute("result", Result.fail("본인만 이용가능한 서비스입니다!"));
+            return "/user/login_failed";
+        } catch (SessionMaintenanceException sme) {
+            model.addAttribute("result", Result.fail("로그인후에 서비스를 이용하세요!"));
+            return "/user/login_failed";
         }
-        model.addAttribute("user", userRepository.findById(id).orElse(null));
-        model.addAttribute("actionPath", String.format("/user/%d", Long.valueOf(id)));
-        model.addAttribute("buttonName", "회원정보수정");
-        model.addAttribute("methodType", "PUT");
-        model.addAttribute("readOnly", "readonly");
         return "/user/form";
     }
 
@@ -93,19 +92,27 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(String userId, String password, HttpSession httpSession) {
-        logger.info("로그인 처리!");
-        User user = userRepository.findByUserId(userId);
-        if(user == null) {
-            logger.info("잘못된 아이디!");
+    public String login(String userId, String password, HttpSession httpSession, Model model) {
+        try {
+            logger.info("로그인 처리!");
+            Session.registerSession(httpSession, userRepository.findByUserId(userId));
+            return "redirect:/";
+        } catch (FailureTypeException fte) {
+            logger.info("잘못된 패스워드를 입력했습니다!");
+            model.addAttribute("result", Result.fail("잘못된 패스워드를 입력했습니다!"));
+            return "/user/login_failed";
+        } catch (NullPointerException npe) {
+            logger.info("잘못된 아이디를 입력했습니다!");
+            model.addAttribute("result", Result.fail("잘못된 아이디를 입력했습니다!"));
             return "/user/login_failed";
         }
-        if(!user.isValidPassword(password)) {
-            logger.info("잘못된 패스워드!");
-            return "/user/login_failed";
-        }
-        Session.registerSession(httpSession, user);
-        return "redirect:/";
+    }
+
+    @GetMapping("/loginFail")
+    public String loginFail(Model model) {
+        logger.info("로그인 실패 화면 이동!");
+        model.addAttribute("result", Result.fail("로그인이 필요한 서비스입니다!"));
+        return "/user/login_failed";
     }
 
     @GetMapping("/logout")

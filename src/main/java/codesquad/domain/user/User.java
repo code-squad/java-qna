@@ -1,11 +1,11 @@
 package codesquad.domain.user;
 
-import codesquad.domain.qna.Question;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Objects;
 
-@Entity // 데이터베이스와 연동이라는 것을 명시 //
+@Entity
 public class User {
     public static final int USERID_LENGTH = 20;
     public static final int PASSWORD_LENGTH = 20;
@@ -13,19 +13,19 @@ public class User {
 
     @Id // 기본키 설정 //
     @Column(name = "USER_ID_FK")
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // 데이터베이스에서 자동으로 숫자를 증가해서 관리 //
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = USERID_LENGTH, updatable = false, unique = true) // Not null 지정 //
+    @Column(nullable = false, length = USERID_LENGTH, updatable = false, unique = true)
     private String userId;
 
-    @Column(nullable = false, length = PASSWORD_LENGTH) // Not null 지정 //
+    @Column(nullable = false, length = PASSWORD_LENGTH)
     private String password;
 
-    @Column(nullable = false, length = NAME_LENGTH) // Not null 지정 //
+    @Column(nullable = false, length = NAME_LENGTH)
     private String name;
 
-    @Column(length = 20) // Not null 지정 //
+    @Column(length = 20)
     private String email;
 
     public User() {
@@ -85,8 +85,10 @@ public class User {
         this.email = user.email;
     }
 
-    public boolean isValidPassword(String password) {
-        return this.password.equals(password);
+    public void isValidPassword(String password) throws FailureTypeException {
+        if(!this.password.equals(password)) {
+            throw new FailureTypeException("잘못된 비밀번호 입력했습니다.");
+        }
     }
 
     public boolean identification(Long id) {

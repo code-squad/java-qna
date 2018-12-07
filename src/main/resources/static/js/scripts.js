@@ -1,6 +1,9 @@
 $("#comment > button[type=submit]").click(addComment);
 $(".link-modify-article.pop").click(popupModify);
-$(".delete-answer-button").click(deleteComment);
+$(".delete-answer-button[type=button]").click(deleteComment);
+$("#userId").focusout(duplicationCheck);
+$("form[name=join] > button[type=submit]").click(join);
+
 String.prototype.format = function() {
   var args = arguments;
        return this.replace(/{(\d+)}/g, function(match, number) {
@@ -19,7 +22,7 @@ function popupModify(e) {
         type : 'get',
         url : url,
         dataType : 'json',
-        error: function () {
+        error : function () {
             console.log('Failure PopupModify Ajax');
         },
         success : function (data) {
@@ -52,8 +55,9 @@ function addComment(e) {
         url : url,
         data : queryString,
         dataType : 'json',
-        error: function () {
+        error : function () {
             console.log('failure');
+            window.location.href = '/users/loginFail'
         },
         success : function (data) {
             console.log(data);
@@ -81,7 +85,7 @@ function modifyComment() {
         url : url,
         data : queryString,
         dataType : 'json',
-        error: function () {
+        error : function () {
             console.log('failure');
         },
         success : function (data) {
@@ -114,7 +118,7 @@ function deleteComment(e) {
             url : url,
             data : queryString,
             dataType : 'json',
-            error: function () {
+            error : function () {
                 console.log('failure');
             },
             success : function (data) {
@@ -127,10 +131,39 @@ function deleteComment(e) {
 }
 
 function duplicationCheck(e) {
-    console.log("아이디 중복확인 메소드 호출!");
+     console.log("아이디 중복확인 메소드 호출!");
+     var queryString = $("form[name=join]").serialize();
+     console.log(queryString);
+     var url = '/api/users/duplicationCheck';
+     console.log("url : " + url);
+
+     $.ajax({
+         type : 'post',
+         url : url,
+         data : queryString,
+         dataType : 'json',
+         error : function (xhr) {
+             console.log("아이디 중복확인 Ajax 실패!");
+             console.log(xhr);
+         },
+         success : function (data) {
+             console.log(data);
+             if(!data.valid) {
+                 alert(data.errorMessage);
+             }
+             if(data.valid) {
+                 $(".btn.btn-success.clearfix.pull-right").removeAttr('disabled');
+             }
+         }
+     });
+ }
+
+function join(e) {
+    e.preventDefault();
+    console.log("회원가입");
     var queryString = $("form[name=join]").serialize();
     console.log(queryString);
-    var url = '/api/user/duplicationCheck';
+    var url = '/api/users';
     console.log("url : " + url);
 
     $.ajax({
@@ -138,21 +171,18 @@ function duplicationCheck(e) {
         url : url,
         data : queryString,
         dataType : 'json',
-        error: onError,
-        success : onSuccess,
+        error : function (xhr) {
+            console.log("회원가입 실패!");
+            console.log(xhr);
+        },
+        success : function (data) {
+            console.log(data);
+            if(!data.valid) {
+                alert(data.errorMessage);
+            }
+            if(data.valid) {
+                window.location.href = '/';
+            }
+        }
     });
 }
-
-function onSuccess(data) {
-    if(data == true) {
-        alert("이미 등록된 아이디입니다.");
-    }
-}
-
-function onError() {
-    console.log("Error Occur");
-}
-
-$( document ).ready(function() {
-    $("#userId").focusout(duplicationCheck);
-});

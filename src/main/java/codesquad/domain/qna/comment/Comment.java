@@ -32,8 +32,11 @@ public class Comment {
     @JoinColumn(name = "QUESTION_ID_FK")
     private Question question;
 
-    @Column(nullable = true)
+    @Transient
     private boolean identification;
+
+    @Column(nullable = true)
+    private boolean deleted = false;
 
     public Comment() {
 
@@ -86,7 +89,14 @@ public class Comment {
         this.contents = comment.contents;
     }
 
-    /* 피드백1) 자신의 댓글인지 확인하는 메소드 추가! */
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     public void identification(HttpSession httpSession) {
         User sessionUser = Session.obtainUser(httpSession);
         if(Session.obtainUser(httpSession) != null) {
@@ -98,14 +108,17 @@ public class Comment {
         return identification;
     }
 
-    @Override
     @JsonIgnore
+    @Override
     public String toString() {
         return "Comment{" +
                 "commentId=" + commentId +
+                //", user=" + user +
                 ", contents='" + contents + '\'' +
                 ", createdDateTime=" + createdDateTime +
+                //", question=" + question +
                 ", identification=" + identification +
+                ", deleted=" + deleted +
                 '}';
     }
 }

@@ -5,6 +5,7 @@ import codesquad.domain.user.User;
 import codesquad.domain.util.TimeFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.jpa.repository.Query;
 
 import javax.persistence.*;
 import javax.servlet.http.HttpSession;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Entity
 public class Question {
+
     @Id
     @GeneratedValue
     @Column(name = "QUESTION_ID_FK")
@@ -25,7 +27,7 @@ public class Question {
     @Column(nullable = false)
     private String title;
 
-    @Lob /* 피드백5) 본문내용 글자수를 위해 Lob 어노테이션 설정! */
+    @Lob
     @Column(nullable = false)
     private String contents;
 
@@ -38,8 +40,8 @@ public class Question {
     private User user;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @JsonIgnore
     @OrderBy("createdDateTime desc")
+    @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
 
     @Column
@@ -49,7 +51,7 @@ public class Question {
 
     }
 
-    public Question(Long id, String writer, String title, String contents, User user, List<Comment> comments, int countOfComment) {
+    public Question(Long id, String writer, String title, String contents, User user, List<Comment> comments) {
         this.id = id;
         this.writer = writer;
         this.title = title;
@@ -116,9 +118,9 @@ public class Question {
     }
 
     public int getCommentsCount() {
-        return this.comments.size();
+        return (int)this.comments.stream().filter(comment -> !comment.isDeleted()).count();
     }
-    /* 피드백4) 본인에 글인지 확인을 위한 메소드 */
+
     public boolean identification(User user) {
         return this.user.equals(user);
     }
@@ -138,6 +140,12 @@ public class Question {
     public void identificationComment(HttpSession httpSession) {
         for(Comment comment : comments) {
             comment.identification(httpSession);
+        }
+    }
+
+    public void removeComment() {
+        for(Comment comment : this.comments) {
+            comment.setDeleted(true);
         }
     }
 

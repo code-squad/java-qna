@@ -1,6 +1,6 @@
 package codesquad;
 
-import codesquad.question.QuestionRepository;
+import codesquad.domain.question.QuestionRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class MainController {
     @GetMapping("/")
     public String list(Model model) {
         logger.info("main page");
-        model.addAttribute("questions",questionRepository.findAllByDeleted(false));
+        model.addAttribute("questions", questionRepository.findAllByDeleted(false));
         return "index";
     }
 }

@@ -1,6 +1,8 @@
-package codesquad.user;
+package codesquad.web;
 
 import codesquad.HttpSessionUtils;
+import codesquad.domain.user.User;
+import codesquad.domain.user.UserRepository;
 import codesquad.exception.UserException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,10 +46,10 @@ public class UserController {
     @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
         logger.info("login user");
-        User maybeUser = userRepository.findByUserId(userId)
+        User loginUser = userRepository.findByUserId(userId)
                 .filter(user -> user.matchPassword(password))
                 .orElseThrow(() -> new UserException("비밀번호나 아이디가 다릅니다."));
-        session.setAttribute(HttpSessionUtils.USER_SESSION_KEY,maybeUser);
+        session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, loginUser);
         return "redirect:/";
 
     }

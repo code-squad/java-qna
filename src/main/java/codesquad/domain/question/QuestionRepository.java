@@ -1,4 +1,4 @@
-package codesquad.question;
+package codesquad.domain.question;
 
 import org.springframework.data.repository.CrudRepository;
 

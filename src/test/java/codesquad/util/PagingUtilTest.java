@@ -51,17 +51,15 @@ public class PagingUtilTest {
             PagingUtil pu = new PagingUtil(i, 10);
             logger.debug("cur page : {}" , i);
             assertEquals(5, pu.getPages().size());
-            System.out.println(pu.getPages());
         }
 
         for(int i = 5; i < 10; i++){
             PagingUtil pu = new PagingUtil(i, 10);
             logger.debug("cur page : {}" , i);
             assertEquals(5, pu.getPages().size());
-            System.out.println(pu.getPages());
         }
 
         PagingUtil pu = new PagingUtil(10, 10);
-        System.out.println(pu.getPages());
+        logger.debug("page : {}", pu.getPages());
     }
 }

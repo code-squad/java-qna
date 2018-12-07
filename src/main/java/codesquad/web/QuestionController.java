@@ -1,11 +1,13 @@
 
 
-package codesquad.question;
+package codesquad.web;
 
 import codesquad.HttpSessionUtils;
-import codesquad.answer.AnswerRepository;
+import codesquad.domain.answer.AnswerRepository;
 import codesquad.exception.QuestionException;
-import codesquad.user.User;
+import codesquad.domain.question.Question;
+import codesquad.domain.question.QuestionRepository;
+import codesquad.domain.user.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.Collection;
 
 
 @Controller
@@ -27,9 +28,9 @@ public class QuestionController {
     private AnswerRepository answerRepository;
 
     @GetMapping("/form")
-    public String questions(HttpSession session,Model model) {
+    public String questions(HttpSession session) {
         logger.info("질문하기");
-        model.addAttribute("User",HttpSessionUtils.getUserFormSession(session));
+        HttpSessionUtils.getUserFormSession(session);
         return "/qna/form";
     }
 

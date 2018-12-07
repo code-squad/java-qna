@@ -1,4 +1,6 @@
-$(".submit-write button[type=submit]").click(addAnswer);
+//$(".submit-write button[type=submit]").click(addAnswer);
+
+$(".submit-write button[type=submit]").on("click", addAnswer);
 function addAnswer(e) {
     console.log('되라');
     e.preventDefault();
@@ -37,8 +39,8 @@ function onSuccess(data, status) {
     $("textarea[name=contents]").val("");
 }
 
-
-$(".link-deleted-article").click(deletedAnswer);
+$(".qna-comment-slipp-articles").on("click", ".link-deleted-article", deletedAnswer);
+//$(".link-deleted-article").click(deletedAnswer);
 function deletedAnswer(e) {
     console.log('deletedAnswer');
     e.preventDefault();
@@ -58,6 +60,13 @@ function deletedAnswer(e) {
                 console.log('success');
                 if (data.valid) {
                     deleteBtn.closest('article').remove();
+
+                    var count = $(".qna-comment-count-num").html();
+                    count--;
+                    $(".qna-comment-count-num").html(count)
+
+                } else {
+                    alert(data.message);
                 }
             }
         });

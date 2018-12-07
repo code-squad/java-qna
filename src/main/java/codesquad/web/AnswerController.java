@@ -1,12 +1,14 @@
-package codesquad.answer;
+package codesquad.web;
 
 import codesquad.HttpSessionUtils;
+import codesquad.domain.answer.Answer;
+import codesquad.domain.answer.AnswerRepository;
 import codesquad.exception.AnswerException;
 import codesquad.exception.QuestionException;
 import codesquad.exception.UserException;
-import codesquad.question.Question;
-import codesquad.question.QuestionRepository;
-import codesquad.user.User;
+import codesquad.domain.question.Question;
+import codesquad.domain.question.QuestionRepository;
+import codesquad.domain.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

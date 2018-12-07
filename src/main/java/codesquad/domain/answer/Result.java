@@ -1,4 +1,4 @@
-package codesquad.answer;
+package codesquad.domain.answer;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

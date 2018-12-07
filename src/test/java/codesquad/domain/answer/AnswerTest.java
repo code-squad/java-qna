@@ -1,21 +1,31 @@
-package codesquad.answer;
+package codesquad.domain.answer;
 
 import codesquad.exception.UserException;
-import codesquad.question.Question;
-import codesquad.user.User;
+import codesquad.domain.question.Question;
+import codesquad.domain.user.User;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class AnswerTest {
-    User user1 = new User(1, "jar100", "test", "백경훈", "jrs111@naver.com");
-    User user2 = new User(2, "peter100", "test", "백경훈", "jrs111@naver.com");
+    private User user1;
+    private User user2;
+    private Question question1;
+    private Question question2;
+    private Answer answer1;
+    private Answer answer2;
 
-    Question question1 = new Question(user1, "으하하하", "후훗");
-    Question question2 = new Question(user1, "gjgjgj", "dddd훗");
+    @Before
+    public void before() {
+        user1 = new User(1, "jar100", "test", "백경훈", "jrs111@naver.com");
+        user2 = new User(2, "peter100", "test", "백경훈", "jrs111@naver.com");
+        question1 = new Question(user1, "으하하하", "후훗");
+        question2 = new Question(user1, "gjgjgj", "dddd훗");
+        answer1 = new Answer(question1, user1, "나는 댓글입니다.");
+        answer2 = new Answer(question1, user2, "나는 댓글입니다.222");
+    }
 
-    Answer answer1 = new Answer(question1, user1, "나는 댓글입니다.");
-    Answer answer2 = new Answer(question1, user2, "나는 댓글입니다.222");
 
     @Test
     public void matchUserTrue() {

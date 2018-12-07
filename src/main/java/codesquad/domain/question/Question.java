@@ -1,9 +1,11 @@
-package codesquad.question;
+package codesquad.domain.question;
 
-import codesquad.answer.Answer;
+import codesquad.domain.AbstractEntity;
+import codesquad.domain.answer.Answer;
 import codesquad.exception.UserException;
-import codesquad.user.User;
+import codesquad.domain.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,10 +16,7 @@ import java.util.stream.Collectors;
 
 
 @Entity
-public class Question {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+public class Question extends AbstractEntity {
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
@@ -28,9 +27,11 @@ public class Question {
     private String title;
 
     @Lob
+    @JsonProperty
     private String contents;
 
-    private LocalDateTime date;
+    @JsonProperty
+    private Integer countOfAnswer = 0;
 
     @Column(nullable = false)
     private boolean deleted = false;
@@ -38,7 +39,7 @@ public class Question {
     @JsonIgnore
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("id ASC")
-    private List<Answer> answers = new ArrayList<>();
+    private List<Answer> answers;
 
     public Question() {
     }
@@ -47,15 +48,6 @@ public class Question {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-        this.date = LocalDateTime.now();
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public void update(Question newQuestion) {
@@ -65,30 +57,17 @@ public class Question {
     }
 
     public void addAnswer(Answer answer) {
+        this.countOfAnswer++;
         this.answers.add(answer);
     }
 
-    public String getFormattedDate() {
-        if (this.date == null) {
-            return "";
-        }
-        return date.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
-    }
+    public void deletedAnswer() {
+        this.countOfAnswer--;
 
-    public LocalDateTime getDate() {
-        return date;
     }
 
     private boolean matchId(long id) {
-        return this.id == id;
-    }
-
-    public User getWriter() {
-        return writer;
-    }
-
-    public void setWriter(User writer) {
-        this.writer = writer;
+        return getId() == id;
     }
 
     public void deleted() {
@@ -108,6 +87,14 @@ public class Question {
                 .count();
     }
 
+    public User getWriter() {
+        return writer;
+    }
+
+    public void setWriter(User writer) {
+        this.writer = writer;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -124,6 +111,14 @@ public class Question {
         this.contents = contents;
     }
 
+    public Integer getCountOfAnswer() {
+        return countOfAnswer;
+    }
+
+    public void setCountOfAnswer(Integer countOfAnswer) {
+        this.countOfAnswer = countOfAnswer;
+    }
+
     public List<Answer> getAnswers() {
         return answers.stream()
                 .filter(answer -> !answer.isDeleted())
@@ -134,14 +129,17 @@ public class Question {
         this.answers = answers;
     }
 
-    public String getCount  () {
-        return String.valueOf(answers.size());
+    public Integer getCount  () {
+        return countOfAnswer;
     }
 
     public boolean getDeleted() {
         return deleted;
     }
 
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 
     @Override
     public String toString() {
@@ -149,7 +147,7 @@ public class Question {
                 "writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
-                ", index='" + id + '\'' +
+                ", index='" + getId() + '\'' +
                 '}';
     }
 

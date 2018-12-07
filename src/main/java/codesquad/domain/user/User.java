@@ -1,5 +1,6 @@
-package codesquad.user;
+package codesquad.domain.user;
 
+import codesquad.domain.AbstractEntity;
 import codesquad.exception.ListFailedException;
 import codesquad.exception.UpdatefailedException;
 
@@ -7,11 +8,8 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-public class User {
+public class User extends AbstractEntity {
     //데이터베이스에 테이블 에는 데이터를 식별하는 키가 있어야한다. 각자 고유의 키
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
 
     @Column(nullable = false, length = 20, unique = true)
     private String userId;
@@ -28,20 +26,20 @@ public class User {
     public User() {
     }
 
-    public User(long id ,String userId, String password, String name, String email) {
-        this.id = id;
+    public User(int id, String userId, String password, String name, String email) {
+        super.setId(id);
         this.userId = userId;
         this.password = password;
         this.name = name;
         this.email = email;
     }
 
-    public long getId() {
-        return id;
+    public Long getId() {
+        return super.getId();
     }
 
     public void setId(long id) {
-        this.id = id;
+        super.setId(id);
     }
 
     public String getUserId() {
@@ -90,27 +88,11 @@ public class User {
         return Objects.equals(userId, o);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return id == user.id &&
-                Objects.equals(userId, user.userId) &&
-                Objects.equals(password, user.password) &&
-                Objects.equals(name, user.name) &&
-                Objects.equals(email, user.email);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, userId, password, name, email);
-    }
 
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "id=" + getId() +
                 ", userId='" + userId + '\'' +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
@@ -127,7 +109,7 @@ public class User {
     }
 
     public void matchId(long id) {
-        if (this.id != id) {
+        if (getId() != id) {
             throw new ListFailedException("본인의 아이디를 선택해 주세요");
         }
 

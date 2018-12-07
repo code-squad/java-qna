@@ -1,7 +1,7 @@
 package codesquad;
 
 import codesquad.exception.*;
-import codesquad.user.UserRepository;
+import codesquad.domain.user.UserRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

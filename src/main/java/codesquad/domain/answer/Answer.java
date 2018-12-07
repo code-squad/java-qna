@@ -1,35 +1,29 @@
-package codesquad.answer;
+package codesquad.domain.answer;
 
-import codesquad.exception.AnswerException;
+import codesquad.domain.AbstractEntity;
 import codesquad.exception.UserException;
-import codesquad.question.Question;
-import codesquad.user.User;
+import codesquad.domain.question.Question;
+import codesquad.domain.user.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Entity
-public class Answer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
+public class Answer extends AbstractEntity {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
     private Question question;
-
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_user"))
     private User user;
 
     @Lob
+    @JsonProperty
     private String contents;
 
-    private LocalDateTime date;
-
     @Column(nullable = false)
+    @JsonProperty
     private boolean deleted = false;
 
     public Answer() {
@@ -39,22 +33,6 @@ public class Answer {
         this.question = question;
         this.user = user;
         this.contents = contents;
-        this.date = LocalDateTime.now();
-    }
-
-    public String getFormattedDate() {
-        if (this.date == null) {
-            return "";
-        }
-        return date.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public Question getQuestion() {
@@ -102,13 +80,13 @@ public class Answer {
     }
 
     private boolean matchId(long id) {
-        return this.id == id;
+        return getId() == id;
     }
 
     @Override
     public String toString() {
         return "Answer{" +
-                "id=" + id +
+                "id=" + getId() +
                 ", question=" + question +
                 ", user=" + user +
                 ", contents='" + contents + '\'' +
@@ -116,6 +94,7 @@ public class Answer {
     }
 
     public void deleted() {
+        question.deletedAnswer();
         deleted = true;
     }
 }

@@ -2,15 +2,12 @@ package codesquad.domain.question;
 
 import codesquad.domain.AbstractEntity;
 import codesquad.domain.answer.Answer;
-import codesquad.exception.UserException;
 import codesquad.domain.user.User;
+import codesquad.exception.UserException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -71,7 +68,7 @@ public class Question extends AbstractEntity {
     }
 
     public void deleted() {
-        if (answers.size() != conutOfMatchUser()) {
+        if (answers.size() != countOfMatchUser()) {
             throw new UserException("다른사람이 쓴 댓글이 있습니다. 삭제가 불가능 합니다.");
         }
 
@@ -81,7 +78,7 @@ public class Question extends AbstractEntity {
         deleted = true;
     }
 
-    long conutOfMatchUser() {
+    long countOfMatchUser() {
         return answers.stream()
                 .filter(answer -> answer.matchUser(writer))
                 .count();
@@ -129,7 +126,7 @@ public class Question extends AbstractEntity {
         this.answers = answers;
     }
 
-    public Integer getCount  () {
+    public Integer getCount() {
         return countOfAnswer;
     }
 

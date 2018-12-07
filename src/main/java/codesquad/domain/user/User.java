@@ -4,7 +4,8 @@ import codesquad.domain.AbstractEntity;
 import codesquad.exception.ListFailedException;
 import codesquad.exception.UpdatefailedException;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 import java.util.Objects;
 
 @Entity

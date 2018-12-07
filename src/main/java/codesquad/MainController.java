@@ -17,7 +17,7 @@ public class MainController {
     @GetMapping("/")
     public String list(Model model) {
         logger.info("main page");
-        model.addAttribute("questions",questionRepository.findAllByDeleted(false));
+        model.addAttribute("questions", questionRepository.findAllByDeleted(false));
         return "index";
     }
 }

@@ -1,5 +1,3 @@
-//$(".submit-write button[type=submit]").click(addAnswer);
-
 $(".submit-write button[type=submit]").on("click", addAnswer);
 function addAnswer(e) {
     console.log('되라');
@@ -40,7 +38,6 @@ function onSuccess(data, status) {
 }
 
 $(".qna-comment-slipp-articles").on("click", ".link-deleted-article", deletedAnswer);
-//$(".link-deleted-article").click(deletedAnswer);
 function deletedAnswer(e) {
     console.log('deletedAnswer');
     e.preventDefault();

@@ -1,9 +1,9 @@
 package codesquad.web;
 
 import codesquad.HttpSessionUtils;
-import codesquad.exception.UserException;
 import codesquad.domain.user.User;
 import codesquad.domain.user.UserRepository;
+import codesquad.exception.UserException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +49,7 @@ public class UserController {
         User loginUser = userRepository.findByUserId(userId)
                 .filter(user -> user.matchPassword(password))
                 .orElseThrow(() -> new UserException("비밀번호나 아이디가 다릅니다."));
-        session.setAttribute(HttpSessionUtils.USER_SESSION_KEY,loginUser);
+        session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, loginUser);
         return "redirect:/";
 
     }

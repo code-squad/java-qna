@@ -4,11 +4,11 @@ import codesquad.HttpSessionUtils;
 import codesquad.domain.answer.Answer;
 import codesquad.domain.answer.AnswerRepository;
 import codesquad.domain.answer.Result;
-import codesquad.exception.AnswerException;
-import codesquad.exception.QuestionException;
 import codesquad.domain.question.Question;
 import codesquad.domain.question.QuestionRepository;
 import codesquad.domain.user.User;
+import codesquad.exception.AnswerException;
+import codesquad.exception.QuestionException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,13 +30,11 @@ public class ApiAnswerController {
     @PostMapping("")
     public Answer create(@PathVariable Long questionId, String contents, HttpSession session) {
         logger.info("api answer info");
-        HttpSessionUtils.isLoginUser(session);
         User loginUser = HttpSessionUtils.getUserFormSession(session);
 
         Question question = questionRepository.findById(questionId).orElseThrow(QuestionException::new);
-        Answer answer = new Answer(question,loginUser, contents);
+        Answer answer = new Answer(question, loginUser, contents);
         question.addAnswer(answer);
-
 
         return answerRepository.save(answer);
     }

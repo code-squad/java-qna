@@ -1,7 +1,10 @@
 package codesquad;
 
-import codesquad.exception.*;
 import codesquad.domain.user.UserRepository;
+import codesquad.exception.AnswerException;
+import codesquad.exception.ListFailedException;
+import codesquad.exception.UpdatefailedException;
+import codesquad.exception.UserException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +21,14 @@ public class ControllerExceptionHandler {
     private UserRepository userRepository;
 
     @ExceptionHandler(value = AnswerException.class)
-    public String handleBaseException(){
+    public String handleBaseException() {
         return "/abc";
     }
 
     @ExceptionHandler(value = UserException.class)
-    public String loginExcetion(RuntimeException ex,Model model) {
+    public String loginExcetion(RuntimeException ex, Model model) {
         logger.debug(ex.getMessage());
-        model.addAttribute("errorMessage",ex.getMessage());
+        model.addAttribute("errorMessage", ex.getMessage());
         return "/user/login";
     }
 
@@ -43,7 +46,6 @@ public class ControllerExceptionHandler {
         model.addAttribute("errorMessage", ex.getMessage());
         return "/user/list";
     }
-
 
 
 }

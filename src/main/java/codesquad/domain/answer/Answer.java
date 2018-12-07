@@ -1,9 +1,9 @@
 package codesquad.domain.answer;
 
 import codesquad.domain.AbstractEntity;
-import codesquad.exception.UserException;
 import codesquad.domain.question.Question;
 import codesquad.domain.user.User;
+import codesquad.exception.UserException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;

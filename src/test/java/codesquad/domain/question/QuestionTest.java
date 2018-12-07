@@ -91,6 +91,6 @@ public class QuestionTest {
         question1.addAnswer(answer2);
         question1.addAnswer(answer2);
 
-        assertThat(question1.conutOfMatchUser()).isEqualTo(1);
+        assertThat(question1.countOfMatchUser()).isEqualTo(1);
     }
 }

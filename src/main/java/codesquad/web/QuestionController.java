@@ -4,10 +4,10 @@ package codesquad.web;
 
 import codesquad.HttpSessionUtils;
 import codesquad.domain.answer.AnswerRepository;
-import codesquad.exception.QuestionException;
 import codesquad.domain.question.Question;
 import codesquad.domain.question.QuestionRepository;
 import codesquad.domain.user.User;
+import codesquad.exception.QuestionException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +35,10 @@ public class QuestionController {
     }
 
     @PostMapping("")
-    public String questions(String title,String contents, HttpSession session) {
+    public String questions(String title, String contents, HttpSession session) {
         logger.info("qna 인스턴스 생성");
         User loginUser = HttpSessionUtils.getUserFormSession(session);
-        Question newQuestion = new Question(loginUser,title,contents);
+        Question newQuestion = new Question(loginUser, title, contents);
 
         questionRepository.save(newQuestion);
         return "redirect:/";
@@ -75,7 +75,7 @@ public class QuestionController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(HttpSession session, @PathVariable long id){
+    public String delete(HttpSession session, @PathVariable long id) {
         logger.info("delete");
 
         Question question = getMatchingQuestion(session, id);

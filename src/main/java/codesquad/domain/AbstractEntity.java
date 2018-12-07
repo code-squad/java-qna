@@ -50,11 +50,11 @@ public class AbstractEntity {
     }
 
     public String getFormattedDate() {
-        return getFormatted(createDate,"yyyy.MM.dd HH:mm:ss");
+        return getFormatted(createDate, "yyyy.MM.dd HH:mm:ss");
     }
 
     public String getFormattedModifiedDate() {
-        return getFormatted(modifiedDate,"yyyy.MM.dd HH:mm:ss");
+        return getFormatted(modifiedDate, "yyyy.MM.dd HH:mm:ss");
     }
 
     private String getFormatted(LocalDateTime date, String format) {

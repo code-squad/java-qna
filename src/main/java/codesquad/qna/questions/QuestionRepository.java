@@ -6,5 +6,5 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface QuestionRepository extends PagingAndSortingRepository<Question, Long> {
-    Page<Question> findAll(Pageable p);
+    Page<Question> findAllByDeleted(boolean bool, Pageable p);
 }

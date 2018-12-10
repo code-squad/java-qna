@@ -1,16 +1,25 @@
 package codesquad.qna.questions;
 
 import codesquad.util.HttpSessionUtils;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
+    private static final Logger logger = getLogger(QuestionController.class);
+
     @Autowired
     private QuestionRepository questionRepository;
 
@@ -24,12 +33,6 @@ public class QuestionController {
     public String create(Question question){
         questionRepository.save(question);
         return "redirect:/";
-    }
-
-    @GetMapping
-    public String showQuestions(Model model){
-        model.addAttribute("questions", questionRepository.findAll());
-        return "index";
     }
 
     @GetMapping("/{id}")

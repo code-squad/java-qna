@@ -2,6 +2,7 @@ package codesquad.qna;
 
 import codesquad.user.HttpSessionUtils;
 import codesquad.user.User;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,9 +10,13 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
+    private static final Logger logger = getLogger(QuestionController.class);
+
     @Autowired
     private QuestionRepository questionRepository;
 
@@ -32,7 +37,8 @@ public class QuestionController {
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "user/login";
         }
-        System.out.println("excute create!");
+//        System.out.println("excute create!");
+        logger.info("excute create!");
         User loginUser = HttpSessionUtils.getUserFormSession(session);
         Question newQuestion = new Question(loginUser, title, contents);
         questionRepository.save(newQuestion);

@@ -80,15 +80,15 @@
                               </div>
                           </article>
                           {{/showAnswers}}
-                          <form class="submit-write" method="post" action="/questions/{{id}}/answers">
-                              <div class="form-group" style="padding:14px;">
-                                  <textarea class="form-control" placeholder="Update your status" name="contents"></textarea>
-                              </div>
-                              <input type="submit" class="btn btn-success pull-right" value="답변하기" />
-                              <!--<button class="btn btn-success pull-right" type="button">답변하기</button>-->
-                              <div class="clearfix" />
-                          </form>
                       </div>
+                      <form class="submit-write" method="post" action="/api/questions/{{id}}/answers">
+                          <div class="form-group" style="padding:14px;">
+                              <textarea class="form-control" placeholder="Update your status" name="contents"></textarea>
+                          </div>
+                          <input type="submit" class="btn btn-success pull-right" value="답변하기" />
+                          <!--<button class="btn btn-success pull-right" type="button">답변하기</button>-->
+                          <div class="clearfix" />
+                      </form>
                   </div>
               </div>
           </div>

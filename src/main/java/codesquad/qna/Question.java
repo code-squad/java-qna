@@ -2,11 +2,13 @@ package codesquad.qna;
 
 import codesquad.user.HttpSessionUtils;
 import codesquad.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -84,10 +86,12 @@ public class Question {
         return timer.format(DateTimeFormatter.ofPattern("YYYY.MM.dd HH:mm:ss"));
     }
 
+    @JsonIgnore
     public List<Answer> getAnswers() {
         return answers;
     }
 
+    @JsonIgnore
     public List<Answer> getShowAnswers() {
         return answers.stream().filter(answer -> !answer.isDeleted()).collect(Collectors.toList());
     }
@@ -97,7 +101,7 @@ public class Question {
     }
 
     public Integer getAnswerCount() {
-        return answers.size();
+        return answers.stream().filter(answer -> !answer.isDeleted()).collect(Collectors.toList()).size();
     }
 
     public void setDeleted(boolean deleted) {

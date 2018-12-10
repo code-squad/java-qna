@@ -2,15 +2,20 @@ package codesquad.qna;
 
 import codesquad.user.HttpSessionUtils;
 import codesquad.user.User;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 @RestController
 @RequestMapping("/api/questions/{questionId}/answers")
 public class ApiAnswerController {
+    private static final Logger logger = getLogger(ApiAnswerController.class);
+
     @Autowired
     private QuestionRepository questionRepository;
 
@@ -44,7 +49,8 @@ public class ApiAnswerController {
         Answer answer = answerRepository.findById(id).orElse(null);
         if (answer.delete(loginUser)) {
             answerRepository.save(answer);
-            return Result.ok();
+            logger.info(answer.toString());
+            return Result.ok(answer);
         }
 
         return Result.failed("오류 !! 댓글 작성자만 삭제할 수 있습니다.");

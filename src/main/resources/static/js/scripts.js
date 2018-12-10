@@ -55,13 +55,16 @@ function deleteAnswer(e) {
         url : url,
         dataType : 'json',
         error: function(data) {
-            console.log("error : " + data);
+            console.log(data);
         },
         success : function (data) {
             console.log(data);
             if (data.valid) {
                 deleteBtn.closest("article").remove();
                 console.log("실행됨");
+                console.log(data);
+                 console.log("카운트 : " + data.object.question.answerCount);
+                 $(".qna-comment-count strong").html(data.object.question.answerCount);
             } else {
                 alert(data.errorMessage);
             }

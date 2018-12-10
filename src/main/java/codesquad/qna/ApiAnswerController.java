@@ -3,10 +3,8 @@ package codesquad.qna;
 import codesquad.user.HttpSessionUtils;
 import codesquad.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -34,5 +32,21 @@ public class ApiAnswerController {
         System.out.println(answer.toString());
 
         return answerRepository.save(answer);
+    }
+
+    @DeleteMapping("/{id}")
+    public Result delete(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return Result.failed("로그인실패");
+        }
+
+        User loginUser = HttpSessionUtils.getUserFormSession(session);
+        Answer answer = answerRepository.findById(id).orElse(null);
+        if (answer.delete(loginUser)) {
+            answerRepository.save(answer);
+            return Result.ok();
+        }
+
+        return Result.failed("오류 !! 댓글 작성자만 삭제할 수 있습니다.");
     }
 }

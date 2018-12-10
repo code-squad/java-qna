@@ -1,5 +1,7 @@
 console.log("hell");
 $(".submit-write input[type=submit]").click(addAnswer);
+//$(".delete-answer-form button[type='submit']").click(deleteAnswer);
+$(".qna-comment-slipp-articles").on("click", ".delete-answer-form button[type='submit']", deleteAnswer);
 
 function addAnswer(e) {
     console.log("addAnswer 실행");
@@ -34,10 +36,37 @@ function onSuccess(data,status) {
     var template = answerTemplate.format(data.writer.userId, data.formatTime, data.contents, data.question.id, data.id);
 //    console.log("template : " + template);
     $(".qna-comment-slipp-articles").append(template);
-    $(".answerCount").html("");
-    $(".answerCount").append(data.question.answerCount);
+    $(".qna-comment-count strong").html(data.question.answerCount);
 
     $("textarea[name=contents]").val("");
+
+}
+
+function deleteAnswer(e) {
+
+    console.log("deleteAnswer 실행");
+    e.preventDefault(); //submit 이 자동으로 동작하는 것을 막는다.
+    var deleteBtn = $(this);
+    var url = $(".delete-answer-form").attr("action");
+    console.log("url : " + url);
+
+    $.ajax({
+        type : 'delete',
+        url : url,
+        dataType : 'json',
+        error: function(data) {
+            console.log("error : " + data);
+        },
+        success : function (data) {
+            console.log(data);
+            if (data.valid) {
+                deleteBtn.closest("article").remove();
+                console.log("실행됨");
+            } else {
+                alert(data.errorMessage);
+            }
+        }
+    });
 
 }
 

@@ -22,6 +22,12 @@ public class UserController {
   public String createUser(User user, Model model) {
     userList.add(user);
 
-    return "index";
+    return "redirect:/list";
+  }
+
+  @GetMapping("/list")
+  public String goList(Model model) {
+    model.addAttribute("users", userList);
+    return "user/list";
   }
 }

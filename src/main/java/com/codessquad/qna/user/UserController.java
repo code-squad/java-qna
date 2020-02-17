@@ -37,9 +37,13 @@ public class UserController {
         return "user/list";
     }
 
-    @GetMapping("/users/{userIndex}")
-    public String showUserProfile(@PathVariable int userIndex, Model model) {
-        model.addAttribute("user", users.get(userIndex));
+    @GetMapping("/users/{userName}")
+    public String showUserProfile(@PathVariable String userName, Model model) {
+        for (User user : users) {
+            if (user.getUserName().equals(userName)) {
+                model.addAttribute("user", user);
+            }
+        }
         return "user/profile";
     }
 

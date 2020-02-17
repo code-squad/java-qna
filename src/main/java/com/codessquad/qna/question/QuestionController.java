@@ -1,6 +1,7 @@
 package com.codessquad.qna.question;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -13,7 +14,8 @@ public class QuestionController {
     List<Question> questions = new ArrayList<>();
 
     @GetMapping("/")
-    public String goIndexPage() {
+    public String goIndexPage(Model model) {
+        model.addAttribute("questions", questions);
         return "index";
     }
 

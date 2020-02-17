@@ -4,18 +4,28 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Question {
+    private int index;
     private String writer;
     private String title;
     private String contents;
     private ZonedDateTime dateTime;
     private int replyCount;
 
-    public Question(String writer, String title, String contents) {
+    public Question(int index, String writer, String title, String contents) {
+        this.index = index;
         this.writer = writer;
         this.title = title;
         this.contents = contents;
         this.dateTime = ZonedDateTime.now();
         this.replyCount = 0;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     public String getWriter() {

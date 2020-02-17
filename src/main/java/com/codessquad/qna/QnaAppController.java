@@ -1,15 +1,14 @@
 package com.codessquad.qna;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class QnaAppController {
 
-    @GetMapping("/hello")
-    public String hello(Model model) {
-        System.out.println("HI");
+    @PostMapping("/user/create")
+    public String create(User user) {
+        System.out.println("user : " + user);
         return "hello";
     }
 }

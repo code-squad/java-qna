@@ -20,3 +20,4 @@
 ## 진행과정
 
 1. handlebar template-engine과 Spring Boot가 정상적으로 동작하는지 확인하기 위하여, 간단한 Application을 만들었습니다.
+2. Spring Tutorial에 따라서 devtools 의존성을 추가하였습니다.

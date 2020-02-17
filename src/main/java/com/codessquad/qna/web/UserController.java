@@ -21,12 +21,7 @@ public class UserController {
   @PostMapping("/users")
   public String createUser(User user, Model model) {
     userList.add(user);
-//    for(User userInList : userList){
-//      model.addAttribute("testName", "testValue");
-//    }
 
-    model.addAttribute("user", user);
-
-    return "user/list";
+    return "index";
   }
 }

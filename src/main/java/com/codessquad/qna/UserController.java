@@ -2,6 +2,7 @@ package com.codessquad.qna;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
@@ -16,6 +17,11 @@ public class UserController {
         System.out.println("userId : " + user.getUserId() + " password : " + user.getPassword());
         model.addAttribute("name", user.getName());
         Users.add(user);
-        return "createok"; //templates의 index.html 호출
+        return "redirect:/users"; //templates의 index.html 호출
+    }
+
+    @GetMapping("/users")
+    public String viewUsers() {
+        return "list";
     }
 }

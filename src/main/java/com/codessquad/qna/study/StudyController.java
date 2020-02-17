@@ -1,4 +1,4 @@
-package codesquad.study;
+package com.codessquad.qna.study;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

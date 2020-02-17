@@ -31,3 +31,4 @@
 9. 비슷한 화면인 질문 화면을 동적페이지로 만들기
 10. Question의 목록을 출력하는 화면 만들기
 11. Question의 상세 정보를 출력하는 화면 만들기
+12. heroku 배포하기 (https://sheltered-lake-66847.herokuapp.com/)

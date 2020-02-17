@@ -9,3 +9,27 @@
 * [텍스트와 이미지로 살펴보는 코드스쿼드의 온라인 코드 리뷰 과정](https://github.com/code-squad/codesquad-docs/blob/master/codereview/README.md)
 * [동영상으로 살펴보는 코드스쿼드의 온라인 코드 리뷰 과정](https://youtu.be/a5c9ku-_fok)
 
+---
+
+# STEP1
+
+## 요구사항
+
+- 회원가입, 사용자 목록 기능 구현
+- 질문하기, 질문 목록 기능 구현
+
+## 진행과정
+
+1. handlebar template-engine과 Spring Boot가 정상적으로 동작하는지 확인하기 위하여, 간단한 Application을 만들었습니다.
+2. Spring Tutorial에 따라서 devtools 의존성을 추가하였습니다.
+3. Live Reload시 static 파일도 같이 reload되도록 하기 위하여 `application.properties`를 수정하였습니다.
+4. User Controller를 추가하고, /users/form 요청이 들어오면 회원가입 창이 출력되도록 하였습니다.
+5. User Controller에 생성하는 기능 추가하기
+6. User들의 정보를 출력하는 기능 추가
+7. User의 정보를 출력하는 기능 추가
+8. 공통 부분을 Template으로 만들어서 추출하기
+9. 비슷한 화면인 질문 화면을 동적페이지로 만들기
+10. Question의 목록을 출력하는 화면 만들기
+11. Question의 상세 정보를 출력하는 화면 만들기
+12. heroku 배포하기 (https://sheltered-lake-66847.herokuapp.com/)
+13. 사용자 정보 수정기능 추가하기

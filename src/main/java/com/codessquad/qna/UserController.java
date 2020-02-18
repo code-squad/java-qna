@@ -22,4 +22,15 @@ public class UserController {
         model.addAttribute("users", users);
         return "/user/list";
     }
+
+    @RequestMapping(value = "/users/{userId}", method = RequestMethod.GET)
+    public String getUserInfoByUserId(@PathVariable String userId, Model model) {
+        for (User user : users) {
+            if(user.getUserId().equals(userId)){
+                model.addAttribute("name",user.getName());
+                model.addAttribute("email",user.getEmail());
+            }
+        }
+        return "/user/profile";
+    }
 }

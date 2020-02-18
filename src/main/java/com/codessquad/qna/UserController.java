@@ -14,8 +14,8 @@ public class UserController {
     private List<User> users = new ArrayList<>();
 
     @GetMapping("/user/form")
-    public String form() {
-        return "form";
+    public String getUserForm() {
+        return "user-form";
     }
 
     @PostMapping("/user/create")

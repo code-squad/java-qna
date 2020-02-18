@@ -2,6 +2,7 @@ package com.codessquad.qna.controller;
 
 import com.codessquad.qna.domain.User;
 import java.util.ArrayList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class UserController {
 
-  private static ArrayList<User> users = new ArrayList<>();
+  private static List<User> users = new ArrayList<>();
   private static Logger log = LoggerFactory.getLogger(QnaController.class);
 
   @PostMapping(value = "/user/create")

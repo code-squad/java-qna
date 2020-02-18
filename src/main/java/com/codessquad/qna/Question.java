@@ -5,32 +5,32 @@ public class Question {
     private String title;
     private String contents;
 
-    public void setName(String name) {
-        this.writer = name;
+    public void setWriter(String writer) {
+        this.writer = writer;
     }
 
-    public void setSubtitle(String subtitle) {
-        this.title = subtitle;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public void setContent(String content) {
-        this.contents = content;
+    public void setContents(String contents) {
+        this.contents = contents;
     }
 
-    public String getName() {
+    public String getWriter() {
         return writer;
     }
 
-    public String getSubtitle() {
+    public String getTitle() {
         return title;
     }
 
-    public String getContent() {
+    public String getContents() {
         return contents;
     }
 
     @Override
     public String toString() {
-        return "name : " + writer + "\n subtitle : " + title + "\n content : " + contents;
+        return "writer : " + writer + "\n title : " + title + "\n contents : " + contents;
     }
 }

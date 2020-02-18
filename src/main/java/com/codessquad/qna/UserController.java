@@ -3,8 +3,11 @@ package com.codessquad.qna;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.sound.midi.Soundbank;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +17,6 @@ public class UserController {
 
     @PostMapping("/user/create")
     public String create(User user) {
-        System.out.println("user = " + user);
         users.add(user);
         return "redirect:/users";
     }
@@ -25,8 +27,10 @@ public class UserController {
         return "user/list";
     }
 
-    @GetMapping("/user/profile")
-    public String profile() {
-        return "profile";
+    @GetMapping("/users/{userId}")
+    public String profile(@PathVariable String userId, Model model) {
+        User userHaveUrlUserId = users.stream().filter(user -> user.getUserId().equals(userId)).findAny().orElse(null);
+        model.addAttribute("user",userHaveUrlUserId);
+        return "user/profile";
     }
 }

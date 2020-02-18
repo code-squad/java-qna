@@ -1,10 +1,21 @@
 package com.codessquad.qna.web;
 
 public class User {
+    private static int lastId = 0;
+
+    private final int id;
     private String userId;
     private String password;
     private String name;
     private String email;
+
+    {
+        id = ++lastId;
+    }
+
+    public int getId() {
+        return id;
+    }
 
     public String getUserId() {
         return userId;

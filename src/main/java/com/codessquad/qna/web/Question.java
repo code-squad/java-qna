@@ -7,7 +7,7 @@ public class Question {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private static int lastId = 0;
 
-    private int id;
+    private final int id;
     private String writer;
     private String title;
     private String contents;
@@ -20,10 +20,6 @@ public class Question {
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getWriter() {

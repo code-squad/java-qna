@@ -32,7 +32,7 @@ public class QuestionController {
     @GetMapping("/questions/{questionId}")
     public String detail(@PathVariable("questionId") int questionId, Model model) {
         for (Question question : questions) {
-            if(question.getQuestionId() == questionId) {
+            if (question.getQuestionId() == questionId) {
                 model.addAttribute("question", question);
                 break;
             }

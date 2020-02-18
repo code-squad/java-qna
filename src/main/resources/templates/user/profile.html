@@ -6,25 +6,23 @@
         <div class="panel panel-default">
             <div class="panel-heading"><h4>Profiles</h4></div>
             <div class="panel-body">
+                {{#user}}
                 <div class="well well-sm">
                     <div class="media">
                         <a class="thumbnail pull-left" href="#">
                             <img class="media-object" src="/images/80-text.png">
                         </a>
                         <div class="media-body">
-                            {{#user}}
                             <h4 class="media-heading">{{name}}</h4>
-                            {{/user}}
                             <p>
                                 <a href="#" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-envelope"></span>
-                                    {{#user}}
                                     &nbsp;{{email}}
-                                    {{/user}}
                                 </a>
                             </p>
                         </div>
                     </div>
                 </div>
+                {{/user}}
             </div>
         </div>
     </div>

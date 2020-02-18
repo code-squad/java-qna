@@ -6,11 +6,11 @@ public class User {
     String email;
     String password;
 
-    public String getId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setId(String userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

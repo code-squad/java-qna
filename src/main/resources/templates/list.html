@@ -65,7 +65,7 @@
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="../index.html">Posts</a></li>
                 <li><a href="../user/login.html" role="button">로그인</a></li>
-                <li><a href="../user/form.html" role="button">회원가입</a></li>
+                <li><a href="/user/form" role="button">회원가입</a></li>
                 <li><a href="#" role="button">로그아웃</a></li>
                 <li><a href="#" role="button">개인정보수정</a></li>
             </ul>
@@ -85,7 +85,7 @@
               <tbody>
               {{#each users}}
                 <tr>
-                    <th scope="row">{{@index}}</th> <td>{{userId}}</td> <td>{{name}}</td> <td>{{email}}</td><td><a href="#" class="btn btn-success" role="button">수정</a></td>
+                    <th scope="row">{{@index}}</th> <td>{{userId}}</td> <td> <a href="/user/{{userId}}"/> {{name}} </td> <td>{{email}}</td><td><a href="#" class="btn btn-success" role="button">수정</a></td>
                 </tr>
               {{/each}}
               </tbody>

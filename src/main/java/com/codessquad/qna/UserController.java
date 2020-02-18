@@ -40,4 +40,9 @@ public class UserController {
         model.addAttribute("user", matchedUser);
         return "/users/profile";
     }
+
+    @GetMapping("/join")
+    public String join() {
+        return "/users/form";
+    }
 }

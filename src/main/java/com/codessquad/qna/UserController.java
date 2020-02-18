@@ -32,6 +32,22 @@ public class UserController {
         return "user/profile";
     }
 
+    @GetMapping("/users/{userId}/form")
+    public String updateForm(@PathVariable("userId") String userId, Model model) {
+        model.addAttribute("user", findUser(userId));
+        return "user/updateForm";
+    }
+
+    @PostMapping("/users/{userId}/update")
+    public String updateUser(@PathVariable("userId") String userId, User updatedUser) {
+        User originUser = findUser(userId);
+        if(!confirmPassword(originUser.getPassword(), updatedUser.getPassword())) {
+            return "user/update_failed";
+        }
+        updateUserData(originUser, updatedUser);
+        return "redirect:/users";
+    }
+    
     private User findUser(String userId) {
         for (User user : users) {
             if(userId.equals(user.getUserId())) {
@@ -39,5 +55,14 @@ public class UserController {
             }
         }
         return null;
+    }
+
+    private boolean confirmPassword(String originPassword, String inputPassword) {
+        return originPassword.equals(inputPassword);
+    }
+
+    private void updateUserData(User originUser, User updatedUser) {
+        originUser.setName(updatedUser.getName());
+        originUser.setEmail(updatedUser.getEmail());
     }
 }

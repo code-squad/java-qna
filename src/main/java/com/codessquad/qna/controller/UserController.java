@@ -25,13 +25,13 @@ public class UserController {
   }
 
   @GetMapping(value = "/users")
-  public String getAllUsers(Model model) {
+  public String getUsers(Model model) {
     model.addAttribute("users", users);
     return "user/list";
   }
 
   @GetMapping(value = "/users/{userId}")
-  public String getUserProfile(Model model, @PathVariable("userId") String userId) {
+  public String getProfile(Model model, @PathVariable("userId") String userId) {
     User user = users.stream()
         .filter(x -> userId.equals(x.getUserId()))
         .findAny()
@@ -39,5 +39,4 @@ public class UserController {
     model.addAttribute("user", user);
     return "user/profile";
   }
-
 }

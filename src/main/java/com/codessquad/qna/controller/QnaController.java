@@ -21,15 +21,15 @@ public class QnaController {
   @PostMapping(value = "/questions")
   public String postQuestion(@ModelAttribute Question question) {
     question.setIndex(qnas.size() + 1);
-    log.info(question.toString());
+//    log.info(question.toString());
     qnas.add(question);
     return "redirect:/";
   }
 
   @GetMapping(value = "/questions/{index}")
   public String getQuestion(@PathVariable("index") int index, Model model) {
-    Question question = qnas.get(index -1);
-    log.info(question.toString());
+    Question question = qnas.get(index - 1);
+//    log.info(question.toString());
     model.addAttribute("qna", question);
     return "/qna/show";
   }

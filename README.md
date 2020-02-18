@@ -41,3 +41,4 @@
 2. 여러 시간대를 한꺼번에 대응할 필요가 없다면 `ZonedDateTime` 보다는 `LocalDateTime` 를 사용해달라고 하셔서 이에 대해서 알아보고 변경하였습니다.
    또 필드명을 `dateTime` 에서 `createdDateTime` 으로 수정하였습니다. 그리고 Format된 형태로 표시해주기 위해서 `getFormattedCreatedDateTime()` 메서드를 생성하였습니다.
    honux의 조언대로 `{{formattedCreatedDateTime}}` 으로 호출했더니 동작하였습니다.
+3. replyCount보다는 reply에 대한 자료구조를 가지는게 좋을 것 같아 수정하였습니다. (Reply에 대한 명확한 설계가 없어 Object타입을 저장하도록 하였습니다.)

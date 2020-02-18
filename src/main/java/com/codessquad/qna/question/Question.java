@@ -2,6 +2,8 @@ package com.codessquad.qna.question;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Question {
     private int index;
@@ -9,7 +11,7 @@ public class Question {
     private String title;
     private String contents;
     private LocalDateTime createdDateTime;
-    private int replyCount;
+    private List<Object> replies;
 
     public Question(int index, String writer, String title, String contents) {
         this.index = index;
@@ -17,7 +19,7 @@ public class Question {
         this.title = title;
         this.contents = contents;
         this.createdDateTime = LocalDateTime.now();
-        this.replyCount = 0;
+        this.replies = new ArrayList<>();
     }
 
     public int getIndex() {
@@ -64,11 +66,16 @@ public class Question {
         return createdDateTime.format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:ss"));
     }
 
-    public int getReplyCount() {
-        return replyCount;
+    public List<Object> getReplies() {
+        return replies;
     }
 
-    public void setReplyCount(int replyCount) {
-        this.replyCount = replyCount;
+    public void setReplies(List<Object> replies) {
+        this.replies = replies;
     }
+
+    public int getReplyCount() {
+        return replies.size();
+    }
+
 }

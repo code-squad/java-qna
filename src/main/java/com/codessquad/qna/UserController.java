@@ -13,6 +13,11 @@ import java.util.List;
 public class UserController {
     List<User> users = new ArrayList<>();
 
+    @GetMapping("/user/form")
+    public String moveUserForm() {
+        return "user/form";
+    }
+
     @PostMapping("/user/create")
     public String addUser(Model model, User user) {
         System.out.println("userId : " + user.getUserId() + " password : " + user.getPassword());
@@ -41,4 +46,5 @@ public class UserController {
         model.addAttribute("currentUser", currentUser);
         return "user/profile";
     }
+
 }

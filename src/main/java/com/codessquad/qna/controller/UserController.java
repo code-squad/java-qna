@@ -1,5 +1,6 @@
-package com.codessquad.qna.user;
+package com.codessquad.qna.controller;
 
+import com.codessquad.qna.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +16,6 @@ public class UserController {
 
     @PostMapping("/users")
     public String createUser(User user) {
-        System.out.println(user);
         users.add(user);
         return "redirect:/users";
     }
@@ -26,14 +26,8 @@ public class UserController {
         return "user/list";
     }
 
-    @GetMapping("/users/join")
-    public String signInForm() {
-        return "user/form";
-    }
-
     @GetMapping("/users/{userIndex}")
     public String getUserProfile(@PathVariable int userIndex, Model model) {
-        System.out.println(userIndex);
        User user = users.get(userIndex);
        model.addAttribute("user", user);
        return "user/profile";

@@ -40,6 +40,7 @@ public class User {
 
   @Override
   public String toString() {
-    return "User{" + "userId='" + userId + '\'' + ", passwd='" + passwd + '\'' + ", name='" + name + '\'' + ", email='" + email + '\'' + '}';
+    return "User{" + "userId='" + userId + '\'' + ", passwd='" + passwd + '\''
+        + ", name='" + name + '\'' + ", email='" + email + '\'' + '}';
   }
 }

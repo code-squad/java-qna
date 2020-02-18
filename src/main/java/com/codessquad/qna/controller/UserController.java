@@ -31,7 +31,7 @@ public class UserController {
   }
 
   @GetMapping(value = "/users/{userId}")
-  public String getUser(Model model, @PathVariable("userId") String userId) {
+  public String getUserProfile(Model model, @PathVariable("userId") String userId) {
     User user = users.stream()
         .filter(x -> userId.equals(x.getUserId()))
         .findAny()

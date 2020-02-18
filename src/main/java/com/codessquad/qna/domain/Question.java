@@ -4,16 +4,30 @@ import java.text.SimpleDateFormat;
 
 public class Question {
 
+  private int index;
   private String writer;
   private String title;
   private String contents;
   private String time;
 
   public Question(String writer, String title, String contents) {
+    this.index = 0;
     this.writer = writer;
     this.title = title;
     this.contents = contents;
     this.time = getCurrentTime();
+  }
+
+  public int getIndex() {
+    return index;
+  }
+
+  public void setIndex(int index) {
+    this.index = index;
+  }
+
+  public String getTime() {
+    return time;
   }
 
   public String getWriter() {

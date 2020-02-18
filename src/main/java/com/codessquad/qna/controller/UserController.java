@@ -24,13 +24,13 @@ public class UserController {
     @GetMapping("/user/list")
     public String getUserList(Model model) {
         model.addAttribute("users", userList);
-        return "list";
+        return "user/list";
     }
 
     @GetMapping("/users/{userId}")
     public String getUserProfile(@PathVariable String userId, Model model) {
         model.addAttribute("user", getUserById(userId));
-        return "profile";
+        return "user/profile";
     }
 
     public User getUserById(String userId) {

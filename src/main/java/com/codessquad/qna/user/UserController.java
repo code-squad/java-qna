@@ -22,14 +22,8 @@ public class UserController {
     }
 
     @PostMapping("/user/create")
-    public String createUser(HttpServletRequest request) {
-        String userId = request.getParameter("userId");
-        String userPassword = request.getParameter("password");
-        String userName = request.getParameter("name");
-        String userEmail = request.getParameter("email");
-
-        User newUser = new User(userId, userPassword, userName, userEmail);
-        users.add(newUser);
+    public String createUser(User user) {
+        users.add(user);
         return "redirect:/users";
     }
 

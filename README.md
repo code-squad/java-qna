@@ -33,3 +33,8 @@
 11. Question의 상세 정보를 출력하는 화면 만들기
 12. heroku 배포하기 (https://sheltered-lake-66847.herokuapp.com/)
 13. 사용자 정보 수정기능 추가하기
+
+## STEP1 리뷰된 내용 수정
+
+1. Honux가 제안한 대로 Create 시에 User를 직접 받는 방식이 동작해서 해당 방식이 더 소스가 깔끔한 것 같아 변경하였습니다.
+   `@RequiredParam` 을 적용해보았는데 `@RequiredParam`은 name 필드명과 메소드의 매개변수명이 일치해야해서 불가능 한 것 같습니다.

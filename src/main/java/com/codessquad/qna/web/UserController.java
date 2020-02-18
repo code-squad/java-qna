@@ -19,6 +19,12 @@ public class UserController {
         return "/user/list";
     }
 
+    @PostMapping("/users")
+    public String createUser(User user) {
+        users.add(user);
+        return "redirect:/users";
+    }
+
     @GetMapping("/users/{userId}")
     public String userProfile(@PathVariable String userId, Model model) {
         User target = null;
@@ -30,11 +36,5 @@ public class UserController {
         }
         model.addAttribute("user", target);
         return "/user/profile";
-    }
-
-    @PostMapping("/users")
-    public String createUser(User user) {
-        users.add(user);
-        return "redirect:/users";
     }
 }

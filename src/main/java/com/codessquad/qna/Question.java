@@ -7,7 +7,7 @@ public class Question {
     private String writer;
     private String title;
     private String contents;
-    private String createdDatetime;
+    private LocalDateTime createdDateTime;
     private int questionId;
 
     public void setWriter(String writer) {
@@ -26,8 +26,8 @@ public class Question {
         this.questionId = questionId;
     }
 
-    public void setCreatedDatetime(LocalDateTime createdDatetime) {
-        this.createdDatetime = toStringDateTime(createdDatetime);
+    public void setCreatedDatetime(LocalDateTime createdDateTime) {
+        this.createdDateTime = createdDateTime;
     }
 
     public String getWriter() {
@@ -46,8 +46,8 @@ public class Question {
         return questionId;
     }
 
-    public String getCreatedDatetime() {
-        return createdDatetime;
+    public String getCreatedDateTime2String() {
+        return toStringDateTime(createdDateTime);
     }
 
     private String toStringDateTime(LocalDateTime localDateTime) {

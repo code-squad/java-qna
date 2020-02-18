@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Question {
+
   private static int SEQ_NUM = 0;
 
   private String seqNum;

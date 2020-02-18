@@ -24,7 +24,7 @@ public class QuestionController {
     return "redirect:/index";
   }
 
-  @GetMapping("/index")
+  @GetMapping(value = {"/", "/index"})
   public String goIndex(Model model) {
     model.addAttribute("questions", questionList);
     return "index";

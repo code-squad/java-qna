@@ -15,20 +15,15 @@ public class UserController {
 
   private static List<User> userList = new ArrayList<>();
 
-  @GetMapping("/index")
-  public String goIndex(Model model) {
-    return "index";
-  }
-
   @GetMapping("/user/form")
   public String goForm(Model model) {
     return "user/form";
   }
 
   @PostMapping("/users")
-  public String createUser(User user, Model model) {
+  public String createUser(User user) {
     userList.add(user);
-    return "redirect:/list";
+    return "redirect:/user/list";
   }
 
   @RequestMapping("/users/{userId}")

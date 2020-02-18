@@ -25,6 +25,25 @@ public class UserController {
         return "redirect:/users";
     }
 
+    @GetMapping("/users/{userId}/form")
+    public String updateUser(@PathVariable String userId, Model model) {
+        model.addAttribute("userId", userId);
+        return "/user/updateForm";
+    }
+
+    @PostMapping("/users/{userId}/update")
+    public String updateUser(@PathVariable String userId, String password, String name, String email) {
+        for(User user: users) {
+            if(user.getUserId().equals(userId)) {
+                user.setPassword(password);
+                user.setName(name);
+                user.setEmail(email);
+                break;
+            }
+        }
+        return "redirect:/users";
+    }
+
     @GetMapping("/users/{userId}")
     public String userProfile(@PathVariable String userId, Model model) {
         User target = null;

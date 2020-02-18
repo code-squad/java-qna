@@ -10,18 +10,19 @@ import java.util.List;
 
 @Controller
 public class UserController {
-    List<User> Users = new ArrayList<>();
+    List<User> users = new ArrayList<>();
 
     @PostMapping("/user/create")
     public String addUser(Model model, User user) {
         System.out.println("userId : " + user.getUserId() + " password : " + user.getPassword());
         model.addAttribute("name", user.getName());
-        Users.add(user);
+        users.add(user);
         return "redirect:/users"; //templates의 index.html 호출
     }
 
     @GetMapping("/users")
-    public String viewUsers() {
-        return "list";
+    public String viewUsers(Model model) {
+        model.addAttribute("users", users);
+        return "user/list";
     }
 }

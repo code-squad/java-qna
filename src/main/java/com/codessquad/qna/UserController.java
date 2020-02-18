@@ -1,10 +1,12 @@
 package com.codessquad.qna;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,20 +43,20 @@ public class UserController {
     @PostMapping("/users/{userId}/update")
     public String updateUser(@PathVariable("userId") String userId, User updatedUser) {
         User originUser = findUser(userId);
-        if(!confirmPassword(originUser.getPassword(), updatedUser.getPassword())) {
+        if (!confirmPassword(originUser.getPassword(), updatedUser.getPassword())) {
             return "user/update_failed";
         }
         updateUserData(originUser, updatedUser);
         return "redirect:/users";
     }
-    
-    private User findUser(String userId) {
+
+    private User findUser(String userId) throws UserNotFoundException {
         for (User user : users) {
-            if(userId.equals(user.getUserId())) {
+            if (userId.equals(user.getUserId())) {
                 return user;
             }
         }
-        return null;
+        throw new UserNotFoundException("the user is not found.");
     }
 
     private boolean confirmPassword(String originPassword, String inputPassword) {
@@ -64,5 +66,12 @@ public class UserController {
     private void updateUserData(User originUser, User updatedUser) {
         originUser.setName(updatedUser.getName());
         originUser.setEmail(updatedUser.getEmail());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    static class UserNotFoundException extends RuntimeException {
+        public UserNotFoundException(String message) {
+            super(message);
+        }
     }
 }

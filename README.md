@@ -25,14 +25,14 @@
 #### 회원가입 기능 구현
 - 회원하기 페이지는 static/user/form.html을 사용한다. ... complete
 - static에 있는 html을 templates로 이동한다. ... complete
-  - /user/form.html 파일을 이동해줍니다.
-  - UserController 에 form 매핑을 추가해줍니다. 
+    - /user/form.html 파일을 이동해줍니다.
+    - UserController 에 form 매핑을 추가해줍니다. 
 - 사용자 관리 기능 구현을 담당할 UserController를 추가하고 애노테이션 매핑한다. ... complete
 - @Controller 애노테이션 추가 ... complete
 - 회원가입하기 요청(POST 요청)을 처리할 메소드를 추가하고 매핑한다. ... complete
-  - /static/user/form.html 의 question form method 를 get 에서 post 로 바꿔줍니다.
+    - /user/form.html 의 question form method 를 get 에서 post 로 바꿔줍니다.
 - @PostMapping 추가하고 URL 매핑한다. ... complete
-  - UserController 에 /user/create 매핑을 추가해줍니다. 
+    - UserController 에 /user/create 매핑을 추가해줍니다. 
 - 사용자가 전달한 값을 User 클래스를 생성해 저장한다. ... complete
 - 회원가입할 때 전달한 값을 저장할 수 있는 필드를 생성한 후 setter와 getter 메소드를 생성한다. ... complete
 - 사용자 목록을 관리하는 ArrayList를 생성한 후 앞에서 생성한 User 인스턴스를 ArrayList에 저장한다. ... complete
@@ -45,7 +45,7 @@
 - Controller 클래스는 회원가입하기 과정에서 추가한 UserController를 그대로 사용한다. ... complete
 - 회원목록 요청(GET 요청)을 처리할 메소드를 추가하고 매핑한다. ... complete
 - @GetMapping을 추가하고 URL 매핑한다. ... complete
-  - UserController 에 /list 매핑을 추가해줍니다.
+    - UserController 에 user/list 매핑을 추가해줍니다.
 - Model을 메소드의 인자로 받은 후 Model에 사용자 목록을 users라는 이름으로 전달한다. ... complete
 - 사용자 목록을 user/list.html로 전달하기 위해 메소드 반환 값을 "user/list"로 한다. ... complete
 - user/list.html 에서 사용자 목록을 출력한다. ... complete
@@ -68,6 +68,7 @@
 
 #### HTML의 중복 제거
 - index.html, /user/form.html, /qna/form.html 코드를 보면 header, navigation bar, footer 부분에 많은 중복 코드가 있다. 중복 코드를 제거한다. ... complete
-- URL과 html 쉽게 연결하기
+    - templates 에 base.html 을 만들어 처리하였습니다. 
+- URL과 html 쉽게 연결하기 ... working
     - base package 아래에 config와 같은 새로운 패키지 생성한다.
     - MvcConfig 이름으로 클래스를 생성해 다음과 같은 형태로 구현한다.

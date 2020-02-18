@@ -15,6 +15,16 @@ public class UserController {
 
   private static List<User> userList = new ArrayList<>();
 
+  @GetMapping("/index")
+  public String goIndex(Model model) {
+    return "index";
+  }
+
+  @GetMapping("/user/form")
+  public String goForm(Model model) {
+    return "user/form";
+  }
+
   @PostMapping("/users")
   public String createUser(User user, Model model) {
     userList.add(user);
@@ -31,7 +41,7 @@ public class UserController {
     return "user/profile";
   }
 
-  @GetMapping("/list")
+  @GetMapping("user/list")
   public String goList(Model model) {
     model.addAttribute("users", userList);
     return "user/list";

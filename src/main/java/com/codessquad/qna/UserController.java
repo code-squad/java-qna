@@ -16,13 +16,13 @@ public class UserController {
     @PostMapping("/user/create")
     public String create(User user) {
         users.add(user);
-        return "redirect:/list";
+        return "redirect:/user/list";
     }
 
-    @GetMapping("/list")
+    @GetMapping("/user/list")
     public String list(Model model) {
         model.addAttribute("users", users);
-        return "list";
+        return "user/list";
     }
 
     @GetMapping("/profile/{userId}")
@@ -32,6 +32,6 @@ public class UserController {
                 .findAny()
                 .orElse(null);
         model.addAttribute("user", user);
-        return "profile";
+        return "user/profile";
     }
 }

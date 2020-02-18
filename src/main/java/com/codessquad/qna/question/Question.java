@@ -1,6 +1,6 @@
 package com.codessquad.qna.question;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Question {
@@ -8,7 +8,7 @@ public class Question {
     private String writer;
     private String title;
     private String contents;
-    private ZonedDateTime dateTime;
+    private LocalDateTime createdDateTime;
     private int replyCount;
 
     public Question(int index, String writer, String title, String contents) {
@@ -16,7 +16,7 @@ public class Question {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-        this.dateTime = ZonedDateTime.now();
+        this.createdDateTime = LocalDateTime.now();
         this.replyCount = 0;
     }
 
@@ -52,12 +52,16 @@ public class Question {
         this.contents = contents;
     }
 
-    public String getDateTime() {
-        return dateTime.format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:ss"));
+    public LocalDateTime getCreatedDateTime() {
+        return createdDateTime;
     }
 
-    public void setDateTime(ZonedDateTime dateTime) {
-        this.dateTime = dateTime;
+    public void setCreatedDateTime(LocalDateTime createdDateTime) {
+        this.createdDateTime = createdDateTime;
+    }
+
+    public String getFormattedCreatedDateTime() {
+        return createdDateTime.format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:ss"));
     }
 
     public int getReplyCount() {

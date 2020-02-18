@@ -22,13 +22,13 @@ public class UserController {
     public String create(User user) {
         System.out.println("user : " + user);
         users.add(user);
-        return "redirect:list.html";
+        return "redirect:user/list.html";
     }
 
     @GetMapping("/user/list.html")
     public String list(Model model) {
         model.addAttribute("users", users);
-        return "list";
+        return "user/list";
     }
 
     @GetMapping("/user/profile.html/{userId}")
@@ -38,9 +38,9 @@ public class UserController {
             if (users.get(i).getUserId().equals(userId)) {
                 model.addAttribute("userId", userId);
                 model.addAttribute("email", users.get(i).getEmail());
-                return "profile";
+                return "user/profile";
             }
         }
-        return "profile";
+        return "user/profile";
     }
 }

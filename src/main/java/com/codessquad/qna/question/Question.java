@@ -7,7 +7,7 @@ public class Question {
 
   private static int SEQ_NUM = 0;
 
-  private String seqNum;
+  private String index;
   private String writer;
   private String title;
   private String contents;
@@ -17,13 +17,13 @@ public class Question {
     LocalDateTime localDateTime = LocalDateTime.now();
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm");
     this.dateTime = localDateTime.format(dateTimeFormatter);
-    seqNum = (++SEQ_NUM) + "";
+    index = (++SEQ_NUM) + "";
   }
 
   @Override
   public String toString() {
     return "Question{" +
-        "seqNum='" + seqNum + '\'' +
+        "index='" + index + '\'' +
         ", writer='" + writer + '\'' +
         ", title='" + title + '\'' +
         ", contents='" + contents + '\'' +
@@ -31,12 +31,12 @@ public class Question {
         '}';
   }
 
-  public String getSeqNum() {
-    return seqNum;
+  public String getIndex() {
+    return index;
   }
 
-  public void setSeqNum(String seqNum) {
-    this.seqNum = seqNum;
+  public void setIndex(String index) {
+    this.index = index;
   }
 
   public String getWriter() {

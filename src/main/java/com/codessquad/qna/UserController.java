@@ -31,22 +31,16 @@ public class UserController {
         return "list";
     }
 
-    @GetMapping("/user/profile.html")
-    public String profile(Model model) {
-        model.addAttribute("users", users);
+    @GetMapping("/user/profile.html/{userId}")
+    public String profile(Model model, @PathVariable String userId) {
+
+        for (int i = 0; i < users.size(); i++) {
+            if (users.get(i).getUserId().equals(userId)) {
+                model.addAttribute("userId", userId);
+                model.addAttribute("email", users.get(i).getEmail());
+                return "profile";
+            }
+        }
         return "profile";
     }
-
-    @GetMapping("/user/{userId")
-    public String profileName(Model model) {
-
-        return "redirect:/profile";
-    }
-
-//    @GetMapping("/user/{userId}")
-//    public String profileName(@PathVariable String userId) {
-//        String returnName = "";
-//        if (userId.equals(""))
-//    }
-
 }

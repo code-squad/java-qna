@@ -29,11 +29,11 @@
         <tbody>
         {{#users}}
         <tr>
-          <th scope="row"></th>
+          <th scope="row">{{id}}</th>
           <td>{{userId}}</td>
           <td>{{name}}</td>
           <td>{{email}}</td>
-          <td><a class="btn btn-success" href="/users/{{userId}}" role="button">수정</a></td>
+          <td><a class="btn btn-success" href="/users/{{id}}" role="button">수정</a></td>
         </tr>
         {{/users}}
         </tbody>

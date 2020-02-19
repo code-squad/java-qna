@@ -3,6 +3,7 @@ package com.codessquad.qna;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.LocalDateTime;
@@ -18,7 +19,6 @@ public class QuestionController {
     public String createQuestion(Question question) {
         question.setTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         questions.add(question);
-
         return "redirect:/";
     }
 
@@ -26,5 +26,11 @@ public class QuestionController {
     public String showQuestion(Model model) {
         model.addAttribute("questions", questions);
         return "qna/list";
+    }
+
+    @GetMapping("/questions/{index}")
+    public String showQuestionDetail(@PathVariable String index, Model model) {
+
+        return "qna/show";
     }
 }

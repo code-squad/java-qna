@@ -13,11 +13,6 @@ public class WebConfig implements WebMvcConfigurer {
         registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
         registry.addViewController("/user/form").setViewName("user/form");
         registry.addViewController("/user/login").setViewName("user/login");
-        registry.addViewController("/questions/form").setViewName("gna/form");
+        registry.addViewController("/question/form").setViewName("qna/form");
     }
-
-//    @Override
-//    public void configureViewResolvers(ViewResolverRegistry registry) {
-//        registry.jsp("/WEB-INF/views/", ".jsp");
-//    }
 }

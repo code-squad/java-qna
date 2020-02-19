@@ -12,7 +12,7 @@ https://serene-journey-91670.herokuapp.com/
 
 소프트웨어 빌드 자동화 시스템으로 `build.gradle` 파일을 통해 라이브러리 의존성 설정할 수 있다.
 
-```
+```groovy
 // 1.  플러그인 적용
 apply plugin: 'java'
 
@@ -35,7 +35,7 @@ dependencies {
 
 ##### 의존성 명시하는 방법
 
-```
+```groovy
 // (방법 1) group: '~',, name: '~', version: '~' 형식순으로 명시한다.
 compile group: 'org.springframework.boot', name: 'spring-boot-devtools', version: '2.2.4.RELEASE'
 

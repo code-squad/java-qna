@@ -1,0 +1,23 @@
+handlebars:
+  suffix: .html
+  cache: false
+
+spring:
+  devtools:
+    restart:
+      enabled: false
+  datasource:
+    url: jdbc:h2:mem://localhost/~/java-qna;MVCC=TRUE;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    data-username: sa
+    data-password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true

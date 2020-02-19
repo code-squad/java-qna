@@ -1,9 +1,22 @@
 package com.codessquad.qna;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class Question {
     String writer;
     String title;
     String contents;
+    String created;
+
+    public Question() {
+        String pattern = "MM-dd-yyyy HH:mm:ss";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, new Locale("kr", "KR"));
+        String date = simpleDateFormat.format(new Date());
+        System.out.println(date);
+        this.created = date;
+    }
 
     @Override
     public String toString() {
@@ -12,6 +25,14 @@ public class Question {
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
                 '}';
+    }
+
+    public String getCreated() {
+        return created;
+    }
+
+    public void setCreated(String created) {
+        this.created = created;
     }
 
     public String getWriter() {

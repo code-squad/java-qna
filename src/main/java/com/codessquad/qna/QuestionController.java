@@ -1,6 +1,8 @@
 package com.codessquad.qna;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
@@ -13,7 +15,12 @@ public class QuestionController {
     @PostMapping("/qna/form")
     public String question(Question question) {
         this.questions.add(question);
-        System.out.println(question);
         return "redirect:/";
+    }
+
+    @GetMapping("/")
+    public String home(Model model) {
+        model.addAttribute("questions", questions);
+        return "index";
     }
 }

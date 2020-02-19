@@ -5,18 +5,14 @@ import java.util.Date;
 import java.util.Locale;
 
 public class Question {
-    String writer;
-    String title;
-    String contents;
-    String created;
-    int id;
+    private String writer;
+    private String title;
+    private String contents;
+    private String created;
+    private int id;
 
     public Question() {
-        String pattern = "MM-dd-yyyy HH:mm:ss";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, new Locale("kr", "KR"));
-        String date = simpleDateFormat.format(new Date());
-
-        this.created = date;
+        this.created = date();
     }
 
     public int getId() {
@@ -69,5 +65,11 @@ public class Question {
                 ", created='" + created + '\'' +
                 ", id=" + id +
                 '}';
+    }
+
+    private String date() {
+        String pattern = "MM-dd-yyyy HH:mm:ss";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, new Locale("kr", "KR"));
+        return simpleDateFormat.format(new Date());
     }
 }

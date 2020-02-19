@@ -1,10 +1,10 @@
 package com.codessquad.qna;
 
 public class User {
-    String userId;
-    String name;
-    String email;
-    String password;
+    private String userId;
+    private String name;
+    private String email;
+    private String password;
 
     public String getUserId() {
         return userId;

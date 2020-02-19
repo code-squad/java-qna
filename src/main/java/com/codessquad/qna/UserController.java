@@ -14,7 +14,7 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/users")
 public class UserController {
-    List<User> users = new ArrayList<>();
+    private List<User> users = new ArrayList<>();
 
     @GetMapping
     public String list(Model model) {
@@ -57,7 +57,7 @@ public class UserController {
 
     private Optional<User> findUser(String userId) {
         for (User user : users) {
-            if (user.userId.equals(userId)) {
+            if (user.getUserId().equals(userId)) {
                 return Optional.of(user);
             }
         }

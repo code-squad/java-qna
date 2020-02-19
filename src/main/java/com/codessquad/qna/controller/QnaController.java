@@ -15,20 +15,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class QnaController {
 
-  private static List<Question> qnas = new ArrayList<>();
+  private static List<Question> questions = new ArrayList<>();
   private static Logger log = LoggerFactory.getLogger(QnaController.class);
 
   @PostMapping(value = "/questions")
   public String postQuestion(@ModelAttribute Question question) {
-    question.setIndex(qnas.size() + 1);
+    question.setIndex(questions.size() + 1);
 //    log.info(question.toString());
-    qnas.add(question);
+    questions.add(question);
     return "redirect:/";
   }
 
   @GetMapping(value = "/questions/{index}")
   public String getQuestion(@PathVariable("index") int index, Model model) {
-    Question question = qnas.get(index - 1);
+    Question question = questions.get(index - 1);
 //    log.info(question.toString());
     model.addAttribute("qna", question);
     return "/qna/show";
@@ -36,7 +36,7 @@ public class QnaController {
 
   @GetMapping(value = "/")
   public String redirectToQnaList(Model model) {
-    model.addAttribute("qnas", qnas);
+    model.addAttribute("qnas", questions);
     return "index";
   }
 }

@@ -33,7 +33,7 @@ public class UserController {
   @GetMapping(value = "/users/{userId}")
   public String getProfile(Model model, @PathVariable("userId") String userId) {
     User user = users.stream()
-        .filter(x -> userId.equals(x.getUserId()))
+        .filter(u -> userId.equals(u.getUserId()))
         .findAny()
         .orElse(null);
     model.addAttribute("user", user);

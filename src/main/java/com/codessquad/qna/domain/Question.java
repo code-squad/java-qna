@@ -1,6 +1,7 @@
 package com.codessquad.qna.domain;
 
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Question {
 
@@ -8,14 +9,14 @@ public class Question {
   private String writer;
   private String title;
   private String contents;
-  private String time;
+  private LocalDateTime createdTime;
 
   public Question(String writer, String title, String contents) {
     this.index = 0;
     this.writer = writer;
     this.title = title;
     this.contents = contents;
-    this.time = getCurrentTime();
+    this.createdTime = getCurrentTime();
   }
 
   public int getIndex() {
@@ -24,10 +25,6 @@ public class Question {
 
   public void setIndex(int index) {
     this.index = index;
-  }
-
-  public String getTime() {
-    return time;
   }
 
   public String getWriter() {
@@ -42,8 +39,12 @@ public class Question {
     return contents;
   }
 
-  private String getCurrentTime() {
-    return new SimpleDateFormat("yyyy-MM-dd HH:mm").format(System.currentTimeMillis());
+  public String getCreatedTime() {
+    return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(createdTime);
+  }
+
+  private LocalDateTime getCurrentTime() {
+    return LocalDateTime.now();
   }
 
   @Override
@@ -51,6 +52,6 @@ public class Question {
     return "writer : " + writer + '\n' +
         "title : " + title + '\n' +
         "contents : " + contents + '\n' +
-        "time : " + time;
+        "time : " + createdTime;
   }
 }

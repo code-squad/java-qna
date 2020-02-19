@@ -1,10 +1,13 @@
 package com.codessquad.qna;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Question {
     private String writer;
     private String title;
     private String contents;
-    private String time;
+    private Date writeTime;
     private int index;
 
     public int getIndex() {
@@ -39,12 +42,17 @@ public class Question {
         this.contents = contents;
     }
 
-    public String getTime() {
-        return time;
+    public String getWriteTime() {
+        return dateToString(writeTime);
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setWriteTime(Date writeTime) {
+        this.writeTime = writeTime;
+    }
+
+    public String dateToString(Date writeTime) {
+        SimpleDateFormat format = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss");
+        return format.format(writeTime);
     }
 
     @Override
@@ -53,7 +61,7 @@ public class Question {
                 "writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
-                ", time='" + time + '\'' +
+                ", time='" + writeTime + '\'' +
                 ", index=" + index +
                 '}';
     }

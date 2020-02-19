@@ -23,7 +23,7 @@ public class QuestionController {
     }
 
     @GetMapping("/")
-    public String showQuestion(Model model) {
+    public String showQuestionList(Model model) {
         model.addAttribute("questions", questions);
         return "qna/list";
     }

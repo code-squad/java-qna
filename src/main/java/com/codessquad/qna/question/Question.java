@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Question {
+    private int index;
     private String writer;
     private String title;
     private String contents;
@@ -14,6 +15,14 @@ public class Question {
         this.title = title;
         this.contents = contents;
         this.writtenTime = writtenTime;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public int getIndex() {
+        return index;
     }
 
     public String getWriter() {

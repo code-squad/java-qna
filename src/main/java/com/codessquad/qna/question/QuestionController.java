@@ -21,7 +21,7 @@ public class QuestionController {
   }
 
   @PostMapping("/question")
-  public String createUser(Question question) {
+  public String createQuestion(Question question) {
     questionList.add(question);
     return "redirect:/index";
   }
@@ -33,7 +33,7 @@ public class QuestionController {
   }
 
   @RequestMapping("/questions/{index}")
-  public String page(@PathVariable int index, Model model) {
+  public String goPage(@PathVariable int index, Model model) {
     model.addAttribute("question", questionList.get(index - 1));
     return "qna/show";
   }

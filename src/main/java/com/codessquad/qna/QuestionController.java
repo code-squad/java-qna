@@ -1,6 +1,7 @@
 package com.codessquad.qna;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -22,4 +23,10 @@ public class QuestionController {
         questions.add(question);
         return "redirect:/";
     }
+
+//    @GetMapping("/")
+//    public String viewQnaList(Model model) {
+//        model.addAttribute("questions", questions);
+//        return "show";
+//    }
 }

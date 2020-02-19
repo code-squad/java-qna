@@ -14,12 +14,12 @@
               </thead>
               <tbody>
               {{#each users}}
-                <tr onClick="location.href='/users/{{@index}}'">
+                <tr onClick="location.href='/users/{{userId}}'">
                     <th scope="row">{{@index}}</th>
-                        <td>{{this.userId}}</td>
-                        <td>{{this.name}}</td>
-                        <td>{{this.email}}</td>
-                        <td><a href="#" class="btn btn-success" role="button">수정</a></td>
+                        <td>{{userId}}</td>
+                        <td>{{name}}</td>
+                        <td>{{email}}</td>
+                        <td><a href="" class="btn btn-success" role="button">수정</a></td>
                 </tr>
               {{/each}}
               </tbody>

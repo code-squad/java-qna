@@ -4,6 +4,7 @@ public class Question {
     private String writer;
     private String title;
     private String contents;
+    private String time;
 
     public String getWriter() {
         return writer;
@@ -29,12 +30,21 @@ public class Question {
         this.contents = contents;
     }
 
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
     @Override
     public String toString() {
         return "Question{" +
                 "writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
+                ", time='" + time + '\'' +
                 '}';
     }
 }

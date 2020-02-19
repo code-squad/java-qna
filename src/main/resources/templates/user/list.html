@@ -19,7 +19,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                {{#users}}
+                {{#each users}}
                 <tr>
                     <th scope="row"></th>
                     <td><a href="/profile/{{userId}}">{{userId}}</a></td>
@@ -27,7 +27,7 @@
                     <td>{{email}}</td>
                     <td><a href="#" class="btn btn-success" role="button">수정</a></td>
                 </tr>
-                {{/users}}
+                {{/each}}
                 </tbody>
             </table>
         </div>

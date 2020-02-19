@@ -12,12 +12,13 @@ public class MvcConfig implements WebMvcConfigurer {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
 
-        registry.addViewController("/").setViewName("index");
         registry.addViewController("/qna/form").setViewName("qna/form");
         registry.addViewController("/qna/show").setViewName("qna/show");
 
         registry.addViewController("/user/login").setViewName("user/login");
         registry.addViewController("/user/form").setViewName("user/form");
+        registry.addViewController("/user/profile").setViewName("user/profile");
+
 
 
 

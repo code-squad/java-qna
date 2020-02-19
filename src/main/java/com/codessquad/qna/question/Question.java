@@ -1,40 +1,44 @@
 package com.codessquad.qna.question;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class Question {
-    private String name;    // 겹치는데 괜찮을까?
-    private String question;
-    private String context;
+    private String writer;
+    private String title;
+    private String contents;
+    private String writtenTime;
 
-    public String getName() {
-        return name;
+    public Question(String writer, String title, String contents, String writtenTime) {
+        this.writer = writer;
+        this.title = title;
+        this.contents = contents;
+        this.writtenTime = writtenTime;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getWriter() {
+        return writer;
     }
 
-    public String getQuestion() {
-        return question;
+    public String getTitle() {
+        return title;
     }
 
-    public void setQuestion(String question) {
-        this.question = question;
+    public String getContents() {
+        return contents;
     }
 
-    public String getContext() {
-        return context;
-    }
-
-    public void setContext(String context) {
-        this.context = context;
+    public String getWrittenTime() {
+        return writtenTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
     @Override
     public String toString() {
         return "Question{" +
-                "name='" + name + '\'' +
-                ", question='" + question + '\'' +
-                ", context='" + context + '\'' +
+                "writer='" + writer + '\'' +
+                ", title='" + title + '\'' +
+                ", contents='" + contents + '\'' +
+                ", writtenTime='" + writtenTime + '\'' +
                 '}';
     }
 }

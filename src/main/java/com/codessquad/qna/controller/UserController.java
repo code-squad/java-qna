@@ -6,40 +6,43 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
+@RequestMapping("/user") // 중복되는 prefix, 자원에 대해 명시해준다.
 public class UserController {
-    private List<User> userList = new ArrayList<>();
+    private List<User> userList = Collections.synchronizedList(new ArrayList<>());
 
-    @PostMapping("/user/create")
+    @PostMapping("/create")
     public String createUser(User user) {
         userList.add(user);
         System.out.println(user);
         return "redirect:/user/list";
     }
 
-    @GetMapping("/user/list")
+    @GetMapping("/list")
     public String getUserList(Model model) {
         model.addAttribute("users", userList);
         return "user/list";
     }
 
-    @GetMapping("/users/{userId}")
-    public String getUserProfile(@PathVariable String userId, Model model) {
+    @GetMapping("/{userId}")
+    public String getUserProfile(@PathVariable String userId, Model model) throws NullPointerException {
         model.addAttribute("user", getUserById(userId));
         return "user/profile";
     }
 
-    public User getUserById(String userId) {
+    public User getUserById(String userId) throws NullPointerException{
         for (User user : userList) {
             if(userId.equals(user.getUserId())){
                 return user;
             }
         }
-        return null;
+        throw new NullPointerException("null");
     }
 
 }

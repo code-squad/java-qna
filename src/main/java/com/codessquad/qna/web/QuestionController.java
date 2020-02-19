@@ -32,5 +32,4 @@ public class QuestionController {
         questions.add(question);
         return "redirect:/";
     }
-
 }

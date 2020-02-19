@@ -24,9 +24,7 @@ public class QuestionController {
     public String saveQuestions(Model model, Question question) {
         System.out.println("writer : " + question.getWriter() + " title : " + question.getTitle());
         question.setIndex(questions.size() + 1);
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        question.setDateTime(now.format(formatter));
+        question.setCreatedTime(LocalDateTime.now());
         questions.add(question);
         return "redirect:/qna";
     }

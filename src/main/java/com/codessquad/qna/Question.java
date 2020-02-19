@@ -1,13 +1,17 @@
 package com.codessquad.qna;
 
+import jdk.vm.ci.meta.Local;
+
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Question {
     private String writer;
     private String title;
     private String contents;
     private int index;
-    private String dateTime;
+    private LocalDateTime createdTime;
+    private static String DATE_FORMAT = "yyyy-MM-dd HH:mm";
 
     public void setIndex(int index) {
         this.index = index;
@@ -25,8 +29,8 @@ public class Question {
         this.contents = contents;
     }
 
-    public void setDateTime(String dateTime) {
-        this.dateTime = dateTime;
+    public void setCreatedTime(LocalDateTime createdTime) {
+        this.createdTime = createdTime;
     }
 
     public int getIndex() {
@@ -45,8 +49,13 @@ public class Question {
         return contents;
     }
 
-    public String getDateTime() {
-        return dateTime;
+    public LocalDateTime getCreatedTime() {
+        return createdTime;
     }
+
+    public String getFormattedCreatedTime() {
+        return createdTime.format(DateTimeFormatter.ofPattern(DATE_FORMAT));
+    }
+
 
 }

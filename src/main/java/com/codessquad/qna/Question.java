@@ -1,10 +1,13 @@
 package com.codessquad.qna;
 
+import java.time.LocalDateTime;
+
 public class Question {
     private String writer;
     private String title;
     private String contents;
     private int index;
+    private String dateTime;
 
     public void setIndex(int index) {
         this.index = index;
@@ -22,6 +25,10 @@ public class Question {
         this.contents = contents;
     }
 
+    public void setDateTime(String dateTime) {
+        this.dateTime = dateTime;
+    }
+
     public int getIndex() {
         return index;
     }
@@ -36,6 +43,10 @@ public class Question {
 
     public String getContents() {
         return contents;
+    }
+
+    public String getDateTime() {
+        return dateTime;
     }
 
 }

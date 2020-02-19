@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,8 +23,10 @@ public class QuestionController {
     @PostMapping("/questions")
     public String saveQuestions(Model model, Question question) {
         System.out.println("writer : " + question.getWriter() + " title : " + question.getTitle());
-//        model.addAttribute("question", question.getName());
         question.setIndex(questions.size() + 1);
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        question.setDateTime(now.format(formatter));
         questions.add(question);
         return "redirect:/qna";
     }

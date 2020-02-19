@@ -12,3 +12,41 @@
     padding-top: 1.4em;
     padding-right: 2.5em;
 }
+
+.article {
+    position:relative;padding:.6em 0 .8em
+}
+
+.article-header{
+    display:table;width:100%;
+    padding-bottom:.6em;
+    border-bottom:1px dashed #dadada
+}
+.article-header-text,.article-header-thumb{display:table-cell;vertical-align:middle}
+.article-header-thumb{width:48px}
+.article-author-thumb{width:40px;height:40px;-webkit-border-radius:3px;border-radius:3px}
+.article-author-name{font-weight:bold;font-size:1.1em}
+.article-author-fbgroup{display:inline-block;margin-left:.8em;font-style:italic;font-size:1em;color:#666;}
+.article-author-fbgroup a{display:inline-block;color:#333;font-weight:bold;}
+@media (max-width: 480px){.article-author-fbgroup a{overflow:hidden;max-width:8em;white-space:nowrap;-o-text-overflow:ellipsis;text-overflow:ellipsis}
+}.article-header-time{display:block;font-size:.8em;color:#666;}
+.article-header-time:hover{text-decoration:none;}
+.article-header-time:hover .icon-link{color:#3aa}
+.article-doc,.article-util{padding-left:48px;}
+@media (max-width: 480px){.article-doc,.article-util,.article-doc,.article-util{padding-left:0}
+}.article-doc img{max-width:100%}
+.article-doc blockquote{margin-left:0;margin-right:0;border-left:4px solid #efefef;padding-left:.5em}
+.article-util form{display:inline-block}
+.article-util-list a,.article-util-list button{color:#999;padding:.4em;-webkit-border-radius:3px;border-radius:3px;border:0;background-color:transparent;white-space:nowrap;}
+.article-util-list a:hover,.article-util-list button:hover{text-decoration:none;background-color:#dadada}
+.article-util-list{margin:0;padding:0;list-style:none;color:#999;}
+.article-util-list li{display:inline-block;}
+.article-util-list li:before{content:'•';margin:0 -.4em}
+.article-util-list li:first-child:before{display:none}
+.article-util-list .btn-like-article{color:#44ca7f;}
+.article-util-list .btn-like-article:hover{background-color:#e3f7ec}
+.article-util-list .btn-dislike-article{color:#be6060;}
+.article-util-list .btn-dislike-article:hover{background-color:#f9f1f1}
+.article-util-list .link-answer-article{color:#5989b6;}
+.article-util-list .link-answer-article:hover{background-color:#e7eef4}
+.article-util-list .foundicon-thumb-up,.article-util-list .foundicon-thumb-down{position:relative;top:2px}.article-util form{display:inline-block}

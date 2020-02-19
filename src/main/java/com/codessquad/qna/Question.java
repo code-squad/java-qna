@@ -9,23 +9,24 @@ public class Question {
     String title;
     String contents;
     String created;
+    int id;
 
     public Question() {
         String pattern = "MM-dd-yyyy HH:mm:ss";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, new Locale("kr", "KR"));
         String date = simpleDateFormat.format(new Date());
-        System.out.println(date);
+
         this.created = date;
     }
 
-    @Override
-    public String toString() {
-        return "Question{" +
-                "writer='" + writer + '\'' +
-                ", title='" + title + '\'' +
-                ", contents='" + contents + '\'' +
-                '}';
+    public int getId() {
+        return id;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
 
     public String getCreated() {
         return created;
@@ -57,5 +58,16 @@ public class Question {
 
     public void setContents(String contents) {
         this.contents = contents;
+    }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "writer='" + writer + '\'' +
+                ", title='" + title + '\'' +
+                ", contents='" + contents + '\'' +
+                ", created='" + created + '\'' +
+                ", id=" + id +
+                '}';
     }
 }

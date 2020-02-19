@@ -18,7 +18,6 @@ public class UserController {
     @PostMapping("/create")
     public String create(User user) {
         users.add(user);
-        System.out.println(users);
         return "redirect:/users/list";
     }
 
@@ -39,10 +38,5 @@ public class UserController {
         }
         model.addAttribute("user", matchedUser);
         return "/users/profile";
-    }
-
-    @GetMapping("/join")
-    public String join() {
-        return "/users/form";
     }
 }

@@ -15,7 +15,7 @@ public class QuestionController {
 
     @GetMapping("/qna/form")
     public String viewQnaForm() {
-        return "qna-form";
+        return "/qna/form";
     }
 
     @PostMapping("/questions")
@@ -29,12 +29,12 @@ public class QuestionController {
     @GetMapping("/")
     public String viewQnaList(Model model) {
         model.addAttribute("questions", questions);
-        return "index";
+        return "/index";
     }
 
     @GetMapping("/questions/{index}")
     public String viewQuestionContents(@PathVariable("index") int index, Model model) {
         model.addAttribute("question", questions.get(index - 1));
-        return "show";
+        return "/qna/show";
     }
 }

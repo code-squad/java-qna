@@ -15,7 +15,7 @@ public class UserController {
 
     @GetMapping("/user/form")
     public String viewUserForm() {
-        return "user-form";
+        return "/user/form";
     }
 
     @PostMapping("/user/create")
@@ -29,7 +29,7 @@ public class UserController {
     @GetMapping("/users")
     public String viewList(Model model) {
         model.addAttribute("users", users);
-        return "list";
+        return "/user/list";
     }
 
     @GetMapping("/user/{userId}")
@@ -37,10 +37,10 @@ public class UserController {
         for(User user : users) {
             if(user.getUserId().equals(userId)) {
                 model.addAttribute("user", user);
-                return "profile";
+                return "/user/profile";
             }
         }
-        return "profile";
+        return "/user/profile";
     }
 
     @GetMapping("/user/{userId}/form")
@@ -48,10 +48,10 @@ public class UserController {
         for(User user : users) {
             if(user.getUserId().equals(userId)) {
                 model.addAttribute("user", user);
-                return "user-updateForm";
+                return "/user/updateForm";
             }
         }
-        return "user-updateForm";
+        return "/user/updateForm";
     }
 
     @PostMapping("/user/{userId}/update")

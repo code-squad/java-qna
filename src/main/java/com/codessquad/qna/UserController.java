@@ -11,13 +11,22 @@ import java.util.List;
 public class UserController {
     List<User> users = new ArrayList<>();
 
-    @PostMapping("/user/create.html")
-    public String create(User user, Model model) {
-        users.add(user);
-        return "redirect:/user/list.html";
+    @GetMapping("/user/form")
+    public String createUserForm() {
+        return "/user/form";
     }
 
-    @GetMapping("/user/list.html")
+    @GetMapping("/user/login")
+    public String userLoginForm() {
+        return "/user/login";
+    }
+    @PostMapping("/user/create")
+    public String createUser(User user, Model model) {
+        users.add(user);
+        return "redirect:/user/list";
+    }
+
+    @GetMapping("/user/list")
     public String list(Model model) {
         model.addAttribute("users", users);
         return "/user/list";

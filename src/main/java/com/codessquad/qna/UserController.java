@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/users")
@@ -23,20 +24,49 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public String profile(@PathVariable("userId") String userId, Model model) {
-        User matchedUser = null;
-        for (User user : users) {
-            if (user.userId.equals(userId)) {
-                matchedUser = user;
-                break;
-            }
+        Optional<User> matchedUser = findUser(userId);
+        if (matchedUser.isPresent()) {
+            model.addAttribute("user", matchedUser.get());
+            return "/users/profile";
         }
-        model.addAttribute("user", matchedUser);
-        return "/users/profile";
+        return "redirect:/users";
+    }
+
+    @PostMapping("/{userId}/update")
+    public String update(@PathVariable("userId") String userId, String password, String name, String email) {
+        Optional<User> optionalUser = findUser(userId);
+        if (optionalUser.isPresent() && optionalUser.get().getPassword().equals(password)) {
+            User user = optionalUser.get();
+            updateUser(user, name, password, email);
+        }
+        return "redirect:/users";
+    }
+
+    @GetMapping("/{userId}/update")
+    public String updateForm(@PathVariable("userId") String userId, Model model) {
+        System.out.println(userId);
+        model.addAttribute("userId", userId);
+        return "/users/updateForm";
     }
 
     @PostMapping("/create")
     public String create(User user) {
         users.add(user);
         return "redirect:/users";
+    }
+
+    private Optional<User> findUser(String userId) {
+        for (User user : users) {
+            if (user.userId.equals(userId)) {
+                return Optional.of(user);
+            }
+        }
+        return Optional.empty();
+    }
+
+    private void updateUser(User user, String name, String password, String email) {
+        user.setName(name);
+        user.setPassword(password);
+        user.setEmail(email);
     }
 }

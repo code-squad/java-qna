@@ -11,17 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping("/users/*")
+@RequestMapping("/users")
 public class UserController {
     List<User> users = new ArrayList<>();
 
-    @PostMapping("/create")
-    public String create(User user) {
-        users.add(user);
-        return "redirect:/users/list";
-    }
-
-    @GetMapping("/list")
+    @GetMapping
     public String list(Model model) {
         model.addAttribute("users", users);
         return "/users/list";
@@ -30,13 +24,19 @@ public class UserController {
     @GetMapping("/{userId}")
     public String profile(@PathVariable("userId") String userId, Model model) {
         User matchedUser = null;
-        for(User user: users) {
-            if(user.userId.equals(userId)) {
+        for (User user : users) {
+            if (user.userId.equals(userId)) {
                 matchedUser = user;
                 break;
             }
         }
         model.addAttribute("user", matchedUser);
         return "/users/profile";
+    }
+
+    @PostMapping("/create")
+    public String create(User user) {
+        users.add(user);
+        return "redirect:/users";
     }
 }

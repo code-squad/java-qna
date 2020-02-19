@@ -50,7 +50,7 @@ public class Question {
 
     @Override
     public String toString() {
-        return "index : " + index + "\nwriter : " + writer + "\ntitle : " + title + "\ncontents : " + contents +
-                "\npostingTime : " + postingTime + "\n";
+        return "index: " + index + "\nwriter: " + writer + "\ntitle: " + title + "\ncontents: " + contents +
+                "\npostingTime: " + postingTime + "\n";
     }
 }

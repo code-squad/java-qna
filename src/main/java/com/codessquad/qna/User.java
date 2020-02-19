@@ -5,6 +5,7 @@ public class User {
     private String password;
     private String name;
     private String email;
+    private int index;
 
     public void setUserId(String userId) {
         this.userId = userId;
@@ -20,6 +21,10 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     public String getUserId() {
@@ -38,8 +43,12 @@ public class User {
         return email;
     }
 
+    public int getIndex() {
+        return index;
+    }
+
     @Override
     public String toString() {
-        return "userId: " + userId + " password: " + password + " name: " + name + " email: " + email;
+        return "index: " + index + "userId: " + userId + " password: " + password + " name: " + name + " email: " + email;
     }
 }

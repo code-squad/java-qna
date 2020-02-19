@@ -5,6 +5,7 @@ public class Question {
     private String title;
     private String contents;
     private String postingTime;
+    private int index;
 
     public Question() {
         LocalDateTime localDateTime = new LocalDateTime();
@@ -23,6 +24,10 @@ public class Question {
         this.contents = contents;
     }
 
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
     public String getWriter() {
         return writer;
     }
@@ -39,8 +44,13 @@ public class Question {
         return postingTime;
     }
 
+    public int getIndex() {
+        return index;
+    }
+
     @Override
     public String toString() {
-        return "writer : " + writer + "\ntitle : " + title + "\ncontents : " + contents + "\npostingTime : " + postingTime;
+        return "index : " + index + "\nwriter : " + writer + "\ntitle : " + title + "\ncontents : " + contents +
+                "\npostingTime : " + postingTime + "\n";
     }
 }

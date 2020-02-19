@@ -7,7 +7,7 @@ public class LocalDateTime {
     private String localDateTime;
 
     public LocalDateTime() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         Calendar time = Calendar.getInstance();
         this.localDateTime = dateFormat.format(time.getTime());
     }

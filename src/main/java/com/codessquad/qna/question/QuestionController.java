@@ -17,7 +17,7 @@ public class QuestionController {
 
   @GetMapping("/qna/form")
   public String goForm(Model model) {
-    return "qna/form";
+    return "/qna/form";
   }
 
   @PostMapping("/question")
@@ -29,12 +29,12 @@ public class QuestionController {
   @GetMapping(value = {"/", "/index"})
   public String goIndex(Model model) {
     model.addAttribute("questions", questionList);
-    return "index";
+    return "/index";
   }
 
-  @RequestMapping("/questions/{index}")
+  @GetMapping("/questions/{index}")
   public String goPage(@PathVariable int index, Model model) {
     model.addAttribute("question", questionList.get(index - 1));
-    return "qna/show";
+    return "/qna/show";
   }
 }

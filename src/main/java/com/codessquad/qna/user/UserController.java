@@ -17,28 +17,30 @@ public class UserController {
 
   @GetMapping("/user/form")
   public String goForm(Model model) {
-    return "user/form";
+    return "/user/form";
   }
 
   @PostMapping("/users")
   public String createUser(User user) {
     userList.add(user);
+
     return "redirect:/user/list";
   }
 
-  @RequestMapping("/users/{userId}")
-  public String page(@PathVariable String userId, Model model) {
+  @GetMapping("/users/{userId}")
+  public String goProfile(@PathVariable String userId, Model model) {
     for (User user : userList) {
       if (userId.equals(user.getUserId()))
         model.addAttribute("user", user);
     }
 
-    return "user/profile";
+    return "/user/profile";
   }
 
-  @GetMapping("user/list")
+  @GetMapping("/user/list")
   public String goList(Model model) {
     model.addAttribute("users", userList);
-    return "user/list";
+
+    return "/user/list";
   }
 }

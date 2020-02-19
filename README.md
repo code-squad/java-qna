@@ -11,6 +11,8 @@
 
 ---
 
+[헤로쿠](https://sheltered-lake-66847.herokuapp.com/)
+
 # STEP1
 
 ## 요구사항
@@ -42,3 +44,7 @@
    또 필드명을 `dateTime` 에서 `createdDateTime` 으로 수정하였습니다. 그리고 Format된 형태로 표시해주기 위해서 `getFormattedCreatedDateTime()` 메서드를 생성하였습니다.
    honux의 조언대로 `{{formattedCreatedDateTime}}` 으로 호출했더니 동작하였습니다.
 3. replyCount보다는 reply에 대한 자료구조를 가지는게 좋을 것 같아 수정하였습니다. (Reply에 대한 명확한 설계가 없어 Object타입을 저장하도록 하였습니다.)
+
+## STEP2 준비
+
+1. spring-data-jpa 의존성 추가 및 h2 database의 의존성을 추가하였습니다.

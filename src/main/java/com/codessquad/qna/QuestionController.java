@@ -19,14 +19,14 @@ public class QuestionController {
 
     @PostMapping("/questions")
     public String createQuestion(Question question) {
-        System.out.println("question -> " + question);
+        System.out.println("question ->\n" + question);
         questions.add(question);
         return "redirect:/";
     }
 
-//    @GetMapping("/")
-//    public String viewQnaList(Model model) {
-//        model.addAttribute("questions", questions);
-//        return "show";
-//    }
+    @GetMapping("/")
+    public String viewQnaList(Model model) {
+        model.addAttribute("questions", questions);
+        return "index";
+    }
 }

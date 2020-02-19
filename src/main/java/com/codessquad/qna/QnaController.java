@@ -5,7 +5,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -16,6 +19,8 @@ public class QnaController {
     public String create(Question question) {
         System.out.println("question : " + question);
         questions.add(question);
+        question.setIndex(questions.size());
+        System.out.println(question.getIndex());
         return "redirect:/question/show";
     }
 
@@ -26,22 +31,10 @@ public class QnaController {
                 model.addAttribute("title", questions.get(i).getTitle());
                 model.addAttribute("writer", questions.get(i).getWriter());
                 model.addAttribute("contents", questions.get(i).getContents());
+                model.addAttribute("time", LocalDate.now());
                 return "qna/show";
             }
         }
         return "qna/show";
     }
-
-//    @GetMapping("/question/show")
-//    public String show(String writer, Model model) {
-//        for (Question question : questions) {
-//            if (question.getWriter().equals(writer)) {
-//                model.addAttribute("title", question.getTitle());
-//                model.addAttribute("writer", writer);
-//                model.addAttribute("contents", question.getContents());
-//                return "qna/show";
-//            }
-//        }
-//        return "qna/show";
-//    }
 }

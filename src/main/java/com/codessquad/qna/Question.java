@@ -2,9 +2,12 @@ package com.codessquad.qna;
 
 public class Question {
 
+    public int index;
     public String writer;
     public String title;
     public String contents;
+
+    public int getIndex() { return index; }
 
     public String getTitle() {
         return title;
@@ -16,6 +19,10 @@ public class Question {
 
     public String getWriter() {
         return writer;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     public void setWriter(String writer) {

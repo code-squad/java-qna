@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Question {
+    public static final String DATE_FORMAT = "YYYY-MM-dd HH:mm:ss";
     private int index;
     private String writer;
     private String title;
@@ -63,7 +64,7 @@ public class Question {
     }
 
     public String getFormattedCreatedDateTime() {
-        return createdDateTime.format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:ss"));
+        return createdDateTime.format(DateTimeFormatter.ofPattern(DATE_FORMAT));
     }
 
     public List<Object> getReplies() {

@@ -1,10 +1,10 @@
 package com.codessquad.qna.repository;
 
-import com.codessquad.qna.domain.User;
+import com.codessquad.qna.domain.Question;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface QnaRepository extends JpaRepository<Question, Long> {
 
 }

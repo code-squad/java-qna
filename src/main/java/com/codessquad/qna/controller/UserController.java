@@ -36,12 +36,9 @@ public class UserController {
   }
 
   @GetMapping(value = "/users/{id}")
-  public String getProfile(Model model, @PathVariable("id") String id) {
-    model.addAttribute("user", userRepository.findById(convertToString(id)));
+  public String getProfile(Model model, @PathVariable("id") long id) {
+    model.addAttribute("user", userRepository.findById(id).get());
     return "user/profile";
   }
 
-  private Long convertToString(String id) {
-    return Long.parseLong(id);
-  }
 }

@@ -16,12 +16,14 @@ public class UserController {
     @PostMapping("/users")
     public String createUser(User user) {
         users.add(user);
+
         return "redirect:/users";
     }
 
     @GetMapping("/users")
     public String showUserList(Model model) {
         model.addAttribute("users", users);
+
         return "user/list";
     }
 
@@ -30,6 +32,7 @@ public class UserController {
         users.stream()
                 .filter(user -> user.getUserId().equals(userId))
                 .forEach(user -> model.addAttribute("userprofile", user));
+
         return "user/profile";
     }
 }

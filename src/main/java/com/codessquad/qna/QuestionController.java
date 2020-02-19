@@ -17,19 +17,28 @@ public class QuestionController {
 
     @PostMapping("/questions")
     public String createQuestion(Question question) {
-        question.setTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        String id = Integer.toString(questions.size() + 1);
+        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+
+        question.setId(id);
+        question.setTime(time);
         questions.add(question);
+
         return "redirect:/";
     }
 
     @GetMapping("/")
     public String showQuestionList(Model model) {
         model.addAttribute("questions", questions);
+
         return "qna/list";
     }
 
     @GetMapping("/questions/{index}")
     public String showQuestionDetail(@PathVariable String index, Model model) {
+        questions.stream()
+                .filter(question -> question.getId().equals(index))
+                .forEach(question -> model.addAttribute("question", question));
 
         return "qna/show";
     }

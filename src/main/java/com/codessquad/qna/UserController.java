@@ -13,9 +13,14 @@ import java.util.List;
 public class UserController {
     List<User> users = new ArrayList<>();
 
-    @GetMapping("/user/form")
+    @GetMapping("/user/login")
+    public String login() {
+        return "/user/login";
+    }
+
+    @GetMapping("/user/join")
     public String moveUserForm() {
-        return "user/form";
+        return "/user/join";
     }
 
     @PostMapping("/user/create")
@@ -29,7 +34,7 @@ public class UserController {
     @GetMapping("/users")
     public String viewUsers(Model model) {
         model.addAttribute("users", users);
-        return "user/list";
+        return "/user/list";
     }
 
     @GetMapping("/users/{userId}")
@@ -44,7 +49,7 @@ public class UserController {
         }
         
         model.addAttribute("currentUser", currentUser);
-        return "user/profile";
+        return "/user/profile";
     }
 
 }

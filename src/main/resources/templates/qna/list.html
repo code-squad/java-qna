@@ -1,0 +1,56 @@
+{{#partial "content"}}
+    <div class="contents">
+      <div class="qna">
+        <div class="title">
+          <h2>Q&amp;A</h2>
+        </div>
+        <table width="100%">
+          <caption>Q&amp;A</caption>
+          <colgroup>
+            <col width="70px">
+            <col width="135px">
+            <col width="auto">
+            <col width="100px">
+            <col width="100px">
+          </colgroup>
+          <thead>
+            <tr>
+              <th>NO</th>
+              <th>SUBJECT</th>
+              <th>WRITER</th>
+              <th>DATE</th>
+            </tr>
+          </thead>
+          {{#questions}}
+          <tbody>
+            <tr>
+              <td>{{index}}</td>
+              <td class="left"><a href="questions/{{index}}">{{title}}</a></td>
+              <td>{{writer}}</td>
+              <td>20101108</td>
+            </tr>
+          </tbody>
+          {{/questions}}
+        </table>
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6 text-center">
+                <ul class="pagination center-block" style="display:inline-block;">
+                    <li><a href="#">«</a></li>
+                    <li><a href="#">1</a></li>
+                    <li><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#">4</a></li>
+                    <li><a href="#">5</a></li>
+                    <li><a href="#">»</a></li>
+              </ul>
+            </div>
+            <div class="col-md-3 qna-write">
+                <a href="qna/form" class="btn btn-primary pull-right" role="button">질문하기</a>
+            </div>
+        </div>
+      </div>
+    </div>
+{{/partial}}
+
+{{> base}}

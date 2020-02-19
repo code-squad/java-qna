@@ -1,0 +1,251 @@
+html, body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td, img {
+    margin: 0;
+    padding: 0;
+}
+  body {
+    font-family: 'Open Sans','Nanum Gothic',arial,AppleGothic,Dotum,sans-serif;
+  }
+  /*상단 고정*/
+  /* .header{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin: 0 auto;
+  } */
+
+
+  .topArea{
+    /* position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%; */
+    margin: 0 auto;
+    background-color: #efebe5 ;
+    padding: 10px;
+    text-align: right;
+  }
+  a{
+    text-decoration: none;
+    font-size: 11px;
+    font-family: 'Open Sans','Nanum Gothic',arial,AppleGothic,Dotum,sans-serif;
+    color: DimGray;
+    padding: 0px 5px;
+  }
+  /* .topMemu{
+    display: inline-grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr ;
+
+  } */
+  .gnbWrap{
+    width: 100%;
+    height: 60px;
+    position: relative;
+    margin: 0 auto;
+    border-bottom: 1px #e8e8e8 solid;
+    text-align: center;
+  }
+  .slideUp{
+    position: fixed;
+    top: 0px;
+    left: 0;
+    width: 100%;
+    margin: 0 auto;
+    background: #fff;
+  }
+  .gnbWrap li{
+    display: inline-block;
+    height: 60px;
+  }
+  .gnbWrap li a{
+    display: block;
+    height: 60px;
+    line-height: 60px;
+    font-size: 11px;
+    color: #000;
+    padding: 0 20px;
+    letter-spacing: 1px;
+  }
+  .top_logo{
+    padding: 50px 0;
+    margin: 0 auto;
+    width: 308px;
+    text-align: center;
+    z-index: 99;
+  }
+
+  /* #logo {
+    display: block;
+    color: DimGray;
+    text-align: center;
+    text-decoration: none;
+    font-size: 40px;
+    padding: 50px 0px;
+    margin: 40px 0 0 0;
+  } */
+  .contents{
+    padding: 70px 20px 50px;
+    width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+  .login {
+    align-items: center;
+    text-align: center;
+    padding: 80px 84px;
+    margin: 40px auto;
+    border: 1px solid #d7d5d5;
+    width: 710px;
+  }
+  .login h4{
+    font-size: 10px;
+    color: gray;
+    margin: 5px;
+  }
+  fieldset {
+    border: 0px;
+    padding: 0 30px;
+  }
+  .LoginTable{
+    table-layout: fixed;
+    width: 350px;
+    margin: 30px auto;
+  }
+  .LoginTable tr{
+    margin: 0px;
+  }
+  .LoginTable td{
+    border: 1px solid #dfdfdf;
+    padding: 0;
+    margin-bottom: 10px;
+    width: 300px;
+    height: 34px;
+    text-indent: 10px;
+    text-align: left;
+  }
+  .LoginTable input{
+    border: 0;
+    width: 95%;
+    height: 100%;
+  }
+  .idurl{
+    text-decoration: none;
+    color: DimGray;
+    font-size: 11px;
+    margin: 5px;
+  }
+  .tdLogin{
+    border: 0;
+    width: 182px;
+  }
+  .btnLogin{
+    background-color: black;
+    color: white;
+  }
+  .title{
+    margin: 0 auto 40px;
+    text-align: center;
+    padding: 0;
+    border: 0;
+    min-height: auto;
+  }
+  /*
+  .title h2{
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin: 0;
+  } */
+  .join h3{
+    text-align: left;
+    padding: 20px 0 10px;
+    margin: 0px;
+    font-size: 12px;
+    color: #666;
+  }
+  table{
+    line-height: 1.5px;
+    font-size: 12px;
+    border-collapse: collapse;  /*표 테두리과 셀 테두리 사이 간격*/
+    border-spacing: 0px; /*th td 사이 공백*/
+    margin-bottom: 30px;
+  }
+  table caption{
+    display: none;
+  }
+  thead th {
+    padding: 18px 0 17px;
+    background: #fff;
+    border-left: 0;
+    border-top: 2px solid #222;
+    border-bottom: 1px solid #222;
+    font-size: 12px;
+    font-weight: normal;
+    color: #222;
+  }
+  td{
+    padding: 16px 10px 15px;
+    border-bottom: 1px solid #dfdfdf;
+    color: #353535;
+    vertical-align: middle;
+    word-break: break-all;
+    word-wrap: break-word;
+    text-align: center;
+  }
+  td a{
+    font-size: 12px;
+    color: #353535;
+    padding: 0;
+  }
+  .left{
+    text-align: left;
+  }
+  .join tbody{
+    display: block;
+    border-top: 2px solid #222;
+  }
+  .join th{
+    padding: 11px 0px 10px 18px;
+    border: 1px solid #dfdfdf;
+    border-left: 0px;
+    border-collapse: inherit;
+    font-style: normal;
+    text-align: left;
+  }
+  .join td {
+    padding: 12px 10px 11px 20px;
+    border-bottom: 1px solid #dfdfdf;
+    color: #353535;
+    vertical-align: middle;
+    word-break: break-all;
+    word-wrap: break-word;
+    text-align: left;
+  }
+
+  .btn_sbmWrap{
+    padding: 30px 0 50px;
+    text-align: center;
+
+  }
+  .btn_submit{
+    background: black;
+    border: 1px solid black;
+    color: white;
+    width: 130px;
+    line-height: 52px;
+    display: inline-block;
+    font-size: 12px;
+    padding: 0px;
+  }
+  .btn_submit.normal{
+    background-color: white;
+    color: black;
+
+  }
+  .company{
+    text-align: center;
+    padding: 50px 0;
+    margin-top: 30px;
+    background-color: #f5f5f5;
+    color: #999;
+    font-size: 0.75em;
+  }

@@ -1,24 +1,39 @@
 {{#partial "content"}}
-<div class="container" id="main">
-   <div class="col-md-10 col-md-offset-1">
-      <div class="panel panel-default">
-          <table class="table table-hover">
-              <thead>
-                <tr>
-                    <th>#</th> <th>사용자 아이디</th> <th>이름</th> <th>이메일</th><th></th>
-                </tr>
-              </thead>
-              <tbody>
-              {{#users}}
-                <tr>
-                    <th scope="row">1</th> <td>{{userId}}</td> <td><a href="/users/{{userId}}">{{name}}</a></td> <td>{{email}}</td><td><a href="#" class="btn btn-success" role="button">수정</a></td>
-                </tr>
-              {{/users}}
-              </tbody>
-          </table>
+    <div class="contents" style="">
+      <div class="list">
+        <div class="title">
+          <h2>LIST</h2>
         </div>
+        <table width="100%">
+          <caption>Q&amp;A</caption>
+          <colgroup>
+            <col width="70px">
+            <col width="135px">
+            <col width="auto">
+            <col width="100px">
+            <col width="100px">
+          </colgroup>
+          <thead>
+            <tr>
+              <th>USERID</th>
+              <th>NAME</th>
+              <th>EMAIL</th>
+              <th>MANAGE</th>
+            </tr>
+          </thead>
+          {{#users}}
+          <tbody>
+            <tr>
+              <td>{{userId}}</td>
+              <td class="left"><a href="/users/{{userId}}">{{name}}</a></td>
+              <td>{{email}}</td>
+              <td>.<a href="#" class="btn btn-success" role="button">수정</a></td>
+            </tr>
+          </tbody>
+          {{/users}}
+        </table>
+      </div>
     </div>
-</div>
 {{/partial}}
 
 {{> base}}

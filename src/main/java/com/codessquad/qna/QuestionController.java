@@ -13,21 +13,21 @@ import java.util.List;
 public class QuestionController {
     List<Question> questions = new ArrayList<>();
 
-    @GetMapping("qna/form")
+    @GetMapping("/qna/form")
     public String moveQnaForm() {
-        return "qna/form";
+        return "/qna/form";
     }
 
-    @PostMapping("questions")
+    @PostMapping("/questions")
     public String saveQuestions(Model model, Question question) {
         System.out.println("writer : " + question.getWriter() + " title : " + question.getTitle());
 //        model.addAttribute("question", question.getName());
         question.setIndex(questions.size() + 1);
         questions.add(question);
-        return "redirect:/";
+        return "redirect:/qna";
     }
 
-    @GetMapping("questions/{index}")
+    @GetMapping("/questions/{index}")
     public String veiwQuestion(Model model, @PathVariable int index) {
         Question currentQuestion = null;
 
@@ -39,13 +39,18 @@ public class QuestionController {
         }
 
         model.addAttribute("currentQuestion", currentQuestion);
-        return "qna/show";
+        return "/qna/show";
+    }
+
+    @GetMapping("/qna")
+    public String viewQna(Model model) {
+        model.addAttribute("questions", questions);
+        return "/qna/list";
     }
 
     @GetMapping("/")
-    public String viewQuestions(Model model) {
-        model.addAttribute("questions", questions);
-        return "index";
+    public String viewQuestions() {
+        return "/index";
     }
 
 }

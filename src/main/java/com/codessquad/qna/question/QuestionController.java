@@ -16,7 +16,7 @@ public class QuestionController {
 
   List<Question> questionList = new ArrayList<>();
   private String returnRedirectUrl = "redirect:/questions";
-  private String returnForwardUrl = "/question";
+  private String returnForwardUrl = "/questions";
 
 
   @PostMapping("")

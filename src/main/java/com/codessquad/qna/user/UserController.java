@@ -16,7 +16,7 @@ public class UserController {
 
   private static List<User> userList = new ArrayList<>();
   private String returnRedirectUrl = "redirect:/users";
-  private String returnForwardUrl = "/user";
+  private String returnForwardUrl = "/users";
 
   @PostMapping("")
   public String createUser(User user) {

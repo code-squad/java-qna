@@ -1,11 +1,22 @@
 package com.codessquad.qna;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class User {
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(nullable = false, length = 20)
     private String userId;
+
     private String password;
     private String name;
     private String email;
-    private int index;
 
     public void setUserId(String userId) {
         this.userId = userId;
@@ -23,8 +34,8 @@ public class User {
         this.email = email;
     }
 
-    public void setIndex(int index) {
-        this.index = index;
+    public Long getId() {
+        return id;
     }
 
     public String getUserId() {
@@ -43,12 +54,8 @@ public class User {
         return email;
     }
 
-    public int getIndex() {
-        return index;
-    }
-
     @Override
     public String toString() {
-        return "index: " + index + "userId: " + userId + " password: " + password + " name: " + name + " email: " + email;
+        return "index: " + id + "userId: " + userId + " password: " + password + " name: " + name + " email: " + email;
     }
 }

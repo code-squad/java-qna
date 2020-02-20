@@ -45,7 +45,11 @@
               <tbody>
               {{#each users}}
                 <tr>
-                    <th scope="row">{{index}}</th> <td>{{userId}}</td> <td> <a href="/user/{{userId}}"/> {{name}} </td> <td>{{email}}</td><td><a href="/user/{{userId}}/form" class="btn btn-success" role="button">수정</a></td>
+                    <th scope="row">{{id}}</th>
+                    <td>{{userId}}</td>
+                    <td> <a href="/user/{{id}}"/> {{name}} </td>
+                    <td>{{email}}</td>
+                    <td><a href="/user/{{userId}}/form" class="btn btn-success" role="button">수정</a></td>
                 </tr>
               {{/each}}
               </tbody>

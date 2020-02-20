@@ -1,17 +1,23 @@
 package com.codessquad.qna;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+//@RequestMapping("")
 public class UserController {
     private List<User> users = new ArrayList<>();
+
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/user/form")
     public String viewUserForm() {
@@ -20,28 +26,34 @@ public class UserController {
 
     @PostMapping("/user/create")
     public String createUser(User user) {
-        user.setIndex(users.size() + 1);
         System.out.println("user => " + user);
-        users.add(user);
+        //users.add(user);
+        userRepository.save(user);
         return "redirect:/users";
     }
 
     @GetMapping("/users")
     public String viewList(Model model) {
-        model.addAttribute("users", users);
+        model.addAttribute("users", userRepository.findAll());
         return "/user/list";
     }
 
-    @GetMapping("/user/{userId}")
-    public String viewProfile(@PathVariable("userId") String userId, Model model) {
-        for(User user : users) {
-            if(user.getUserId().equals(userId)) {
-                model.addAttribute("user", user);
-                return "/user/profile";
-            }
-        }
+    @GetMapping("/user/{id}")
+    public String viewProfile2(@PathVariable long id, Model model) {
+        model.addAttribute("user", userRepository.findById(id).get());
         return "/user/profile";
     }
+
+//    @GetMapping("/user/{userId}")
+//    public String viewProfile(@PathVariable("userId") String userId, Model model) {
+//        for(User user : users) {
+//            if(user.getUserId().equals(userId)) {
+//                model.addAttribute("user", user);
+//                return "/user/profile";
+//            }
+//        }
+//        return "/user/profile";
+//    }
 
     @GetMapping("/user/{userId}/form")
     public String viewUpdateForm(@PathVariable("userId") String userId, Model model) {

@@ -3,26 +3,20 @@
     <div class="col-md-12 col-sm-12 col-lg-12">
         <div class="panel panel-default">
             <header class="qna-header">
-                <h2 class="qna-title">{{question.title}}</h2>
+                <h2 class="qna-title">{{questions.title}}</h2>
             </header>
             <div class="content-main">
                 <article class="article">
                     <div class="article-header">
                         <div class="article-header-thumb">
-                            <!--                          <img src="https://graph.facebook.com/v2.3/100000059371774/picture" class="article-author-thumb" alt="">-->
                         </div>
                         <div class="article-header-text">
-                            <!--                          <a href="/users/92/kimmunsu" class="article-author-name">kimmunsu</a>-->
-                            <a class="article-author-name">{{question.writer}}</a>
-                            <a class="article-header-time">{{question.dateTime}}</a>
-                            <!--                          <a href="/questions/413" class="article-header-time" title="퍼머링크">-->
-                            <!--                              2015-12-30 01:47-->
-                            <!--                              <i class="icon-link"></i>-->
-                            <!--                          </a>-->
+                            <a class="article-author-name">{{questions.writer}}</a>
+                            <a class="article-header-time">{{questions.dateTime}}</a>
                         </div>
                     </div>
                     <div class="article-doc">
-                        <p>{{question.contents}}</p>
+                        <p>{{questions.contents}}</p>
                     </div>
                     <div class="article-util">
                         <ul class="article-util-list">

@@ -1,34 +1,36 @@
 package com.codessquad.qna.user;
 
-import javax.persistence.Id;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 @Entity
 public class User {
-  private static int SEQ_NUM;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private int index;
+  private long index;
+
+  @Transient
+  private String oldPassword;
 
   @Column(nullable = false, length = 20)
   private String userId;
-  private String passwd;
+  private String password;
   private String name;
   private String email;
 
-  public User() {
-    this.index = ++SEQ_NUM;
+  public String getOldPassword() {
+    return oldPassword;
   }
 
-  public int getIndex() {
+  public void setOldPassword(String oldPassword) {
+    this.oldPassword = oldPassword;
+  }
+
+  public long getIndex() {
     return index;
   }
 
-  public void setIndex(int index) {
+  public void setIndex(long index) {
     this.index = index;
   }
 
@@ -36,8 +38,8 @@ public class User {
     this.userId = userId;
   }
 
-  public void setPasswd(String passwd) {
-    this.passwd = passwd;
+  public void setPassword(String password) {
+    this.password = password;
   }
 
   public void setName(String name) {
@@ -52,8 +54,8 @@ public class User {
     return userId;
   }
 
-  public String getPasswd() {
-    return passwd;
+  public String getPassword() {
+    return password;
   }
 
   public String getName() {
@@ -64,4 +66,9 @@ public class User {
     return email;
   }
 
+  public void update(User newUser) {
+    this.password = newUser.password;
+    this.name = newUser.name;
+    this.email = newUser.email;
+  }
 }

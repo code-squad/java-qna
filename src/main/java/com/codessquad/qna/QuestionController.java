@@ -2,7 +2,7 @@ package com.codessquad.qna;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -18,7 +18,9 @@ public class QuestionController {
     }
 
     @RequestMapping(value = "/qna/form", method = {RequestMethod.POST})
-    public String saveQuestion(Question question, Model model) {
+    public String makeQuestion(Question question, Model model) {
+        int questionsSize = questions.size() + 1;
+        question.setQuestionIndex(questionsSize);
         questions.add(question);
         return "redirect:/";
     }
@@ -29,8 +31,16 @@ public class QuestionController {
         return "/index";
     }
 
-    @GetMapping("/qna/show")
-    public String questionShowDetail() {
-        return "/qua/show";
+    @RequestMapping(value = "/questions/{questionIndex}", method = RequestMethod.GET)
+    public String questionShowDetail(@PathVariable int questionIndex, Model model) {
+        for (Question question : questions){
+            if (question.getQuestionIndex() == questionIndex){
+                model.addAttribute("title",question.getTitle());
+                model.addAttribute("writer",question.getWriter());
+                model.addAttribute("writtenTime",question.getWrittenTime());
+                model.addAttribute("contents",question.getContents());
+            }
+        }
+        return "/qna/show";
     }
 }

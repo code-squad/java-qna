@@ -7,14 +7,15 @@ public class Question {
     private String writer;
     private String title;
     private String contents;
-    private String now;
+    private String writtenTime;
+    private int questionIndex = 0;
 
     public Question() {
         Date today = new Date();
         SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat time = new SimpleDateFormat("hh:mm");
+        SimpleDateFormat time = new SimpleDateFormat("HH:mm");
 
-        now = date.format(today) + " " + time.format(today);
+        writtenTime = date.format(today) + " " + time.format(today);
     }
 
     public String getWriter() {
@@ -41,13 +42,25 @@ public class Question {
         this.contents = contents;
     }
 
+    public String getWrittenTime() {
+        return writtenTime;
+    }
+
+    public int getQuestionIndex() {
+        return questionIndex;
+    }
+
+    public void setQuestionIndex(int questionIndex) {
+        this.questionIndex += questionIndex;
+    }
+
     @Override
     public String toString() {
         return "Question{" +
                 "writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
-                ", now ='" + now + '\'' +
+                ", now ='" + writtenTime + '\'' +
                 '}';
     }
 }

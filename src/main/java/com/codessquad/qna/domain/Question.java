@@ -23,9 +23,6 @@ public class Question extends BaseTimeEntity {
   @Column(nullable = false, length = 500)
   private String contents;
 
-//  @Column(nullable = false)
-//  private LocalDateTime createdTime;
-
 
   public Long getIndex() {
     return index;
@@ -58,14 +55,6 @@ public class Question extends BaseTimeEntity {
   public String getCreatedTime() {
     return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(createdTime);
   }
-//
-//  public void setCreatedTime() {
-//    this.createdTime = getCurrentTime();
-//  }
-//
-//  private LocalDateTime getCurrentTime() {
-//    return LocalDateTime.now();
-//  }
 
 
   @Override

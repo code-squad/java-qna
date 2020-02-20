@@ -20,13 +20,14 @@ public class UserController {
     public String userLoginForm() {
         return "/user/login";
     }
+
     @PostMapping("/user/create")
     public String createUser(User user, Model model) {
         users.add(user);
-        return "redirect:/user/list";
+        return "redirect:/users";
     }
 
-    @GetMapping("/user/list")
+    @GetMapping("/users")
     public String list(Model model) {
         model.addAttribute("users", users);
         return "/user/list";
@@ -35,11 +36,46 @@ public class UserController {
     @RequestMapping(value = "/users/{userId}", method = RequestMethod.GET)
     public String getUserInfoByUserId(@PathVariable String userId, Model model) {
         for (User user : users) {
-            if(user.getUserId().equals(userId)){
-                model.addAttribute("name",user.getName());
-                model.addAttribute("email",user.getEmail());
+            if (user.getUserId().equals(userId)) {
+                model.addAttribute("name", user.getName());
+                model.addAttribute("email", user.getEmail());
             }
         }
         return "/user/profile";
+    }
+
+    @RequestMapping(value = "/user/changeUserInfoLogin", method = RequestMethod.GET)
+    public String changeUserInfo() {
+        return "/user/changeUserInfoLogin";
+    }
+
+    @RequestMapping(value = "/user/changeUserInfoLogin", method = RequestMethod.POST)
+    public String changeUserInfoLogin(String userId, String password, Model model) {
+        model.addAttribute("userId", userId);
+        for (User user : users) {
+            if (user.getUserId().equals(userId) && user.getPassword().equals(password)) {
+                return "user/updateForm";
+            }
+        }
+        return "/user/login_failed";
+    }
+
+    @RequestMapping(value = "/users/{userId}/update", method = RequestMethod.POST)
+    public String changeUserInfoForm(@PathVariable("userId") String userId,String password, String name, String email) {
+
+        for (User user : users) {
+            if (user.getUserId().equals(userId)) {
+                if (password.length() > 0) {
+                    user.setPassword(password);
+                }
+                if (name.length() > 0) {
+                    user.setName(name);
+                }
+                if (email.length() > 0) {
+                    user.setEmail(email);
+                }
+            }
+        }
+        return "redirect:/users";
     }
 }

@@ -5,6 +5,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,11 +33,11 @@ public class UserController {
         return "/";
     }
 
-    @GetMapping("/{id}/edit")
-    public String updateUser(@PathVariable int id, Model model) {
-        User user = users.get(id);
+    @GetMapping("/{index}/edit")
+    public String updateUser(@PathVariable int index, Model model) {
+        User user = users.get(index);
         model.addAttribute("user", user);
-        model.addAttribute("id", id);
+        model.addAttribute("index", index);
         return "user/edit";
     }
 
@@ -42,5 +45,16 @@ public class UserController {
     public String createUser(User user) {
         users.add(user);
         return "redirect:/users";
+    }
+
+    @PutMapping("/{index}")
+    public String updateUser(@PathVariable int index, User user, String currentPassword){
+        String userPassword = users.get(index).getPassword();
+        if (userPassword.equals(currentPassword)) {
+            users.remove(index);
+            users.add(user);
+            return "redirect:/users";
+        }
+        return "redirect:/";
     }
 }

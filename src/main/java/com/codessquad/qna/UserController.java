@@ -35,4 +35,27 @@ public class UserController {
 
         return "user/profile";
     }
+
+    @GetMapping("/users/{userId}/form")
+    public String modifyUserProfile(@PathVariable String userId, Model model) {
+        users.stream()
+                .filter(user -> user.getUserId().equals(userId))
+                .forEach(user -> model.addAttribute("userprofile", user));
+
+        return "user/updateForm";
+    }
+
+    @PostMapping("/users/{userId}/update")
+    public String updateUserProfile(@PathVariable String userId, Model model, User updateuser) {
+        users.stream()
+                .filter(user -> user.getUserId().equals(userId))
+                .forEach(user -> {
+                    user.setPassword(updateuser.getPassword());
+                    user.setName(updateuser.getName());
+                    user.setEmail(updateuser.getEmail());
+                    model.addAttribute("userprofile", user);
+                });
+
+        return "redirect:/users";
+    }
 }

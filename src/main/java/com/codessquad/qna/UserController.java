@@ -26,8 +26,7 @@ public class UserController {
 
     @PostMapping("/user/create")
     public String createUser(User user) {
-        System.out.println("user => " + user);
-        //users.add(user);
+        //System.out.println("user => " + user);
         userRepository.save(user);
         return "redirect:/users";
     }
@@ -39,21 +38,10 @@ public class UserController {
     }
 
     @GetMapping("/user/{id}")
-    public String viewProfile2(@PathVariable long id, Model model) {
+    public String viewProfile(@PathVariable long id, Model model) {
         model.addAttribute("user", userRepository.findById(id).get());
         return "/user/profile";
     }
-
-//    @GetMapping("/user/{userId}")
-//    public String viewProfile(@PathVariable("userId") String userId, Model model) {
-//        for(User user : users) {
-//            if(user.getUserId().equals(userId)) {
-//                model.addAttribute("user", user);
-//                return "/user/profile";
-//            }
-//        }
-//        return "/user/profile";
-//    }
 
     @GetMapping("/user/{userId}/form")
     public String viewUpdateForm(@PathVariable("userId") String userId, Model model) {

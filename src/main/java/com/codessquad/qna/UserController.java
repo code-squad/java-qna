@@ -8,32 +8,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@RequestMapping("/users")
 public class UserController {
-    List<User> users = new ArrayList<>();
+    private List<User> users = new ArrayList<>();
 
-    @GetMapping("/user/form")
+    @GetMapping("/form")
     public String createUserForm() {
         return "/user/form";
     }
 
-    @GetMapping("/user/login")
+    @GetMapping("/login")
     public String userLoginForm() {
         return "/user/login";
     }
 
-    @PostMapping("/user/create")
+    @PostMapping("/create")
     public String createUser(User user, Model model) {
         users.add(user);
         return "redirect:/users";
     }
 
-    @GetMapping("/users")
+    @GetMapping("")
     public String list(Model model) {
         model.addAttribute("users", users);
         return "/user/list";
     }
 
-    @RequestMapping(value = "/users/{userId}", method = RequestMethod.GET)
+    @GetMapping("/{userId}")
     public String getUserInfoByUserId(@PathVariable String userId, Model model) {
         for (User user : users) {
             if (user.getUserId().equals(userId)) {
@@ -44,12 +45,12 @@ public class UserController {
         return "/user/profile";
     }
 
-    @RequestMapping(value = "/user/changeUserInfoLogin", method = RequestMethod.GET)
+    @GetMapping("/changeUserInfoLogin")
     public String changeUserInfo() {
         return "/user/changeUserInfoLogin";
     }
 
-    @RequestMapping(value = "/user/changeUserInfoLogin", method = RequestMethod.POST)
+    @PostMapping("/changeUserInfoLogin")
     public String changeUserInfoLogin(String userId, String password, Model model) {
         model.addAttribute("userId", userId);
         for (User user : users) {
@@ -60,9 +61,8 @@ public class UserController {
         return "/user/login_failed";
     }
 
-    @RequestMapping(value = "/users/{userId}/update", method = RequestMethod.POST)
-    public String changeUserInfoForm(@PathVariable("userId") String userId,String password, String name, String email) {
-
+    @PostMapping("/{userId}/update")
+    public String changeUserInfoForm(@PathVariable("userId") String userId, String password, String name, String email) {
         for (User user : users) {
             if (user.getUserId().equals(userId)) {
                 if (password.length() > 0) {

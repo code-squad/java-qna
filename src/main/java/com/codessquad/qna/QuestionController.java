@@ -12,6 +12,7 @@ import java.util.List;
 @Controller
 public class QuestionController {
     private List<Question> questions = new ArrayList<>();
+
     @RequestMapping(value = "/qna/form", method = {RequestMethod.GET})
     public String createQuestion() {
         return "/qna/form";
@@ -25,20 +26,20 @@ public class QuestionController {
         return "redirect:/";
     }
 
-    @RequestMapping(value = {"/","/index"}, method = {RequestMethod.GET})
+    @RequestMapping(value = {"/", "/index"}, method = {RequestMethod.GET})
     public String showQuestionList(Model model) {
-        model.addAttribute("questions",questions);
+        model.addAttribute("questions", questions);
         return "/index";
     }
 
     @RequestMapping(value = "/questions/{questionIndex}", method = RequestMethod.GET)
     public String questionShowDetail(@PathVariable int questionIndex, Model model) {
-        for (Question question : questions){
-            if (question.getQuestionIndex() == questionIndex){
-                model.addAttribute("title",question.getTitle());
-                model.addAttribute("writer",question.getWriter());
-                model.addAttribute("writtenTime",question.getWrittenTime());
-                model.addAttribute("contents",question.getContents());
+        for (Question question : questions) {
+            if (question.getQuestionIndex() == questionIndex) {
+                model.addAttribute("title", question.getTitle());
+                model.addAttribute("writer", question.getWriter());
+                model.addAttribute("writtenTime", question.getWrittenTime());
+                model.addAttribute("contents", question.getContents());
             }
         }
         return "/qna/show";

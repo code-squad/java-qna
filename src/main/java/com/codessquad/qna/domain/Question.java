@@ -1,13 +1,22 @@
 package com.codessquad.qna.domain;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Question {
+
   private String writer;
   private String title;
   private String contents;
   private String time;
+  private int index;
+
+  public int getIndex() {
+    return index;
+  }
+
+  public void setIndex(int index) {
+    this.index = index;
+  }
 
   public String getWriter() {
     return writer;
@@ -41,9 +50,9 @@ public class Question {
     this.time = time;
   }
 
-  public String setTime() {
+  public void setTime() {
     Date time = new Date();
-    return time.toString();
+    this.time = time.toString();
   }
 
   @Override

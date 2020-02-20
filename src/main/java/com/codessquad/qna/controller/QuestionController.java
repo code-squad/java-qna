@@ -16,12 +16,13 @@ public class QuestionController {
   @PostMapping("/qna/create")
   public String createQuestionPost(Question question) {
     question.setTime();
+    question.setIndex(questions.size() + 1); //questions 크기보다 1씩 많게 설정하자.
     questions.add(question);
     return "redirect:/"; //클라이언트의 요청을 처리하고 원래 홈 화면으로 돌아간다.
   }
 
   @GetMapping("") //홈 화면에서는 질문들을 마구마구 보여준다.
-  public String getIndex(Model model) {
+  public String showHome(Model model) {
     model.addAttribute("questions", questions);
     return "index";
   }

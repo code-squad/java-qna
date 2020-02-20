@@ -1,5 +1,6 @@
 package com.codessquad.qna.controller;
 
+import com.codessquad.qna.domain.User;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Controller;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class UserController {
-  private List<ArrayList> userList = new ArrayList<>();
+  private List<User> userList = new ArrayList<>();
 
   @PostMapping("/user/create")
   public String createUser(User user) {

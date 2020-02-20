@@ -48,13 +48,17 @@ public class UserController {
     }
 
     @PutMapping("/{index}")
-    public String updateUser(@PathVariable int index, User user, String currentPassword){
+    public void updateUser(@PathVariable int index, User user, String currentPassword, HttpServletResponse response) throws IOException {
         String userPassword = users.get(index).getPassword();
         if (userPassword.equals(currentPassword)) {
             users.remove(index);
             users.add(user);
-            return "redirect:/users";
+            response.sendRedirect("/users");
+            return;
         }
-        return "redirect:/";
+        response.setContentType("text/html; charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        out.println("<script>alert('비밀번호가 틀렸습니다'); history.go(-1);</script>");
+        out.flush();
     }
 }

@@ -51,3 +51,7 @@
 2. db에 대한 설정을 해주었습니다. 스프링 부트 진짜 짱인듯.. 👍
 3. JPA를 사용한 코드로 일부를 변경하였습니다. findById를 하는 과정에서 Optional 객체를 리턴해주어서 존재하지 않을시에 orElseThrow로 예외를 전달하는 방식으로 처리하였습니다.
 4. User Controller의 내용을 JPA를 사용한 코드로 변경하였습니다. Hibernate는 save시에 insert와 update를 알아서 해주는 것을 보고 놀랐습니다.
+5. Update시에 PUT 메소드로 전송할 수 있도록 하였습니다. 설정하는게 조금 귀찮았습니다.
+   - [참고1](https://hue9010.github.io/spring/Spring-MVC-PUT,-DELETE-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0/)
+   - [참고2](http://honeymon.io/tech/2019/11/06/spring-boot-2.2.html)
+   둘 다 적용해야 합니다. 💩

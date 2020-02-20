@@ -4,10 +4,7 @@ import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -18,6 +15,7 @@ public class UserController {
     @GetMapping("/user/form")
     public String goUserForm(Model model) {
         model.addAttribute("actionUrl", "/user/create");
+        model.addAttribute("httpMethod", "POST");
         model.addAttribute("buttonName", "회원가입");
         return "user/form";
     }
@@ -54,11 +52,12 @@ public class UserController {
             return "error/user_not_found";
         }
         model.addAttribute("actionUrl", "/users/" + id + "/update");
+        model.addAttribute("httpMethod", "PUT");
         model.addAttribute("buttonName", "수정");
         return "/user/form";
     }
 
-    @PostMapping("/users/{id}/update")
+    @PutMapping("/users/{id}/update")
     public String updateUserInfo(@PathVariable long id,
                                  @RequestParam String userPassword,
                                  @RequestParam String userName,

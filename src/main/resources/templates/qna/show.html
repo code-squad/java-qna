@@ -1,0 +1,52 @@
+{{#partial "content"}}
+    <div class="contents">
+      <div class="qna">
+        <div class="title">
+          <h2>Q&amp;A</h2>
+        </div>
+        {{#currentQuestion}}
+        <header class="qna-header">
+            <h2 class="qna-title">제목 : {{title}}</h2>
+        </header>
+        <div class="content-main">
+            <article class="article">
+                <div class="article-header">
+                    <div class="article-header-thumb">
+                        <img src="../images/solarc.JPG" class="article-author-thumb" alt=""  width="20" height="20">
+                    </div>
+                    <div class="article-header-text">
+                        <a href="/users/{userId}" class="article-author-name">{{writer}}</a>
+                        <a href="/questions/413" class="article-header-time" title="퍼머링크">
+                            {{formattedCreatedTime}}
+                            <i class="icon-link"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="article-doc">
+                    <p>{{contents}}</p>
+                </div>
+                <div class="article-util">
+                    <ul class="article-util-list">
+                        <li>
+                            <a class="link-modify-article" href="#">수정</a>
+                        </li>
+                        <li>
+<!--                            <form class="form-delete" action="" method="POST">-->
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button class="link-delete-article" type="submit">삭제</button>
+<!--                            </form>-->
+                        </li>
+                        <li>
+                            <a class="link-modify-article" href="/qna">목록</a>
+                        </li>
+                    </ul>
+                </div>
+            </article>
+            {{/currentQuestion}}
+        </div>
+
+      </div>
+    </div>
+{{/partial}}
+
+{{> base}}

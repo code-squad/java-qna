@@ -1,0 +1,257 @@
+.col-md-3{width:25%}
+.col-md-6{width:50%}
+.text-center{text-align:center}
+.center-block{display:block;margin-right:auto;margin-left:auto}
+.pagination{display:inline-block;padding-left:0;margin:20px 0;border-radius:4px}
+.pagination>li{display:inline}
+.pagination>li>span{position:relative;float:left;padding:6px 12px;margin-left:-1px;line-height:1.42857143;color:#428bca;text-decoration:none;background-color:#fff;border:1px solid #ddd}
+.pagination>li:first-child>a,.pagination>li:first-child>span{margin-left:0;border-top-left-radius:4px;border-bottom-left-radius:4px}
+.pagination>li:last-child>a,.pagination>li:last-child>span{border-top-right-radius:4px;border-bottom-right-radius:4px}.pagination>li>a:hover,.pagination>li>span:hover,.pagination>li>a:focus,.pagination>li>span:focus{color:#2a6496;background-color:#eee;border-color:#ddd}.pagination>.active>a,.pagination>.active>span,.pagination>.active>a:hover,.pagination>.active>span:hover,.pagination>.active>a:focus,.pagination>.active>span:focus{z-index:2;color:#fff;cursor:default;background-color:#428bca;border-color:#428bca}.pagination>.disabled>span,.pagination>.disabled>span:hover,.pagination>.disabled>span:focus,.pagination>.disabled>a,.pagination>.disabled>a:hover,.pagination>.disabled>a:focus{color:#777;cursor:not-allowed;background-color:#fff;border-color:#ddd}.pagination-lg>li>a,.pagination-lg>li>span{padding:10px 16px;font-size:18px}.pagination-lg>li:first-child>a,.pagination-lg>li:first-child>span{border-top-left-radius:6px;border-bottom-left-radius:6px}.pagination-lg>li:last-child>a,.pagination-lg>li:last-child>span{border-top-right-radius:6px;border-bottom-right-radius:6px}.pagination-sm>li>a,.pagination-sm>li>span{padding:5px 10px;font-size:12px}.pagination-sm>li:first-child>a,.pagination-sm>li:first-child>span{border-top-left-radius:3px;border-bottom-left-radius:3px}.pagination-sm>li:last-child>a,.pagination-sm>li:last-child>span{border-top-right-radius:3px;border-bottom-right-radius:3px}
+
+.qna-write {
+    padding-top: 1.4em;
+    padding-right: 2.5em;
+}
+
+.article {
+    position: relative;
+    padding: .6em 0 .8em
+}
+
+.article-header {
+    display: table;
+    width: 100%;
+    padding-bottom: .6em;
+    border-bottom: 1px dashed #dadada
+}
+
+.article-header-text, .article-header-thumb {
+    display: table-cell;
+    vertical-align: middle
+}
+
+.article-header-thumb {
+    width: 48px
+}
+
+.article-author-thumb {
+    width: 40px;
+    height: 40px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px
+}
+
+.article-author-name {
+    font-weight: bold;
+    font-size: 1.1em
+}
+
+.article-author-fbgroup {
+    display: inline-block;
+    margin-left: .8em;
+    font-style: italic;
+    font-size: 1em;
+    color: #666;
+}
+
+.article-author-fbgroup a {
+    display: inline-block;
+    color: #333;
+    font-weight: bold;
+}
+
+@media (max-width: 480px) {
+    .article-author-fbgroup a {
+        overflow: hidden;
+        max-width: 8em;
+        white-space: nowrap;
+        -o-text-overflow: ellipsis;
+        text-overflow: ellipsis
+    }
+}
+
+.article-header-time {
+    display: block;
+    font-size: .8em;
+    color: #666;
+}
+
+.article-header-time:hover {
+    text-decoration: none;
+}
+
+.article-header-time:hover .icon-link {
+    color: #3aa
+}
+
+.article-doc, .article-util {
+    padding-left: 48px;
+}
+
+@media (max-width: 480px) {
+    .article-doc, .article-util, .article-doc, .article-util {
+        padding-left: 0
+    }
+}
+
+.article-doc img {
+    max-width: 100%
+}
+
+.article-doc blockquote {
+    margin-left: 0;
+    margin-right: 0;
+    border-left: 4px solid #efefef;
+    padding-left: .5em
+}
+
+.article-util form {
+    display: inline-block
+}
+
+.article-util-list a, .article-util-list button {
+    color: #999;
+    padding: .4em;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    border: 0;
+    background-color: transparent;
+    white-space: nowrap;
+}
+
+.article-util-list a:hover, .article-util-list button:hover {
+    text-decoration: none;
+    background-color: #dadada
+}
+
+.article-util-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: #999;
+}
+
+.article-util-list li {
+    display: inline-block;
+}
+
+.article-util-list li:before {
+    content: '•';
+    margin: 0 -.4em
+}
+
+.article-util-list li:first-child:before {
+    display: none
+}
+
+.article-util-list .btn-like-article {
+    color: #44ca7f;
+}
+
+.article-util-list .btn-like-article:hover {
+    background-color: #e3f7ec
+}
+
+.article-util-list .btn-dislike-article {
+    color: #be6060;
+}
+
+.article-util-list .btn-dislike-article:hover {
+    background-color: #f9f1f1
+}
+
+.article-util-list .link-answer-article {
+    color: #5989b6;
+}
+
+.article-util-list .link-answer-article:hover {
+    background-color: #e7eef4
+}
+
+.article-util-list .foundicon-thumb-up, .article-util-list .foundicon-thumb-down {
+    position: relative;
+    top: 2px
+}
+
+.article-util form {
+    display: inline-block
+}
+
+.content-main {
+    position: relative;
+    padding: 1em;
+    padding-right: 1em;
+    border-bottom: 1px
+}
+
+.panel {
+    border-color: #d2d2d2;
+    box-shadow: 0 1px 0 #cfcfcf;
+    border-radius: 3px;
+}
+
+.panel .btn i, .btn span {
+    color: #666666;
+}
+
+.panel .panel-heading {
+    background-color: #ffffff;
+    font-weight: 700;
+    font-size: 16px;
+    color: #262626;
+    border-color: #ffffff;
+}
+
+.panel .panel-heading a {
+    font-weight: 400;
+    font-size: 11px;
+}
+
+.panel .panel-default {
+    border-color: #cccccc;
+}
+
+.panel .panel-thumbnail {
+    padding: 0;
+}
+
+.panel .img-circle {
+    width: 50px;
+    height: 50px;
+}
+
+.form-group {
+    vertical-align: middle;
+    margin-bottom: 15px;
+    margin-right: 15px;
+    margin-left: 15px;
+    text-align: center;
+}
+
+/*.form-group label {
+    display: block;
+    max-width: 100%;
+    margin: 5px 2px;
+    font-weight: 300;
+}*/
+
+.form-group label {
+    display: block;
+    width: 80%;
+    text-align: left;
+    margin: auto;
+    padding: 5px 2px;
+    font-weight: 300;
+}
+
+.form-control {
+    border-color: #5989b6;
+    width: 80%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.428;
+    border: 1px solid #ccc;
+}
+
+textarea.form-control{height:auto}

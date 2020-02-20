@@ -1,0 +1,23 @@
+{{#partial "content"}}
+<div class="contents">
+  <div class="profile">
+    <div class="title">
+      <h2>profile</h2>
+    </div>
+    <a>
+        <img class="media-object" height="200" src="https://tva1.sinaimg.cn/large/0082zybpgy1gc1t11cddhj30u00u07wi.jpg" width="200">
+    </a>
+    <div>
+        {{#currentUser}}
+        <h4 class="media-heading">{{name}}</h4>
+        <p>
+            <a href="#">{{email}}</a>
+        </p>
+        {{/currentUser}}
+    </div>
+  </div>
+</div>
+
+{{/partial}}
+
+{{> base}}

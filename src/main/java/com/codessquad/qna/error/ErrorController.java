@@ -11,4 +11,9 @@ public class ErrorController {
     public String goUserNotFoundPage() {
         return "error/user_not_found";
     }
+
+    @GetMapping("/question_not_found")
+    public String goQuestionNotFoundPage() {
+        return "error/question_not_found";
+    }
 }

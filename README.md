@@ -55,3 +55,4 @@
    - [참고1](https://hue9010.github.io/spring/Spring-MVC-PUT,-DELETE-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0/)
    - [참고2](http://honeymon.io/tech/2019/11/06/spring-boot-2.2.html)
    둘 다 적용해야 합니다. 💩
+6. Question 부분을 JPA를 사용하여 리팩토링하였습니다. 

@@ -1,33 +1,45 @@
 package com.codessquad.qna.question;
 
+import com.codessquad.qna.common.Common;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
+@Entity
 public class Question {
-    public static final String DATE_FORMAT = "YYYY-MM-dd HH:mm:ss";
-    private int index;
-    private String writer;
-    private String title;
-    private String contents;
-    private LocalDateTime createdDateTime;
-    private List<Object> replies;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long index;
 
-    public Question(int index, String writer, String title, String contents) {
-        this.index = index;
+    @Column(nullable = false)
+    private String writer;
+    @Column(nullable = false)
+    private String title;
+    @Column(nullable = false)
+    private String contents;
+    @Column(nullable = false)
+    private LocalDateTime createdDateTime;
+
+    @OneToMany
+    private Collection<Reply> replies;
+
+    public Question() {
+    }
+
+    public Question(String writer, String title, String contents) {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
         this.createdDateTime = LocalDateTime.now();
-        this.replies = new ArrayList<>();
     }
 
-    public int getIndex() {
+    public long getIndex() {
         return index;
     }
 
-    public void setIndex(int index) {
+    public void setIndex(long index) {
         this.index = index;
     }
 
@@ -64,14 +76,14 @@ public class Question {
     }
 
     public String getFormattedCreatedDateTime() {
-        return createdDateTime.format(DateTimeFormatter.ofPattern(DATE_FORMAT));
+        return createdDateTime.format(DateTimeFormatter.ofPattern(Common.DATE_FORMAT));
     }
 
-    public List<Object> getReplies() {
+    public Collection<Reply> getReplies() {
         return replies;
     }
 
-    public void setReplies(List<Object> replies) {
+    public void setReplies(Collection<Reply> replies) {
         this.replies = replies;
     }
 

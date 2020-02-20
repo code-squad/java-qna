@@ -9,19 +9,20 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
+@RequestMapping("/users")
 public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/user/form")
+    @GetMapping("/form")
     public String goUserForm(Model model) {
-        model.addAttribute("actionUrl", "/user/create");
+        model.addAttribute("actionUrl", "/users/create");
         model.addAttribute("httpMethod", "POST");
         model.addAttribute("buttonName", "회원가입");
-        return "user/form";
+        return "users/form";
     }
 
-    @PostMapping("/user/create")
+    @PostMapping("/create")
     public String createUser(@RequestParam String userId,
                              @RequestParam String userPassword,
                              @RequestParam String userName,
@@ -30,15 +31,15 @@ public class UserController {
         return "redirect:/users";
     }
 
-    @GetMapping("/users")
+    @GetMapping("")
     public String showUserList(Model model) {
         model.addAttribute("users", userRepository.findAll());
-        return "user/list";
+        return "users/list";
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     public ModelAndView showUserProfile(@PathVariable long id) {
-        ModelAndView modelAndView = new ModelAndView("user/profile");
+        ModelAndView modelAndView = new ModelAndView("users/profile");
         try {
             modelAndView.addObject("user", getUserIfExist(id));
         } catch (NotFoundException e) {
@@ -48,7 +49,7 @@ public class UserController {
     }
 
 
-    @GetMapping("/users/{id}/form")
+    @GetMapping("/{id}/form")
     public String showUserInfoModifyForm(@PathVariable long id, Model model) {
         try {
             model.addAttribute("user", getUserIfExist(id));
@@ -58,10 +59,10 @@ public class UserController {
         model.addAttribute("actionUrl", "/users/" + id + "/update");
         model.addAttribute("httpMethod", "PUT");
         model.addAttribute("buttonName", "수정");
-        return "/user/form";
+        return "/users/form";
     }
 
-    @PutMapping("/users/{id}/update")
+    @PutMapping("/{id}/update")
     public String updateUserInfo(@PathVariable long id,
                                  @RequestParam String userPassword,
                                  @RequestParam String userName,

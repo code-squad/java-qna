@@ -55,4 +55,10 @@
    - [참고1](https://hue9010.github.io/spring/Spring-MVC-PUT,-DELETE-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0/)
    - [참고2](http://honeymon.io/tech/2019/11/06/spring-boot-2.2.html)
    둘 다 적용해야 합니다. 💩
-6. Question 부분을 JPA를 사용하여 리팩토링하였습니다. 
+6. Question 부분을 JPA를 사용하여 리팩토링하였습니다.
+7. 기존 코드를 리팩토링 하였습니다.
+   - Common Class에 private 생성자를 추가하였습니다. (Util성 클래스이므로)
+   - 공통으로 사용되는 Error Page String을 Common 클래스로 이동하였습니다.
+   - 영속성 엔티티를 바로 Request를 받아서 Save 하지 않도록 하였습니다.
+      - 오류를 발생시킬 가능성이 있기 때문입니다.
+   - user와 users가 혼용되어 있어 users로 통일하였습니다.

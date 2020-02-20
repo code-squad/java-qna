@@ -22,7 +22,7 @@ public class QuestionController {
 
     @GetMapping("/questions/form")
     public String goQnaForm() {
-        return "qna/form";
+        return "questions/form";
     }
 
     @PostMapping("/questions")
@@ -41,7 +41,7 @@ public class QuestionController {
         } catch (NotFoundException e) {
             return "error/question_not_found";
         }
-        return "qna/show";
+        return "questions/show";
     }
 
     private Question getQuestionIfExist(@PathVariable long index) throws NotFoundException {

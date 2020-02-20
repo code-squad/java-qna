@@ -62,3 +62,4 @@
    - 영속성 엔티티를 바로 Request를 받아서 Save 하지 않도록 하였습니다.
       - 오류를 발생시킬 가능성이 있기 때문입니다.
    - user와 users가 혼용되어 있어 users로 통일하였습니다.
+   - questions와 qna를 questions로 통일하였습니다.

@@ -11,30 +11,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@RequestMapping("/questions")
 public class QuestionController {
 
   List<Question> questionList = new ArrayList<>();
+  private String returnRedirectUrl = "redirect:/questions";
+  private String returnForwardUrl = "/question";
 
-  @GetMapping("/qna/form")
-  public String goForm(Model model) {
-    return "/qna/form";
-  }
 
-  @PostMapping("/question")
+  @PostMapping("")
   public String createQuestion(Question question) {
     questionList.add(question);
     return "redirect:/index";
   }
 
-  @GetMapping(value = {"/", "/index"})
-  public String goIndex(Model model) {
-    model.addAttribute("questions", questionList);
-    return "/index";
+  @GetMapping("/form")
+  public String goForm(Model model) {
+    return returnForwardUrl + "/form";
   }
 
-  @GetMapping("/questions/{index}")
+  @GetMapping("/{index}")
   public String goPage(@PathVariable int index, Model model) {
     model.addAttribute("question", questionList.get(index - 1));
-    return "/qna/show";
+    return returnForwardUrl + "/show";
   }
 }

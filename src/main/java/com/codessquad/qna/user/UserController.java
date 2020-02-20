@@ -11,36 +11,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@RequestMapping("/users")
 public class UserController {
 
   private static List<User> userList = new ArrayList<>();
+  private String returnRedirectUrl = "redirect:/users";
+  private String returnForwardUrl = "/user";
 
-  @GetMapping("/user/form")
-  public String goForm(Model model) {
-    return "/user/form";
-  }
-
-  @PostMapping("/users")
+  @PostMapping("")
   public String createUser(User user) {
     userList.add(user);
 
-    return "redirect:/user/list";
+    return returnRedirectUrl + "/list";
   }
 
-  @GetMapping("/users/{userId}")
+  @GetMapping("/form")
+  public String goForm(Model model) {
+    return returnForwardUrl + "/form";
+  }
+
+  @GetMapping("/{userId}")
   public String goProfile(@PathVariable String userId, Model model) {
     for (User user : userList) {
       if (userId.equals(user.getUserId()))
         model.addAttribute("user", user);
     }
 
-    return "/user/profile";
+    return returnForwardUrl + "/profile";
   }
 
-  @GetMapping("/user/list")
+  @GetMapping("/list")
   public String goList(Model model) {
     model.addAttribute("users", userList);
 
-    return "/user/list";
+    return returnForwardUrl + "/list";
   }
 }

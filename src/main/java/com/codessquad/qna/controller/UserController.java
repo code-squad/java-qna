@@ -32,10 +32,9 @@ public class UserController {
     for (User user : userList) {
       if (userId.equals(user.getUserId())) {
         model.addAttribute("user", user);
-        break;
+        return "user/profile";
       }
-      throw new NullPointerException("no user");
     }
-    return "user/profile";
+    throw new NullPointerException("no user");
   }
 }

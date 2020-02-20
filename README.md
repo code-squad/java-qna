@@ -50,3 +50,4 @@
 1. spring-data-jpa 의존성 추가 및 h2 database의 의존성을 추가하였습니다.
 2. db에 대한 설정을 해주었습니다. 스프링 부트 진짜 짱인듯.. 👍
 3. JPA를 사용한 코드로 일부를 변경하였습니다. findById를 하는 과정에서 Optional 객체를 리턴해주어서 존재하지 않을시에 orElseThrow로 예외를 전달하는 방식으로 처리하였습니다.
+4. User Controller의 내용을 JPA를 사용한 코드로 변경하였습니다. Hibernate는 save시에 insert와 update를 알아서 해주는 것을 보고 놀랐습니다.

@@ -7,9 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class UserController {
@@ -39,47 +38,55 @@ public class UserController {
     public ModelAndView showUserProfile(@PathVariable long id) {
         ModelAndView modelAndView = new ModelAndView("user/profile");
         try {
-            modelAndView.addObject("user",
-                    userRepository.findById(id)
-                                  .orElseThrow(() -> new NotFoundException("해당 사용자는 존재하지 않는 사용자입니다.")));
+            modelAndView.addObject("user", getUserIfExist(id));
         } catch (NotFoundException e) {
             return new ModelAndView("error/user_not_found");
         }
         return modelAndView;
     }
 
-    @GetMapping("/users/{userId}/form")
-    public String showUserInfoModifyForm(@PathVariable String userId, Model model) {
-        for (User user : userRepository.findAll()) {
-            if (user.getUserId().equals(userId)) {
-                model.addAttribute("user", user);
-            }
+
+    @GetMapping("/users/{id}/form")
+    public String showUserInfoModifyForm(@PathVariable long id, Model model) {
+        try {
+            model.addAttribute("user", getUserIfExist(id));
+        } catch (NotFoundException e) {
+            return "error/user_not_found";
         }
-        model.addAttribute("actionUrl", "/users/" + userId + "/update");
+        model.addAttribute("actionUrl", "/users/" + id + "/update");
         model.addAttribute("buttonName", "수정");
         return "/user/form";
     }
 
-    @PostMapping("/users/{userId}/update")
-    public String updateUserInfo(@PathVariable String userId, HttpServletRequest request) {
-        String userPassword = request.getParameter("password");
-        String userName = request.getParameter("name");
-        String userEmail = request.getParameter("email");
-        User modifyUser = null;
-
-        for (User user : userRepository.findAll()) {
-            if (user.getUserId().equals(userId)) {
-                modifyUser = user;
-            }
+    @PostMapping("/users/{id}/update")
+    public String updateUserInfo(@PathVariable long id,
+                                 @RequestParam String userPassword,
+                                 @RequestParam String userName,
+                                 @RequestParam String userEmail) {
+        try {
+            User user = getUserIfExist(id);
+            updateUserNameAndEmail(user, userName, userPassword, userEmail);
+        } catch (NotFoundException e) {
+            return "error/user_not_found";
         }
 
-        if (modifyUser == null || !modifyUser.getUserPassword().equals(userPassword)) {
-            return "redirect:/users";
-        }
-
-        modifyUser.setUserName(userName);
-        modifyUser.setUserEmail(userEmail);
         return "redirect:/users";
+    }
+
+    private User getUserIfExist(@PathVariable long id) throws NotFoundException {
+        return userRepository.findById(id)
+                             .orElseThrow(() -> new NotFoundException("해당 사용자는 존재하지 않는 사용자입니다."));
+    }
+
+    private void updateUserNameAndEmail(User user,
+                                        String userName,
+                                        String userPassword,
+                                        String userEmail) {
+        if (user.getUserPassword().equals(userPassword)) {
+            user.setUserName(userName);
+            user.setUserEmail(userEmail);
+            userRepository.save(user);
+        }
     }
 
 }

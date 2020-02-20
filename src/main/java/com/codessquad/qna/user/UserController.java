@@ -1,5 +1,6 @@
 package com.codessquad.qna.user;
 
+import com.codessquad.qna.common.Common;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,8 +22,11 @@ public class UserController {
     }
 
     @PostMapping("/user/create")
-    public String createUser(User user) {
-        userRepository.save(user);
+    public String createUser(@RequestParam String userId,
+                             @RequestParam String userPassword,
+                             @RequestParam String userName,
+                             @RequestParam String userEmail) {
+        userRepository.save(new User(userId, userPassword, userName, userEmail));
         return "redirect:/users";
     }
 
@@ -38,7 +42,7 @@ public class UserController {
         try {
             modelAndView.addObject("user", getUserIfExist(id));
         } catch (NotFoundException e) {
-            return new ModelAndView("error/user_not_found");
+            return new ModelAndView(Common.ERROR_USER_NOT_FOUND);
         }
         return modelAndView;
     }
@@ -49,7 +53,7 @@ public class UserController {
         try {
             model.addAttribute("user", getUserIfExist(id));
         } catch (NotFoundException e) {
-            return "error/user_not_found";
+            return Common.ERROR_USER_NOT_FOUND;
         }
         model.addAttribute("actionUrl", "/users/" + id + "/update");
         model.addAttribute("httpMethod", "PUT");
@@ -66,7 +70,7 @@ public class UserController {
             User user = getUserIfExist(id);
             updateUserNameAndEmail(user, userName, userPassword, userEmail);
         } catch (NotFoundException e) {
-            return "error/user_not_found";
+            return Common.ERROR_USER_NOT_FOUND;
         }
 
         return "redirect:/users";

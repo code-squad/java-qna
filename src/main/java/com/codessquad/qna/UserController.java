@@ -5,15 +5,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import javax.sound.midi.Soundbank;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class UserController {
     private List<User> users = new ArrayList<>();
+
+    @GetMapping("/user/form")
+    public String form() {
+        return "user/form";
+    }
 
     @PostMapping("/user/create")
     public String create(User user) {
@@ -30,6 +32,7 @@ public class UserController {
     @GetMapping("/users/{userId}")
     public String profile(@PathVariable String userId, Model model) {
         User userHaveUrlUserId = users.stream().filter(user -> user.getUserId().equals(userId)).findAny().orElse(null);
+        System.out.println("123");
         model.addAttribute("user",userHaveUrlUserId);
         return "user/profile";
     }

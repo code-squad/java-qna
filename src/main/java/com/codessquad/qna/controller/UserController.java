@@ -30,8 +30,11 @@ public class UserController {
   }
 
   @PostMapping(value = "/user/{id}")
-  public String modifyUser(@ModelAttribute User user, @PathVariable("id") long id) {
-    userRepository.deleteById(id);
+  public String modifyUser(@ModelAttribute User modifiedUser, @PathVariable("id") long id) {
+    User user = userRepository.findById(id).get();
+    user.setName(modifiedUser.getName());
+    user.setPassword(modifiedUser.getPassword());
+    user.setEmail(modifiedUser.getEmail());
     userRepository.save(user);
     return "redirect:/users";
   }

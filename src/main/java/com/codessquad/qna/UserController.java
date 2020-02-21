@@ -1,5 +1,6 @@
 package com.codessquad.qna;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,26 +44,26 @@ public class UserController {
         return "/user/profile";
     }
 
-    @GetMapping("/user/{userId}/form")
-    public String viewUpdateForm(@PathVariable("userId") String userId, Model model) {
-        for(User user : users) {
-            if(user.getUserId().equals(userId)) {
-                model.addAttribute("user", user);
-                return "/user/updateForm";
-            }
-        }
+    @GetMapping("/user/{id}/form")
+    public String viewUpdateForm(@PathVariable Long id, Model model) {
+        model.addAttribute("user", userRepository.findById(id).get());
         return "/user/updateForm";
     }
 
-    @PostMapping("/user/{userId}/update")
-    public String viewUpdatedList(@PathVariable String userId, String password, String name, String email) {
-        for(User user : users) {
-            if(user.getUserId().equals(userId) && user.getPassword().equals(password)) {
-                user.setName(name);
-                user.setEmail(email);
-                return "redirect:/users";
-            }
+    @PostMapping("/user/{id}/update")
+    public String viewUpdatedList(@PathVariable Long id, String userId, String password, String name, String email) {
+        System.out.println(">>>" + userRepository.findById(id).get());
+        System.out.println("<<<" + userId + " / " + password + " / " + name + " / " + email);
+
+        if(!(userRepository.findById(id).get().getPassword().equals(password))) {
+            System.out.println("비밀번호 불일치");
+            return "redirect:/users";
         }
+        System.out.println("비밀번호 일치");
+        userRepository.findById(id).get().setName(name);
+        userRepository.findById(id).get().setEmail(email);
+        userRepository.save(userRepository.findById(id).get());
+
         return "redirect:/users";
     }
 }

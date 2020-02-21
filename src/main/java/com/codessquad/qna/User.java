@@ -56,6 +56,6 @@ public class User {
 
     @Override
     public String toString() {
-        return "index: " + id + "userId: " + userId + " password: " + password + " name: " + name + " email: " + email;
+        return "index: " + id + " userId: " + userId + " password: " + password + " name: " + name + " email: " + email;
     }
 }

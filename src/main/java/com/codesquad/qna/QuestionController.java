@@ -1,4 +1,4 @@
-package com.codessquad.qna;
+package com.codesquad.qna;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,11 +32,10 @@ public class QuestionController {
         for (Question question : questions) {
             if (question.getIndex() == index) {
                 model.addAttribute("currentQuestion", question);
-                break;
+                return "/qna/show";
             }
         }
-
-        return "/qna/show";
+        return "redirect:/qna";
     }
 
     @GetMapping("/qna")

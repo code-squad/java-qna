@@ -1,4 +1,4 @@
-package com.codessquad.qna;
+package com.codesquad.qna;
 
 public class User {
     private String userId;

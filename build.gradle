@@ -26,6 +26,9 @@ dependencies {
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
+	// https://mvnrepository.com/artifact/com.h2database/h2
+	compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+	compile group: 'com.h2database', name: 'h2', version: '1.4.200'
 }
 
 test {

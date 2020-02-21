@@ -23,8 +23,9 @@ public class QnaController {
 
   @PostMapping(value = "/post")
   public String postQuestion(Question question) {
+    log.info(question.toString());
     qnaRepository.save(question);
-    return "redirect:/questions/";
+    return "redirect:/questions/list";
   }
 
   @GetMapping(value = "/{index}")

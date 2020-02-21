@@ -64,15 +64,15 @@ public class UserController {
     return "user/list";
   }
 
-  @GetMapping(value = "/{name}")
-  public String getUserProfile(Model model, @PathVariable("name") String name) {
-    model.addAttribute("user", userRepository.findUserByName(name));
+  @GetMapping(value = "/{writer}")
+  public String getUserProfile(Model model, @PathVariable("writer") String writer) {
+    model.addAttribute("user", userRepository.findUserByWriter(writer));
     return "user/profile";
   }
 
   @GetMapping(value = "/{id}/form")
   public String modifyUserProfile(Model model, @PathVariable("id") long id) {
-    model.addAttribute("user", userRepository.getOne(id));
+    model.addAttribute("user", userRepository.findById(id).get());
     return "user/updateForm";
   }
 

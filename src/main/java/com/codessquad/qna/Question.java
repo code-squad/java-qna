@@ -19,8 +19,7 @@ public class Question {
     private String postingTime;
 
     public Question() {
-        LocalDateTime localDateTime = new LocalDateTime();
-        this.postingTime = localDateTime.getLocalDateTime();
+        this.postingTime = new LocalDateTime().getCurrentTime();
     }
 
     public void setWriter(String writer) {

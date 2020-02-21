@@ -8,9 +8,15 @@ public class Question {
     public String writer;
     public String title;
     public String contents;
-    public LocalDate localDate;
+    public String localDateTime;
 
-    public LocalDate getLocalDate() { return localDate; }
+    public String getLocalDateTime() {
+        return localDateTime;
+    }
+
+    public void setLocalDateTime(String localDateTime) {
+        this.localDateTime = localDateTime;
+    }
 
     public int getIndex() { return index; }
 
@@ -25,8 +31,6 @@ public class Question {
     public String getWriter() {
         return writer;
     }
-
-    public void setLocalDate(LocalDate localDate) { this.localDate = localDate; }
 
     public void setIndex(int index) {
         this.index = index;
@@ -51,7 +55,7 @@ public class Question {
                 ", writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
-                ", localDate=" + localDate +
+                ", localDateTime='" + localDateTime + '\'' +
                 '}';
     }
 }

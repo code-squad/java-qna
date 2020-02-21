@@ -32,7 +32,7 @@ public class UserController {
     if (!password.equals(user.getPassword())) {
       return "user/login_failed";
     }
-    httpSession.setAttribute("loginUser", user);
+    httpSession.setAttribute("sessionUser", user);
     return "redirect:/";
   }
 
@@ -43,18 +43,29 @@ public class UserController {
   }
 
   @PostMapping(value = "/{id}")
-  public String modifyUser(User modifiedUser, @PathVariable("id") long id) {
-    User user = userRepository.getOne(id);
-    user.setName(modifiedUser.getName());
-    user.setPassword(modifiedUser.getPassword());
-    user.setEmail(modifiedUser.getEmail());
+  public String updateUser(@PathVariable("id") long id, User updateUser,
+      HttpSession httpSession) {
+
+    Object sessionObject = httpSession.getAttribute("sessionUser");
+    if (sessionObject == null) {
+      return "redirect:/user/login";
+    }
+    User sessionUser = (User) sessionObject;
+    if (!sessionUser.getUserId().equals(id)) {
+      throw new IllegalStateException("You can't update another User");
+    }
+
+    User user = userRepository.getOne(sessionUser.getId());
+    user.setName(updateUser.getName());
+    user.setPassword(updateUser.getPassword());
+    user.setEmail(updateUser.getEmail());
     userRepository.save(user);
     return "redirect:/";
   }
 
   @GetMapping(value = "/logout")
   public String logout(HttpSession httpSession) {
-    httpSession.removeAttribute("loginUser");
+    httpSession.removeAttribute("sessionUser");
     return "redirect:/";
   }
 
@@ -65,14 +76,23 @@ public class UserController {
   }
 
   @GetMapping(value = "/{writer}")
-  public String getUserProfile(Model model, @PathVariable("writer") String writer) {
+  public String getUserProfile(@PathVariable("writer") String writer, Model model) {
     model.addAttribute("user", userRepository.findUserByWriter(writer));
     return "user/profile";
   }
 
   @GetMapping(value = "/{id}/form")
-  public String modifyUserProfile(Model model, @PathVariable("id") long id) {
-    model.addAttribute("user", userRepository.findById(id).get());
+  public String modifyUserProfile(@PathVariable("id") long id, Model model,
+      HttpSession httpSession) {
+    Object sessionObject = httpSession.getAttribute("sessionUser");
+    if (sessionObject == null) {
+      return "redirect:/user/login";
+    }
+    User sessionUser = (User) sessionObject;
+    if (!sessionUser.getUserId().equals(id)) {
+      throw new IllegalStateException("You can't update another User");
+    }
+    model.addAttribute("user", userRepository.getOne(sessionUser.getId()));
     return "user/updateForm";
   }
 

@@ -8,9 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 @Controller
 //@RequestMapping("")
 public class UserController {
@@ -49,19 +46,17 @@ public class UserController {
     }
 
     @PostMapping("/user/{id}/update")
-    public String viewUpdatedList(@PathVariable Long id, String userId, String password, String name, String email) {
-        System.out.println(">>>" + userRepository.findById(id).get());
-        System.out.println("<<<" + userId + " / " + password + " / " + name + " / " + email);
-
-        if(!(userRepository.findById(id).get().getPassword().equals(password))) {
-            System.out.println("비밀번호 불일치");
+    public String viewUpdatedList(@PathVariable Long id, String password, String name, String email) {
+        if(!(isPasswordEquals(id, password))) {
             return "redirect:/users";
         }
-        System.out.println("비밀번호 일치");
         userRepository.findById(id).get().setName(name);
         userRepository.findById(id).get().setEmail(email);
         userRepository.save(userRepository.findById(id).get());
-
         return "redirect:/users";
+    }
+
+    public Boolean isPasswordEquals(Long id, String password) {
+        return userRepository.findById(id).get().getPassword().equals(password);
     }
 }

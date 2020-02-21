@@ -1,4 +1,4 @@
-package com.codessquad.qna;
+package io.david215.qna;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,5 +1,6 @@
 package com.codessquad.qna.user;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,15 +14,19 @@ import java.util.List;
 public class UserController {
     private List<User> users = new ArrayList<>();
 
+    @Autowired
+    private UserRepository userRepository;
+
     @PostMapping("/users")
     public String create(User user) {
-        users.add(user);
+        System.out.println("user : " + user);
+        userRepository.save(user);
         return "redirect:/users";
     }
 
     @GetMapping("/users")
     public String list(Model model) {
-        model.addAttribute("users", users);
+        model.addAttribute("users", userRepository.findAll());
         return "user/list";
     }
 

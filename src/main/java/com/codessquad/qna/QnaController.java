@@ -15,12 +15,18 @@ import java.util.List;
 public class QnaController {
     public List<Question> questions = new ArrayList<>();
 
+    @GetMapping("/index")
+    public String index(Model model) {
+        model.addAttribute("question", questions);
+        return "index";
+    }
+
     @PostMapping("/question/create")
     public String create(Question question) {
         System.out.println("question : " + question);
         questions.add(question);
         question.setIndex(questions.size());
-        System.out.println(question.getIndex());
+        question.setLocalDate(LocalDate.now());
         return "redirect:/question/show";
     }
 
@@ -31,7 +37,7 @@ public class QnaController {
                 model.addAttribute("title", questions.get(i).getTitle());
                 model.addAttribute("writer", questions.get(i).getWriter());
                 model.addAttribute("contents", questions.get(i).getContents());
-                model.addAttribute("time", LocalDate.now());
+                model.addAttribute("time", questions.get(i).getLocalDate());
                 return "qna/show";
             }
         }

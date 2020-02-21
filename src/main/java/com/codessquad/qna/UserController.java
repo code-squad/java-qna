@@ -9,43 +9,42 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-//@RequestMapping("")
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/user/form")
+    @GetMapping("/form")
     public String viewUserForm() {
-        return "/user/form";
+        return "/users/form";
     }
 
-    @PostMapping("/user/create")
+    @PostMapping("/create")
     public String createUser(User user) {
-        //System.out.println("user => " + user);
         userRepository.save(user);
         return "redirect:/users";
     }
 
-    @GetMapping("/users")
+    @GetMapping("")
     public String viewList(Model model) {
         model.addAttribute("users", userRepository.findAll());
-        return "/user/list";
+        return "/users/list";
     }
 
-    @GetMapping("/user/{id}")
+    @GetMapping("/{id}")
     public String viewProfile(@PathVariable long id, Model model) {
         model.addAttribute("user", userRepository.findById(id).get());
-        return "/user/profile";
+        return "/users/profile";
     }
 
-    @GetMapping("/user/{id}/form")
+    @GetMapping("/{id}/form")
     public String viewUpdateForm(@PathVariable Long id, Model model) {
         model.addAttribute("user", userRepository.findById(id).get());
-        return "/user/updateForm";
+        return "/users/updateForm";
     }
 
-    @PostMapping("/user/{id}/update")
+    @PostMapping("/{id}/update")
     public String viewUpdatedList(@PathVariable Long id, String password, String name, String email) {
         if(!(isPasswordEquals(id, password))) {
             return "redirect:/users";

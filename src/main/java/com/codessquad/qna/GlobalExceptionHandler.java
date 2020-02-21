@@ -19,9 +19,9 @@ public class GlobalExceptionHandler {
         return modelAndView;
     }
 
-    @ExceptionHandler(ArrayIndexOutOfBoundsException.class)
+    @ExceptionHandler(IndexOutOfBoundsException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "찾을 수 없음")
-    public ModelAndView arrayBoundException(ArrayIndexOutOfBoundsException e) {
+    public ModelAndView arrayBoundException(IndexOutOfBoundsException e) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("exception", e);
         modelAndView.setViewName("error");

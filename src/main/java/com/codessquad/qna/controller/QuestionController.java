@@ -32,7 +32,7 @@ public class QuestionController {
     }
 
     @GetMapping("/qna/{index}")
-    public String getQuestion(@PathVariable int index, Model model) throws ArrayIndexOutOfBoundsException{
+    public String getQuestion(@PathVariable int index, Model model) throws IndexOutOfBoundsException{
         model.addAttribute("question", getQuestionByIndex(index));
         return "qna/show";
     }
@@ -41,14 +41,8 @@ public class QuestionController {
         return new Date();
     }
 
-    public Question getQuestionByIndex(int index) throws ArrayIndexOutOfBoundsException{
-        for (Question question : questions) {
-            if(index==question.getIndex()){
-                return question;
-            }
-        }
-
-        throw new ArrayIndexOutOfBoundsException();
+    public Question getQuestionByIndex(int index) {
+        return questions.get(index-1);
     }
 
 }

@@ -33,13 +33,19 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public String viewProfile(@PathVariable long id, Model model) {
+    public String viewProfile(@PathVariable Long id, Model model) {
+        if(!(isIdPresent(id))) {
+            return "redirect:/users";
+        }
         model.addAttribute("user", userRepository.findById(id).get());
         return "/users/profile";
     }
 
     @GetMapping("/{id}/form")
     public String viewUpdateForm(@PathVariable Long id, Model model) {
+        if(!(isIdPresent(id))) {
+            return "redirect:/users";
+        }
         model.addAttribute("user", userRepository.findById(id).get());
         return "/users/updateForm";
     }
@@ -55,7 +61,11 @@ public class UserController {
         return "redirect:/users";
     }
 
-    public Boolean isPasswordEquals(Long id, String password) {
+    private Boolean isIdPresent(Long id) {
+        return userRepository.findById(id).isPresent();
+    }
+
+    private Boolean isPasswordEquals(Long id, String password) {
         return userRepository.findById(id).get().getPassword().equals(password);
     }
 }

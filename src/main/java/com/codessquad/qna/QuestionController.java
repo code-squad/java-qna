@@ -33,7 +33,14 @@ public class QuestionController {
 
     @GetMapping("/questions/{id}")
     public String viewQuestionContents(@PathVariable Long id, Model model) {
+        if(!(isIdPresent(id))) {
+            return "redirect:/";
+        }
         model.addAttribute("question", questionRepository.findById(id).get());
         return "/qna/show";
+    }
+
+    private Boolean isIdPresent(Long id) {
+        return questionRepository.findById(id).isPresent();
     }
 }

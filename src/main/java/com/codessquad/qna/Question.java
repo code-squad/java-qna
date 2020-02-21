@@ -19,7 +19,7 @@ public class Question {
     private String postingTime;
 
     public Question() {
-        this.postingTime = new LocalDateTime().getCurrentTime();
+        this.postingTime = new Time().getCurrentTime();
     }
 
     public void setWriter(String writer) {
@@ -34,9 +34,7 @@ public class Question {
         this.contents = contents;
     }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
     public String getWriter() {
         return writer;

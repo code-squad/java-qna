@@ -6,37 +6,38 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
+@RequestMapping("/users")
 public class UserController {
-    private List<User> users = new ArrayList<>();
 
     @Autowired
     private UserRepository userRepository;
 
-    @PostMapping("/users")
+    @PostMapping("")
     public String create(User user) {
         System.out.println("user : " + user);
         userRepository.save(user);
         return "redirect:/users";
     }
 
-    @GetMapping("/users")
+    @GetMapping("/form")
+    public String form() {
+        return "user/form";
+    }
+
+    @GetMapping("")
     public String list(Model model) {
         model.addAttribute("users", userRepository.findAll());
         return "user/list";
     }
 
-    @GetMapping("/profile/{userId}")
-    public String profile(@PathVariable String userId, Model model) {
-        User user = users.stream()
-                .filter(user1 -> user1.getUserId().equals(userId))
-                .findAny()
-                .orElse(null);
-        model.addAttribute("user", user);
-        return "user/profile";
+    @GetMapping("/{id}")
+    public ModelAndView show(@PathVariable long id) {
+        ModelAndView mav = new ModelAndView("user/profile");
+        mav.addObject("user", userRepository.findById(id).get());
+        return mav;
     }
 }

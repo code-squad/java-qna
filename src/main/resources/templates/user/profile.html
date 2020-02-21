@@ -1,18 +1,52 @@
 {{#partial "content"}}
 <div class="contents">
-  <div class="profile">
+  <!-- <div class="profile"> -->
+  <div class="join">
     <div class="title">
-      <h2>profile</h2>
+      <h2>PROFILE</h2>
     </div>
     <a>
         <img class="media-object" height="200" src="https://tva1.sinaimg.cn/large/0082zybpgy1gc1t11cddhj30u00u07wi.jpg" width="200">
     </a>
     <div>
         {{#currentUser}}
-        <h4 class="media-heading">{{name}}</h4>
+        <!-- <h4 class="media-heading">{{name}}</h4>
         <p>
             <a href="#">{{email}}</a>
-        </p>
+        </p> -->
+        <h3>기본정보</h3>
+        <table>
+          <caption>기본 정보</caption> <!--표에 대한 제목-->
+          <tbody>
+            <tr>
+              <th scope="row">아이디</th>
+              <td>{{userId}}</td>
+            </tr>
+            <tr>
+              <th scope="row">이름</th>
+              <td>{{name}}</td>
+            </tr>
+            <tr>
+              <th scope="row">이메일</th>
+              <td>{{email}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <h3>추가정보</h3>
+        <table>
+          <caption>회원 추가정보</caption>
+          <tbody>
+            <tr>
+              <th>성별</th>
+              <td><input type="radio" id="is_sex" name="is_sex" value="F">여자
+              <input type="radio" id="is_sex" name="is_sex" value="M">남자</td>
+            </tr>
+            <tr>
+              <th>생년월일</th>
+              <td><input type="date" id="birthday" name="birthday"></td>
+            </tr>
+          </tbody>
+        </table>
         {{/currentUser}}
     </div>
   </div>

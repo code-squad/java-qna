@@ -210,9 +210,10 @@ html, body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form
     border-collapse: inherit;
     font-style: normal;
     text-align: left;
+    width: 130px;
   }
   .join td {
-    padding: 12px 10px 11px 20px;
+    padding: 12px 50px 11px 20px;
     border-bottom: 1px solid #dfdfdf;
     color: #353535;
     vertical-align: middle;

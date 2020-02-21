@@ -4,25 +4,25 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Question {
-    private int index;
+    private int questionNumber;
     private String writer;
     private String title;
     private String contents;
-    private String writtenTime;
+    private String formattedWrittenTime;
 
-    public Question(String writer, String title, String contents, String writtenTime) {
+    public Question(String writer, String title, String contents, String formattedWrittenTime) {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-        this.writtenTime = writtenTime;
+        this.formattedWrittenTime = formattedWrittenTime;
     }
 
-    public void setIndex(int index) {
-        this.index = index;
+    public void setQuestionNumber(int questionNumber) {
+        this.questionNumber = questionNumber;
     }
 
-    public int getIndex() {
-        return index;
+    public int getQuestionNumber() {
+        return questionNumber;
     }
 
     public String getWriter() {
@@ -37,8 +37,8 @@ public class Question {
         return contents;
     }
 
-    public String getWrittenTime() {
-        return writtenTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    public String getFormattedWrittenTime() {
+        return formattedWrittenTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
     @Override
@@ -47,7 +47,7 @@ public class Question {
                 "writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
-                ", writtenTime='" + writtenTime + '\'' +
+                ", formattedWrittenTime='" + formattedWrittenTime + '\'' +
                 '}';
     }
 }

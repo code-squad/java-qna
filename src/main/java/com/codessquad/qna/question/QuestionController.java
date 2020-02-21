@@ -15,7 +15,7 @@ public class QuestionController {
 
     @PostMapping("/questions")
     public String qna(Question question) {
-        question.setIndex(questions.size() + 1);
+        question.setQuestionNumber(questions.size() + 1);
         questions.add(question);
         return "redirect:/";
     }
@@ -23,12 +23,12 @@ public class QuestionController {
     @GetMapping("/")
     public String questionList(Model model) {
         model.addAttribute("questions", questions);
-        return "index";
+        return "main";
     }
 
-    @GetMapping("/questions/{index}")
-    public String questionContents(@PathVariable int index, Model model) {
-        Question question = questions.get(index - 1);
+    @GetMapping("/questions/{questionNumber}")
+    public String questionContents(@PathVariable int questionNumber, Model model) {
+        Question question = questions.get(questionNumber - 1);
         model.addAttribute("question", question);
         return "qna/show";
     }

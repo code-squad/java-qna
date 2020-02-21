@@ -12,7 +12,6 @@ import java.util.List;
 @Controller
 public class UserController {
     private List<User> users = new ArrayList<>();
-
     @PostMapping("/user/create")
     public String create(User user) {
         user.setId(users.size()+1);

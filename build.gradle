@@ -23,6 +23,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	compile 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
+	runtimeOnly group: 'com.h2database', name: 'h2', version: '1.4.192'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}

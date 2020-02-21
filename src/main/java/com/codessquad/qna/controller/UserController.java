@@ -2,6 +2,7 @@ package com.codessquad.qna.controller;
 
 import com.codessquad.qna.domain.User;
 import com.codessquad.qna.repository.UserRepository;
+import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,20 @@ public class UserController {
   @Autowired
   private UserRepository userRepository;
 
+
+  @RequestMapping(value = "/login")
+  public String loginUser(String userId, String password, HttpSession httpSession) {
+    User user = userRepository.findUserByUserId(userId);
+    if (user == null) {
+      return "user/login";
+    }
+    if (!password.equals(user.getPassword())) {
+      return "user/login_failed";
+    }
+    httpSession.setAttribute("user", user);
+    return "redirect:/";
+  }
+
   @PostMapping(value = "/create")
   public String createUser(User user) {
     userRepository.save(user);
@@ -37,15 +52,15 @@ public class UserController {
     return "redirect:/";
   }
 
-  @GetMapping(value = "/")
+  @GetMapping(value = "/list")
   public String getUsers(Model model) {
     model.addAttribute("users", userRepository.findAll());
     return "user/list";
   }
 
-  @GetMapping(value = "/{writer}")
-  public String getUserProfile(Model model, @PathVariable("writer") String writer) {
-    model.addAttribute("user", userRepository.findUserByName(writer));
+  @GetMapping(value = "/{name}")
+  public String getUserProfile(Model model, @PathVariable("name") String name) {
+    model.addAttribute("user", userRepository.findUserByName(name));
     return "user/profile";
   }
 

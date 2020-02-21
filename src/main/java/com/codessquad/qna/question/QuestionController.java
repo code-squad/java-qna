@@ -20,19 +20,19 @@ public class QuestionController {
   private QuestionRepository questionRepository;
 
   @PostMapping("")
-  public String createQuestion(Question question) {
+  public String create(Question question) {
     questionRepository.save(question);
 
     return "redirect:/index";
   }
 
   @GetMapping("/form")
-  public String goForm(Model model) {
+  public String form(Model model) {
     return returnForwardUrl + "/form";
   }
 
   @GetMapping("/{index}")
-  public ModelAndView goPage(@PathVariable long index) {
+  public ModelAndView show(@PathVariable long index) {
     ModelAndView mav = new ModelAndView("/questions/show");
     mav.addObject("questions", questionRepository.findById(index).get());
     return mav;

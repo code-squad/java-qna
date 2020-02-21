@@ -8,6 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
+
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -75,6 +77,25 @@ public class UserController {
         }
 
         return "redirect:/users";
+    }
+
+    @GetMapping("/login")
+    public String goLoginPage() {
+        return "users/login";
+    }
+
+    @PostMapping("/login")
+    public String loginUser(@RequestParam String userId,
+                            @RequestParam String userPassword,
+                            HttpSession session) {
+        User user = userRepository.findByUserId(userId);
+
+        // 사용자가 없거나, 비밀번호 일치하지 않는 경우
+        if (user == null || !user.getUserPassword().equals(userPassword)) {
+            return "users/login_failed";
+        }
+        session.setAttribute("loginUser", user);
+        return "redirect:/";
     }
 
     private User getUserIfExist(@PathVariable long id) throws NotFoundException {

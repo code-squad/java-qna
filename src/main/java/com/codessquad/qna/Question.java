@@ -54,7 +54,8 @@ public class Question {
     @Override
     public String toString() {
         return "Question{" +
-                "date='" + date + '\'' +
+                "id=" + id +
+                ", date='" + date + '\'' +
                 ", writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +

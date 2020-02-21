@@ -1,6 +1,5 @@
 package com.codessquad.qna;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,9 +19,10 @@ public class QuestionController {
     }
 
     @PostMapping("/questions")
-    public String questions(Question question, Model model) {
-        System.out.println("question : "+ question);
+    public String questions(Question question) {
+        question.setId(questions.size()+1);
         questions.add(question);
+        System.out.println("question : "+ question);
         return "redirect:/";
     }
 

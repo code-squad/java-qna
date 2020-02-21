@@ -32,4 +32,14 @@ public class UserController {
         }
         return "profile";
     }
+
+    @GetMapping("/user/form")
+    public String userForm(){
+        return "form";
+    }
+
+    @GetMapping("/users/{{id}}/form")
+    public String updateUser() {
+        return "updateForm";
+    }
 }

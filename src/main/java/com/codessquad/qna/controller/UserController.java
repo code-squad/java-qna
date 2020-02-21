@@ -23,8 +23,8 @@ public class UserController {
   private UserRepository userRepository;
 
 
-  @RequestMapping(value = "/login")
-  public String loginUser(String userId, String password, HttpSession httpSession) {
+  @PostMapping(value = "/login")
+  public String login(String userId, String password, HttpSession httpSession) {
     User user = userRepository.findUserByUserId(userId);
     if (user == null) {
       return "user/login";
@@ -32,7 +32,7 @@ public class UserController {
     if (!password.equals(user.getPassword())) {
       return "user/login_failed";
     }
-    httpSession.setAttribute("user", user);
+    httpSession.setAttribute("loginUser", user);
     return "redirect:/";
   }
 
@@ -49,6 +49,12 @@ public class UserController {
     user.setPassword(modifiedUser.getPassword());
     user.setEmail(modifiedUser.getEmail());
     userRepository.save(user);
+    return "redirect:/";
+  }
+
+  @GetMapping(value = "/logout")
+  public String logout(HttpSession httpSession) {
+    httpSession.removeAttribute("loginUser");
     return "redirect:/";
   }
 

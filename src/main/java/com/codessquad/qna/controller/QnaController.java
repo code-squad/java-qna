@@ -33,7 +33,7 @@ public class QnaController {
     return "/qna/show";
   }
 
-  @RequestMapping(value = "/list")
+  @GetMapping(value = "/list")
   public String redirectToQnaList(Model model) {
     model.addAttribute("questions", qnaRepository.findAll());
     return "index";

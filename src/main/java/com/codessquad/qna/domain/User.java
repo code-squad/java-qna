@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity
 public class User {
@@ -26,9 +25,24 @@ public class User {
   @Column(nullable = false)
   private String email;
 
+  public boolean matchId(Long inputId) {
+    if (inputId == null) {
+      return false;
+    }
+    return id.equals(inputId);
+  }
+
+  public boolean matchPassword(String inputPassword) {
+    if (inputPassword == null) {
+      return false;
+    }
+    return password.equals(inputPassword);
+  }
+
   public Long getId() {
     return id;
   }
+
   public String getUserId() {
     return userId;
   }

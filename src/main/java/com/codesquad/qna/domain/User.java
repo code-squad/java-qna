@@ -1,8 +1,16 @@
-package com.codessquad.qna;
+package com.codesquad.qna.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class User {
+    @Id
     private String userId;
+    @Column(nullable = false)
     private String password;
+    @Column(nullable = false)
     private String name;
     private String email;
 
@@ -36,5 +44,20 @@ public class User {
 
     public String getEmail() {
         return email;
+    }
+
+    public void update(User updateUser) {
+        this.name = updateUser.getName();
+        this.email = updateUser.getEmail();
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId='" + userId + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

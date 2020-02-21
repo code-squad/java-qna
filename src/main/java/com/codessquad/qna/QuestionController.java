@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class QuestionController {
-
     @Autowired
     private QuestionRepository questionRepository;
 

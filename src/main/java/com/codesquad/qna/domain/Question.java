@@ -47,8 +47,8 @@ public class Question {
         return createdTime;
     }
 
-    public void setCreatedTime(LocalDateTime createdTime) {
-        this.createdTime = createdTime;
+    public void setCreatedTime() {
+        this.createdTime = LocalDateTime.now();
     }
 
     public String getFormattedCreatedTime() {

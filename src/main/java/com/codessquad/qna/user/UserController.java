@@ -25,11 +25,8 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public String createUser(@RequestParam String userId,
-                             @RequestParam String userPassword,
-                             @RequestParam String userName,
-                             @RequestParam String userEmail) {
-        userRepository.save(new User(userId, userPassword, userName, userEmail));
+    public String createUser(User user) {
+        userRepository.save(user);
         return "redirect:/users";
     }
 

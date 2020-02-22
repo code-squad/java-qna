@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/edit")
-    public String updateUser(@PathVariable Long id, Model model) {
+    public String showUpdatePage(@PathVariable Long id, Model model) {
         if (userRepository.existsById(id)){
             model.addAttribute("user", userRepository.getOne(id));
             return "user/edit";

@@ -6,7 +6,7 @@
 <div class="container" id="main">
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default content-main">
-            <form name="userEdit" method="post" action="/users/{{index}}">
+            <form name="userEdit" method="post" action="/users/{{user.id}}">
                 <input type="hidden" name="_method" value="put" />
                 <div class="form-group">
                     <label for="userId">사용자 아이디</label>

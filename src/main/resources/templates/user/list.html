@@ -13,15 +13,15 @@
                 </tr>
               </thead>
               <tbody>
-              {{#each users}}
-                <tr onClick="location.href='/users/{{userId}}'">
-                    <th scope="row">{{@index}}</th>
+              {{#users}}
+                <tr onClick="location.href='/users/{{id}}'">
+                    <th scope="row">{{id}}</th>
                         <td>{{userId}}</td>
                         <td>{{name}}</td>
                         <td>{{email}}</td>
-                        <td><a href="/users/{{@index}}/edit" class="btn btn-success" role="button">수정</a></td>
+                        <td><a href="/users/{{id}}/edit" class="btn btn-success" role="button">수정</a></td>
                 </tr>
-              {{/each}}
+              {{/users}}
               </tbody>
           </table>
         </div>

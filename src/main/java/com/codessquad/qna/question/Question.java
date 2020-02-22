@@ -1,30 +1,45 @@
 package com.codessquad.qna.question;
 
-import java.time.ZonedDateTime;
+import com.codessquad.qna.common.Common;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 
+@Entity
 public class Question {
-    private int index;
-    private String writer;
-    private String title;
-    private String contents;
-    private ZonedDateTime dateTime;
-    private int replyCount;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long index;
 
-    public Question(int index, String writer, String title, String contents) {
-        this.index = index;
+    @Column(nullable = false)
+    private String writer;
+    @Column(nullable = false)
+    private String title;
+    @Column(nullable = false)
+    private String contents;
+    @Column(nullable = false)
+    private LocalDateTime createdDateTime;
+
+    @OneToMany
+    private Collection<Reply> replies;
+
+    public Question() {
+    }
+
+    public Question(String writer, String title, String contents) {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-        this.dateTime = ZonedDateTime.now();
-        this.replyCount = 0;
+        this.createdDateTime = LocalDateTime.now();
     }
 
-    public int getIndex() {
+    public long getIndex() {
         return index;
     }
 
-    public void setIndex(int index) {
+    public void setIndex(long index) {
         this.index = index;
     }
 
@@ -52,19 +67,28 @@ public class Question {
         this.contents = contents;
     }
 
-    public String getDateTime() {
-        return dateTime.format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:ss"));
+    public LocalDateTime getCreatedDateTime() {
+        return createdDateTime;
     }
 
-    public void setDateTime(ZonedDateTime dateTime) {
-        this.dateTime = dateTime;
+    public void setCreatedDateTime(LocalDateTime createdDateTime) {
+        this.createdDateTime = createdDateTime;
+    }
+
+    public String getFormattedCreatedDateTime() {
+        return createdDateTime.format(DateTimeFormatter.ofPattern(Common.DATE_FORMAT));
+    }
+
+    public Collection<Reply> getReplies() {
+        return replies;
+    }
+
+    public void setReplies(Collection<Reply> replies) {
+        this.replies = replies;
     }
 
     public int getReplyCount() {
-        return replyCount;
+        return replies.size();
     }
 
-    public void setReplyCount(int replyCount) {
-        this.replyCount = replyCount;
-    }
 }

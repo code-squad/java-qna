@@ -1,16 +1,38 @@
 package com.codessquad.qna.user;
 
+import javax.persistence.*;
+
+@Entity
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 20)
     private String userId;
+    @Column(nullable = false)
     private String userPassword;
+    @Column(nullable = false)
     private String userName;
+    @Column(nullable = false)
     private String userEmail;
+
+    public User() {
+    }
 
     public User(String userId, String userPassword, String userName, String userEmail) {
         this.userId = userId;
         this.userPassword = userPassword;
         this.userName = userName;
         this.userEmail = userEmail;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUserId() {

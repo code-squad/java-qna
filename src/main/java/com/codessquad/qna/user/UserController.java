@@ -1,86 +1,95 @@
 package com.codessquad.qna.user;
 
+import com.codessquad.qna.common.Common;
+import javassist.NotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class UserController {
-    private final List<User> users = new ArrayList<>();
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/user/form")
     public String goUserForm(Model model) {
         model.addAttribute("actionUrl", "/user/create");
+        model.addAttribute("httpMethod", "POST");
         model.addAttribute("buttonName", "회원가입");
         return "user/form";
     }
 
     @PostMapping("/user/create")
-    public String createUser(HttpServletRequest request) {
-        String userId = request.getParameter("userId");
-        String userPassword = request.getParameter("password");
-        String userName = request.getParameter("name");
-        String userEmail = request.getParameter("email");
-
-        User newUser = new User(userId, userPassword, userName, userEmail);
-        users.add(newUser);
+    public String createUser(@RequestParam String userId,
+                             @RequestParam String userPassword,
+                             @RequestParam String userName,
+                             @RequestParam String userEmail) {
+        userRepository.save(new User(userId, userPassword, userName, userEmail));
         return "redirect:/users";
     }
 
     @GetMapping("/users")
     public String showUserList(Model model) {
-        model.addAttribute("users", users);
+        model.addAttribute("users", userRepository.findAll());
         return "user/list";
     }
 
-    @GetMapping("/users/{userName}")
-    public String showUserProfile(@PathVariable String userName, Model model) {
-        for (User user : users) {
-            if (user.getUserName().equals(userName)) {
-                model.addAttribute("user", user);
-            }
+    @GetMapping("/users/{id}")
+    public ModelAndView showUserProfile(@PathVariable long id) {
+        ModelAndView modelAndView = new ModelAndView("user/profile");
+        try {
+            modelAndView.addObject("user", getUserIfExist(id));
+        } catch (NotFoundException e) {
+            return new ModelAndView(Common.ERROR_USER_NOT_FOUND);
         }
-        return "user/profile";
+        return modelAndView;
     }
 
-    @GetMapping("/users/{userId}/form")
-    public String showUserInfoModifyForm(@PathVariable String userId, Model model) {
-        for (User user : users) {
-            if (user.getUserId().equals(userId)) {
-                model.addAttribute("user", user);
-            }
+
+    @GetMapping("/users/{id}/form")
+    public String showUserInfoModifyForm(@PathVariable long id, Model model) {
+        try {
+            model.addAttribute("user", getUserIfExist(id));
+        } catch (NotFoundException e) {
+            return Common.ERROR_USER_NOT_FOUND;
         }
-        model.addAttribute("actionUrl", "/users/" + userId + "/update");
+        model.addAttribute("actionUrl", "/users/" + id + "/update");
+        model.addAttribute("httpMethod", "PUT");
         model.addAttribute("buttonName", "수정");
         return "/user/form";
     }
 
-    @PostMapping("/users/{userId}/update")
-    public String updateUserInfo(@PathVariable String userId, HttpServletRequest request) {
-        String userPassword = request.getParameter("password");
-        String userName = request.getParameter("name");
-        String userEmail = request.getParameter("email");
-        User modifyUser = null;
-
-        for (User user : users) {
-            if (user.getUserId().equals(userId)) {
-                modifyUser = user;
-            }
+    @PutMapping("/users/{id}/update")
+    public String updateUserInfo(@PathVariable long id,
+                                 @RequestParam String userPassword,
+                                 @RequestParam String userName,
+                                 @RequestParam String userEmail) {
+        try {
+            User user = getUserIfExist(id);
+            updateUserNameAndEmail(user, userName, userPassword, userEmail);
+        } catch (NotFoundException e) {
+            return Common.ERROR_USER_NOT_FOUND;
         }
 
-        if (modifyUser == null || !modifyUser.getUserPassword().equals(userPassword)) {
-            return "redirect:/users";
-        }
-
-        modifyUser.setUserName(userName);
-        modifyUser.setUserEmail(userEmail);
         return "redirect:/users";
+    }
+
+    private User getUserIfExist(@PathVariable long id) throws NotFoundException {
+        return userRepository.findById(id)
+                             .orElseThrow(() -> new NotFoundException("해당 사용자는 존재하지 않는 사용자입니다."));
+    }
+
+    private void updateUserNameAndEmail(User user,
+                                        String userName,
+                                        String userPassword,
+                                        String userEmail) {
+        if (user.getUserPassword().equals(userPassword)) {
+            user.setUserName(userName);
+            user.setUserEmail(userEmail);
+            userRepository.save(user);
+        }
     }
 
 }

@@ -49,4 +49,11 @@ public class UserController {
         return mav;
     }
 
+    @GetMapping("/{id}/modify")
+    public ModelAndView viewModificationProfile(@PathVariable long id) {
+        ModelAndView mav = new ModelAndView("/users/modify");
+        mav.addObject("currentUser", userRepository.findById(id).get());
+        return mav;
+    }
+
 }

@@ -1,79 +1,83 @@
 {{#block "header"}}
 <!DOCTYPE html>
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-  <title>Javakong Cafe</title>
-  <link rel="stylesheet" type="text/css" href="../css/style.css">
-  <link rel="stylesheet" type="text/css" href="../css/style2.css">
-  <!-- ajax cdn -->
-  <script src="../js/jquery.min.js"></script>
+    <title>Javakong Cafe</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/style2.css">
+    <!-- ajax cdn -->
+    <script src="../js/jquery.min.js"></script>
 </head>
 {{/block}}
 {{#block "topArea"}}
-  <body>
-    <div id="header">
-  <div class="topArea">
-          <a href="/users/login">LOGIN</a>
-      <a href="/users/join">JOIN US</a>
-      <a href="/users">LIST</a>
+<body>
+<div id="header">
+    <div class="topArea">
+        <a href="/users/login">LOGIN</a>
+        <a href="/users/join">JOIN US</a>
+        <a href="/users">LIST</a>
         <a href="/users/{userId}">PROFILE</a>
-    <a href="/qna">QnA</a>
+        <a href="/qna">QnA</a>
 
-  </div>
-<h1 class="top_logo">
-<a href="/"><img class="banner_image" width="308" height="81" title="자바콩" alt="자바콩" src="../css/logo_banner.png"></a>
-</h1>
-<div class="gnbWrap">
-  <ul>
-    <li><a href="">TOP</a></li>
-    <li><a href="">BOTTOM</a></li>
-    <li><a href="">OUTER</a></li>
-    <li><a href="">ACCESSORY</a></li>
-    <li><a href="">SALE</a></li>
-  </ul>
-</div>
+    </div>
+    <h1 class="top_logo">
+        <a href="/"><img class="banner_image" width="308" height="81" title="자바콩" alt="자바콩"
+                         src="/css/logo_banner.png"></a>
+    </h1>
+    <div class="gnbWrap">
+        <ul>
+            <li><a href="">TOP</a></li>
+            <li><a href="">BOTTOM</a></li>
+            <li><a href="">OUTER</a></li>
+            <li><a href="">ACCESSORY</a></li>
+            <li><a href="">SALE</a></li>
+        </ul>
+    </div>
 </div>
 
 <script>
-  /*
-  window.onscroll = function(){ScrollEffect()};
-  function ScrollEffect(){
-    if (document.body.scrollTop > 350 || document.documentElement.scrollTop > 350) {
-    document.querySelector('#header').className = "slideUp";
-    document.querySelector('.top_logo').style.display='none';
-    document.querySelector('.contents').style.marginTop='100px';
-    // document.querySelector('.top_logo').
-    }
-  }
-  */
-
-  // use jQuery
-  var position = $(window).scrollTop();
-  $(window).scroll(function(){
-    var scroll = $(window).scrollTop();
-    if(scroll > position){
+    /*
+    window.onscroll = function(){ScrollEffect()};
+    function ScrollEffect(){
+      if (document.body.scrollTop > 350 || document.documentElement.scrollTop > 350) {
       document.querySelector('#header').className = "slideUp";
       document.querySelector('.top_logo').style.display='none';
       document.querySelector('.contents').style.marginTop='100px';
-    }else{
-      document.querySelector('#header').className = "";
-      document.querySelector('.top_logo').style.display='';
-      document.querySelector('.contents').style.marginTop='';
+      // document.querySelector('.top_logo').
+      }
     }
-  })
+    */
+
+    // use jQuery
+    var position = $(window).scrollTop();
+    $(window).scroll(function () {
+        var scroll = $(window).scrollTop();
+        if (scroll > position) {
+            document.querySelector('#header').className = "slideUp";
+            document.querySelector('.top_logo').style.display = 'none';
+            document.querySelector('.contents').style.marginTop = '100px';
+        } else {
+            document.querySelector('#header').className = "";
+            document.querySelector('.top_logo').style.display = '';
+            document.querySelector('.contents').style.marginTop = '';
+        }
+    })
 </script>
 {{/block}}
 {{#block "content"}}
 
 {{/block}}
 {{#block "footer"}}
-    <div class="company">
-  <span>COMPANY:javakong cafe</span>
-  <span>OWNER: ssun</span>
-  <span>PRIVACY MANAGER : ssun</span>
-  <p>Copyrigh © 2019 javakong cafe all rights reserved / published by ssun</p>
+<div class="company">
+    <span>COMPANY:javakong cafe</span>
+    <span>OWNER: ssun</span>
+    <span>PRIVACY MANAGER : ssun</span>
+    <p>Copyrigh © 2019 javakong cafe all rights reserved / published by ssun</p>
 </div>
 
 
-</body></html>
+</body>
+</html>
 {{/block}}

@@ -14,6 +14,13 @@ public class User {
     private String password;
     @Column(nullable = false)
     private String name;
+
+    @Column
+    private String address;
+
+    @Column
+    private String phoneNumber;
+
     @Column(nullable = false)
     private String email;
 
@@ -55,5 +62,21 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }

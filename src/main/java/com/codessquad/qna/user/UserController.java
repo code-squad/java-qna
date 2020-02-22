@@ -98,7 +98,7 @@ public class UserController {
         return "redirect:/";
     }
 
-    private User getUserIfExist(@PathVariable long id) throws NotFoundException {
+    private User getUserIfExist(long id) throws NotFoundException {
         return userRepository.findById(id)
                              .orElseThrow(() -> new NotFoundException("해당 사용자는 존재하지 않는 사용자입니다."));
     }

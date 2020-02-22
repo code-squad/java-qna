@@ -49,9 +49,13 @@ public class UserController {
 
 
     @GetMapping("/{id}/form")
-    public String showUserInfoModifyForm(@PathVariable long id, Model model) {
+    public String showUserInfoModifyForm(@PathVariable long id, Model model, HttpSession session) {
         try {
-            model.addAttribute("user", getUserIfExist(id));
+            User user = getUserIfExist(id);
+            if (!getLoginUserAndCheckEqualsRequestedUser(session, user)) {
+                return CommonString.ERROR_CANNOT_EDIT_OTHER_USER_INFO;
+            }
+            model.addAttribute("user", user);
         } catch (NotFoundException e) {
             return CommonString.ERROR_USER_NOT_FOUND;
         }
@@ -65,15 +69,32 @@ public class UserController {
     public String updateUserInfo(@PathVariable long id,
                                  @RequestParam String userPassword,
                                  @RequestParam String userName,
-                                 @RequestParam String userEmail) {
+                                 @RequestParam String userEmail,
+                                 HttpSession session) {
         try {
             User user = getUserIfExist(id);
+            if (!getLoginUserAndCheckEqualsRequestedUser(session, user)) {
+                return CommonString.ERROR_CANNOT_EDIT_OTHER_USER_INFO;
+            }
             updateUserNameAndEmail(user, userName, userPassword, userEmail);
         } catch (NotFoundException e) {
             return CommonString.ERROR_USER_NOT_FOUND;
         }
 
         return "redirect:/users";
+    }
+
+    private boolean getLoginUserAndCheckEqualsRequestedUser(HttpSession session, User user) {
+        Object userAttribute = session.getAttribute("loginUser");
+        return checkUserEqualsLoginUser(user, userAttribute);
+    }
+
+    private boolean checkUserEqualsLoginUser(User user, Object userAttribute) {
+        if (userAttribute == null) {
+            return false;
+        }
+        User sessionedUser = (User) userAttribute;
+        return sessionedUser.equals(user);
     }
 
     @GetMapping("/login")

@@ -2,6 +2,7 @@ package com.codessquad.qna.user;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 public class User implements Serializable {
@@ -65,5 +66,20 @@ public class User implements Serializable {
 
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return getId().equals(user.getId()) && getUserId().equals(user.getUserId()) && getUserPassword()
+                .equals(user.getUserPassword()) && getUserName().equals(user.getUserName()) && getUserEmail()
+                .equals(user.getUserEmail());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getUserId(), getUserPassword(), getUserName(), getUserEmail());
     }
 }

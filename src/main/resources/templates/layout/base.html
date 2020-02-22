@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="kr">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="/webjars/bootstrap/4.4.1/css/bootstrap.min.css">
+
+        {{#block "title"}}
+        <title>Dingo</title>
+        {{/block}}
+    </head>
+    <body>
+        {{> layout/header}}
+
+        <main role="main" class="container py-5">
+            {{#block "main"}}
+            {{/block }}
+        </main>
+
+
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="/webjars/jquery/3.4.1/dist/jquery.slim.min.js"></script>
+        <script src="/webjars/popper.js/1.14.3/umd/popper.min.js"></script>
+        <script src="webjars/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    </body>
+</html>

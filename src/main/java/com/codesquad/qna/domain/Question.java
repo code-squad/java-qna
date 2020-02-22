@@ -1,22 +1,35 @@
 package com.codesquad.qna.domain;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+@Entity
 public class Question {
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
-    private int index;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
     private String writer;
+
+    @Column(nullable = false)
     private String title;
+
+    @Column(nullable = false)
     private String contents;
+
+    @Column(nullable = false)
     private LocalDateTime createdTime;
 
-    public int getIndex() {
-        return index;
+    public Long getId() {
+        return id;
     }
 
-    public void setIndex(int index) {
-        this.index = index;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getWriter() {

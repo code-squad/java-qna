@@ -2,5 +2,5 @@ package com.codesquad.qna.domain;
 
 import org.springframework.data.repository.CrudRepository;
 
-public interface UserRepository extends CrudRepository<User, Long> {
+public interface QuestionRepostory extends CrudRepository<Question, Long> {
 }

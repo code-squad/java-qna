@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     @Autowired
-    UserRepository repository;
+    UserRepository userRepository;
 
     @GetMapping("")
     public String listPage(Model model) {
-        model.addAttribute("users", repository.findAll());
+        model.addAttribute("users", userRepository.findAll());
         return "users/list";
     }
 
@@ -27,19 +27,25 @@ public class UserController {
 
     @GetMapping("/{id}")
     public String showUserPage(@PathVariable Long id, Model model) {
-        model.addAttribute("user", repository.getOne(id));
+        model.addAttribute("user", userRepository.getOne(id));
         return "users/show";
     }
 
     @GetMapping("/{id}/edit")
     public String editUserPage(@PathVariable Long id, Model model) {
-        model.addAttribute("user", repository.getOne(id));
+        model.addAttribute("user", userRepository.getOne(id));
         return "users/editForm";
     }
 
     @PostMapping("")
     public String createUser(User user) {
-        repository.save(user);
+        userRepository.save(user);
+        return "redirect:/users";
+    }
+
+    @PatchMapping("/{id}")
+    public String editUser(@PathVariable Long id, User newUser) {
+        userRepository.save(userRepository.getOne(id).merge(newUser));
         return "redirect:/users";
     }
 }

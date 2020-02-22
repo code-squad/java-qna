@@ -1,6 +1,6 @@
 package com.codessquad.qna.question;
 
-import com.codessquad.qna.common.Common;
+import com.codessquad.qna.common.CommonString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -75,7 +75,7 @@ public class Question {
     }
 
     public String getFormattedCreatedDateTime() {
-        return createdDateTime.format(DateTimeFormatter.ofPattern(Common.DATE_FORMAT));
+        return createdDateTime.format(DateTimeFormatter.ofPattern(CommonString.DATE_FORMAT));
     }
 
     public Collection<Reply> getReplies() {

@@ -9,6 +9,8 @@ import java.util.Collection;
 
 @Entity
 public class Question {
+    public static final DateTimeFormatter DATE_TIME_FORMATTER
+            = DateTimeFormatter.ofPattern(CommonString.DATE_FORMAT);
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long index;
@@ -75,7 +77,7 @@ public class Question {
     }
 
     public String getFormattedCreatedDateTime() {
-        return createdDateTime.format(DateTimeFormatter.ofPattern(CommonString.DATE_FORMAT));
+        return createdDateTime.format(DATE_TIME_FORMATTER);
     }
 
     public Collection<Reply> getReplies() {

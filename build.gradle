@@ -6,7 +6,6 @@ plugins {
 
 group = 'com.codessquad'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
 
 configurations {
 	developmentOnly
@@ -21,6 +20,8 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.webjars:bootstrap:4.4.1'
+	implementation 'org.webjars.bower:jquery:3.4.1'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	compile 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {

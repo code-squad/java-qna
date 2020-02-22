@@ -1,48 +1,35 @@
-package com.codessquad.qna;
+package com.codessquad.qna.repository;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import lombok.Getter;
+import lombok.Setter;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import java.time.LocalDate;
 
+@Entity
+@Getter
 public class Question {
-    private int id;
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(nullable = false)
+    @Setter
     private String writer;
+
+    @Column(nullable = false)
+    @Setter
     private String title;
+
+    @Column(nullable = false)
+    @Setter
     private String contents;
-    private String createdAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss"));
+    private LocalDate createdAt = LocalDate.now();
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getWriter() {
-        return writer;
-    }
-
-    public void setWriter(String writer) {
-        this.writer = writer;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContents() {
-        return contents;
-    }
-
-    public void setContents(String contents) {
-        this.contents = contents;
-    }
-
-    public String getCreatedAt() {
-        return createdAt;
+    public void update(Question question) {
+        this.title = question.title;
+        this.contents = question.contents;
     }
 }

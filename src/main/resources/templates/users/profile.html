@@ -5,16 +5,8 @@
         <div class="title">
             <h2>PROFILE</h2>
         </div>
-        <a>
-            <img class="media-object" height="200"
-                 src="https://tva1.sinaimg.cn/large/0082zybpgy1gc1t11cddhj30u00u07wi.jpg" width="200">
-        </a>
         <div>
             {{#currentUser}}
-            <!-- <h4 class="media-heading">{{name}}</h4>
-            <p>
-                <a href="#">{{email}}</a>
-            </p> -->
             <h3>기본정보</h3>
             <table>
                 <caption>기본 정보</caption> <!--표에 대한 제목-->
@@ -22,6 +14,9 @@
                 <tr>
                     <th scope="row">id</th>
                     <td>{{id}}</td>
+                    <td rowspan="4">
+                        <img class="media-object" height="70" width="70" src="https://tva1.sinaimg.cn/large/0082zybpgy1gc1t11cddhj30u00u07wi.jpg">
+                    </td>
                 </tr>
                 <tr>
                     <th scope="row">UserId</th>

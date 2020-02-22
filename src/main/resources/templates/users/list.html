@@ -9,7 +9,7 @@
         <th scope="col">#</th>
         <th scope="col">아이디</th>
         <th scope="col">비밀번호</th>
-        <th scope="col">이름</th>
+        <th scope="col">별명</th>
         <th scope="col">이메일</th>
     </tr>
     </thead>
@@ -17,9 +17,9 @@
     {{#users}}
     <tr>
         <th scope="row">{{id}}</th>
-        <td>{{userId}}</td>
+        <td><a href="/users/{{id}}">{{userId}}</a></td>
         <td>{{password}}</td>
-        <td>{{name}}</td>
+        <td>{{nickName}}</td>
         <td>{{email}}</td>
     </tr>
     {{/users}}

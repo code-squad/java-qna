@@ -5,9 +5,7 @@ import com.codessquad.qna.domain.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/users")
@@ -25,6 +23,18 @@ public class UserController {
     @GetMapping("/new")
     public String createFormPage() {
         return "users/createForm";
+    }
+
+    @GetMapping("/{id}")
+    public String showUserPage(@PathVariable Long id, Model model) {
+        model.addAttribute("user", repository.getOne(id));
+        return "users/show";
+    }
+
+    @GetMapping("/{id}/edit")
+    public String editUserPage(@PathVariable Long id, Model model) {
+        model.addAttribute("user", repository.getOne(id));
+        return "users/editForm";
     }
 
     @PostMapping("")

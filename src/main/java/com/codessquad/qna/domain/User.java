@@ -12,8 +12,9 @@ public class User {
 
     private String userId;
     private String password;
-    private String name;
+    private String nickName;
     private String email;
+    private String introduction;
 
     public Long getId() {
         return id;
@@ -35,12 +36,12 @@ public class User {
         this.password = password;
     }
 
-    public String getName() {
-        return name;
+    public String getNickName() {
+        return nickName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNickName(String name) {
+        this.nickName = name;
     }
 
     public String getEmail() {
@@ -49,5 +50,13 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getIntroduction() {
+        return introduction;
+    }
+
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
     }
 }

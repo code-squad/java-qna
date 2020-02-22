@@ -1,56 +1,66 @@
 package com.codessquad.qna.domain;
 
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
-public class Question {
+@Entity
+public class Question extends BaseTimeEntity {
 
-  private int index;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long index;
+
+  @Column(nullable = false)
   private String writer;
+
+  @Column(nullable = false)
   private String title;
+
+  @Column(nullable = false, length = 500)
   private String contents;
-  private String time;
 
-  public Question(String writer, String title, String contents) {
-    this.index = 0;
-    this.writer = writer;
-    this.title = title;
-    this.contents = contents;
-    this.time = getCurrentTime();
-  }
 
-  public int getIndex() {
+  public Long getIndex() {
     return index;
-  }
-
-  public void setIndex(int index) {
-    this.index = index;
-  }
-
-  public String getTime() {
-    return time;
   }
 
   public String getWriter() {
     return writer;
   }
 
+  public void setWriter(String writer) {
+    this.writer = writer;
+  }
+
   public String getTitle() {
     return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
   }
 
   public String getContents() {
     return contents;
   }
 
-  private String getCurrentTime() {
-    return new SimpleDateFormat("yyyy-MM-dd HH:mm").format(System.currentTimeMillis());
+  public void setContents(String contents) {
+    this.contents = contents;
   }
+
+  public String getCreatedTime() {
+    return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(createdTime);
+  }
+
 
   @Override
   public String toString() {
     return "writer : " + writer + '\n' +
         "title : " + title + '\n' +
-        "contents : " + contents + '\n' +
-        "time : " + time;
+        "contents : " + contents + '\n';
   }
 }

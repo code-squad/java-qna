@@ -59,4 +59,10 @@ public class User {
     public void setIntroduction(String introduction) {
         this.introduction = introduction;
     }
+
+    public User merge(User newUser) {
+        setNickName(newUser.nickName);
+        setIntroduction(newUser.introduction);
+        return this;
+    }
 }

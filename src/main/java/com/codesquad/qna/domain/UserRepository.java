@@ -1,4 +1,7 @@
 package com.codesquad.qna.domain;
 
-public interface UserRepository extends {
+import org.springframework.data.repository.CrudRepository;
+
+public interface UserRepository extends CrudRepository<User, Long> {
+    
 }

@@ -15,6 +15,7 @@
           </colgroup>
           <thead>
             <tr>
+              <th>ID</th>
               <th>USERID</th>
               <th>NAME</th>
               <th>EMAIL</th>
@@ -24,8 +25,9 @@
           {{#users}}
           <tbody>
             <tr>
+              <td>{{id}}</td>
               <td>{{userId}}</td>
-              <td class="left"><a href="/users/{{userId}}">{{name}}</a></td>
+              <td class="left"><a href="/users/{{id}}">{{name}}</a></td>
               <td>{{email}}</td>
               <td><a href="#" class="btn btn-success" role="button">수정</a></td>
             </tr>

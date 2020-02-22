@@ -63,7 +63,11 @@
       - 오류를 발생시킬 가능성이 있기 때문입니다.
    - user와 users가 혼용되어 있어 users로 통일하였습니다.
    - questions와 qna를 questions로 통일하였습니다.
-   
+
+## STEP2 리뷰 사항 적용
+
+1. 빈 블록을 깔끔하게 닫아주었습니다.
+
 # STEP3
 
 1. 로그인 페이지를 template으로 옮기고 login session 기능을 구현했습니다.

@@ -18,8 +18,7 @@ public class User implements Serializable {
     @Column(nullable = false)
     private String userEmail;
 
-    public User() {
-    }
+    public User() {}
 
     public User(String userId, String userPassword, String userName, String userEmail) {
         this.userId = userId;

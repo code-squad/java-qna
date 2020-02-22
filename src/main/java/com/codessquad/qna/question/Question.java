@@ -25,8 +25,7 @@ public class Question {
     @OneToMany
     private Collection<Reply> replies;
 
-    public Question() {
-    }
+    public Question() {}
 
     public Question(String writer, String title, String contents) {
         this.writer = writer;

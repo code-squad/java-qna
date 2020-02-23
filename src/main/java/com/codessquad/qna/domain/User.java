@@ -9,7 +9,7 @@ import javax.persistence.Id;
 public class User {
     @Id
     @GeneratedValue
-    private String id;
+    private Long id;
 
     @Column(nullable=false, length = 20)
     public String userId;

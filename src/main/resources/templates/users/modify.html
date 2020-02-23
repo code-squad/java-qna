@@ -6,6 +6,7 @@
         </div>
         {{#currentUser}}
         <form name="question" action="/users/{{id}}/update" method="POST">
+          <input type="hidden" name="_method" value="PUT" />
           <fieldset> <!--폼 요소를 그룹으로 묶는 태그 -->
             <legend></legend> <!-- 그룹으로 묶는 구역에 제목을 붙이는 태그 -->
             <h3>기본정보</h3>
@@ -15,7 +16,6 @@
               <tbody>
                 <tr>
                   <th scope="row">아이디</th>
-<!--                  <td><input type="text" id="userId" name="userId" placeholder={{id}}><span>(영문소문자/숫자,4~16자)</span></td>-->
                   <td>{{userId}}</td>
                 </tr>
                 <tr>

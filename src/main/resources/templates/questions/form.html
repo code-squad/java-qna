@@ -10,7 +10,7 @@
       <form action="/questions" method="post" name="question">
         <div class="form-group">
           <label for="writer">글쓴이</label>
-          <input class="form-control" id="writer" name="writer" placeholder="글쓴이"/>
+          <p id="writer">{{loginUser.userName}}</p>
         </div>
         <div class="form-group">
           <label for="title">제목</label>

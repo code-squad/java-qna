@@ -1,5 +1,7 @@
 package com.codessquad.qna.question;
 
+import com.codessquad.qna.common.CommonString;
+import com.codessquad.qna.user.User;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.HttpSession;
 
 @Controller
 public class QuestionController {
@@ -26,9 +30,14 @@ public class QuestionController {
     }
 
     @PostMapping("/questions")
-    public String createQuestion(@RequestParam String writer,
+    public String createQuestion(HttpSession session,
                                  @RequestParam String title,
                                  @RequestParam String contents) {
+        Object userAttribute = session.getAttribute("loginUser");
+        if (userAttribute == null) {
+            return "redirect:/users/login";
+        }
+        String writer = ((User) userAttribute).getUserName();
         Question question = new Question(writer, title, contents);
         questionRepository.save(question);
         return "redirect:/";

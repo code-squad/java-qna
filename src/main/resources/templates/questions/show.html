@@ -18,8 +18,8 @@
             </div>
             <div class="article-header-text">
               <a class="article-author-name" href="/users/{{question.writer}}">{{question.writer}}</a>
-              <a class="article-header-time" href="/questions/413" title="퍼머링크">
-                {{question.dateTime}}
+              <a class="article-header-time" href="/questions/{{question.id}}" title="퍼머링크">
+                {{question.formattedCreatedDateTime}}
                 <i class="icon-link"></i>
               </a>
             </div>
@@ -29,15 +29,17 @@
           </div>
           <div class="article-util">
             <ul class="article-util-list">
+              {{#if isLoginUserEqualsWriter}}
               <li>
-                <a class="link-modify-article" href="/questions/423/form">수정</a>
+                <a class="link-modify-article" href="/questions/{{question.id}}/form">수정</a>
               </li>
               <li>
-                <form action="/questions/423" class="form-delete" method="POST">
+                <form action="/questions/{{question.id}}" class="form-delete" method="POST">
                   <input name="_method" type="hidden" value="DELETE">
                   <button class="link-delete-article" type="submit">삭제</button>
                 </form>
               </li>
+              {{/if}}
               <li>
                 <a class="link-modify-article" href="/">목록</a>
               </li>

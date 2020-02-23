@@ -1,6 +1,5 @@
 package com.codessquad.qna.question;
 
-import com.codessquad.qna.common.CommonString;
 import com.codessquad.qna.user.User;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,18 +42,31 @@ public class QuestionController {
         return "redirect:/";
     }
 
-    @GetMapping("/questions/{index}")
-    public String showQuestion(@PathVariable long index, Model model) {
+    @GetMapping("/questions/{id}")
+    public String showQuestion(@PathVariable long id, Model model, HttpSession session) {
         try {
-            model.addAttribute("question", getQuestionIfExist(index));
+            Question question = getQuestionIfExist(id);
+            Object userAttribute = session.getAttribute("loginUser");
+            model.addAttribute("question", question);
+            model.addAttribute("isLoginUserEqualsWriter",
+                    isLoginUserEqualsWriter(question, userAttribute));
         } catch (NotFoundException e) {
             return "error/question_not_found";
         }
+
         return "questions/show";
     }
 
-    private Question getQuestionIfExist(@PathVariable long index) throws NotFoundException {
-        return questionRepository.findById(index)
+    private boolean isLoginUserEqualsWriter(Question question, Object userAttribute) {
+        if (userAttribute == null) {
+            return false;
+        }
+        String loginUserName = ((User) userAttribute).getUserName();
+        return loginUserName.equals(question.getWriter());
+    }
+
+    private Question getQuestionIfExist(@PathVariable long id) throws NotFoundException {
+        return questionRepository.findById(id)
                                  .orElseThrow(() -> new NotFoundException("해당 질문글을 찾을 수 없습니다."));
     }
 

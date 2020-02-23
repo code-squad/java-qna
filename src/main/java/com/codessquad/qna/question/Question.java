@@ -13,7 +13,7 @@ public class Question {
             = DateTimeFormatter.ofPattern(CommonString.DATE_FORMAT);
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long index;
+    private long id;
 
     @Column(nullable = false)
     private String writer;
@@ -36,12 +36,12 @@ public class Question {
         this.createdDateTime = LocalDateTime.now();
     }
 
-    public long getIndex() {
-        return index;
+    public long getId() {
+        return id;
     }
 
-    public void setIndex(long index) {
-        this.index = index;
+    public void setId(long index) {
+        this.id = index;
     }
 
     public String getWriter() {

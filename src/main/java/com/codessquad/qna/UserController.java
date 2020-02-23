@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class UserController {
@@ -27,6 +28,13 @@ public class UserController {
         model.addAttribute("users", userRepository.findAll());
         return "user/list";
     }
+
+//    @GetMapping("/user/{id}/form")
+//    public String updateForm(@PathVariable Long id, Model model) {
+//        ModelAndView mav = new ModelAndView("user/updateform");
+//        mav.addObject("user", userRepository.findById(id).orElse(null));
+//        return mav;
+//    }
 
 //    @GetMapping("/user/profile/{userId}")
 //    public String profile(Model model, @PathVariable String userId) {

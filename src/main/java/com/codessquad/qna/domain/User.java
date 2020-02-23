@@ -9,13 +9,21 @@ import javax.persistence.Id;
 public class User {
     @Id
     @GeneratedValue
-    private Long id;
+    public Long id;
 
     @Column(nullable=false, length = 20)
     public String userId;
     public String password;
     public String name;
     public String email;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public void setUserId(String userId) {
         this.userId = userId;
@@ -47,7 +55,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User {" +
+        return "User{" +
                 "userId='" + userId + '\'' +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +

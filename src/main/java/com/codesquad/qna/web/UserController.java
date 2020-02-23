@@ -3,12 +3,14 @@ package com.codesquad.qna.web;
 import com.codesquad.qna.domain.User;
 import com.codesquad.qna.domain.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
@@ -62,12 +64,13 @@ public class UserController {
     }
 
     @PostMapping("/{id}/update")
-    public String updateUser(User user, @PathVariable long id) {
+    public String updateUser(User user, @PathVariable long id) throws ResponseStatusException{
         User currentUser = userRepository.findById(id).get();
         //TODO : 기존 비밀번호 확인 로직
         System.out.println(currentUser.checkPassword(user));
         if (!currentUser.checkPassword(user)) {
-            return "redirect:/users";
+//            return "redirect:/users";
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "비밀번호가 맞지 않아요!");
         }
         currentUser.update(user); //새로 입력한 정보로 회원정보 수정
         userRepository.save(currentUser);

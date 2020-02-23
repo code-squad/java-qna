@@ -35,18 +35,9 @@ public class QnaController {
         return "redirect:/index";
     }
 
-    @GetMapping("/question/show/{index}")
-    public String show(Model model, @PathVariable int index) {
-        for (int i = 0; i < questions.size(); i++) {
-            if (questions.size() - 1 == i) {
-                model.addAttribute("title", questions.get(i).getTitle());
-                model.addAttribute("writer", questions.get(i).getWriter());
-                model.addAttribute("contents", questions.get(i).getContents());
-                model.addAttribute("time", questions.get(i).getLocalDateTime());
-                model.addAttribute("index", index);
-                return "qna/show";
-            }
-        }
-        return "qna/show";
+    @GetMapping("/question/{id}/show")
+    public String show(Model model, @PathVariable Long id) {
+        model.addAttribute("question", questionRepository.findById(id).orElse(null));
+        return "/qna/show";
     }
 }

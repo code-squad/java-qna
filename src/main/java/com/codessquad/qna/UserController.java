@@ -29,12 +29,11 @@ public class UserController {
         return "user/list";
     }
 
-//    @GetMapping("/user/{id}/form")
-//    public String updateForm(@PathVariable Long id, Model model) {
-//        ModelAndView mav = new ModelAndView("user/updateform");
-//        mav.addObject("user", userRepository.findById(id).orElse(null));
-//        return mav;
-//    }
+    @GetMapping("/user/{id}/form")
+    public String updateForm(@PathVariable Long id, Model model) {
+        model.addAttribute("user", userRepository.findById(id).orElse(null));
+        return "/user/updateform";
+    }
 
 //    @GetMapping("/user/profile/{userId}")
 //    public String profile(Model model, @PathVariable String userId) {

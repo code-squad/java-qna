@@ -35,6 +35,16 @@ public class UserController {
         return "/user/updateform";
     }
 
+    @PostMapping("/user/{id}")
+    public String update(@PathVariable Long id, Model model, User newUser) {
+        model.addAttribute("user", userRepository.findById(id).orElse(null));
+        User user = userRepository.findById(id).orElse(null);
+        assert user != null;
+        user.update(newUser);
+        userRepository.save(user);
+        return "redirect:/user/list";
+    }
+
 //    @GetMapping("/user/profile/{userId}")
 //    public String profile(Model model, @PathVariable String userId) {
 //        for (User user : users) {

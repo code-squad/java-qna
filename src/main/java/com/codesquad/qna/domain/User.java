@@ -12,6 +12,7 @@ public class User {
     private String userId;
     @Column(nullable = false)
     private String password;
+    private String newPassword;
     @Column(nullable = false)
     private String name;
 
@@ -48,6 +49,14 @@ public class User {
         this.password = password;
     }
 
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
+
     public String getName() {
         return name;
     }
@@ -78,5 +87,13 @@ public class User {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public void update(User user) {
+        this.password = user.getNewPassword();
+        this.name = user.getName();
+        this.address = user.getAddress();
+        this.phoneNumber = user.getPhoneNumber();
+        this.email = user.getEmail();
     }
 }

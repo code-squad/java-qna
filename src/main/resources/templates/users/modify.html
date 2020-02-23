@@ -4,12 +4,12 @@
         <div class="title">
           <h2>MODIFY</h2>
         </div>
-
-        <form name="question" action="/users/modify" method="POST">
+        {{#currentUser}}
+        <form name="question" action="/users/{{id}}/update" method="POST">
           <fieldset> <!--폼 요소를 그룹으로 묶는 태그 -->
             <legend></legend> <!-- 그룹으로 묶는 구역에 제목을 붙이는 태그 -->
             <h3>기본정보</h3>
-            {{#currentUser}}
+            <input type="hidden" name="id" value="{{id}}"/>
             <table>
               <caption>기본 정보</caption> <!--표에 대한 제목-->
               <tbody>
@@ -20,11 +20,11 @@
                 </tr>
                 <tr>
                   <th scope="row">기존 비밀번호</th>
-                  <td><input type="password" id="password" name="password" onchange="isSame()"></td>
+                  <td><input type="password" id="password" name="password"></td>
                 </tr>
                 <tr>
                   <th scope="row">새로운 비밀번호</th>
-                  <td><input type="password" id="check_pw" name="check_pw" onchange="isSame()"></td>
+                  <td><input type="password" id="newPassword" name="newPassword"></td>
                 </tr>
                 <tr>
                   <th scope="row">이름</th>
@@ -36,7 +36,7 @@
                 </tr>
                 <tr>
                   <th scope="row">휴대 전화</th>
-                  <td><input type="text" id="phone_number" name="phone_number" value={{phoneNumber}}></td>
+                  <td><input type="text" id="phoneNumber" name="phoneNumber" value={{phoneNumber}}></td>
                 </tr>
                 <tr>
                   <th scope="row">이메일</th>
@@ -59,14 +59,13 @@
                 </tr>
               </tbody>
             </table>
-            {{/currentUser}}
           <div class="btn_sbmWrap">
-            <input onclick="isNull()" type="submit" value="회원가입" class="btn_submit">
+            <input onclick="isNull()" type="submit" value="정보수정" class="btn_submit">
             <a href="/" class="btn_submit normal">취소</a>
           </div>
           </fieldset>
         </form>
-
+        {{/currentUser}}
       </div>
     </div>
 {{/partial}}

@@ -23,17 +23,16 @@ public class QnaController {
 
     @GetMapping("/index")
     public String index(Model model) {
-        model.addAttribute("question", questions);
+        model.addAttribute("question", questionRepository.findAll());
         return "index";
     }
 
     @PostMapping("/question/create")
     public String create(Question question) {
         question.setLocalDateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-//        questions.add(question);
         questionRepository.save(question);
         System.out.println("question : " + question);
-        return "redirect:/question/show/" + questions.size();
+        return "redirect:/index";
     }
 
     @GetMapping("/question/show/{index}")

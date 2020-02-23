@@ -61,7 +61,7 @@ public class Question {
 
     @Override
     public String toString() {
-        return "Question{" +
+        return "Question {" +
                 "writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +

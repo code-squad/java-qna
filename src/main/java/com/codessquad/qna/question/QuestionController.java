@@ -1,40 +1,40 @@
 package com.codessquad.qna.question;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
+@RequestMapping("/questions")
 public class QuestionController {
 
-  List<Question> questionList = new ArrayList<>();
+  private String returnRedirectUrl = "redirect:/questions";
+  private String returnForwardUrl = "/questions";
 
-  @GetMapping("/qna/form")
-  public String goForm(Model model) {
-    return "qna/form";
-  }
+  @Autowired
+  private QuestionRepository questionRepository;
 
-  @PostMapping("/question")
-  public String createUser(Question question) {
-    questionList.add(question);
+  @PostMapping("")
+  public String create(Question question) {
+    questionRepository.save(question);
+
     return "redirect:/index";
   }
 
-  @GetMapping(value = {"/", "/index"})
-  public String goIndex(Model model) {
-    model.addAttribute("questions", questionList);
-    return "index";
+  @GetMapping("/form")
+  public String form(Model model) {
+    return returnForwardUrl + "/form";
   }
 
-  @RequestMapping("/questions/{index}")
-  public String page(@PathVariable int index, Model model) {
-    model.addAttribute("question", questionList.get(index - 1));
-    return "qna/show";
+  @GetMapping("/{index}")
+  public ModelAndView show(@PathVariable long index) {
+    ModelAndView mav = new ModelAndView("/questions/show");
+    mav.addObject("questions", questionRepository.findById(index).get());
+    return mav;
   }
 }

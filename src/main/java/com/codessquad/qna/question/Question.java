@@ -1,41 +1,37 @@
 package com.codessquad.qna.question;
 
+import javax.persistence.Id;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Entity;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+@Entity
 public class Question {
 
-  private static int SEQ_NUM = 0;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long index;
 
-  private String index;
+  @Column(nullable = false, length = 20)
   private String writer;
   private String title;
   private String contents;
   private String dateTime;
 
-  public Question(LocalDateTime dateTime) {
+  public Question() {
     LocalDateTime localDateTime = LocalDateTime.now();
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm");
     this.dateTime = localDateTime.format(dateTimeFormatter);
-    index = (++SEQ_NUM) + "";
   }
 
-  @Override
-  public String toString() {
-    return "Question{" +
-        "index='" + index + '\'' +
-        ", writer='" + writer + '\'' +
-        ", title='" + title + '\'' +
-        ", contents='" + contents + '\'' +
-        ", dateTime='" + dateTime + '\'' +
-        '}';
-  }
-
-  public String getIndex() {
+  public long getIndex() {
     return index;
   }
 
-  public void setIndex(String index) {
+  public void setIndex(long index) {
     this.index = index;
   }
 

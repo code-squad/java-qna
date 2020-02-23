@@ -1,6 +1,8 @@
 package com.codessquad.qna;
 
 import com.codessquad.qna.domain.Question;
+import com.codessquad.qna.domain.QuestionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +18,9 @@ import java.util.List;
 public class QnaController {
     public List<Question> questions = new ArrayList<>();
 
+    @Autowired
+    private QuestionRepository questionRepository;
+
     @GetMapping("/index")
     public String index(Model model) {
         model.addAttribute("question", questions);
@@ -24,9 +29,9 @@ public class QnaController {
 
     @PostMapping("/question/create")
     public String create(Question question) {
-        questions.add(question);
-        question.setIndex(questions.size());
         question.setLocalDateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+//        questions.add(question);
+        questionRepository.save(question);
         System.out.println("question : " + question);
         return "redirect:/question/show/" + questions.size();
     }

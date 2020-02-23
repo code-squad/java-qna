@@ -65,6 +65,10 @@ public class UserController {
     public String updateUser(User user, @PathVariable long id) {
         User currentUser = userRepository.findById(id).get();
         //TODO : 기존 비밀번호 확인 로직
+        System.out.println(currentUser.checkPassword(user));
+        if (!currentUser.checkPassword(user)) {
+            return "redirect:/users";
+        }
         currentUser.update(user); //새로 입력한 정보로 회원정보 수정
         userRepository.save(currentUser);
         return "redirect:/users";

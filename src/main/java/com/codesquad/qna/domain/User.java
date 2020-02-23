@@ -96,4 +96,8 @@ public class User {
         this.phoneNumber = user.getPhoneNumber();
         this.email = user.getEmail();
     }
+
+    public boolean checkPassword(User user) {
+        return this.password.equals(user.password);
+    }
 }

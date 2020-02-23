@@ -28,9 +28,10 @@ dependencies {
 	}
 	testCompile group: 'com.h2database', name: 'h2', version: '1.4.192'
 	compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.2.4.RELEASE'
-
-
+	compile 'javax.xml.bind:jaxb-api:2.3.0'
 }
+
+
 
 test {
 	useJUnitPlatform()

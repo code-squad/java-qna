@@ -18,7 +18,6 @@ public class UserController {
     @PostMapping("/user/create")
     public String create(User user) {
         System.out.println("user : " + user);
-//        users.add(user);
         userRepository.save(user);
         return "redirect:/user/list";
     }

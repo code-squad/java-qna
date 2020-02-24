@@ -17,7 +17,7 @@ public class UserController {
     private UserRepository userRepository;
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    @PostMapping("/create")
+    @PostMapping("")
     public String create(User newUser) {
         userRepository.save(newUser);
         log.info("signUp : {}", newUser);

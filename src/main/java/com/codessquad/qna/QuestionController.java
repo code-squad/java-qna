@@ -19,7 +19,7 @@ public class QuestionController {
 
     @GetMapping("/")
     public String index(Model model) {
-        model.addAttribute("question", questionRepository.findAll());
+        model.addAttribute("questions", questionRepository.findAll());
         return "index";
     }
 

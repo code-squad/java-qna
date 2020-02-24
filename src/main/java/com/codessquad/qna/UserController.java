@@ -16,32 +16,32 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    @PostMapping("/user/create")
+    @PostMapping("/users")
     public String create(User user) {
         System.out.println("user : " + user);
         userRepository.save(user);
-        return "redirect:/user/list";
+        return "redirect:/users";
     }
 
-    @GetMapping("/user/list")
+    @GetMapping("/users")
     public String list(Model model) {
         model.addAttribute("users", userRepository.findAll());
         return "user/list";
     }
 
-    @GetMapping("/user/{id}/form")
+    @GetMapping("/users/{id}/form")
     public String updateForm(@PathVariable Long id, Model model) {
         model.addAttribute("user", userRepository.findById(id).orElse(null));
         return "/user/updateform";
     }
 
-    @PutMapping("/user/{id}")
+    @PutMapping("/users/{id}")
     public String update(@PathVariable Long id, Model model, User newUser) {
         model.addAttribute("user", userRepository.findById(id).orElse(null));
         User user = userRepository.findById(id).orElse(null);
         assert user != null;
         user.update(newUser);
         userRepository.save(user);
-        return "redirect:/user/list";
+        return "redirect:/users";
     }
 }

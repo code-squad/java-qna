@@ -4,11 +4,13 @@ import com.codessquad.qna.common.CommonString;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.ConstraintViolationException;
 
 @Controller
 @RequestMapping("/users")
@@ -18,15 +20,19 @@ public class UserController {
 
     @GetMapping("/form")
     public String goUserForm(Model model) {
-        model.addAttribute("actionUrl", "/users/create");
+        model.addAttribute("actionUrl", "/users");
         model.addAttribute("httpMethod", "POST");
         model.addAttribute("buttonName", "회원가입");
         return "users/form";
     }
 
-    @PostMapping("/create")
+    @PostMapping("")
     public String createUser(User user) {
-        userRepository.save(user);
+        try {
+            userRepository.save(user);
+        } catch (ConstraintViolationException e) {
+            return "redirect:/users/form";
+        }
         return "redirect:/users";
     }
 
@@ -59,13 +65,13 @@ public class UserController {
         } catch (NotFoundException e) {
             return CommonString.ERROR_USER_NOT_FOUND;
         }
-        model.addAttribute("actionUrl", "/users/" + id + "/update");
+        model.addAttribute("actionUrl", "/users/" + id);
         model.addAttribute("httpMethod", "PUT");
         model.addAttribute("buttonName", "수정");
         return "/users/form";
     }
 
-    @PutMapping("/{id}/update")
+    @PutMapping("/{id}")
     public String updateUserInfo(@PathVariable long id,
                                  @RequestParam String userPassword,
                                  @RequestParam String userName,
@@ -79,6 +85,8 @@ public class UserController {
             updateUserNameAndEmail(user, userName, userPassword, userEmail);
         } catch (NotFoundException e) {
             return CommonString.ERROR_USER_NOT_FOUND;
+        } catch (TransactionSystemException e) {
+            return "redirect:/users/" + id + "/form";
         }
 
         return "redirect:/users";

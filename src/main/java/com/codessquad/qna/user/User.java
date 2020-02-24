@@ -1,6 +1,7 @@
 package com.codessquad.qna.user;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -11,12 +12,13 @@ public class User implements Serializable {
     private Long id;
 
     @Column(nullable = false, length = 20)
+    @NotEmpty
     private String userId;
-    @Column(nullable = false)
+    @NotEmpty
     private String userPassword;
-    @Column(nullable = false)
+    @NotEmpty
     private String userName;
-    @Column(nullable = false)
+    @NotEmpty
     private String userEmail;
 
     public User() {}

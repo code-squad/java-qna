@@ -2,13 +2,16 @@ package com.codesquad.qna.web;
 
 import com.codesquad.qna.domain.Question;
 import com.codesquad.qna.domain.QuestionRepostory;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDateTime;
@@ -33,10 +36,14 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}")
-    public ModelAndView viewQuestion(@PathVariable long id) { //여기서는 long으로
-        ModelAndView mav = new ModelAndView("/questions/show");
-        mav.addObject("currentQuestion", questionRepostory.findById(id).get());
-        return mav;
+    public String viewQuestion(@PathVariable long id, Model model) { //여기서는 long으로
+        try {
+            model.addAttribute("currentQuestion", questionRepostory.findById(id).orElseThrow(() -> new NotFoundException("자료가 없어용")));
+            return "/questions/show";
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
     }
 
     @GetMapping("")

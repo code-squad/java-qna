@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Controller
@@ -45,25 +47,28 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ModelAndView viewProfile(@PathVariable long id) {
-        ModelAndView mav = new ModelAndView("/users/profile");
-        mav.addObject("currentUser", userRepository.findById(id).get());
-        return mav;
+//        try {
+            ModelAndView mav = new ModelAndView("/users/profile");
+            mav.addObject("currentUser", userRepository.getOne(id)); //NoSuchElementException
+            return mav;
+//        } catch (Exception e) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "그런 사용자 없어용"); //음.. 이렇게 못잡나보네
+//        }
     }
 
     @GetMapping("/{id}/modify")
-//    public ModelAndView viewModificationProfile(@PathVariable long id) {
-//        ModelAndView mav = new ModelAndView("/users/modify");
-//        mav.addObject("currentUser", userRepository.findById(id).get());
-//        return mav;
-//    }
     public String moveUpdateForm(@PathVariable Long id, Model model) {
-        model.addAttribute("currentUser", userRepository.findById(id).get());
-        return "/users/modify";
+//        try {
+            model.addAttribute("currentUser", userRepository.getOne(id)); //EntityNotFoundException
+            return "/users/modify";
+//        } catch (Exception e) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "그런 사용자 없어용"); //안잡혀..
+//        }
     }
 
     @PutMapping("/{id}")
     public String updateUser(User user, String newPassword , @PathVariable long id) throws ResponseStatusException{
-        User currentUser = userRepository.findById(id).get();
+        User currentUser = userRepository.getOne(id);
         //TODO : 기존 비밀번호 확인 로직
         System.out.println(currentUser.checkPassword(user.getPassword()));
         if (!currentUser.checkPassword(user.getPassword())) {

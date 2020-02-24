@@ -18,7 +18,7 @@ public class QuestionController {
     @GetMapping("/")
     public String goIndexPage(Model model) {
         model.addAttribute("questions", questionRepository.findAll());
-        return "index";
+        return "main";
     }
 
     @GetMapping("/questions/form")

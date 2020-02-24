@@ -4,6 +4,7 @@ import com.codesquad.qna.domain.User;
 import com.codesquad.qna.domain.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -61,15 +62,15 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public String updateUser(User user, @PathVariable long id) throws ResponseStatusException{
+    public String updateUser(User user, String newPassword , @PathVariable long id) throws ResponseStatusException{
         User currentUser = userRepository.findById(id).get();
         //TODO : 기존 비밀번호 확인 로직
-        System.out.println(currentUser.checkPassword(user));
-        if (!currentUser.checkPassword(user)) {
+        System.out.println(currentUser.checkPassword(user.getPassword()));
+        if (!currentUser.checkPassword(user.getPassword())) {
 //            return "redirect:/users";
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "비밀번호가 맞지 않아요!");
         }
-        currentUser.update(user); //새로 입력한 정보로 회원정보 수정
+        currentUser.update(user, newPassword); //새로 입력한 정보로 회원정보 수정
         userRepository.save(currentUser);
         return "redirect:/users";
     }

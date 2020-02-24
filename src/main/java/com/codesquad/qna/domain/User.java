@@ -12,7 +12,7 @@ public class User {
     private String userId;
     @Column(nullable = false)
     private String password;
-    private String newPassword;
+//    private String newPassword;
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
@@ -42,14 +42,6 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getNewPassword() {
-        return newPassword;
-    }
-
-    public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
     }
 
     public String getName() {
@@ -84,15 +76,17 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public void update(User user) {
-        this.password = user.getNewPassword();
+    public void update(User user, String newPassword) {
+        // newPassword 가 null이 아닌경우에만 비밀번호 변경
+        if (!newPassword.isEmpty())
+            this.password = newPassword;
         this.name = user.getName();
         this.address = user.getAddress();
         this.phoneNumber = user.getPhoneNumber();
         this.email = user.getEmail();
     }
 
-    public boolean checkPassword(User user) {
-        return this.password.equals(user.password);
+    public boolean checkPassword(String password) {
+        return this.password.equals(password);
     }
 }

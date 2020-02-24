@@ -5,10 +5,7 @@ import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -24,7 +21,7 @@ public class QuestionController {
     }
 
     @GetMapping("/questions/form")
-    public String goQnaForm() {
+    public String goQuestionForm() {
         return "questions/form";
     }
 
@@ -55,6 +52,22 @@ public class QuestionController {
         }
 
         return "questions/show";
+    }
+
+    @GetMapping("/questions/{id}/form")
+    public String goQuestionModifyForm(@PathVariable long id, Model model, HttpSession session) {
+        try {
+            Question question = getQuestionIfExist(id);
+            Object userAttribute = session.getAttribute("loginUser");
+            if (!isLoginUserEqualsWriter(question, userAttribute)) {
+                return "redirect:/questions/" + id;
+            }
+            model.addAttribute("question", question);
+        } catch (NotFoundException e) {
+            return "error/question_not_found";
+        }
+
+        return "questions/modifyForm";
     }
 
     private boolean isLoginUserEqualsWriter(Question question, Object userAttribute) {

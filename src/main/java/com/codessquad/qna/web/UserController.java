@@ -32,7 +32,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/edit")
-    public String editUserPage(@PathVariable Long id, Model model) {
+    public String editFormPage(@PathVariable Long id, Model model) {
         model.addAttribute("user", userRepository.getOne(id));
         return "users/editForm";
     }

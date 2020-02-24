@@ -1,36 +1,33 @@
 package com.codessquad.qna.web;
 
+import com.codessquad.qna.domain.Question;
+import com.codessquad.qna.domain.QuestionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @Controller
 public class QuestionController {
-    private List<Question> questions = Collections.synchronizedList(new ArrayList<>());
+
+    @Autowired
+    QuestionRepository questionRepository;
 
     @GetMapping("/")
-    public String home(Model model) {
-        model.addAttribute("questions", questions);
-        return "index";
+    public String listPage(Model model) {
+        model.addAttribute("questions", questionRepository.findAll());
+        return "questions/home";
     }
 
-    @GetMapping("/questions/{index}")
-    public String question(@PathVariable int index, Model model) {
-        Question question = questions.get(index - 1);
-        model.addAttribute("question", question);
-        return "qna/show";
+    @GetMapping("/questions/new")
+    public String createFormPage() {
+        return "questions/createForm";
     }
 
     @PostMapping("/questions")
     public String createQuestion(Question question) {
-        System.out.println(question);
-        questions.add(question);
+        questionRepository.save(question);
         return "redirect:/";
     }
 }

@@ -7,7 +7,7 @@ public class User {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long index;
+  private long id;
 
   @Transient
   private String oldPassword;
@@ -26,12 +26,12 @@ public class User {
     this.oldPassword = oldPassword;
   }
 
-  public long getIndex() {
-    return index;
+  public long getId() {
+    return id;
   }
 
-  public void setIndex(long index) {
-    this.index = index;
+  public void setId(long index) {
+    this.id = index;
   }
 
   public void setUserId(String userId) {

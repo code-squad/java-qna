@@ -12,7 +12,7 @@ public class Question extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long index;
+  private Long id;
 
   @Column(nullable = false)
   private String writer;
@@ -24,8 +24,8 @@ public class Question extends BaseTimeEntity {
   private String contents;
 
 
-  public Long getIndex() {
-    return index;
+  public Long getId() {
+    return id;
   }
 
   public String getWriter() {

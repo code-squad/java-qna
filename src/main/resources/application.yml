@@ -24,3 +24,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+logging:
+  level:
+    com.codesquad.qna: debug

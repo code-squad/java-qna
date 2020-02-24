@@ -29,8 +29,8 @@ public class QnaController {
   }
 
   @GetMapping(value = "/{index}")
-  public String getQuestion(@PathVariable("index") long index, Model model) {
-    model.addAttribute("question", qnaRepository.getOne(index));
+  public String getQuestion(@PathVariable("index") long id, Model model) {
+    model.addAttribute("question", qnaRepository.getOne(id));
     return "/qna/show";
   }
 

@@ -19,8 +19,6 @@
 - IP를 통해서 어떻게 해당 홈페이지가 운영되는 서버에 도착할 수 있을까?
   ![](https://firebasestorage.googleapis.com/v0/b/nextstep-real.appspot.com/o/lesson-attachments%2F-KpOwxr2PBZkaRejxU49%2Fclient-server2.PNG?alt=media&token=882a86cb-3af0-4bf7-957b-e915e9bebdc3)
 
-## step2
-
 - DNS들을 거쳐가면서, DNS들에게, 너 해당 URL에 해당하는 주소 알고 있니? 물어, 물어보면서 찾아감.
 - 기본적으로 찾아가는 포트는 80
 
@@ -46,7 +44,9 @@
   3. 4xx : 요청 오류임. 클라이언트에서 뭔가 문제적 동작을 했음
   4. 5xx : 서버상 오류. 요청은 제대로 들어왔으나, 서버에서 뭔가 문제가 있었음.
 
-  
+
+
+## step2
 
 > 목표
 
@@ -91,3 +91,64 @@
      - [참고](https://stepping.tistory.com/30)
 
 - JPA의 특징은, 항상 DB서버와 의존관계를 가진 상태임.
+
+
+
+
+
+## step3
+
+> 목표
+
+- 로그인 기능 구현 1
+- 로그인 상태에 따른 메뉴 처리, 로그아웃
+- 로그인한 자기 자신의 정보만 수정하도록
+- 코드 중복제거
+- clean code
+- 쿼리 보기
+- 로그한 사용자에 한 해, 질문이 가능하도록
+- 질문 목록 기능 구현
+
+
+
+> 강의
+
+```handlebars
+{{^user}} //user session이 없으면 아래 코드를 실행
+...
+{{/user}}
+
+{{#user}} //user session이 있으면 아래 코드를 실행
+...
+{{/user}}
+```
+
+- 기억해야할 handlerbar 문법ㅎㅎ
+
+- model 에 전달되는 data와 session에 전달되는 데이터의 이름을 다르게 설정해 줘야함. 그렇지 않으면 오류나니까.
+
+- 정상적으로 작동하는 기능에 대한 구현 보다는, 예외에 대한 처리가 더 중요하다. controller에서
+- util class는 보통 `static` 
+
+- 유저의 비밀번호를 비교하려 할때, 객체에서 데이터를 꺼내서 넘어온 비밀번호와 비교하는 것 보다는, 해당 객체한테 일을 시키려고 해야함.
+  - 생각보다 손이 많이 가는 작업.
+  - 이걸 손 쉽게 만들어주는 프레임워크 없을까?
+
+
+
+
+
+
+
+> 정리
+
+#### 301 code vs 302 code
+
+
+
+#### Session vs Cookie
+
+
+
+#### Sevlet?
+

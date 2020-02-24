@@ -16,3 +16,5 @@ h2 데이터베이스 연결
 - 각각의 데이터들을 고유하게 식별하기 위하여 primary key 지정, @Id 라는 annotation 사용
 - 별도의 작업을 하지 않아도 하나의 데이터를 처리할 때마다 값이 1씩 증가하도록 해주는 @GeneratedValue 
 Annotation 사용.
+- db에 데이터를 추가 할 때 userId 와 같은 값들이 null 이 되면 안되기 때문에 @Column 이라는 annotation 사용하여
+null값이 들어오지 못하게 설정. Column(nullable = false)

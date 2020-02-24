@@ -1,17 +1,14 @@
 package com.codessquad.qna.question;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Question {
     @Id
-    @GeneratedValue
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false, length = 20)
     private String writer;
@@ -36,6 +33,10 @@ public class Question {
 
     public void setFormattedWrittenTime(String formattedWrittenTime) {
         this.formattedWrittenTime = formattedWrittenTime;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getWriter() {

@@ -32,13 +32,13 @@ public class UserController {
     }
 
     @GetMapping("")
-    public String list(Model model) {
+    public String userList(Model model) {
         model.addAttribute("users", userRepository.findAll());
         return "user/list";
     }
 
     @GetMapping("/{id}")
-    public ModelAndView show(@PathVariable long id) {
+    public ModelAndView showUser(@PathVariable Long id) {
         ModelAndView mav = new ModelAndView("user/profile");
         mav.addObject("user", userRepository.findById(id).get());
         return mav;

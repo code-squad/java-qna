@@ -76,8 +76,29 @@ public ModelAndView show(@PathVariable long id) {
 <th scope="row"><a href="/users/{{id}}">{{id}}</a></th>
 ```
 
-## 질문 데이터 저장하기
+## 2.4 질문 데이터 저장하기
 
-## 질문 목록 구현하기
+## 2.5 질문 목록 구현하기
 
 - 굳이 QuestionController에서 QuestionList를 출력하지말고 다른곳에 만들었으면 그곳에서 제어하자.
+
+## 2.6 질문 상세보기 구현하기
+
+- CrudRepository에선 findOne()이 아닌 findById()를 사용한다.
+
+- @Id키가 공유되는 사태가 벌어졌다. 예를들어,
+
+- 회원가입을 할 때 User에서 id는 1이 뜬다.
+
+- 이 때, 질문글을 작성하면 Question의 id에서 2로 변환된다.
+
+- 이럴때는 
+
+  ```java
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  ```
+
+  넣어보자. (https://jojoldu.tistory.com/295)
+
+- id가 안뜰때는 getter를 넣었는지 확인해보자.
+

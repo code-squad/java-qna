@@ -11,7 +11,7 @@ import java.util.List;
 
 @Controller
 public class UserController {
-    private List<User> users = new ArrayList<>();
+
 
     @Autowired
     private UserRepository userRepository;
@@ -19,14 +19,14 @@ public class UserController {
     @PostMapping("/user/create")
     public String create(User user) {
         System.out.println(user);
-        users.add(user);
+
         userRepository.save(user);
-        return "redirect:/list";
+        return "redirect:/user/list";
     }
 
-    @GetMapping("/list")
+    @GetMapping("user/list")
     public String list(Model model) {
-        model.addAttribute("users", users);
-        return "list";
+        model.addAttribute("users", userRepository.findAll());
+        return "/user/list";
     }
 }

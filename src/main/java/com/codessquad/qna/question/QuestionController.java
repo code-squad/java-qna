@@ -92,6 +92,21 @@ public class QuestionController {
         return "redirect:/questions/" + id;
     }
 
+    @DeleteMapping("/questions/{id}")
+    public String deleteQuestion(@PathVariable long id, HttpSession session) {
+        try {
+            Question question = getQuestionIfExist(id);
+            Object userAttribute = session.getAttribute("loginUser");
+            if (!isLoginUserEqualsWriter(question, userAttribute)) {
+                return "redirect:/questions/" + id;
+            }
+            questionRepository.delete(question);
+        } catch (NotFoundException e) {
+            return "error/question_not_found";
+        }
+        return "redirect:/";
+    }
+
     private boolean isLoginUserEqualsWriter(Question question, Object userAttribute) {
         if (userAttribute == null) {
             return false;

@@ -10,9 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Controller
-public class WelcomeController {
+public class CommonController {
 
-  private static final Logger log = LoggerFactory.getLogger(WelcomeController.class);
+  private static final Logger log = LoggerFactory.getLogger(CommonController.class);
 
   @Autowired
   private QuestionRepository questionRepository;

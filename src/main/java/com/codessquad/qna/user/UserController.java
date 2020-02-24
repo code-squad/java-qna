@@ -5,11 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/users")
@@ -39,8 +38,23 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ModelAndView showUser(@PathVariable Long id) {
-        ModelAndView mav = new ModelAndView("user/profile");
-        mav.addObject("user", userRepository.findById(id).get());
-        return mav;
+        ModelAndView showMav = new ModelAndView("user/profile");
+        showMav.addObject("user", userRepository.findById(id).get());
+        return showMav;
+    }
+
+    @GetMapping("/{id}/form")
+    public ModelAndView updateForm(@PathVariable Long id) {
+        ModelAndView updateMav = new ModelAndView("user/updateForm");
+        updateMav.addObject("user", userRepository.findById(id).get());
+        return updateMav;
+    }
+
+    @PostMapping("/{id}")
+    public String updateUser(@PathVariable Long id, User updateUser) {
+        User user = userRepository.findById(id).get();
+        user.update(updateUser);
+        userRepository.save(user);
+        return "redirect:/users";
     }
 }

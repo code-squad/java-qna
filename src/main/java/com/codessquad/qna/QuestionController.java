@@ -8,15 +8,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
-public class QnaController {
-    public List<Question> questions = new ArrayList<>();
+public class QuestionController {
 
     @Autowired
     private QuestionRepository questionRepository;
@@ -38,6 +34,6 @@ public class QnaController {
     @GetMapping("/question/{id}/show")
     public String show(Model model, @PathVariable Long id) {
         model.addAttribute("question", questionRepository.findById(id).orElse(null));
-        return "/qna/show";
+        return "/question/show";
     }
 }

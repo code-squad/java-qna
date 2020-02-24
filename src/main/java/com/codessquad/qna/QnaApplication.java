@@ -9,10 +9,7 @@ import java.io.IOException;
 
 @SpringBootApplication
 public class QnaApplication {
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		SpringApplication.run(QnaApplication.class, args);
-		Handlebars handlebars = new Handlebars();
-		Template template = handlebars.compileInline("Hello {{this}}!");
-		System.out.println(template.apply("Handlebars.java"));
 	}
 }

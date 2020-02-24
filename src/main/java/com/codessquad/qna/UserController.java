@@ -32,8 +32,12 @@ public class UserController {
     @GetMapping("/users/{userId}")
     public String profile(@PathVariable String userId, Model model) {
         User userHaveUrlUserId = users.stream().filter(user -> user.getUserId().equals(userId)).findAny().orElse(null);
-        System.out.println("123");
         model.addAttribute("user",userHaveUrlUserId);
         return "user/profile";
+    }
+
+    @GetMapping("/")
+    public String main() {
+        return "/index";
     }
 }

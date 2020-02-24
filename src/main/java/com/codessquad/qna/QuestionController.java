@@ -23,7 +23,7 @@ public class QuestionController {
         return "index";
     }
 
-    @PostMapping("/question/create")
+    @PostMapping("/questions")
     public String create(Question question) {
         question.setLocalDateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         questionRepository.save(question);
@@ -31,7 +31,7 @@ public class QuestionController {
         return "redirect:/";
     }
 
-    @GetMapping("/question/{id}/show")
+    @GetMapping("/questions/{id}")
     public String show(Model model, @PathVariable Long id) {
         model.addAttribute("question", questionRepository.findById(id).orElse(null));
         return "/question/show";

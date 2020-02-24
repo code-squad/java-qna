@@ -13,8 +13,6 @@ public class Question {
     @GeneratedValue
     private long id;
 
-    private int questionNumber;
-
     @Column(nullable = false, length = 20)
     private String writer;
 
@@ -23,10 +21,6 @@ public class Question {
 
     private String contents;
     private String formattedWrittenTime;
-
-    public void setQuestionNumber(int questionNumber) {
-        this.questionNumber = questionNumber;
-    }
 
     public void setWriter(String writer) {
         this.writer = writer;
@@ -42,10 +36,6 @@ public class Question {
 
     public void setFormattedWrittenTime(String formattedWrittenTime) {
         this.formattedWrittenTime = formattedWrittenTime;
-    }
-
-    public int getQuestionNumber() {
-        return questionNumber;
     }
 
     public String getWriter() {

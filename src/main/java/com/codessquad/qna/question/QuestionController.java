@@ -24,16 +24,15 @@ public class QuestionController {
     private QuestionRepository questionRepository;
 
     @PostMapping("")
-    public String qna(Question question) {
+    public String qnaCreate(Question question) {
         log.info("Question : '{}' ", question.toString());
         questionRepository.save(question);
         return "redirect:/";
     }
 
-    @GetMapping("/")
-    public String questionList(Model model) {
-        model.addAttribute("questions", questionRepository.findAll());
-        return "main";
+    @GetMapping("/form")
+    public String qnaForm() {
+        return "qna/form";
     }
 
     @GetMapping("/{questionNumber}")

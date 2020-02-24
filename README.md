@@ -76,3 +76,8 @@ public ModelAndView show(@PathVariable long id) {
 <th scope="row"><a href="/users/{{id}}">{{id}}</a></th>
 ```
 
+## 질문 데이터 저장하기
+
+## 질문 목록 구현하기
+
+- 굳이 QuestionController에서 QuestionList를 출력하지말고 다른곳에 만들었으면 그곳에서 제어하자.

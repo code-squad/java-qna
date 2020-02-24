@@ -5,18 +5,18 @@ import java.time.format.DateTimeFormatter;
 
 public class Question {
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
+    private int postIndex;
     private String writer;
     private String title;
     private String contents;
     private LocalDateTime currentTime;
-    private int postIndex;
 
-    public LocalDateTime getCurrentTime() {
-        return currentTime;
+    public int getPostIndex() {
+        return postIndex;
     }
 
-    public void setCurrentTime(LocalDateTime currentTime) {
-        this.currentTime = currentTime;
+    public void setPostIndex(int postIndex) {
+        this.postIndex = postIndex;
     }
 
     public String getWriter() {
@@ -43,15 +43,11 @@ public class Question {
         this.contents = contents;
     }
 
+    public void setCurrentTime(LocalDateTime currentTime) {
+        this.currentTime = currentTime;
+    }
+
     public String getFormattedTime() {
         return currentTime.format(DateTimeFormatter.ofPattern(DATE_FORMAT));
-    }
-
-    public int getPostIndex() {
-        return postIndex;
-    }
-
-    public void setPostIndex(int postIndex) {
-        this.postIndex = postIndex;
     }
 }

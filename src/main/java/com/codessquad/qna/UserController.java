@@ -5,36 +5,41 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@RequestMapping("/users")
 public class UserController {
     private List<User> users = new ArrayList<>();
 
-    @GetMapping("/user/form")
-    public String form() {
+    @GetMapping("/form")
+    public String createForm() {
         return "user/form";
     }
 
-    @PostMapping("/user/create")
-    public String create(User user) {
+    @PostMapping("/create")
+    public String createUser(User user) {
         users.add(user);
         return "redirect:/users";
     }
 
-    @GetMapping("/users")
-    public String list(Model model) {
+    @GetMapping
+    public String listUsers(Model model) {
         model.addAttribute("users", users);
         return "user/list";
     }
 
-    @GetMapping("/users/{userId}")
-    public String profile(@PathVariable String userId, Model model) {
-        User userHaveUrlUserId = users.stream().filter(user -> user.getUserId().equals(userId)).findAny().orElse(null);
+    @GetMapping("/{userId}")
+    public String showUserProfile(@PathVariable String userId, Model model) {
+        User userHaveUrlUserId = users.stream()
+                .filter(user -> user.getUserId().equals(userId))
+                .findAny()
+                .orElse(null);
+
         model.addAttribute("user",userHaveUrlUserId);
         return "user/profile";
     }
-
-
 }

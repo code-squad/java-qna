@@ -15,27 +15,27 @@ public class QuestionController {
     private List<Question> questions = new ArrayList<>();
 
     @GetMapping("/qna/form")
-    public String form() {
+    public String createQnaForm() {
         return "qna/form";
     }
 
     @PostMapping("/questions")
-    public String ask(Question question) {
+    public String createQuestion(Question question) {
         question.setCurrentTime(LocalDateTime.now());
-        question.setPostIndex(questions.size()+1);
+        question.setPostIndex(questions.size() + 1);
         questions.add(question);
         return "redirect:/";
     }
 
     @GetMapping("/questions/{postIndex}")
-    public String list(@PathVariable int postIndex,  Model model) {
-        Question question = questions.get(postIndex-1);
+    public String showQuestion(@PathVariable int postIndex, Model model) {
+        Question question = questions.get(postIndex - 1);
         model.addAttribute("question", question);
         return "qna/show";
     }
 
     @GetMapping("/")
-    public String main(Model model) {
+    public String listQuestions(Model model) {
         model.addAttribute("questions", questions);
         return "/index";
     }

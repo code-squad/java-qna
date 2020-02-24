@@ -65,7 +65,7 @@ public class QuestionController {
         return loginUserName.equals(question.getWriter());
     }
 
-    private Question getQuestionIfExist(@PathVariable long id) throws NotFoundException {
+    private Question getQuestionIfExist(long id) throws NotFoundException {
         return questionRepository.findById(id)
                                  .orElseThrow(() -> new NotFoundException("해당 질문글을 찾을 수 없습니다."));
     }

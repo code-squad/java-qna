@@ -13,7 +13,7 @@ public class Question {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long index;
+  private long id;
 
   @Column(nullable = false, length = 20)
   private String writer;
@@ -25,12 +25,12 @@ public class Question {
     this.dateTime = LocalDateTime.now();
   }
 
-  public long getIndex() {
-    return index;
+  public long getId() {
+    return id;
   }
 
-  public void setIndex(long index) {
-    this.index = index;
+  public void setId(long index) {
+    this.id = index;
   }
 
   public String getWriter() {

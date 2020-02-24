@@ -3,6 +3,7 @@ package com.codessquad.qna;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.LocalDateTime;
@@ -26,9 +27,10 @@ public class QuestionController {
         return "redirect:/";
     }
 
-    @GetMapping("/qna")
-    public String list(Model model) {
-        model.addAttribute("questions", questions);
+    @GetMapping("/questions/{postIndex}")
+    public String list(@PathVariable int postIndex,  Model model) {
+        Question question = questions.get(postIndex-1);
+        model.addAttribute("question", question);
         return "qna/show";
     }
 

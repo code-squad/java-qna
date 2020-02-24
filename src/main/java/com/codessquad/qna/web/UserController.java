@@ -26,7 +26,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public String showUserPage(@PathVariable Long id, Model model) {
+    public String showDetailPage(@PathVariable Long id, Model model) {
         model.addAttribute("user", userRepository.getOne(id));
         return "users/show";
     }

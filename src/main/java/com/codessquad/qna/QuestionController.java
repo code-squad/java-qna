@@ -14,8 +14,8 @@ import java.util.List;
 public class QuestionController {
     private List<Question> questions = new ArrayList<>();
 
-    @GetMapping("/qna/form")
-    public String createQnaForm() {
+    @GetMapping("/question/form")
+    public String createQuestionForm() {
         return "qna/form";
     }
 

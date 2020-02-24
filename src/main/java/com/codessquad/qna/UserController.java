@@ -34,12 +34,12 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public String showUserProfile(@PathVariable String userId, Model model) {
-        User userHaveUrlUserId = users.stream()
-                .filter(user -> user.getUserId().equals(userId))
-                .findAny()
-                .orElse(null);
-
-        model.addAttribute("user",userHaveUrlUserId);
+        for (User user : users) {
+            if(userId.equals(user.getUserId())) {
+                model.addAttribute("user", user);
+                return "user/profile";
+            }
+        }
         return "user/profile";
     }
 }

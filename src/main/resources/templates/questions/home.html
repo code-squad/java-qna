@@ -1,0 +1,22 @@
+{{#partial "main"}}
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">제목</th>
+        <th scope="col">작성날짜</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#questions}}
+    <tr>
+        <th scope="row">{{id}}</th>
+        <td>{{title}}</td>
+        <td>{{createdTime}}</td>
+    </tr>
+    {{/questions}}
+    </tbody>
+</table>
+{{/partial}}
+
+{{> layout/base}}

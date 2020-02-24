@@ -36,12 +36,18 @@ public class UserController {
             if(!(isPasswordEquals(user.getId(), password))){
                 return "redirect:/users/loginForm";
             }
-            session.setAttribute("user", user);
+            session.setAttribute("sessionedUser", user);
             return "redirect:/";
         } catch (NullPointerException e) {
             // userId not found
             return "redirect:/users/loginForm";
         }
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.removeAttribute("sessionedUser");
+        return "redirect:/";
     }
 
     @GetMapping("")

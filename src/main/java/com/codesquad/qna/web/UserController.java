@@ -60,7 +60,7 @@ public class UserController {
         return "/users/modify";
     }
 
-    @PutMapping("/{id}/update")
+    @PutMapping("/{id}")
     public String updateUser(User user, @PathVariable long id) throws ResponseStatusException{
         User currentUser = userRepository.findById(id).get();
         //TODO : 기존 비밀번호 확인 로직

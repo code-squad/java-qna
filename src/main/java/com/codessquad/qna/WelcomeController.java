@@ -6,8 +6,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Controller
 public class WelcomeController {
+
+  private static final Logger log = LoggerFactory.getLogger(WelcomeController.class);
 
   @Autowired
   private QuestionRepository questionRepository;
@@ -16,8 +21,12 @@ public class WelcomeController {
    * 모든 Question 을 가져와서 welcome 페이지에 보여줍니다.
    */
   @GetMapping(value = {"", "/welcome"})
-  public String goIndex(Model model) {
+  public String welcome(Model model) {
+    log.debug("### welcome debug log message");
+    log.info("### welcome info log message");
+
     model.addAttribute("questions", questionRepository.findAll());
+
     return "/welcome";
   }
 }

@@ -4,9 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.time.LocalDateTime;
 
 @Entity
 public class Question {
@@ -17,10 +15,15 @@ public class Question {
 
     @Column(nullable = false)
     private String writer;
-    private String title;
-    private String contents;
-    private String created;
 
+    @Column(nullable = false)
+    private String title;
+
+    @Column(nullable = false)
+    private String contents;
+
+    @Column(nullable = false)
+    private LocalDateTime created;
 
     public Question() {
         this.created = date();
@@ -30,12 +33,12 @@ public class Question {
         return id;
     }
 
-    public String getCreated() {
-        return created;
+    public static LocalDateTime date() {
+        return LocalDateTime.now();
     }
 
-    public void setCreated(String created) {
-        this.created = created;
+    public LocalDateTime getCreated() {
+        return created;
     }
 
     public String getWriter() {
@@ -62,6 +65,10 @@ public class Question {
         this.contents = contents;
     }
 
+    public void setCreated() {
+        this.created = date();
+    }
+
     @Override
     public String toString() {
         return "Question{" +
@@ -71,11 +78,5 @@ public class Question {
                 ", created='" + created + '\'' +
                 ", id=" + id +
                 '}';
-    }
-
-    private String date() {
-        String pattern = "MM-dd-yyyy HH:mm:ss";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, new Locale("kr", "KR"));
-        return simpleDateFormat.format(new Date());
     }
 }

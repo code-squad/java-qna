@@ -9,6 +9,7 @@ public class Question {
     private String title;
     private String contents;
     private LocalDateTime currentTime;
+    private int postIndex;
 
     public LocalDateTime getCurrentTime() {
         return currentTime;
@@ -44,5 +45,13 @@ public class Question {
 
     public String getFormattedTime() {
         return currentTime.format(DateTimeFormatter.ofPattern(DATE_FORMAT));
+    }
+
+    public int getPostIndex() {
+        return postIndex;
+    }
+
+    public void setPostIndex(int postIndex) {
+        this.postIndex = postIndex;
     }
 }

@@ -15,15 +15,10 @@ public class User {
     private String newPassword;
     @Column(nullable = false)
     private String name;
-
-    @Column
-    private String address;
-
-    @Column
-    private String phoneNumber;
-
     @Column(nullable = false)
     private String email;
+    private String address;
+    private String phoneNumber;
 
     public Long getId() {
         return id;

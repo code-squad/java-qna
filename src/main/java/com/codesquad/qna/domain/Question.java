@@ -24,6 +24,10 @@ public class Question {
     @Column(nullable = false)
     private LocalDateTime createdTime;
 
+    public Question() {
+        setCreatedTime();
+    }
+
     public Long getId() {
         return id;
     }

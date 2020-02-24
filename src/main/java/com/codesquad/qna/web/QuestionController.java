@@ -26,7 +26,6 @@ public class QuestionController {
 
     @PostMapping("/questions/create")
     public String saveQuestions(Question question) {
-        question.setCreatedTime();
         questionRepostory.save(question);
         return "redirect:/qna";
     }

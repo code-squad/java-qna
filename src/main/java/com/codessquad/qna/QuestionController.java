@@ -1,17 +1,16 @@
 package com.codessquad.qna;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Controller
 public class QuestionController {
-    private List<Question> questions = new ArrayList<>();
+    @Autowired
+    private QuestionRepository questionRepository;
 
     @GetMapping("/qna/form")
     public String viewQnaForm() {
@@ -20,21 +19,27 @@ public class QuestionController {
 
     @PostMapping("/questions")
     public String createQuestion(Question question) {
-        question.setIndex(questions.size() + 1);
-        System.out.println("question ->\n" + question);
-        questions.add(question);
+        //System.out.println("question ->\n" + question);
+        questionRepository.save(question);
         return "redirect:/";
     }
 
     @GetMapping("/")
     public String viewQnaList(Model model) {
-        model.addAttribute("questions", questions);
+        model.addAttribute("questions", questionRepository.findAll());
         return "/index";
     }
 
-    @GetMapping("/questions/{index}")
-    public String viewQuestionContents(@PathVariable("index") int index, Model model) {
-        model.addAttribute("question", questions.get(index - 1));
+    @GetMapping("/questions/{id}")
+    public String viewQuestionContents(@PathVariable Long id, Model model) {
+        if(!(isIdPresent(id))) {
+            return "redirect:/";
+        }
+        model.addAttribute("question", questionRepository.findById(id).get());
         return "/qna/show";
+    }
+
+    private Boolean isIdPresent(Long id) {
+        return questionRepository.findById(id).isPresent();
     }
 }

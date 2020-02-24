@@ -1,324 +1,259 @@
 ### Heroku
 > https://wooody92.herokuapp.com/
 
------
-# STEP1. 회원 가입, 사용자 조회, 질문하기 구현
+-------
+# STEP 2
+# 사용자 데이터를 DB에 저장하는 동영상
 
-## 실습 진행 방법
+## [H2 DB 추가 및 설정](https://youtu.be/F3koiTIJCwM)
 
-- [질문답변 게시판에 대한 github 저장소](https://github.com/code-squad/java-qna)를 기반으로 실습을 진행한다.
-- 요구사항에 대한 구현을 완료한 후 자신의 github 아이디에 해당하는 브랜치에 Pull Request(이하 PR)를 통해 코드 리뷰 요청을 한다.
-- 코드 리뷰 피드백에 대한 개선 작업을 하고 다시 PUSH한다.
-- 모든 피드백을 완료하면 다음 단계를 도전하고 앞의 과정을 반복한다.
+- 질문/답변 게시판을 구현하기 위한 HTML 템플릿을 추가(**이미 진행했기 때문에 생략 가능**)
+- H2 데이터베이스에 대한 의존관계 설정 및 설정
+- H2 데이터베이스 관리툴 확인
 
-------
+## [회원가입, 목록 기능 구현](https://youtu.be/69tNvDm-iiI)
 
-## 영상과의 차이점
+- 데이터베이스의 테이블과 자바 객체를 매핑
+- 회원가입 기능을 DB를 사용하도록 수정
+- 회원목록 기능을 DB를 사용하도록 수정
 
-- 배포는 heroku를 사용한다.
-- 템플릿 엔진은 handlebars를 사용한다.
-- 로깅 라이브러리는 log4j2를 사용한다.
+## [개인정보 수정 기능 구현 1](https://youtu.be/D3PjDIYZYW0), [개인정보 수정 기능 구현 2](https://youtu.be/V2AhIjdfcMg)
 
-------
-
-## 회원가입, 사용자 목록 기능 구현 동영상
-
-- [MVC 간단 설명 및 mustache 초간단 설명](https://youtu.be/v3xoltxPnOI)
-- [회원가입 기능 구현](https://youtu.be/UQ2wPndQ4-0)
-- [회원 목록 기능 구현](https://youtu.be/UJMFPj0JRK0)
-- [회원가입, 사용자 목록 기능을 원격 서버에 배포하기](https://youtu.be/9z25blnH67M)
-- 두 번째 반복 주기에서 구현한 기능(회원가입, 사용자 목록)을 원격 서버에 배포하는 과정을 다룬다.
-- [이전 상태로 원복 후 반복 연습](https://youtu.be/SRehiX49wuA)
-- 각 반복주기는 한 번의 연습으로 끝나는 것이 아니라 여러 번 반복해야 의미가 있다. 두 번째 반복주기를 연습 가능한 상태로 원복하는 방법을 다룬다.
+- 웹 애플리케이션 개발의 기본 흐름을 이해할 때 가장 복잡한 과정 중의 하나가 데이터베이스에 추가된 정보를 수정하는 것이다.
+- 회원가입한 사용자의 정보를 수정하는 기능을 1단계와 2단계로 나누어 진행한다.
 
 ------
 
-## 힌트를 활용한 회원가입, 사용자 목록 기능 구현
+# 사용자 데이터를 DB에 저장
 
-### 각 기능에 따른 url과 메소드 convention
+## 데이터베이스 설정
 
-- 먼저 각 기능에 대한 대표 url을 결정한다.
-- 예를 들어 회원관리와 관련한 기능의 대표 URL은 "/users"와 같이 설계한다.
-- 기능의 세부 기능에 대해 일반적으로 구현하는 기능(목록, 상세보기, 수정, 삭제)에 대해서는 URL convention을 결정한 후 사용할 것을 추천한다.
-- 예를 들어 todo 앱에 대한 URL convention을 다음과 같은 기준으로 잡을 수 있다.
+#### 의존관계 설정
 
-------
+- pom.xml 파일에 다음 라이브러리에 대한 의존관계를 설정한다.
 
-| url                     | 기능                        |
-| ----------------------- | --------------------------- |
-| GET /todos              | List all todos              |
-| POST /todos             | Create a new todo           |
-| GET /todos/:id          | Get a todo                  |
-| PUT /todos/:id          | Update a todo               |
-| DELETE /todos/:id       | Delete a todo and its items |
-| GET /todos/:id/items    | Get a todo item             |
-| PUT /todos/:id/items    | Update a todo item          |
-| DELETE /todos/:id/items | Delete a todo item          |
-
-------
-
-## template engine 추가 설정
-
-### template engine이란
-
-- HTML 문법 만으로는 if/for/while과 같은 프로그래밍이 가능하지 않다. 즉, HTML만 활용하는 경우 항상 같은 데이터(정적인)만 서비스가 가능하다.
-- 사용자에 따라 다른 HTML, 데이터에 따라 다른 HTML을 제공하려면 if/for/while과 같은 프로그래밍이 가능해야 한다. 이와 같이 서로 다른 HTML(동적인)을 제공하기 위한 도구가 template engine이다.
-- template engine의 역할은 JSP, ASP, PHP가 하는 역할과 같다고 생각하면 된다.
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.h2database</groupId>
+    <artifactId>h2</artifactId>
+    <version>1.4.192</version>
+</dependency>
+코드복사
+```
 
 ------
 
-### handlebars.java인 경우
+#### DB Connection 설정 – application.properties
+
+```
+spring.datasource.url=jdbc:h2:mem://localhost/~/java-qna;MVCC=TRUE;DB_CLOSE_ON_EXIT=FALSE
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+코드복사
+```
+
+------
+
+#### 실행 쿼리 보기 설정 – application.properties
+
+```
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+코드복사
+```
+
+------
+
+#### 테이블 자동 생성 설정 – application.properties
+
+- 서버를 시작하는 시점에 DB 테이블을 drop후에 다시 생성하도록 설정하는 방법.
+
+```
+spring.jpa.hibernate.ddl-auto=create-drop
+코드복사
+```
+
+- 서버를 시작하는 시점에 DB 테이블을 drop하지 않도록 설정하는 방법.
+
+```
+spring.jpa.hibernate.ddl-auto=validate
+코드복사
+```
+
+------
+
+#### h2 db console에 접근 설정 – application.properties
+
+```
+spring.h2.console.enabled=true
+spring.h2.console.path=/h2-console
+코드복사
+```
+
+------
+
+#### User 클래스를 DB 테이블에 매핑
+
+- User 클래스와 DB의 테이블에 매핑한다.
+- DB 테이블은 별도로 생성할 필요없이 자동으로 생성된다.
 
 ```java
-handlebars.suffix=.html
-handlebars.cache=false
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GeneratedType;
+import javax.persistence.Id;
+
+@Entity
+public class User {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	
+	@Column(nullable=false, length=20)
+	private String userId;
+	
+	private String password;
+	private String name;
+	private String email;
+	
+	[...각 필드에 대한 setter, getter method...]
+}
 코드복사
 ```
 
-- https://github.com/allegro/handlebars-spring-boot-starter
-- https://github.com/jknack/handlebars.java
-- https://jknack.github.io/handlebars.java/
+- User 클래스를 @Entity로 설정한다.
+- User 클래스에 대한 유일한 key 값을 @Id로 매핑한다.
+- @Id에 @GeneratedValue 애노테이션을 추가하면 key가 자동으로 증가한다.
+- 각 필드를 테이블 칼럼과 매핑할 때는 @Column 애노테이션을 사용한다.
 
 ------
 
-### mustache인 경우
+#### 사용자 데이터에 대한 CRUD 구현
 
-- 정적인(static) HTML은 static 폴더에서 관리하고 동적인(dynamic) HTML은 templates 디렉토리에서 관리한다.
-- html 소스 코드를 수정할 경우 매번 서버를 재시작해야 한다. 이 같은 단점을 보완하기 위해 application.properties 파일에 다음과 같이 설정한다.
+- CrudRepository 인터페이스를 상속하는 것만으로 CRUD 기본 기능을 구현할 수 있다.
 
 ```java
-spring.mustache.cache=false
-코드복사
-```
+import org.springframework.data.jpa.repository.CrudRepository;
 
-------
-
-### mustache 기본 문법
-
-- https://mustache.github.io/mustache.5.html
-
-------
-
-## 회원가입 기능 구현
-
-### 힌트
-
-- 회원가입 기능의 구현 흐름은 다음과 같다.
-
-![user_form.PNG](https://firebasestorage.googleapis.com/v0/b/nextstep-real.appspot.com/o/lesson-attachments%2F-KpD87bCLSmNUE0rO_tp%2Fuser_form.PNG?alt=media&token=2cc95a2f-0f79-4a32-b1d1-25d1928e9669)
-
-------
-
-- 회원하기 페이지는 static/user/form.html을 사용한다.
-- static에 있는 html을 templates로 이동한다.
-- 사용자 관리 기능 구현을 담당할 UserController를 추가하고 애노테이션 매핑한다.
-- @Controller 애노테이션 추가
-- 회원가입하기 요청(POST 요청)을 처리할 메소드를 추가하고 매핑한다.
-- @PostMapping 추가하고 URL 매핑한다.
-- 사용자가 전달한 값을 User 클래스를 생성해 저장한다.
-- 회원가입할 때 전달한 값을 저장할 수 있는 필드를 생성한 후 setter와 getter 메소드를 생성한다.
-- 사용자 목록을 관리하는 ArrayList를 생성한 후 앞에서 생성한 User 인스턴스를 ArrayList에 저장한다.
-- 사용자 추가를 완료한 후 사용자 목록 페이지("redirect:/users")로 이동한다.
-
-------
-
-## 회원목록 기능 구현
-
-- 회원목록 기능의 구현 흐름은 다음과 같다.
-
-![user_list.PNG](https://firebasestorage.googleapis.com/v0/b/nextstep-real.appspot.com/o/lesson-attachments%2F-KpD87bCLSmNUE0rO_tp%2Fuser_list.PNG?alt=media&token=8d56e9a5-1dca-4c39-9a4e-634e606ceb58)
-
-------
-
-- 회원목록 페이지는 static/user/list.html을 사용한다.
-- static에 있는 html을 templates로 이동한다.
-- Controller 클래스는 회원가입하기 과정에서 추가한 UserController를 그대로 사용한다.
-- 회원목록 요청(GET 요청)을 처리할 메소드를 추가하고 매핑한다.
-- @GetMapping을 추가하고 URL 매핑한다.
-- Model을 메소드의 인자로 받은 후 Model에 사용자 목록을 users라는 이름으로 전달한다.
-- 사용자 목록을 user/list.html로 전달하기 위해 메소드 반환 값을 "user/list"로 한다.
-- user/list.html 에서 사용자 목록을 출력한다.
-- user/list.html 에서 사용자 목록 전체를 조회하는 방법은 다음과 같다.
-
-```html
-{{#users}}
- // 데이터 조회
-{{/users}}
-코드복사
-```
-
-------
-
-## 회원 프로필 정보보기
-
-- 회원 프로필 정보 보기의 구현 흐름은 다음과 같다.
-
-![user_profile.PNG](https://firebasestorage.googleapis.com/v0/b/nextstep-real.appspot.com/o/lesson-attachments%2F-KpD87bCLSmNUE0rO_tp%2Fuser_profile.PNG?alt=media&token=2bf4e3e7-95b0-4a0b-9113-61294f05651b)
-
-------
-
-- 회원 프로필 보기 페이지는 static/user/profile.html을 사용한다.
-- static에 있는 html을 templates로 이동한다.
-- 앞 단계의 사용자 목록 html인 user/list.html 파일에 닉네임을 클릭하면 프로필 페이지로 이동하도록 한다.
-- html에서 페이지 이동은 `` 태그를 이용해 가능하다.
-- ``와 같이 구현한다.
-- Controller 클래스는 앞 단계에서 사용한 UserController를 그대로 사용한다.
-- 회원프로필 요청(GET 요청)을 처리할 메소드를 추가하고 매핑한다.
-
-------
-
-- @GetMapping을 추가하고 URL 매핑한다.
-- URL은 "/users/{userId}"와 같이 매핑한다.
-- URL을 통해 전달한 사용자 아이디 값은 @PathVariable 애노테이션을 활용해 전달 받을 수 있다.
-- ArrayList에 저장되어 있는 사용자 중 사용자 아이디와 일치하는 User 데이터를 Model에 저장한다.
-- user/profile.html 에서는 Controller에서 전달한 User 데이터를 활용해 사용자 정보를 출력한다.
-
-------
-
-## HTML의 중복 제거
-
-> index.html, /user/form.html, /qna/form.html 코드를 보면 header, navigation bar, footer 부분에 많은 중복 코드가 있다. 중복 코드를 제거한다.
-
-------
-
-### html 중복 제거 힌트
-
-- 중복 코드가 발생하는 부분을 별도의 template 파일로 분리한다.
-- 예를 들어 중복 코드가 있는 부분을 user.html로 다음과 같이 분리한다.
-
-```html
-{{#partial "content" }}
-<p>Home page</p>
-{{/partial}}
-
-{{> base}}
-코드복사
-```
-
-------
-
-- 위와 같이 분리한 template 코드를 다음과 같이 base.html과 같은 파일에서 추가할 수 있다.
-
-```
-{{#block "header"}}
-<h1>Title</h1>
-{{/block}}
-
-{{#block "content"}}
-{{/block}}
-
-{{#block "footer" }}
-<span>Powered by Handlebars.java</span>
-{{/block}}
-코드복사
-```
-
-------
-
-- 두 개로 분리한 위 html의 실행 결과는 다음과 같다.
-
-```html
-<h1>Title</h1>
-<p>Home page</p>
-<span>Powered by Handlebars.java</span>
-코드복사
-```
-
-- [handlebars.java reuse](http://jknack.github.io/handlebars.java/reuse.html) 문서를 참고해 개선한다.
-
-------
-
-### URL과 html 쉽게 연결하기
-
-앞 단계와 같이 html에서 중복을 제거하는 기능은 handlebars.java template engine에서 제공하는 기능이다.
-
-따라서 모든 html의 중복을 제거하려면 static의 html 또한 templates 폴더로 이동하고 URL 매핑을 해야 한다.
-
-그런데 이와 같이 구현할 경우 특별한 로직이 없음에도 불구하고 매번 메소드를 만들고 매핑하는 일이 귀찮은 작업이다. 이 같은 단점을 다음과 같이 보완할 수 있다.
-
-- base package 아래에 config와 같은 새로운 패키지 생성한다.
-- MvcConfig 이름으로 클래스를 생성해 다음과 같은 형태로 구현한다.
-
-------
-
-```java
-@Configuration
-public class MvcConfig extends WebMvcConfigurerAdapter {
-	@Override
- public void addViewControllers(ViewControllerRegistry registry) {
-		registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
-		
-  registry.addViewController("/users/form").setViewName("user/form");
-  registry.addViewController("/users/login").setViewName("user/login");
-  registry.addViewController("/questions/form").setViewName("qna/form");
- }
+public interface UserRepository extends CrudRepository<User, Long>{
 }
 코드복사
 ```
 
 ------
 
-## 실습 - 질문하기, 질문 목록 기능 구현
+## Controller에서 Repository 사용
 
-## 질문하기 요구사항
+- 사용자 데이터를 추가, 조회하기 위해 더 이상 ArrayList를 사용하지 않는다.
+- @Autowired 애노테이션을 활용해 UserRepository를 추가한다.
 
-> 사용자는 질문을 할 수 있어야 한다.
+#### 사용자 데이터 추가
 
-------
+- UserRepository의 save() 메소드를 통해 DB에 사용자 데이터를 추가한다.
 
-### 힌트 1 - 기본 흐름
+```java
+@Controller
+@RequestMapping("/users")
+public class UserController {
 
-- 질문하기 구현에 대한 기본 흐름은 다음과 같다.
+  @Autowired
+  private UserRepository userRepository;
 
-![question_form.PNG](https://firebasestorage.googleapis.com/v0/b/nextstep-real.appspot.com/o/lesson-attachments%2F-KpD87bCLSmNUE0rO_tp%2Fquestion_form.PNG?alt=media&token=fa9a0fdb-2b56-421d-b758-8bf77dd3900d)
-
-------
-
-### 힌트 2 - 구현 단계별 힌트
-
-- 질문하기 페이지는 static/qna/form.html을 사용한다.
-- static에 있는 html을 templates로 이동한다.
-- 질문 기능 구현을 담당할 QuestionController를 추가하고 애노테이션 매핑한다.
-- 질문하기 요청(POST 요청)을 처리할 메소드를 추가하고 매핑한다.
-- 사용자가 전달한 값을 Question 클래스를 생성해 저장한다.
-- 질문 목록을 관리하는 ArrayList를 생성한 후 앞에서 생성한 Question 인스턴스를 ArrayList에 저장한다.
-- 질문 추가를 완료한 후 메인 페이지(“redirect:/”)로 이동한다.
-
-------
-
-## 질문 목록 요구사항
-
-> 모든 사용자는 질문 목록을 볼 수 있어야 한다.
+  @PostMapping("")
+  public String create(User user) {
+    System.out.println("user : " + user);
+    userRepository.save(user);
+    return "redirect:/users";
+  }
+}
+코드복사
+```
 
 ------
 
-### 힌트
+#### 사용자 목록 조회
 
-- 메인 페이지(요청 URL이 “/”)를 담당하는 Controller의 method에서 질문 목록을 조회한다.
-- 조회한 질문 목록을 Model에 저장한 후 View에 전달한다. 질문 목록은 앞의 질문하기 단계에서 생성한 ArrayList를 그대로 전달한다.
-- View에서 Model을 통해 전달한 질문 목록을 출력한다.
-- 질문 목록을 구현하는 과정은 사용자 목록을 구현하는 html 코드를 참고한다.
+- UserRepository의 findAll() 메소드를 통해 DB에 저장되어 있는 전체 사용자 목록을 조회한다.
+
+```java
+@Controller
+@RequestMapping("/users")
+public class UserController {
+
+  @Autowired
+  private UserRepository userRepository;
+
+  [... 사용자 추가 코드 ...]
+
+  @GetMapping("")
+  public String list(Model model) {
+    model.addAttribute("users", userRepository.findAll());
+    return "/user/list";
+  }
+}
+코드복사
+```
 
 ------
 
-## 질문 상세보기
+#### 사용자 조회
 
-> 모든 사용자는 질문 상세 내용을 볼 수 있어야 한다.
+- 사용자 목록을 출력하는 곳에서 {{@index}}를 사용하는 대신 {{id}}를 사용한다.
+- UserRepository의 findOne() 메소드를 통해 DB에 저장되어 있는 사용자 데이터 조회한다.
+
+```java
+@Controller
+@RequestMapping("/users")
+public class UserController {
+  @Autowired
+  private UserRepository userRepository;
+
+  @GetMapping("/{id}")
+  public ModelAndView show(@PathVariable long id) {
+    ModelAndView mav = new ModelAndView("user/profile");
+    mav.addObject("user", userRepository.findById(id).get());
+    return mav;
+  }
+}
+코드복사
+```
 
 ------
 
-### 힌트
+# 실습 - 질문 데이터를 DB에 저장 및 조회
 
-- 질문 목록(qna/list.html)의 제목을 클릭했을 때 질문 상세 페이지에 접속할 수 있도록 한다.
-- 질문 상세 페이지 접근 URL은 "/questions/{index}"(예를 들어 첫번째 글은 /questions/1)와 같이 구현한다.
-- 질문 객체에 id 인스턴스 변수를 추가하고 ArrayList에 질문 객체를 추가할 때 `ArrayList.size() + 1`을 질문 객체의 id로 사용한다.
-- Controller에 상세 페이지 접근 method를 추가하고 URL은 /questions/{index}로 매핑한다.
-- ArrayList에서 `index - 1` 해당하는 데이터를 조회한 후 Model에 저장해 /qna/show.html에 전달한다.
-- /qna/show.html에서는 Controller에서 전달한 데이터를 활용해 html을 생성한다.
+## 질문 데이터 저장하기
+
+- @Entity를 활용해 Question 클래스를 DB 테이블과 매핑한다.
+- @Id, @GeneratedValue를 활용해 Question의 key를 생성한다.
+- @Column을 활용해 각 필드를 테이블의 칼럼과 매핑한다.
+- QuestionRepostory를 생성한다. QuestionRepository는 CrudRepository를 extends한다.
+- QuestionController에서 QuestionRepository를 @Autowired를 활용해 의존관계를 설정한다.
+- QuestionRepository의 save() 메소드를 이용해 Question 데이터를 DB에 저장한다.
 
 ------
 
-## 회원정보 수정(선택)
+## 질문 목록 구현하기
+
+- QuestionRepository의 findAll() 메소드를 활용해 전체 질문 목록 데이터를 조회한다.
+
+------
+
+## 질문 상세보기 구현하기
+
+- QuestionRepository의 findOne() 메소드를 활용한다.
+
+------
+
+# 회원정보 수정
 
 ## 요구사항
 
@@ -326,15 +261,12 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
 > 비밀번호, 이름, 이메일만 수정할 수 있으며, 사용자 아이디는 수정할 수 없다.
 > 비밀번호가 일치하는 경우에만 수정 가능하다.
 
-------
-
-### 힌트 1 - 회원정보 수정 화면 기능 구현
+#### 힌트 1 - 회원정보 수정 화면 기능 구현
 
 - 회원가입한 사용자 정보를 수정할 수 있는 수정 화면과 사용자가 수정한 값을 업데이트할 수 있는 기능을 나누어 개발해야 한다.
 - 사용자 정보를 수정하는 화면 구현 과정은 다음과 같다.
-  ![user_update_form.png](https://firebasestorage.googleapis.com/v0/b/nextstep-real.appspot.com/o/lesson-attachments%2F-KpD87bCLSmNUE0rO_tp%2Fuser_update_form.png?alt=media&token=4b14ef86-adea-47dd-9266-1273f641220a)
 
-------
+![user_update_form.PNG](https://firebasestorage.googleapis.com/v0/b/nextstep-real.appspot.com/o/lesson-attachments%2F-KpD8DNo7tp5Vhx9vg-9%2Fuser_update_form.PNG?alt=media&token=b5ddc6a0-d050-430e-bade-bf2a4f8d5672)
 
 - /user/form.html 파일을 /user/updateForm.html로 복사한 후 수정화면을 생성한다.
 - URL 매핑을 할 때 "/users/{id}/form"와 같이 URL을 통해 인자를 전달하는 경우 @PathVariable 애노테이션을 활용해 인자 값을 얻을 수 있다.
@@ -342,11 +274,20 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
 - Controller에서 전달한 값을 입력 폼에서 출력하려면 value를 사용하면 된다.
 - ``
 
-------
-
-### 힌트 2 - 회원정보 수정
+#### 힌트 2 - 회원정보 수정
 
 - 사용자 정보를 최종적으로 수정하는 과정은 다음과 같다.
-  ![user_update.png](https://firebasestorage.googleapis.com/v0/b/nextstep-real.appspot.com/o/lesson-attachments%2F-KpD87bCLSmNUE0rO_tp%2Fuser_update.png?alt=media&token=c5ea1fa7-a85e-4a90-b22f-c68b9efcfa06)
 
-학습 완료
+![user_update.PNG](https://firebasestorage.googleapis.com/v0/b/nextstep-real.appspot.com/o/lesson-attachments%2F-KpD8DNo7tp5Vhx9vg-9%2Fuser_update.PNG?alt=media&token=7b0408f8-c670-4c97-88c9-6440d9edef0a)
+
+- URL 매핑을 할 때 "/users/{id}"와 같이 URL을 통해 인자를 전달하는 경우 @PathVariable 애노테이션을 활용해 인자 값을 얻을 수 있다.
+- UserController의 사용자가 수정한 정보를 User 클래스에 저장한다.
+- {id}에 해당하는 User를 DB에서 조회한다(UserRepository의 findOne()).
+- DB에서 조회한 User 데이터를 새로 입력받은 데이터로 업데이트한다.
+- UserRepository의 save() 메소드를 사용해 업데이트한다.
+
+**POST 대신 PUT method를 사용하는 방법**
+
+- 수정 화면(updateForm.html)에서 수정된 값을 전송할 때 PUT값을 다음과 같이 hidden으로 전송한다.
+  - ``
+- 위와 같이 `_method`로 PUT을 전달하면 UserController에서는 @PutMapping으로 URL을 매핑할 수 있다.

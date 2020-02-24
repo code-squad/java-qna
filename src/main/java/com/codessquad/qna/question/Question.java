@@ -1,6 +1,7 @@
 package com.codessquad.qna.question;
 
 import com.codessquad.qna.common.CommonString;
+import com.codessquad.qna.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -15,8 +16,9 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false)
-    private String writer;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    private User writer;
     @Column(nullable = false)
     private String title;
     @Column(nullable = false)
@@ -30,7 +32,7 @@ public class Question {
 
     public Question() {}
 
-    public Question(String writer, String title, String contents) {
+    public Question(User writer, String title, String contents) {
         LocalDateTime now = LocalDateTime.now();
         this.writer = writer;
         this.title = title;
@@ -47,11 +49,11 @@ public class Question {
         this.id = index;
     }
 
-    public String getWriter() {
+    public User getWriter() {
         return writer;
     }
 
-    public void setWriter(String writer) {
+    public void setWriter(User writer) {
         this.writer = writer;
     }
 

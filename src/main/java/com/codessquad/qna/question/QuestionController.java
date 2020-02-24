@@ -34,7 +34,7 @@ public class QuestionController {
         if (userAttribute == null) {
             return "redirect:/users/login";
         }
-        String writer = ((User) userAttribute).getUserName();
+        User writer = (User) userAttribute;
         Question question = new Question(writer, title, contents);
         questionRepository.save(question);
         return "redirect:/";
@@ -112,7 +112,7 @@ public class QuestionController {
             return false;
         }
         String loginUserName = ((User) userAttribute).getUserName();
-        return loginUserName.equals(question.getWriter());
+        return loginUserName.equals(question.getWriter().getUserName());
     }
 
     private Question getQuestionIfExist(long id) throws NotFoundException {

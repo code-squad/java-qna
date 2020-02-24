@@ -23,6 +23,7 @@ public class Question {
     private String contents;
     @Column(nullable = false)
     private LocalDateTime createdDateTime;
+    private LocalDateTime updatedDateTime;
 
     @OneToMany
     private Collection<Reply> replies;
@@ -30,10 +31,12 @@ public class Question {
     public Question() {}
 
     public Question(String writer, String title, String contents) {
+        LocalDateTime now = LocalDateTime.now();
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-        this.createdDateTime = LocalDateTime.now();
+        this.createdDateTime = now;
+        this.updatedDateTime = now;
     }
 
     public long getId() {
@@ -78,6 +81,18 @@ public class Question {
 
     public String getFormattedCreatedDateTime() {
         return createdDateTime.format(DATE_TIME_FORMATTER);
+    }
+
+    public LocalDateTime getUpdatedDateTime() {
+        return updatedDateTime;
+    }
+
+    public void setUpdatedDateTime(LocalDateTime updatedDateTime) {
+        this.updatedDateTime = updatedDateTime;
+    }
+
+    public String getFormattedUpdatedDateTime() {
+        return updatedDateTime.format(DATE_TIME_FORMATTER);
     }
 
     public Collection<Reply> getReplies() {

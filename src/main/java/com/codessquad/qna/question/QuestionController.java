@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
 
 @Controller
 public class QuestionController {
@@ -68,6 +69,27 @@ public class QuestionController {
         }
 
         return "questions/modifyForm";
+    }
+
+    @PutMapping("/questions/{id}")
+    public String updateQuestion(@PathVariable long id,
+                                 HttpSession session,
+                                 @RequestParam String title,
+                                 @RequestParam String contents) {
+        try {
+            Question question = getQuestionIfExist(id);
+            Object userAttribute = session.getAttribute("loginUser");
+            if (!isLoginUserEqualsWriter(question, userAttribute)) {
+                return "redirect:/questions/" + id;
+            }
+            question.setTitle(title);
+            question.setContents(contents);
+            question.setUpdatedDateTime(LocalDateTime.now());
+            questionRepository.save(question);
+        } catch (NotFoundException e) {
+            return "error/question_not_found";
+        }
+        return "redirect:/questions/" + id;
     }
 
     private boolean isLoginUserEqualsWriter(Question question, Object userAttribute) {

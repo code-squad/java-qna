@@ -30,13 +30,16 @@ public class QuestionController {
     @GetMapping("/questions/{postIndex}")
     public String showQuestion(@PathVariable int postIndex, Model model) {
         Question question = questions.get(postIndex - 1);
-        model.addAttribute("question", question);
-        return "qna/show";
+        if(question!=null) {
+            model.addAttribute("question", question);
+            return "qna/show";
+        }
+        return "redirect:/error/notFound.html";
     }
 
     @GetMapping("/")
     public String listQuestions(Model model) {
         model.addAttribute("questions", questions);
-        return "/index";
+        return "home";
     }
 }

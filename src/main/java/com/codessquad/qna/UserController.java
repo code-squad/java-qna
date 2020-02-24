@@ -40,6 +40,6 @@ public class UserController {
                 return "user/profile";
             }
         }
-        return "user/profile";
+        return "redirect:/error/notFound.html";
     }
 }

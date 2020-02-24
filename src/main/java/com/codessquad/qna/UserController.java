@@ -57,20 +57,36 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public String viewProfile(@PathVariable Long id, Model model) {
-        if(!(isIdPresent(id))) {
+    public String viewProfile(@PathVariable Long id, Model model, HttpSession session) {
+        Object value = session.getAttribute("sessionedUser");
+        if(value == null) {
             return "redirect:/users";
         }
-        model.addAttribute("user", userRepository.findById(id).get());
+        try {
+            User sessionedUser = (User)value;
+            if (!id.equals(sessionedUser.getId()) || !(isIdPresent(id)))
+                throw new IllegalAccessException();
+            model.addAttribute("user", userRepository.findById(id).get());
+        } catch (IllegalAccessException e) {
+            return e.getMessage();
+        }
         return "/users/profile";
     }
 
     @GetMapping("/{id}/form")
-    public String viewUpdateForm(@PathVariable Long id, Model model) {
-        if(!(isIdPresent(id))) {
+    public String viewUpdateForm(@PathVariable Long id, Model model, HttpSession session) {
+        Object value = session.getAttribute("sessionedUser");
+        if(value == null) {
             return "redirect:/users";
         }
-        model.addAttribute("user", userRepository.findById(id).get());
+        try {
+            User sessionedUser = (User)value;
+            if (!id.equals(sessionedUser.getId()) || !(isIdPresent(id)))
+                throw new IllegalAccessException();
+            model.addAttribute("user", userRepository.findById(id).get());
+        } catch (IllegalAccessException e) {
+            return e.getMessage();
+        }
         return "/users/updateForm";
     }
 

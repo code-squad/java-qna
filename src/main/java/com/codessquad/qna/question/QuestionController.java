@@ -1,32 +1,42 @@
 package com.codessquad.qna.question;
 
+import com.codessquad.qna.user.UserController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@RequestMapping("/questions")
 public class QuestionController {
+    private static Logger log = LoggerFactory.getLogger(QuestionController.class);
     private List<Question> questions = new ArrayList<>();
 
-    @PostMapping("/questions")
+    @Autowired
+    private QuestionRepository questionRepository;
+
+    @PostMapping("")
     public String qna(Question question) {
-        question.setQuestionNumber(questions.size() + 1);
-        questions.add(question);
+        log.info("Question : '{}' ", question.toString());
+        questionRepository.save(question);
         return "redirect:/";
     }
 
     @GetMapping("/")
     public String questionList(Model model) {
-        model.addAttribute("questions", questions);
+        model.addAttribute("questions", questionRepository.findAll());
         return "main";
     }
 
-    @GetMapping("/questions/{questionNumber}")
+    @GetMapping("/{questionNumber}")
     public String questionContents(@PathVariable int questionNumber, Model model) {
         Question question = questions.get(questionNumber - 1);
         model.addAttribute("question", question);

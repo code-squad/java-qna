@@ -1,24 +1,47 @@
 package com.codessquad.qna.question;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+@Entity
 public class Question {
+    @Id
+    @GeneratedValue
+    private long id;
+
     private int questionNumber;
+
+    @Column(nullable = false, length = 20)
     private String writer;
+
+    @Column(nullable = false, length = 25)
     private String title;
+
     private String contents;
     private String formattedWrittenTime;
 
-    public Question(String writer, String title, String contents, String formattedWrittenTime) {
-        this.writer = writer;
-        this.title = title;
-        this.contents = contents;
-        this.formattedWrittenTime = formattedWrittenTime;
-    }
-
     public void setQuestionNumber(int questionNumber) {
         this.questionNumber = questionNumber;
+    }
+
+    public void setWriter(String writer) {
+        this.writer = writer;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setContents(String contents) {
+        this.contents = contents;
+    }
+
+    public void setFormattedWrittenTime(String formattedWrittenTime) {
+        this.formattedWrittenTime = formattedWrittenTime;
     }
 
     public int getQuestionNumber() {

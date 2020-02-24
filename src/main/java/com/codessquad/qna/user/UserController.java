@@ -1,5 +1,7 @@
 package com.codessquad.qna.user;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,13 +14,14 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping("/users")
 public class UserController {
+    private static Logger log = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private UserRepository userRepository;
 
     @PostMapping("")
     public String create(User user) {
-        System.out.println("user : " + user);
+        log.info("User :  '{}' ", user);
         userRepository.save(user);
         return "redirect:/users";
     }

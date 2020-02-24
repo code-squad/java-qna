@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class UserController {
@@ -45,16 +44,4 @@ public class UserController {
         userRepository.save(user);
         return "redirect:/user/list";
     }
-
-//    @GetMapping("/user/profile/{userId}")
-//    public String profile(Model model, @PathVariable String userId) {
-//        for (User user : users) {
-//            if (user.getUserId().equals(userId)) {
-//                model.addAttribute("userId", userId);
-//                model.addAttribute("email", user.getEmail());
-//                return "user/profile";
-//            }
-//        }
-//        return "user/profile";
-//    }
 }

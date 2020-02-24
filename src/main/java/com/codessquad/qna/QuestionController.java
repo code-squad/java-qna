@@ -17,7 +17,7 @@ public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
 
-    @GetMapping("/index")
+    @GetMapping("/")
     public String index(Model model) {
         model.addAttribute("question", questionRepository.findAll());
         return "index";
@@ -28,7 +28,7 @@ public class QuestionController {
         question.setLocalDateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         questionRepository.save(question);
         System.out.println("question : " + question);
-        return "redirect:/index";
+        return "redirect:/";
     }
 
     @GetMapping("/question/{id}/show")

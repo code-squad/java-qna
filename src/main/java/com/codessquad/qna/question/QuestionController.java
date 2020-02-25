@@ -73,7 +73,7 @@ public class QuestionController {
             return "error/question_not_found";
         }
 
-        return "questions/modifyForm";
+        return "questions/modify_form";
     }
 
     @PutMapping("/questions/{id}")

@@ -26,7 +26,7 @@ public class UserController {
 
   @PostMapping(value = "/login")
   public String login(String userId, String password, HttpSession httpSession) {
-    User user = userRepository.findUserByUserId(userId);
+    User user = userRepository.findByUserId(userId);
     if (user == null) {
       return "user/login";
     }
@@ -55,9 +55,7 @@ public class UserController {
     }
 
     User user = userRepository.getOne(sessionUser.getId());
-    user.setName(updateUser.getName());
-    user.setPassword(updateUser.getPassword());
-    user.setEmail(updateUser.getEmail());
+    user.update(updateUser);
     userRepository.save(user);
     return "redirect:/";
   }
@@ -76,7 +74,7 @@ public class UserController {
 
   @GetMapping(value = "/{writer}")
   public String getProfile(@PathVariable("writer") String userId, Model model) {
-    model.addAttribute("user", userRepository.findUserByUserId(userId));
+    model.addAttribute("user", userRepository.findByUserId(userId));
     return "user/profile";
   }
 

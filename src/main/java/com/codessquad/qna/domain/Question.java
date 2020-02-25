@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import org.hibernate.annotations.Type;
 
 @Entity
 public class Question extends BaseTimeEntity {
@@ -20,7 +21,8 @@ public class Question extends BaseTimeEntity {
   @Column(nullable = false)
   private String title;
 
-  @Column(nullable = false, length = 500)
+  @Column(nullable = false)
+  @Type(type = "text")
   private String contents;
 
 
@@ -53,6 +55,10 @@ public class Question extends BaseTimeEntity {
   }
 
   public String getCreatedTime() {
+    return getFormattedCreateTime();
+  }
+
+  private String getFormattedCreateTime() {
     return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(createdTime);
   }
 

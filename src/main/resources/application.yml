@@ -27,4 +27,4 @@ spring:
 
 logging:
   level:
-    com.codesquad.qna: debug
+    com.codessquad.qna.controller: debug

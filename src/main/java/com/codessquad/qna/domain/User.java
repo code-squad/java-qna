@@ -75,6 +75,12 @@ public class User {
     this.email = email;
   }
 
+  public void update(User updateUser) {
+    name = updateUser.getName();
+    email = updateUser.getEmail();
+    password = updateUser.getPassword();
+  }
+
   @Override
   public String toString() {
     return "userId :'" + userId + '\'' +

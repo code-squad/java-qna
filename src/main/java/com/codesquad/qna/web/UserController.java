@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/users")
 public class UserController {
 
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
     @Autowired
     private UserRepository userRepository;
-    private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @PostMapping("")
     public String create(User newUser) {
@@ -45,7 +45,7 @@ public class UserController {
     @PutMapping("/{userId}/update")
     public String update(@PathVariable String userId, User updateUser) {
         User originUser = findUser(userId);
-        if (!confirmPassword(originUser.getPassword(), updateUser.getPassword())) {
+        if (!originUser.matchPassword(updateUser)) {
             return "users/update_failed";
         }
         originUser.update(updateUser);
@@ -55,11 +55,6 @@ public class UserController {
 
     private User findUser(String userId) {
         log.info("findUser: {}", userId);
-        return userRepository.findById(userId).get();
-    }
-
-    private boolean confirmPassword(String originPassword, String inputPassword) {
-        log.info("confirmPassword : {}, {}", originPassword, inputPassword);
-        return originPassword.equals(inputPassword);
+        return userRepository.findById(userId).orElseThrow(IllegalArgumentException::new);
     }
 }

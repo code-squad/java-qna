@@ -53,14 +53,14 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public String updateUser(User user, String newPassword , @PathVariable long id) throws ResponseStatusException{
+    public String updateUser(User sesssionUser, String newPassword , @PathVariable long id) throws ResponseStatusException{
         User currentUser = userRepository.getOne(id);
         //TODO : 기존 비밀번호 확인 로직
-        System.out.println(currentUser.matchPassword(user.getPassword()));
-        if (!currentUser.matchPassword(user.getPassword())) {
+        System.out.println(currentUser.matchPassword(sesssionUser));
+        if (!currentUser.matchPassword(sesssionUser)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "비밀번호가 맞지 않아요!");
         }
-        currentUser.update(user, newPassword); //새로 입력한 정보로 회원정보 수정
+        currentUser.update(sesssionUser, newPassword); //새로 입력한 정보로 회원정보 수정
         userRepository.save(currentUser);
         return "redirect:/users";
     }

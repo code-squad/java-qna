@@ -85,7 +85,7 @@ public class User {
         this.email = user.getEmail();
     }
 
-    public boolean matchPassword(String password) {
-        return this.password.equals(password);
+    public boolean matchPassword(User user) {
+        return this.password.equals(user.getPassword());
     }
 }

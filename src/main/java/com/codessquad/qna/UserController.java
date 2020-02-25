@@ -27,14 +27,17 @@ public class UserController {
     public String login(String userId, String password, HttpSession session) {
         User user = userRepository.findByUserId(userId);
         if(user == null) {
+            System.out.println("ID does not exist");
             return "redirect:/users/loginForm";
         }
         if (!password.equals(user.getPassword())) {
+            System.out.println("ID does not match password");
             return "redirect:/users/loginForm";
         }
 
+        System.out.println("Login Success");
         session.setAttribute("user", user);
-        
+
 
 
 

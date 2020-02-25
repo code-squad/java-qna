@@ -9,6 +9,16 @@
 * [텍스트와 이미지로 살펴보는 코드스쿼드의 온라인 코드 리뷰 과정](https://github.com/code-squad/codesquad-docs/blob/master/codereview/README.md)
 * [동영상으로 살펴보는 코드스쿼드의 온라인 코드 리뷰 과정](https://youtu.be/a5c9ku-_fok)
 
+ <현재까지 구현한 것> 
+
+- 회원 가입 기능 구현
+- 회원 목록 보기 구현
+- 회원 정보 수정 기능 구현(현재 아무나 수정 가능하기 때문 추후에 본인만 아이디만 수정가능하도록 변경해야함)에
+- 로그인 기능 구현
+- h2 데이터베이스 연결함
+- heroku 배포함
+
+
 h2 데이터베이스 연결
 - build.gradle 파일에 compile group: 'com.h2database', name: 'h2', version: '1.4.192' 추가해
 - com.codessquad.qna.domain 디렉토리에 User 클래스 생성

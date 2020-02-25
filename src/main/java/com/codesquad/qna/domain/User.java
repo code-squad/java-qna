@@ -12,7 +12,6 @@ public class User {
     private String userId;
     @Column(nullable = false)
     private String password;
-//    private String newPassword;
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
@@ -77,7 +76,7 @@ public class User {
     }
 
     public void update(User user, String newPassword) {
-        // newPassword 가 null이 아닌경우에만 비밀번호 변경
+        //TODO : newPassword 가 null인 경우 에러처리
         if (!newPassword.isEmpty())
             this.password = newPassword;
         this.name = user.getName();
@@ -86,7 +85,7 @@ public class User {
         this.email = user.getEmail();
     }
 
-    public boolean checkPassword(String password) {
+    public boolean matchPassword(String password) {
         return this.password.equals(password);
     }
 }

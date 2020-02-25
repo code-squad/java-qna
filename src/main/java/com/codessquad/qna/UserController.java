@@ -69,13 +69,13 @@ public class UserController {
             return "redirect:/login";
         }
         System.out.println("Login Success!");
-        session.setAttribute("user", user);
+        session.setAttribute("sessionedUser", user);
         return "redirect:/";
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.removeAttribute("user");
+        session.removeAttribute("sessionedUser");
         return "redirect:/";
     }
 }

@@ -69,7 +69,11 @@
                 <div class="article-util">
                   <ul class="article-util-list">
                     <li>
-                      <a class="link-modify-article" href="/questions/413/answers/1405/form">수정</a>
+                      <form action="/questions/{{question.id}}/answers/{{id}}" class="delete-answer-form"
+                            method="POST">
+                        <input type="hidden" name="_method" value="PUT"/>
+                        <button class="delete-answer-button" type="submit">수정</button>
+                      </form>
                     </li>
                     <li>
                       <form action="/questions/{{question.id}}/answers/{{id}}" class="delete-answer-form"

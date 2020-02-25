@@ -39,7 +39,7 @@ public class QnaController {
   }
 
   @PutMapping(value = "/{id}")
-  public String updateQuestion(@PathVariable("id") Long questionId, String title,
+  public String update(@PathVariable("id") Long questionId, String title,
       String contents, HttpSession httpSession) {
     if (!HttpSessionUtils.isLoginUser(httpSession)) {
       return "/user/login";
@@ -56,7 +56,7 @@ public class QnaController {
   }
 
   @DeleteMapping(value = "/{id}")
-  public String deleteQuestion(@PathVariable("id") Long questionId, HttpSession httpSession) {
+  public String delete(@PathVariable("id") Long questionId, HttpSession httpSession) {
     if (!HttpSessionUtils.isLoginUser(httpSession)) {
       return "/user/login";
     }

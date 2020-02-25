@@ -1,67 +1,29 @@
 package com.codessquad.qna.domain;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import lombok.Getter;
 
+@Getter
 @Entity
-public class Question {
+public class Posts extends BaseTimeEntity {
   @Id
   private Long id;
 
-  private String writer;
+  private String author;
   private String title;
-  private String contents;
-  private String time;
-  private int index;
-
-  public int getIndex() {
-    return index;
-  }
-
-  public void setIndex(int index) {
-    this.index = index;
-  }
-
-  public String getWriter() {
-    return writer;
-  }
-
-  public void setWriter(String writer) {
-    this.writer = writer;
-  }
-
-  public String getTitle() {
-    return title;
-  }
-
-  public void setTitle(String title) {
-    this.title = title;
-  }
-
-  public String getContents() {
-    return contents;
-  }
-
-  public void setContents(String contents) {
-    this.contents = contents;
-  }
-
-  public String getTime() {
-    return time;
-  }
-
-  public void setTime(String time) {
-    this.time = time;
-  }
-
-  public void setTime() {
-    Date time = new Date();
-    this.time = time.toString();
-  }
+  private String content;
+  private LocalDateTime createdTime;
 
   @Override
   public String toString() {
-    return "Question" + " title " + title + " writer " + writer + " contents " + contents;
+    return "Posts{" +
+        "id=" + id +
+        ", author='" + author + '\'' +
+        ", title='" + title + '\'' +
+        ", content='" + content + '\'' +
+        ", createdTime=" + createdTime +
+        '}';
   }
 }

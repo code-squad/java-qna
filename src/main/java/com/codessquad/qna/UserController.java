@@ -36,17 +36,17 @@ public class UserController {
             if (!user.isPasswordEquals(password)) {
                 return "redirect:/users/loginForm";
             }
-            session.setAttribute("sessionedUser", user);
+            session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
             return "redirect:/";
         } catch (NullPointerException e) {
-            // userId not found
+            System.out.println("ERROR CODE > user not found");
             return "redirect:/users/loginForm";
         }
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.removeAttribute("sessionedUser");
+        session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
         return "redirect:/";
     }
 
@@ -60,29 +60,22 @@ public class UserController {
     public String viewProfile(@PathVariable Long id, Model model, HttpSession session) {
         try {
             model.addAttribute("user", getSessionedUser(id, session));
+            return "/users/profile";
         } catch (NullPointerException | IllegalAccessException e) {
-            System.out.println("error code: >>>> "+e.toString());
+            System.out.println("ERROR CODE > " + e.toString());
             return e.getMessage();
         }
-        return "/users/profile";
     }
 
     @GetMapping("/{id}/form")
     public String viewUpdateForm(@PathVariable Long id, Model model, HttpSession session) {
         try {
-            if (!HttpSessionUtils.isLogin(session)) {
-                throw new NullPointerException();
-            }
-            User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-            if (!sessionedUser.isIdEquals(id)) {
-                throw new IllegalAccessException();
-            }
-            model.addAttribute("user", sessionedUser);
+            model.addAttribute("user", getSessionedUser(id, session));
+            return "/users/updateForm";
         } catch (NullPointerException | IllegalAccessException e) {
-            System.out.println("error code: >>>> "+e.toString());
+            System.out.println("ERROR CODE > " + e.toString());
             return e.getMessage();
         }
-        return "/users/updateForm";
     }
 
     @PutMapping("/{id}/update")

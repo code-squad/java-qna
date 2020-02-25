@@ -19,7 +19,6 @@ public class QuestionController {
 
     @PostMapping("/questions")
     public String createQuestion(Question question) {
-        //System.out.println("question ->\n" + question);
         questionRepository.save(question);
         return "redirect:/";
     }

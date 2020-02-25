@@ -1,6 +1,7 @@
 package com.codessquad.qna;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 public class Question {
@@ -8,10 +9,13 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, unique = true)
     private String writer;
 
+    @NotEmpty
     private String title;
+
+    @NotEmpty
     private String contents;
     private String postingTime;
 

@@ -3,9 +3,12 @@ package com.codessquad.qna.domain;
 import java.time.format.DateTimeFormatter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import org.hibernate.annotations.Type;
 
 @Entity
@@ -15,8 +18,9 @@ public class Question extends BaseTimeEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false)
-  private String writer;
+  @ManyToOne
+  @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+  private User writer;
 
   @Column(nullable = false)
   private String title;
@@ -28,7 +32,7 @@ public class Question extends BaseTimeEntity {
   public Question() {
   }
 
-  public Question(String writer, String title, String contents) {
+  public Question(User writer, String title, String contents) {
     this.writer = writer;
     this.title = title;
     this.contents = contents;
@@ -40,10 +44,10 @@ public class Question extends BaseTimeEntity {
   }
 
   public String getWriter() {
-    return writer;
+    return writer.getUserId();
   }
 
-  public void setWriter(String writer) {
+  public void setWriter(User writer) {
     this.writer = writer;
   }
 

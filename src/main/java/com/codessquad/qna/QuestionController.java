@@ -11,12 +11,11 @@ import java.util.List;
 
 @Controller
 public class QuestionController {
-
     private List<Question> questions = new ArrayList<>();
 
-    @GetMapping("/qna/form")
+    @GetMapping("/questions/form")
     public String questionForm() {
-        return "questionForm";
+        return "question/questionForm";
     }
 
     @PostMapping("/questions")
@@ -33,12 +32,11 @@ public class QuestionController {
         return "index";
     }
 
-    @GetMapping("/question/{id}")
+    @GetMapping("/questions/{id}")
     public String questionPage(@PathVariable int id, Model model) {
         for (Question each : questions) {
             if (each.getId() == id) model.addAttribute("question", each);
         }
-        return "show";
+        return "question/show";
     }
-
 }

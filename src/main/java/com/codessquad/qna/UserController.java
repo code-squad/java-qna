@@ -3,64 +3,62 @@ package com.codessquad.qna;
 import com.codessquad.qna.domain.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@RequestMapping("/users")
 public class UserController {
     private List<User> users = new ArrayList<>();
 
-    @GetMapping("/user/login")
+    @GetMapping("/login")
     public String login() {
         return "login";
     }
 
-    @PostMapping("/user/create")
+    @PostMapping("/create")
     public String create(User user) {
         user.setId((long) users.size() + 1);
         users.add(user);
         return "redirect:/users";
     }
 
-    @GetMapping("/users")
+    @GetMapping("")
     public String users(Model model) {
         model.addAttribute("users", users);
-        return "list";
+        return "user/list";
     }
 
-    @GetMapping("/users/{userId}")
+    @GetMapping("/{userId}")
     public String profile(@PathVariable String userId, Model model) {
         for (User each : users) {
             if (each.getUserId().equals(userId)) model.addAttribute("user", each);
         }
-        return "profile";
+        return "user/profile";
     }
 
-    @GetMapping("/user/form")
+    @GetMapping("/form")
     public String userForm() {
-        return "form";
+        return "user/form";
     }
 
-    @GetMapping("/users/{id}/form")
-    public String updateUser(@PathVariable int id, Model model) {
+    @GetMapping("/{id}/form")
+    public String updateForm(@PathVariable int id, Model model) {
         for (User each : users) {
             if (each.getId() == id) model.addAttribute("user", each);
         }
-        return "updateForm";
+        return "user/updateForm";
     }
 
-    @PostMapping("/users/{id}/update")
-    public String checkUpdateVaildate(@PathVariable Long id,
-                                      @RequestParam String password,
-                                      @RequestParam String newPassword,
-                                      @RequestParam String checkPassword,
-                                      @RequestParam String name,
-                                      @RequestParam String email) {
+    @PostMapping("/{id}/update")
+    public String updateUser(@PathVariable Long id,
+                             @RequestParam String password,
+                             @RequestParam String newPassword,
+                             @RequestParam String checkPassword,
+                             @RequestParam String name,
+                             @RequestParam String email) {
         System.out.println("password : " + password + " newPassword : " + newPassword + " checkPassword : " + checkPassword);
         User user = new User();
         for (User each : users) {

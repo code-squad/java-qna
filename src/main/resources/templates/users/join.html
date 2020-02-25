@@ -1,0 +1,71 @@
+{{#partial "content"}}
+    <div class="contents" style="">
+      <div class="join">
+        <div class="title">
+          <h2>JOIN</h2>
+        </div>
+
+        <form name="question" action="/users" method="POST">
+          <fieldset> <!--폼 요소를 그룹으로 묶는 태그 -->
+            <legend></legend> <!-- 그룹으로 묶는 구역에 제목을 붙이는 태그 -->
+            <h3>기본정보</h3>
+            <table>
+              <caption>기본 정보</caption> <!--표에 대한 제목-->
+              <tbody>
+                <tr>
+                  <th scope="row">아이디</th>
+                  <td><input type="text" id="userId" name="userId" placeholder="아이디를 입력하세요."><span>(영문소문자/숫자,4~16자)</span></td>
+                </tr>
+                <tr>
+                  <th scope="row">비밀번호</th>
+                  <td><input type="password" id="password" name="password" placeholder="비밀번호를 입력하세요." onchange="isSame()"><span>(영문 대소문자/숫자/특수문자 중 2가지 이상 조합, 8자~16자)</span></td>
+                </tr>
+                <tr>
+                  <th scope="row">비밀번호 확인</th>
+                  <td><input type="password" id="check_pw" name="check_pw" onchange="isSame()">&nbsp;&nbsp;<span id="same"></span></td>
+                </tr>
+                <tr>
+                  <th scope="row">이름</th>
+                  <td><input type="text" id="name" name="name" maxlength="20"></td><!--alt : 구글에 이미지에 대한 설명 제공 -->
+                </tr>
+                <tr>
+                  <th scope="row">주소</th>
+                  <td><input type="text" id="address" name="address"></td>
+                </tr>
+                <tr>
+                  <th scope="row">휴대 전화</th>
+                  <td><input type="text" id="phoneNumber" name="phoneNumber"></td>
+                </tr>
+                <tr>
+                  <th scope="row">이메일</th>
+                  <td><input type="email" id="email" name="email"></td>
+                </tr>
+              </tbody>
+            </table>
+            <!--<h3>추가정보</h3>
+            <table>
+              <caption>회원 추가정보</caption>
+              <tbody>
+                <tr>
+                  <th>성별</th>
+                  <td><input type="radio" id="is_sex" name="is_sex" value="F">여자
+                  <input type="radio" id="is_sex" name="is_sex" value="M">남자</td>
+                </tr>
+                <tr>
+                  <th>생년월일</th>
+                  <td><input type="date" id="birthday" name="birthday"></td>
+                </tr>
+              </tbody>
+            </table>-->
+          <div class="btn_sbmWrap">
+            <input onclick="isNull()" type="submit" value="회원가입" class="btn_submit">
+            <a href="/" class="btn_submit normal">취소</a>
+          </div>
+          </fieldset>
+        </form>
+
+      </div>
+    </div>
+{{/partial}}
+
+{{> base}}

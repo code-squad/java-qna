@@ -13,6 +13,14 @@
 
 ---
 
+# Step 1
+
+### 배포
+
+[헤로쿠 배포 URL](https://shrouded-cove-08217.herokuapp.com)
+
+
+
 ### 구현한 기능
 
 1. 회원가입 - `JOIN US`
@@ -25,20 +33,41 @@
 
 
 
-CSS 만들다가 지쳐서 질문하기 폼이... 디자인이 없어요ㅠㅠㅠㅠ
+### 업데이트 계획
+
+- [x] 회원정보 수정
+
+- [ ] log4js 적용
+
+- [ ] HTML 중복 제거 - URL과 html 연결하여 제거
+
+* [x] 질문하기 폼 디자인 수정
 
 
 
-### 배포
+# Step 2
 
-[헤로쿠 배포 URL](https://shrouded-cove-08217.herokuapp.com)
+### 구현한 기능
+
+1. 회원 정보를 DB에 저장 및 조회 - `UserRepository`
+
+2. 질문 데이터를 DB에 저장 및 조회 - `QuestionRepostory` 
+
+3. 회원 정보 수정 - `User`클래스의 `update()`
+
+   1. 회원 목록에서 회원가입한 사용자의 정보를 수정할 수 있어야 한다.
+
+   2. 비밀번호, 이름, 이메일만 수정할 수 있으며, 사용자 아이디는 수정할 수 없다.
+
+   3. 비밀번호가 일치하는 경우에만 수정 가능하다. -  `User`클래스의 `checkPassword()`
+
+      비밀번호가 맞지 않은 경우 `ResponseStatusExceptio(HttpStatus.FORBIDDEN)` 에러 처리
 
 
 
 ### 업데이트 계획
 
-* 회원정보 수정
-* log4js 적용
-* HTML 중복 제거 - URL과 html 연결하여 제거
-* 질문하기 폼 디자인 수정
+- [ ] 비밀번호가 맞지 않은 경우, HTTPStatus Code를 403 으로 돌려주도록 수정
+
+- [ ] 
 

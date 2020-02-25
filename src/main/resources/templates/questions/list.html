@@ -23,8 +23,8 @@
           {{#questions}}
           <tbody>
             <tr>
-              <td>{{index}}</td>
-              <td class="left"><a href="questions/{{index}}">{{title}}</a></td>
+              <td>{{id}}</td>
+              <td class="left"><a href="/questions/{{id}}">{{title}}</a></td>
               <td>{{writer}}</td>
               <td>{{formattedCreatedTime}}</td>
             </tr>
@@ -45,7 +45,7 @@
                 </ul>
             </div>
             <div class="btn_sbmWrap">
-                <a class="btn_submit normal" href="qna/form" role="button">질문하기</a>
+                <a class="btn_submit normal" href="/questions/form" role="button">질문하기</a>
             </div>
         </div>
       </div>

@@ -2,6 +2,7 @@ package com.codessquad.qna.controller;
 
 import com.codessquad.qna.domain.Question;
 import com.codessquad.qna.domain.User;
+import com.codessquad.qna.repository.AnswerRepository;
 import com.codessquad.qna.repository.QnaRepository;
 import com.codessquad.qna.web.HttpSessionUtils;
 import javax.servlet.http.HttpSession;
@@ -24,6 +25,9 @@ public class QnaController {
   @Autowired
   private QnaRepository qnaRepository;
 
+  @Autowired
+  private AnswerRepository answerRepository;
+
   @GetMapping(value = "/form")
   public String form(HttpSession httpSession) {
     if (!HttpSessionUtils.isLoginUser(httpSession)) {
@@ -34,7 +38,7 @@ public class QnaController {
 
   @PostMapping(value = "")
   public String create(String title, String contents, HttpSession httpSession) {
-    if(!HttpSessionUtils.isLoginUser(httpSession)) {
+    if (!HttpSessionUtils.isLoginUser(httpSession)) {
       return "/user/login";
     }
     User sessionUser = (User) httpSession.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
@@ -43,9 +47,10 @@ public class QnaController {
     return "redirect:/";
   }
 
-  @GetMapping(value = "/{index}")
-  public String getQuestion(@PathVariable("index") long id, Model model) {
+  @GetMapping(value = "/{id}")
+  public String getQuestion(@PathVariable("id") long id, Model model) {
     model.addAttribute("question", qnaRepository.getOne(id));
+    model.addAttribute("answers", answerRepository.findByQuestionId(id));
     return "/qna/show";
   }
 

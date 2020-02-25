@@ -49,9 +49,9 @@ public class UserController {
     if (!HttpSessionUtils.isLoginUser(httpSession)) {
       return "redirect:/user/login";
     }
-    User sessionUser = (User) HttpSessionUtils.getUserFromSession(httpSession);
+    User sessionUser = HttpSessionUtils.getUserFromSession(httpSession);
     if (!sessionUser.matchId(id)) {
-      throw new IllegalStateException("You can't update another User");
+      throw new IllegalStateException("자신이 아닌 다른 유저를 업데이트 할 수 없습니다.");
     }
 
     User user = userRepository.getOne(sessionUser.getId());
@@ -86,7 +86,7 @@ public class UserController {
     }
     User sessionUser = HttpSessionUtils.getUserFromSession(httpSession);
     if (!sessionUser.matchId(id)) {
-      throw new IllegalStateException("You can't update another User");
+      throw new IllegalStateException("자신이 아닌 다른 유저를 업데이트 할 수 없습니다.");
     }
     model.addAttribute("user", userRepository.getOne(sessionUser.getId()));
     return "user/updateForm";

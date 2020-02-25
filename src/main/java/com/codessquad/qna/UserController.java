@@ -1,40 +1,47 @@
 package com.codessquad.qna;
 
+import com.codessquad.qna.domain.User;
+import com.codessquad.qna.domain.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @Controller
 public class UserController {
-    public List<User> users = new ArrayList<>();
 
-    @PostMapping("/user/create")
+    @Autowired
+    private UserRepository userRepository;
+
+    @PostMapping("/users")
     public String create(User user) {
         System.out.println("user : " + user);
-        users.add(user);
-        return "redirect:/user/list";
+        userRepository.save(user);
+        return "redirect:/users";
     }
 
-    @GetMapping("/user/list")
+    @GetMapping("/users")
     public String list(Model model) {
-        model.addAttribute("users", users);
+        model.addAttribute("users", userRepository.findAll());
         return "user/list";
     }
 
-    @GetMapping("/user/profile/{userId}")
-    public String profile(Model model, @PathVariable String userId) {
-        for (User user : users) {
-            if (user.getUserId().equals(userId)) {
-                model.addAttribute("userId", userId);
-                model.addAttribute("email", user.getEmail());
-                return "user/profile";
-            }
-        }
-        return "user/profile";
+    @GetMapping("/users/{id}/form")
+    public String updateForm(@PathVariable Long id, Model model) {
+        model.addAttribute("user", userRepository.findById(id).orElse(null));
+        return "/user/updateform";
+    }
+
+    @PutMapping("/users/{id}")
+    public String update(@PathVariable Long id, Model model, User newUser) {
+        model.addAttribute("user", userRepository.findById(id).orElse(null));
+        User user = userRepository.findById(id).orElse(null);
+        assert user != null;
+        user.update(newUser);
+        userRepository.save(user);
+        return "redirect:/users";
     }
 }

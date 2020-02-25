@@ -49,11 +49,27 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public String updateUser(@PathVariable Long id, User updatedUser) {
-        User user = userRepository.findById(id).get();
+    public String updateUser(@PathVariable Long id, User updatedUser, String updatedPassword) throws NotFoundException {
+        System.out.println("사용자 정보 수정");
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 회원입니다."));
+        if(!checkPassword(user,updatedUser)){
+            System.out.println("비밀번호 불일치");
+            return "redirect:/users/{id}/form";
+        }
+        checkUpdatePassword(updatedUser, updatedPassword);
         user.update(updatedUser);
         userRepository.save(user);
         return "redirect:/users/list";
+    }
+
+    private boolean checkPassword(User user, User updatedUser) {
+        return user.getPassword().equals(updatedUser.getPassword());
+    }
+
+    private void checkUpdatePassword(User updatedUser, String updatedPassword) {
+        if(updatedPassword.length()!=0){
+            updatedUser.setPassword(updatedPassword);
+        }
     }
 
 }

@@ -101,8 +101,8 @@ public class UserController {
         if (userAttribute == null) {
             return false;
         }
-        User sessionedUser = (User) userAttribute;
-        return sessionedUser.equals(user);
+        User loginUser = (User) userAttribute;
+        return loginUser.equals(user);
     }
 
     @GetMapping("/login")

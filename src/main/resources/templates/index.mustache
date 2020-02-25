@@ -1,0 +1,32 @@
+{{>layout/header}}
+<h1>Sigrid's QnA for CodeSquad</h1>
+<h2>코드스쿼드 마스터즈 코스 생활에 대한 모든 질문을 받습니다.</h2>
+<div class="col-md-12">
+  <div class="row">
+    <div class="col-md-6">
+      <a href="/posts/save" role="button" class="btn btn-primary">글 등록하러 가기</a>
+    </div>
+  </div>
+  <!-- 목록 출력 영역 -->
+  <table class="table table-dark table-bordered">
+    <thead class="thead-strong">
+    <tr>
+      <th>게시글 번호</th>
+      <th>제목</th>
+      <th>작성자</th>
+      <th>최종 수정일</th>
+    </tr>
+    </thead>
+    <tbody id="tbody">
+    {{#posts}}
+      <tr>
+        <td>{{Id}}</td>
+        <td><a href="/posts/update/{{Id}}">{{title}}</td>
+        <td>{{author}}</td>
+        <td>{{modifiedDate}}</td>
+      </tr>
+    {{/posts}}
+    </tbody>
+  </table>
+</div>
+{{>layout/footer}}

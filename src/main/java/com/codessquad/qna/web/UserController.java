@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @PostMapping("")
-    public String createUser(User user) {
+    public String createUser(@ModelAttribute User user) {
         userRepository.save(user);
         return "redirect:/users";
     }

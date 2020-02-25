@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -11,16 +12,16 @@ import java.time.format.DateTimeFormatter;
 public class Question {
     @Id
     @GeneratedValue
-    private long questionId;
-    @Column(nullable = false)
+    private Long questionId;
+    @NotEmpty
     private String writer;
-    @Column(nullable = false)
+    @NotEmpty
     private String title;
     private String contents;
     @Column(nullable = false)
     private LocalDateTime createdDateTime;
 
-    public void setQuestionId(long questionId) {
+    public void setQuestionId(Long questionId) {
         this.questionId = questionId;
     }
 
@@ -40,7 +41,7 @@ public class Question {
         this.createdDateTime = createdDateTime;
     }
 
-    public long getQuestionId() {
+    public Long getQuestionId() {
         return questionId;
     }
 

@@ -13,6 +13,6 @@ public class PostsListResponseDto {
     this.title = entity.getTitle();
     this.content = entity.getContent();
     this.author = entity.getAuthor();
-    this.createdTime = entity.
+    this.createdTime = entity.getCreatedTime();
   }
 }

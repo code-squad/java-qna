@@ -2,11 +2,11 @@ package com.codessquad.qna.question;
 
 import com.codessquad.qna.common.CommonString;
 import com.codessquad.qna.user.User;
+import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
 
 @Entity
 public class Question {
@@ -26,9 +26,8 @@ public class Question {
     @Column(nullable = false)
     private LocalDateTime createdDateTime;
     private LocalDateTime updatedDateTime;
-
-    @OneToMany
-    private Collection<Reply> replies;
+    @Formula("(select count(*) from answer ans where ans.question_id = id)")
+    private int replyCount;
 
     public Question() {}
 
@@ -97,16 +96,7 @@ public class Question {
         return updatedDateTime.format(DATE_TIME_FORMATTER);
     }
 
-    public Collection<Reply> getReplies() {
-        return replies;
-    }
-
-    public void setReplies(Collection<Reply> replies) {
-        this.replies = replies;
-    }
-
     public int getReplyCount() {
-        return replies.size();
+        return replyCount;
     }
-
 }

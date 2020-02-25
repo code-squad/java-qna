@@ -9,11 +9,14 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Controller
 public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
+    @Autowired
+    private AnswerRepository answerRepository;
 
     @GetMapping("/")
     public String goIndexPage(Model model) {
@@ -45,9 +48,11 @@ public class QuestionController {
         try {
             Question question = getQuestionIfExist(id);
             Object userAttribute = session.getAttribute("loginUser");
+            List<Answer> answers = answerRepository.findByQuestionId(id);
             model.addAttribute("question", question);
             model.addAttribute("isLoginUserEqualsWriter",
                     isLoginUserEqualsWriter(question, userAttribute));
+            model.addAttribute("answers", answers);
         } catch (NotFoundException e) {
             return "error/question_not_found";
         }

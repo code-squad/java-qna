@@ -33,7 +33,7 @@ public class UserController {
     public String login(String userId, String password, HttpSession session) {
         try {
             User user = userRepository.findByUserId(userId);
-            if(!(isPasswordEquals(user.getId(), password))){
+            if (!user.isPasswordEquals(password)) {
                 return "redirect:/users/loginForm";
             }
             session.setAttribute("sessionedUser", user);
@@ -58,16 +58,10 @@ public class UserController {
 
     @GetMapping("/{id}")
     public String viewProfile(@PathVariable Long id, Model model, HttpSession session) {
-        Object value = session.getAttribute("sessionedUser");
-        if(value == null) {
-            return "redirect:/users";
-        }
         try {
-            User sessionedUser = (User)value;
-            if (!id.equals(sessionedUser.getId()) || !(isIdPresent(id)))
-                throw new IllegalAccessException();
-            model.addAttribute("user", userRepository.findById(id).get());
-        } catch (IllegalAccessException e) {
+            model.addAttribute("user", getSessionedUser(id, session));
+        } catch (NullPointerException | IllegalAccessException e) {
+            System.out.println("error code: >>>> "+e.toString());
             return e.getMessage();
         }
         return "/users/profile";
@@ -75,16 +69,17 @@ public class UserController {
 
     @GetMapping("/{id}/form")
     public String viewUpdateForm(@PathVariable Long id, Model model, HttpSession session) {
-        Object value = session.getAttribute("sessionedUser");
-        if(value == null) {
-            return "redirect:/users";
-        }
         try {
-            User sessionedUser = (User)value;
-            if (!id.equals(sessionedUser.getId()) || !(isIdPresent(id)))
+            if (!HttpSessionUtils.isLogin(session)) {
+                throw new NullPointerException();
+            }
+            User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+            if (!sessionedUser.isIdEquals(id)) {
                 throw new IllegalAccessException();
-            model.addAttribute("user", userRepository.findById(id).get());
-        } catch (IllegalAccessException e) {
+            }
+            model.addAttribute("user", sessionedUser);
+        } catch (NullPointerException | IllegalAccessException e) {
+            System.out.println("error code: >>>> "+e.toString());
             return e.getMessage();
         }
         return "/users/updateForm";
@@ -92,7 +87,8 @@ public class UserController {
 
     @PutMapping("/{id}/update")
     public String viewUpdatedList(@PathVariable Long id, String password, String name, String email) {
-        if(!(isPasswordEquals(id, password))) {
+        User user = userRepository.findById(id).get();
+        if (!user.isPasswordEquals(password)) {
             return "redirect:/users";
         }
         userRepository.findById(id).get().setName(name);
@@ -101,11 +97,14 @@ public class UserController {
         return "redirect:/users";
     }
 
-    private Boolean isIdPresent(Long id) {
-        return userRepository.findById(id).isPresent();
-    }
-
-    private Boolean isPasswordEquals(Long id, String password) {
-        return userRepository.findById(id).get().getPassword().equals(password);
+    private User getSessionedUser(Long id, HttpSession session) throws IllegalAccessException {
+        if (!HttpSessionUtils.isLogin(session)) {
+            throw new NullPointerException();
+        }
+        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+        if (!sessionedUser.isIdEquals(id)) {
+            throw new IllegalAccessException();
+        }
+        return sessionedUser;
     }
 }

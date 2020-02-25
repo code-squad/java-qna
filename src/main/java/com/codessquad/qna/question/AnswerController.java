@@ -4,9 +4,11 @@ import com.codessquad.qna.user.User;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
 
 @Controller
 public class AnswerController {
@@ -36,17 +38,43 @@ public class AnswerController {
         return "redirect:/questions/" + questionId;
     }
 
-    @GetMapping("/questions/{questionId}/answers/{answerId}")
+    @GetMapping("/questions/{questionId}/answers/{answerId}/form")
     public String goUpdateAnswerForm(@PathVariable Long questionId,
                                      @PathVariable Long answerId,
-                                     Answer answer) {
-        return "redirect:/questions/" + questionId;
+                                     HttpSession session,
+                                     Model model) {
+        Object loginUserAttribute = session.getAttribute("loginUser");
+        if (loginUserAttribute == null) {
+            return "redirect:/users/login";
+        }
+
+        try {
+            Question question = questionRepository.findById(questionId).orElseThrow(() -> new NotFoundException("못찾음"));
+            Answer answer = answerRepository.findByQuestionIdAndId(questionId, answerId);
+            model.addAttribute("question", question);
+            model.addAttribute("answer", answer);
+        } catch (NotFoundException e) {
+            return "error/question_not_found";
+        }
+
+        return "questions/answer_modify_form";
     }
 
-    @PutMapping("/questions/{questionId}/answers/{answerId}/form")
+    @PutMapping("/questions/{questionId}/answers/{answerId}")
     public String updateAnswer(@PathVariable Long questionId,
                                @PathVariable Long answerId,
-                               Answer answer) {
+                               @RequestParam String comments,
+                               HttpSession session) {
+        Object loginUserAttribute = session.getAttribute("loginUser");
+        if (loginUserAttribute == null) {
+            return "redirect:/users/login";
+        }
+
+        Answer answer = answerRepository.findByQuestionIdAndId(questionId, answerId);
+        answer.setComment(comments);
+        answer.setUpdatedDateTime(LocalDateTime.now());
+        answerRepository.save(answer);
+
         return "redirect:/questions/" + questionId;
     }
 

@@ -18,8 +18,6 @@ public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
 
-    private List<Question> questions = new ArrayList<>();
-
     @GetMapping("/questions/form")
     public String questionForm() {
         return "question/questionForm";

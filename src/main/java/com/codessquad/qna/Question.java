@@ -2,6 +2,8 @@ package com.codessquad.qna;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Question {
@@ -18,9 +20,10 @@ public class Question {
     @NotEmpty
     private String contents;
     private String postingTime;
+    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
 
     public Question() {
-        this.postingTime = new Time().getCurrentTime();
+        setPostingTime();
     }
 
     public void setWriter(String writer) {
@@ -33,6 +36,10 @@ public class Question {
 
     public void setContents(String contents) {
         this.contents = contents;
+    }
+
+    public void setPostingTime() {
+        this.postingTime = getLocalDateTime();
     }
 
     public Long getId() { return id; }
@@ -51,6 +58,10 @@ public class Question {
 
     public String getPostingTime() {
         return postingTime;
+    }
+
+    private String getLocalDateTime() {
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT));
     }
 
     @Override

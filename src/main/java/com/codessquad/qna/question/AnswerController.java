@@ -24,7 +24,7 @@ public class AnswerController {
                                HttpSession session) {
         Object loginUserAttribute = session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
         if (loginUserAttribute == null) {
-            return "redirect:/users/login";
+            return CommonUtility.REDIRECT_LOGIN_PAGE;
         }
 
         try {
@@ -46,12 +46,17 @@ public class AnswerController {
                                      Model model) {
         Object loginUserAttribute = session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
         if (loginUserAttribute == null) {
-            return "redirect:/users/login";
+            return CommonUtility.REDIRECT_LOGIN_PAGE;
         }
 
         try {
-            Question question = questionRepository.findById(questionId).orElseThrow(() -> new NotFoundException("못찾음"));
+            User loginUser = (User) loginUserAttribute;
+            Question question = questionRepository.findById(questionId)
+                                                  .orElseThrow(() -> new NotFoundException("못찾음"));
             Answer answer = answerRepository.findByQuestionIdAndId(questionId, answerId);
+            if (!loginUser.equals(answer.getWriter())) {
+                return "redirect:/questions/" + questionId;
+            }
             model.addAttribute("question", question);
             model.addAttribute("answer", answer);
         } catch (NotFoundException e) {
@@ -68,10 +73,14 @@ public class AnswerController {
                                HttpSession session) {
         Object loginUserAttribute = session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
         if (loginUserAttribute == null) {
-            return "redirect:/users/login";
+            return CommonUtility.REDIRECT_LOGIN_PAGE;
         }
 
+        User loginUser = (User) loginUserAttribute;
         Answer answer = answerRepository.findByQuestionIdAndId(questionId, answerId);
+        if (!loginUser.equals(answer.getWriter())) {
+            return "redirect:/questions/" + questionId;
+        }
         answer.setComment(comments);
         answer.setUpdatedDateTime(LocalDateTime.now());
         answerRepository.save(answer);
@@ -81,8 +90,18 @@ public class AnswerController {
 
     @DeleteMapping("/questions/{questionId}/answers/{answerId}")
     public String deleteAnswer(@PathVariable Long questionId,
-                               @PathVariable Long answerId) {
+                               @PathVariable Long answerId,
+                               HttpSession session) {
+        Object loginUserAttribute = session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
+        if (loginUserAttribute == null) {
+            return CommonUtility.REDIRECT_LOGIN_PAGE;
+        }
+
+        User loginUser = (User) loginUserAttribute;
         Answer answer = answerRepository.findByQuestionIdAndId(questionId, answerId);
+        if (!loginUser.equals(answer.getWriter())) {
+            return "redirect:/questions/" + questionId;
+        }
         answerRepository.delete(answer);
         return "redirect:/questions/" + questionId;
     }

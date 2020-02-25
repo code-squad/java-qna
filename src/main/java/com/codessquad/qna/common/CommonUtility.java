@@ -8,6 +8,7 @@ public class CommonUtility {
     public static final String ERROR_CANNOT_EDIT_OTHER_USER_INFO = "error/cannot_edit_other_user_info";
     public static final String SESSION_LOGIN_USER = "loginUser";
     public static final String ERROR_QUESTION_NOT_FOUND = "error/question_not_found";
+    public static final String REDIRECT_LOGIN_PAGE = "redirect:/users/login";
 
     private CommonUtility() {}
 }

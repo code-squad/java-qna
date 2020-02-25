@@ -36,7 +36,7 @@ public class QuestionController {
                                  @RequestParam String contents) {
         Object userAttribute = session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
         if (userAttribute == null) {
-            return "redirect:/users/login";
+            return CommonUtility.REDIRECT_LOGIN_PAGE;
         }
         User writer = (User) userAttribute;
         Question question = new Question(writer, title, contents);

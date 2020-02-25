@@ -1,7 +1,7 @@
 # Step2
 
 ## 배포 URL
-[배포 URL](https://hyunjun.herokuapp.com)
+[배포 URL](https://hyunjun2.herokuapp.com)
 
 ## 자가피드백 
 - redirect, GET, POST의 동작 원리를 이해하고 미션 구현하니 훨씬 수월했다. 
@@ -21,4 +21,8 @@
 ### 어려움 
 - id의 타입을 int에서 Long으로 변경했는데 UserRepository<User, int>를 변경 안해서 오류 발생. 
 
+## Heroku 배포 
+### 어려움
+- Heroku 배포 시 h10 에러 발생했는데 로그보니 h2 driver로 파악. build.gradle에서 h2 설정을 변경. 
+- testcompile group -> compile group: 'com.h2database', name: 'h2', version: '1.4.192'
 

@@ -23,7 +23,6 @@ public class Answer {
     private LocalDateTime createdDateTime;
     @Column(nullable = false)
     private LocalDateTime updatedDateTime;
-
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
     private Question question;

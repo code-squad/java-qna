@@ -3,11 +3,9 @@ package com.codessquad.qna;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,9 +17,28 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/login")
+
+    @GetMapping("/loginForm")
     public String login() {
         return "userDir/login";
+    }
+
+    @PostMapping("/login")
+    public String login(String userId, String password, HttpSession session) {
+        User user = userRepository.findByUserId(userId);
+        if(user == null) {
+            return "redirect:/users/loginForm";
+        }
+        if (!password.equals(user.getPassword())) {
+            return "redirect:/users/loginForm";
+        }
+
+        session.setAttribute("user", user);
+        
+
+
+
+        return "redirect:/";
     }
 
     @GetMapping("/form")
@@ -48,7 +65,7 @@ public class UserController {
         return "/userDir/updateForm";
     }
 
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public String update(@PathVariable Long id, User newUser) {
         User user = userRepository.findById(id).get();
         user.update(newUser);

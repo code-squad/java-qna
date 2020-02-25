@@ -1,6 +1,7 @@
 package com.codessquad.qna;
 
 import javax.persistence.*;
+import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -26,8 +27,8 @@ public class Question {
         setPostingTime();
     }
 
-    public void setWriter(String writer) {
-        this.writer = writer;
+    public void setWriter(String sessionUserId) {
+        this.writer = sessionUserId;
     }
 
     public void setTitle(String title) {
@@ -66,7 +67,7 @@ public class Question {
 
     @Override
     public String toString() {
-        return "index: " + id + "\nwriter: " + writer + "\ntitle: " + title + "\ncontents: " + contents +
+        return "writer: " + writer + "\ntitle: " + title + "\ncontents: " + contents +
                 "\npostingTime: " + postingTime + "\n";
     }
 }

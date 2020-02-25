@@ -59,7 +59,7 @@ public class UserController {
     @GetMapping("/{id}")
     public String viewProfile(@PathVariable Long id, Model model, HttpSession session) {
         try {
-            model.addAttribute("user", getSessionedUser(id, session));
+            model.addAttribute("user", getSessionUser(id, session));
             return "/users/profile";
         } catch (NullPointerException | IllegalAccessException e) {
             System.out.println("ERROR CODE > " + e.toString());
@@ -70,7 +70,7 @@ public class UserController {
     @GetMapping("/{id}/form")
     public String viewUpdateForm(@PathVariable Long id, Model model, HttpSession session) {
         try {
-            model.addAttribute("user", getSessionedUser(id, session));
+            model.addAttribute("user", getSessionUser(id, session));
             return "/users/updateForm";
         } catch (NullPointerException | IllegalAccessException e) {
             System.out.println("ERROR CODE > " + e.toString());
@@ -90,14 +90,14 @@ public class UserController {
         return "redirect:/users";
     }
 
-    private User getSessionedUser(Long id, HttpSession session) throws IllegalAccessException {
+    private User getSessionUser(Long id, HttpSession session) throws IllegalAccessException {
         if (!HttpSessionUtils.isLogin(session)) {
             throw new NullPointerException();
         }
-        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-        if (!sessionedUser.isIdEquals(id)) {
+        User sessionUser = HttpSessionUtils.getUserFromSession(session);
+        if (!sessionUser.isIdEquals(id)) {
             throw new IllegalAccessException();
         }
-        return sessionedUser;
+        return sessionUser;
     }
 }

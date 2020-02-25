@@ -2,19 +2,14 @@ package com.codessquad.qna.controller;
 
 import com.codessquad.qna.repository.Question;
 import com.codessquad.qna.repository.QuestionRepository;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.*;
+import java.util.Optional;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Stream;
 
 @Controller
 public class QuestionController {
@@ -28,38 +23,54 @@ public class QuestionController {
     }
 
     @GetMapping("/questions/{id}")
-    public String showQuestion(@PathVariable Long id, Model model) {
-        try {
-            Question question = questionRepository.findById(id).orElseThrow(Exception::new);
-            model.addAttribute("question", question);
+    public Object showQuestion(@PathVariable Long id, Model model) {
+        Optional<Question> question = questionRepository.findById(id);
+        if (question.isPresent()) {
+            model.addAttribute("question", question.get());
             return "/qna/show";
-        } catch (Exception e) {
-            return "error/qna/notFoundQna";
         }
+        return "redirect:/error/notFound";
     }
 
-    @GetMapping("questions/{id}/edit")
-    public String showEditPage(@PathVariable Long id, Model model) {
-        try {
-            Question question = questionRepository.findById(id).orElseThrow(Exception::new);
-            model.addAttribute("question", question);
+    @GetMapping("/questions/{id}/editForm")
+    public Object showEditPage(@PathVariable Long id, Model model) {
+        Optional<Question> question = questionRepository.findById(id);
+        if (question.isPresent()) {
+            model.addAttribute("question", question.get());
             return "/qna/edit";
-        } catch (Exception e) {
-            return "error/qna/notFoundQna";
         }
+        return "redirect:/error/notFound";
     }
 
     @PostMapping("/questions")
     public String createQuestion(Question question) {
-        questionRepository.save(question);
-        return "redirect:/";
+        if(isCorrectForm(question)) {
+            questionRepository.save(question);
+            return "redirect:/";
+        }
+        return "redirect:/error/badRequest";
     }
 
     @PutMapping("/questions/{id}")
-    public String updateQuestion(@PathVariable Long id, Question updateQuestion) {
-        Question question = questionRepository.findById(id).get();
-        question.update(updateQuestion);
-        questionRepository.save(question);
-        return "redirect:/questions/{id}";
+    public Object updateQuestion(@PathVariable Long id, Question updateQuestion) {
+        Optional<Question> originalQuestion = questionRepository.findById(id);
+        return originalQuestion.map(question -> update(question, updateQuestion)).orElseGet(ResponseEntity::notFound);
+    }
+
+    private Object update(Question originalQuestion, Question updateQuestion) {
+        if (isCorrectForm(updateQuestion)){
+            originalQuestion.update(updateQuestion);
+            questionRepository.save(originalQuestion);
+            return "redirect:/questions/{id}";
+        }
+        return "redirect:/error/badRequest";
+    }
+
+    private boolean isCorrectForm(Question question) {
+        boolean titleIsExist = ObjectUtils.isNotEmpty(question.getTitle());
+        boolean contentIsExist = ObjectUtils.isNotEmpty(question.getContents());
+        boolean writerIsExist = ObjectUtils.isNotEmpty(question.getWriter());
+
+        return titleIsExist && contentIsExist && writerIsExist;
     }
 }

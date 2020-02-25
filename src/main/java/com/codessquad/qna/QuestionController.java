@@ -11,6 +11,7 @@ import java.util.List;
 
 @Controller
 public class QuestionController {
+
     private List<Question> questions = new ArrayList<>();
 
     @GetMapping("/qna/form")
@@ -20,7 +21,7 @@ public class QuestionController {
 
     @PostMapping("/questions")
     public String questions(Question question) {
-        question.setId(questions.size()+1);
+        question.setId((long) (questions.size() + 1));
         questions.add(question);
         System.out.println("question : "+ question);
         return "redirect:/";

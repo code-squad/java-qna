@@ -5,6 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +13,15 @@ import java.util.List;
 @Controller
 public class UserController {
     private List<User> users = new ArrayList<>();
+
+    @GetMapping("/user/login")
+    public String login() {
+        return "login";
+    }
+
     @PostMapping("/user/create")
     public String create(User user) {
-        user.setId(users.size()+1);
+        user.setId((long) users.size() + 1);
         users.add(user);
         return "redirect:/users";
     }
@@ -34,7 +41,7 @@ public class UserController {
     }
 
     @GetMapping("/user/form")
-    public String userForm(){
+    public String userForm() {
         return "form";
     }
 
@@ -46,14 +53,19 @@ public class UserController {
         return "updateForm";
     }
 
-    @PostMapping("/user/{id}/update")
-    public String checkUpdateVaildate(@PathVariable int id, Model model, String password, String newPassword, String checkPassword, String name, String email){
-        System.out.println("password : " +password+ " newPassword : " + newPassword + " checkPassword : "+ checkPassword);
+    @PostMapping("/users/{id}/update")
+    public String checkUpdateVaildate(@PathVariable Long id,
+                                      @RequestParam String password,
+                                      @RequestParam String newPassword,
+                                      @RequestParam String checkPassword,
+                                      @RequestParam String name,
+                                      @RequestParam String email) {
+        System.out.println("password : " + password + " newPassword : " + newPassword + " checkPassword : " + checkPassword);
         User user = new User();
         for (User each : users) {
-            if (each.getId() == id) user = each;
+            if (each.getId().equals(id)) user = each;
         }
-        if (user.getPassword().equals(password)){
+        if (user.getPassword().equals(password)) {
             if (newPassword.equals(checkPassword)) {
                 user.setPassword(newPassword);
                 user.setName(name);

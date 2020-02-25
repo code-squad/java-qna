@@ -16,11 +16,11 @@ import java.time.LocalDateTime;
 @Controller
 public class QuestionController {
 
+    private static final Logger log = LoggerFactory.getLogger(QuestionController.class);
     @Autowired
     private QuestionRepository questionRepository;
-    private static final Logger log = LoggerFactory.getLogger(QuestionController.class);
 
-    @PostMapping("/questions/create")
+    @PostMapping("/questions")
     public String create(Question newQuestion) {
         newQuestion.setCreatedDateTime(LocalDateTime.now());
         questionRepository.save(newQuestion);
@@ -35,8 +35,8 @@ public class QuestionController {
     }
 
     @GetMapping("/questions/{questionId}")
-    public String show(@PathVariable long questionId, Model model) {
-        Question focusQuestion = questionRepository.findById(questionId).get();
+    public String show(@PathVariable Long questionId, Model model) {
+        Question focusQuestion = questionRepository.findById(questionId).orElseThrow(IllegalArgumentException::new);
         model.addAttribute("question", focusQuestion);
         return "qna/show";
     }

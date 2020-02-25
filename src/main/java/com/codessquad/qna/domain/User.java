@@ -1,4 +1,6 @@
-package com.codessquad.qna;
+package com.codessquad.qna.domain;
+
+
 
 public class User {
     private Long id;

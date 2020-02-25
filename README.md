@@ -1,44 +1,23 @@
-# Step1
+# Step2
 
 ## 배포 URL
 [배포 URL](https://hyunjun.herokuapp.com)
 
 ## 자가피드백 
-- 스프링MVC를 통해서 클라이언트와 웹서버가 소통하는 방식에 대한 이해를 할 수 있어 좋았다. 
-- 처음 접하는 스프링 프레임워크라 원리를 이해하는 데 시간이 소요됐지만 빠르게 보단 정확하게 익히자고 생각함.
-- HTTP를 코드로 느끼고 싶었는데 스프링이 다 해주는 느낌이라 아쉽다. step 진행하며 이해가 필요해보인다.  
+- redirect, GET, POST의 동작 원리를 이해할 수 있었다. 
+-  
 
-## 회원가입 및 회원 목록 기능 구현
+- 유저 회원가입, 질문하기, 회원정보 수정 페이지에 적용.
+	
+	- User, Question와 DB 연결해서 테이블 생성
+	- UserRepository, QuestionRepository 생성 후 DB에 CRUD 준비
+	-  
 
-- 회원가입 후 회원 목록 조회하는 페이지로 redirect
-
-## 회원 프로필 정보 보기 기능
-
-- 회원 아이디 입력 시 프로필 정보 보여주는 페이지로 이동
-
-## HTML 중복 제거
-
+## DB 설치 및 연결
+- H2 및 JPA 의존성 주입.
 ### 어려움
+- DB 연결 URL을 정확하게 입력안하니 연결이 안됐다. 
 
-- Handlebars 문법을 처음봐서 사용법 익히는 데 어려움을 겪음.
-
-- 처음엔 static HTML을 수정하려 하니 적용이 안됐고, 주변 동료에게 물어보니 동적 페이지에만 적용된다고 함.
-
-- static 페이지에는 적용이 안되는 지 공부 필요.
-
-## URL과 HTML 쉽게 연결하기 
-### 어려움
-- config 패키지의 위치를 어디로 넣어야 할지 파악이 안된다.
-- MvcConfig 클래스 만들었지만 적용이 안됨. 
-
-
-## 질문하기, 질문 목록 기능 구현
-### 어려움
-- Question 객체에서 getter를 설정 안 하니 해당 속성을 handlebar가 못 가져오는 현상.
-- view HTML에서 model의 데이터에 접근하려면 dot(.) 접근자 사용을 까먹어서 계속 blank가 만들어짐. ex) {{user.userId}} 
-- redirect하는 메서드도 URL이 반응하는 메서드로 해야함. Post인데 Get하면 데이터가 안 넘어온다. 
-- "/"에 반응하는 메서드는 Get이다. Post하니 첫 페이지가 안떠짐.
-
-## 회원정보 수정 기능 구현
+## User, Question과 DB 연결 후 테이블 생성 
 ### 어려움 
-- updateController를 만들었지만 사용을 안해서 지워야 했다. 하지만 안 지우니 계속 mapping이 UserController가 아닌 UpdateController로 되서 에러가 떴다.. ~~에너지를 많이 소모~~
+- domain 패키지를 qna 패키지의 바깥으로 설정하니 테이블 생성이 안됐다.

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 @Controller
@@ -53,5 +54,23 @@ public class UserController {
     public String create(User user) {
         userRepository.save(user);
         return "redirect:/users";
+    }
+
+    @PostMapping("/login")
+    public String login(String userId, String password, HttpSession session) {
+        User user = userRepository.findByUserId(userId);
+
+        if (user == null) {
+            System.out.println("Login Failure");
+            return "redirect:/login";
+        }
+        if (!password.equals(user.getPassword())) {
+            System.out.println("Login Failure");
+            return "redirect:/login";
+        }
+        System.out.println("Login Success!");
+        session.setAttribute("user", user);
+
+        return "redirect:/";
     }
 }

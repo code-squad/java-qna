@@ -25,24 +25,30 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
-        User user;
+        User sessionUser;
         try {
-            user = userRepository.findByUserId(userId);
+            sessionUser = userRepository.findByUserId(userId);
             System.out.println("input userId : " + userId + ", input password : " + password + ", session : " + session);
-            System.out.println("userID : " + user.getUserId());
-            System.out.println("password : " + user.getPassword());
+            System.out.println("userID : " + sessionUser.getUserId());
+            System.out.println("password : " + sessionUser.getPassword());
         } catch (NullPointerException e) {
             System.out.println("Login Fail!");
             //TODO: user가 없는 경우, 404 NotFound
             return "redirect:/users/login";
         }
 
-        if (!password.equals(user.getPassword())) {
+        if (!password.equals(sessionUser.getPassword())) {
             System.out.println("Login Fail!");
             return "redirect:/users/login";
         }
         System.out.println("Login Success!");
-        session.setAttribute("user", user); //HttpSession을 통해서 session.setAttribute();`로 세션을 저장
+        session.setAttribute("sessionUser", sessionUser); //HttpSession을 통해서 session.setAttribute();`로 세션을 저장
+        return "redirect:/";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.removeAttribute("sessionUser");
         return "redirect:/";
     }
 

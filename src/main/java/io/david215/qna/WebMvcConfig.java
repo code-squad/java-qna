@@ -9,7 +9,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/").setViewName("index");
         registry.addViewController("/qna/form").setViewName("qna/form");
         registry.addViewController("/qna/show").setViewName("qna/show");
         registry.addViewController("/users/form").setViewName("users/form");

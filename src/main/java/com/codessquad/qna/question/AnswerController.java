@@ -33,7 +33,7 @@ public class AnswerController {
             Answer answer = new Answer(loginUser, question, comments);
             answerRepository.save(answer);
         } catch (NotFoundException e) {
-            return "error/question_not_found";
+            return CommonUtility.ERROR_QUESTION_NOT_FOUND;
         }
 
         return "redirect:/questions/" + questionId;
@@ -55,7 +55,7 @@ public class AnswerController {
             model.addAttribute("question", question);
             model.addAttribute("answer", answer);
         } catch (NotFoundException e) {
-            return "error/question_not_found";
+            return CommonUtility.ERROR_QUESTION_NOT_FOUND;
         }
 
         return "questions/answer_modify_form";

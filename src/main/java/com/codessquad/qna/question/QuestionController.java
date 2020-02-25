@@ -55,7 +55,7 @@ public class QuestionController {
                     isLoginUserEqualsWriter(question, userAttribute));
             model.addAttribute("answers", answers);
         } catch (NotFoundException e) {
-            return "error/question_not_found";
+            return CommonUtility.ERROR_QUESTION_NOT_FOUND;
         }
 
         return "questions/show";
@@ -71,7 +71,7 @@ public class QuestionController {
             }
             model.addAttribute("question", question);
         } catch (NotFoundException e) {
-            return "error/question_not_found";
+            return CommonUtility.ERROR_QUESTION_NOT_FOUND;
         }
 
         return "questions/modify_form";
@@ -93,7 +93,7 @@ public class QuestionController {
             question.setUpdatedDateTime(LocalDateTime.now());
             questionRepository.save(question);
         } catch (NotFoundException e) {
-            return "error/question_not_found";
+            return CommonUtility.ERROR_QUESTION_NOT_FOUND;
         }
         return "redirect:/questions/" + id;
     }
@@ -108,7 +108,7 @@ public class QuestionController {
             }
             questionRepository.delete(question);
         } catch (NotFoundException e) {
-            return "error/question_not_found";
+            return CommonUtility.ERROR_QUESTION_NOT_FOUND;
         }
         return "redirect:/";
     }

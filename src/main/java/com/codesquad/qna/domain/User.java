@@ -1,16 +1,16 @@
 package com.codesquad.qna.domain;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 public class User {
     @Id
     private String userId;
-    @Column(nullable = false)
+    @NotEmpty
     private String password;
-    @Column(nullable = false)
+    @NotEmpty
     private String name;
     private String email;
 
@@ -47,8 +47,12 @@ public class User {
     }
 
     public void update(User updateUser) {
-        this.name = updateUser.getName();
-        this.email = updateUser.getEmail();
+        this.name = updateUser.name;
+        this.email = updateUser.email;
+    }
+
+    public boolean matchPassword(User sessionUser) {
+        return this.password.equals(sessionUser.getPassword());
     }
 
     @Override

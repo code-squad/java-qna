@@ -8,8 +8,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 public class Answer extends BaseTimeEntity {
@@ -20,6 +22,7 @@ public class Answer extends BaseTimeEntity {
 
   @ManyToOne
   @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
+  @OnDelete(action = OnDeleteAction.CASCADE)
   private Question question;
 
   @ManyToOne
@@ -27,8 +30,8 @@ public class Answer extends BaseTimeEntity {
   private User writer;
 
 
+  @Lob
   @Column(nullable = false)
-  @Type(type = "text")
   private String contents;
 
   public Answer() {

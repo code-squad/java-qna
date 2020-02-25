@@ -11,9 +11,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -36,11 +38,57 @@ public class QnaController {
     return "/qna/form";
   }
 
+  @PutMapping(value = "/{id}")
+  public String updateQuestion(@PathVariable("id") Long questionId, String title,
+      String contents, HttpSession httpSession) {
+    if (!HttpSessionUtils.isLoginUser(httpSession)) {
+      return "/user/login";
+    }
+
+    User sessionUser = HttpSessionUtils.getUserFromSession(httpSession);
+    Question question = qnaRepository.getOne(questionId);
+    if (!question.isSameWriter(sessionUser)) {
+      throw new IllegalStateException("자신이 쓴 질문만 수정할 수 있습니다.");
+    }
+    question.update(title, contents);
+    qnaRepository.save(question);
+    return "redirect:/questions/{id}";
+  }
+
+  @DeleteMapping(value = "/{id}")
+  public String deleteQuestion(@PathVariable("id") Long questionId, HttpSession httpSession) {
+    if (!HttpSessionUtils.isLoginUser(httpSession)) {
+      return "/user/login";
+    }
+
+    User sessionUser = HttpSessionUtils.getUserFromSession(httpSession);
+    Question question = qnaRepository.getOne(questionId);
+    if (!question.isSameWriter(sessionUser)) {
+      throw new IllegalStateException("자신이 쓴 질문만 삭제할 수 있습니다.");
+    }
+    qnaRepository.delete(question);
+    return "redirect:/";
+  }
+
+
+  @GetMapping(value = "/{id}/form")
+  public String getQuestionForm(@PathVariable("id") Long questionId, Model model,
+      HttpSession httpSession) {
+    if (!HttpSessionUtils.isLoginUser(httpSession)) {
+      return "/user/login";
+    }
+    Question question = qnaRepository.getOne(questionId);
+    model.addAttribute("question", question);
+    return "/qna/edit_form";
+  }
+
+
   @PostMapping(value = "")
   public String create(String title, String contents, HttpSession httpSession) {
     if (!HttpSessionUtils.isLoginUser(httpSession)) {
       return "/user/login";
     }
+
     User sessionUser = (User) httpSession.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
     Question question = new Question(sessionUser, title, contents);
     qnaRepository.save(question);

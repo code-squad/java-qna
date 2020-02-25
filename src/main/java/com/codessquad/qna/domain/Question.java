@@ -1,6 +1,7 @@
 package com.codessquad.qna.domain;
 
 import java.time.format.DateTimeFormatter;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -8,8 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import org.hibernate.annotations.Type;
 
 @Entity
 public class Question extends BaseTimeEntity {
@@ -25,8 +26,8 @@ public class Question extends BaseTimeEntity {
   @Column(nullable = false)
   private String title;
 
+  @Lob
   @Column(nullable = false)
-  @Type(type = "text")
   private String contents;
 
   public Question() {
@@ -38,6 +39,14 @@ public class Question extends BaseTimeEntity {
     this.contents = contents;
   }
 
+  public void update(String title, String contents) {
+    this.title = title;
+    this.contents = contents;
+  }
+
+  public boolean isSameWriter(User sessionUser) {
+    return writer.matchId(sessionUser.getId());
+  }
 
   public Long getId() {
     return id;

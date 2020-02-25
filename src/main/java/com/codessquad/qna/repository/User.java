@@ -2,11 +2,13 @@ package com.codessquad.qna.repository;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.ObjectUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -23,9 +25,11 @@ public class User {
     @Setter
     private String password;
 
+    @Column(nullable = false)
     @Setter
     private String name;
 
+    @Column(nullable = false)
     @Setter
     private String email;
 

@@ -2,16 +2,13 @@ package com.codessquad.qna.controller;
 
 import com.codessquad.qna.repository.User;
 import com.codessquad.qna.repository.UserRepository;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/users")
@@ -27,42 +24,70 @@ public class UserController {
 
     @GetMapping("/{id}")
     public String getUserProfile(@PathVariable Long id, Model model) {
-        User user = userRepository.getOne(id);
-        if (userRepository.existsById(id)) {
-            model.addAttribute("user", user);
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            model.addAttribute("user", user.get());
             return "user/profile";
         }
-        return "error/user/notFoundUser";
+        return "redirect:/error/notFound";
     }
 
-    @GetMapping("/{id}/edit")
+    @GetMapping("/{id}/editForm")
     public String showUpdatePage(@PathVariable Long id, Model model) {
-        if (userRepository.existsById(id)){
-            model.addAttribute("user", userRepository.getOne(id));
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()){
+            model.addAttribute("user", user.get());
             return "user/edit";
         }
-        return "error/user/notFoundUser";
+        return "redirect:/error/notFound";
     }
 
     @PostMapping
     public String createUser(User user) {
-        userRepository.save(user);
-        return "redirect:/users";
+        if (isCorrectUserFormat(user)) {
+            userRepository.save(user);
+            return "redirect:/users";
+        }
+        return "redirect:/error/badRequest";
     }
 
     @PutMapping("/{id}")
-    public void updateUser(@PathVariable Long id, User updateUser, String currentPassword, HttpServletResponse response) throws IOException {
-        User user = userRepository.getOne(id);
-        String userPassword = user.getPassword();
-        if (userPassword.equals(currentPassword)) {
-            user.update(updateUser);
-            userRepository.save(user);
-            response.sendRedirect("/users");
-            return;
+    public String updateUser(@PathVariable Long id, User updateUser, String currentPassword) {
+        Optional<User> originUser = userRepository.findById(id);
+        if (originUser.isPresent()) {
+            User origin = originUser.get();
+            return update(origin, updateUser, currentPassword);
         }
-        response.setContentType("text/html; charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        out.println("<script>alert('비밀번호가 틀렸습니다'); history.go(-1);</script>");
-        out.flush();
+        return "redirect:/error/notFound";
     }
+
+    private String update(User originUser, User updateData, String currentPassword) {
+        boolean isCorrectPassword = isCorrectPassword(originUser.getPassword(), currentPassword);
+        boolean isCorrectForm = isCorrectUserFormat(updateData);
+
+        if (isCorrectForm) {
+            if (isCorrectPassword) {
+                originUser.update(updateData);
+                userRepository.save(originUser);
+                return "redirect:/users";
+            }
+            return "redirect:/error/unauthorized";
+        }
+        return "redirect:/error/badRequest";
+    }
+
+    private boolean isCorrectUserFormat(User user) {
+        boolean userIdIsExist = ObjectUtils.isNotEmpty(user.getUserId());
+        boolean nameIsExist = ObjectUtils.isNotEmpty(user.getName());
+        boolean passwordIsExist = ObjectUtils.isNotEmpty(user.getPassword());
+        boolean emailIsExist = ObjectUtils.isNotEmpty(user.getEmail());
+
+        return userIdIsExist && nameIsExist && passwordIsExist && emailIsExist;
+    }
+
+    private boolean isCorrectPassword(String originPassword, String currentPassword){
+        return originPassword.equals(currentPassword);
+    }
+
 }
+

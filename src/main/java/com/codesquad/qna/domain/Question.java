@@ -1,6 +1,7 @@
 package com.codesquad.qna.domain;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -12,15 +13,19 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotEmpty
     @Column(nullable = false)
     private String writer;
 
+    @NotEmpty
     @Column(nullable = false)
     private String title;
 
+    @NotEmpty
     @Column(nullable = false)
     private String contents;
 
+    @NotEmpty
     @Column(nullable = false)
     private LocalDateTime createdTime;
 

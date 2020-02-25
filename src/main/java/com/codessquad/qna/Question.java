@@ -26,15 +26,11 @@ public class Question {
     private LocalDateTime created;
 
     public Question() {
-        this.created = date();
+        this.setCreated();
     }
 
     public Long getId() {
         return id;
-    }
-
-    public static LocalDateTime date() {
-        return LocalDateTime.now();
     }
 
     public LocalDateTime getCreated() {
@@ -66,7 +62,7 @@ public class Question {
     }
 
     public void setCreated() {
-        this.created = date();
+        this.created = LocalDateTime.now();
     }
 
     @Override

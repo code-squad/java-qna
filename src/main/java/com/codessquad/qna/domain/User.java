@@ -53,6 +53,8 @@ public class User {
         return email;
     }
 
+    public String getPassword() { return password; }
+
     public void update(User newUser) {
         this.password = newUser.password;
         this.name = newUser.name;

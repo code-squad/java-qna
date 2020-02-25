@@ -35,20 +35,20 @@ public class UserController {
             return "redirect:/users/loginForm";
         }
 
-        if (!password.equals(user.getPassword())) {
+        if (!user.matchPassword(password)) {
             System.out.println("Login Fauilure2!");
             return "redirect:/users/loginForm";
         }
 
         System.out.println("Login Success");
-        session.setAttribute("sessionedUser", user);
+        session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
 
         return "redirect:/";
     }
 
     @GetMapping("/users/logout")
     public String logout(HttpSession session) {
-        session.removeAttribute("sessionedUser");
+        session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
         return "redirect:/";
     }
 
@@ -60,13 +60,12 @@ public class UserController {
 
     @GetMapping("/users/{id}/form")
     public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
-        Object tempUser = session.getAttribute("sessionedUser");
-        if (tempUser == null) {
+        if (HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/users/loginForm";
         }
 
-        User sessionedUser = (User)tempUser;
-        if (!id.equals(sessionedUser.getId())) {
+        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+        if (!sessionedUser.matchId(id)) {
             throw new IllegalStateException("자신의 정보만 수정할 수 있습니다.");
         }
 
@@ -76,13 +75,12 @@ public class UserController {
 
     @PutMapping("/users/{id}")
     public String update(@PathVariable Long id, Model model, User updateUser, HttpSession session) {
-        Object tempUser = session.getAttribute("sessionedUser");
-        if (tempUser == null) {
+        if (HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/users/loginForm";
         }
 
-        User sessionedUser = (User)tempUser;
-        if (!id.equals(sessionedUser.getId())) {
+        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+        if (!sessionedUser.matchId(id)) {
             throw new IllegalStateException("자신의 정보만 수정할 수 있습니다.");
         }
 

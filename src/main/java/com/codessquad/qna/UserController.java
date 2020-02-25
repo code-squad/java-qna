@@ -7,17 +7,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Controller
 @RequestMapping("/users")
 public class UserController {
 
     @Autowired
     private UserRepository userRepository;
-
-    private List<User> users = new ArrayList<>();
 
     @GetMapping("/login")
     public String login() {
@@ -26,23 +21,19 @@ public class UserController {
 
     @PostMapping("/create")
     public String create(User user) {
-        user.setId((long) users.size() + 1);
-        users.add(user);
-//        userRepository.save()
+        userRepository.save(user);
         return "redirect:/users";
     }
 
     @GetMapping("")
     public String users(Model model) {
-        model.addAttribute("users", users);
+        model.addAttribute("users", userRepository.findAll());
         return "user/list";
     }
 
-    @GetMapping("/{userId}")
-    public String profile(@PathVariable String userId, Model model) {
-        for (User each : users) {
-            if (each.getUserId().equals(userId)) model.addAttribute("user", each);
-        }
+    @GetMapping("/{id}")
+    public String profile(@PathVariable Long id, Model model) {
+        model.addAttribute("user", userRepository.findById(id).get());
         return "user/profile";
     }
 
@@ -52,10 +43,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}/form")
-    public String updateForm(@PathVariable int id, Model model) {
-        for (User each : users) {
-            if (each.getId() == id) model.addAttribute("user", each);
-        }
+    public String updateForm(@PathVariable Long id, Model model) {
+        model.addAttribute("user", userRepository.findById(id).get());
         return "user/updateForm";
     }
 
@@ -66,16 +55,13 @@ public class UserController {
                              @RequestParam String checkPassword,
                              @RequestParam String name,
                              @RequestParam String email) {
-        System.out.println("password : " + password + " newPassword : " + newPassword + " checkPassword : " + checkPassword);
-        User user = new User();
-        for (User each : users) {
-            if (each.getId().equals(id)) user = each;
-        }
+        User user = userRepository.findById(id).get();
         if (user.getPassword().equals(password)) {
             if (newPassword.equals(checkPassword)) {
                 user.setPassword(newPassword);
                 user.setName(name);
                 user.setEmail(email);
+                userRepository.save(user);
                 return "redirect:/users";
             }
         }

@@ -1,6 +1,6 @@
 package com.codessquad.qna.question;
 
-import com.codessquad.qna.common.CommonString;
+import com.codessquad.qna.common.CommonUtility;
 import com.codessquad.qna.user.User;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class QuestionController {
     public String createQuestion(HttpSession session,
                                  @RequestParam String title,
                                  @RequestParam String contents) {
-        Object userAttribute = session.getAttribute(CommonString.SESSION_LOGIN_USER);
+        Object userAttribute = session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
         if (userAttribute == null) {
             return "redirect:/users/login";
         }
@@ -48,7 +48,7 @@ public class QuestionController {
     public String showQuestion(@PathVariable long id, Model model, HttpSession session) {
         try {
             Question question = getQuestionIfExist(id);
-            Object userAttribute = session.getAttribute(CommonString.SESSION_LOGIN_USER);
+            Object userAttribute = session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
             List<Answer> answers = answerRepository.findByQuestionId(id);
             model.addAttribute("question", question);
             model.addAttribute("isLoginUserEqualsWriter",
@@ -65,7 +65,7 @@ public class QuestionController {
     public String goQuestionModifyForm(@PathVariable long id, Model model, HttpSession session) {
         try {
             Question question = getQuestionIfExist(id);
-            Object userAttribute = session.getAttribute(CommonString.SESSION_LOGIN_USER);
+            Object userAttribute = session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
             if (!isLoginUserEqualsWriter(question, userAttribute)) {
                 return "redirect:/questions/" + id;
             }
@@ -84,7 +84,7 @@ public class QuestionController {
                                  @RequestParam String contents) {
         try {
             Question question = getQuestionIfExist(id);
-            Object userAttribute = session.getAttribute(CommonString.SESSION_LOGIN_USER);
+            Object userAttribute = session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
             if (!isLoginUserEqualsWriter(question, userAttribute)) {
                 return "redirect:/questions/" + id;
             }
@@ -102,7 +102,7 @@ public class QuestionController {
     public String deleteQuestion(@PathVariable long id, HttpSession session) {
         try {
             Question question = getQuestionIfExist(id);
-            Object userAttribute = session.getAttribute(CommonString.SESSION_LOGIN_USER);
+            Object userAttribute = session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
             if (!isLoginUserEqualsWriter(question, userAttribute)) {
                 return "redirect:/questions/" + id;
             }

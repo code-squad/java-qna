@@ -1,17 +1,14 @@
 package com.codessquad.qna.question;
 
-import com.codessquad.qna.common.CommonString;
+import com.codessquad.qna.common.CommonUtility;
 import com.codessquad.qna.user.User;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Question {
-    public static final DateTimeFormatter DATE_TIME_FORMATTER
-            = DateTimeFormatter.ofPattern(CommonString.DATE_FORMAT);
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -81,7 +78,7 @@ public class Question {
     }
 
     public String getFormattedCreatedDateTime() {
-        return createdDateTime.format(DATE_TIME_FORMATTER);
+        return createdDateTime.format(CommonUtility.DATE_TIME_FORMATTER);
     }
 
     public LocalDateTime getUpdatedDateTime() {
@@ -93,7 +90,7 @@ public class Question {
     }
 
     public String getFormattedUpdatedDateTime() {
-        return updatedDateTime.format(DATE_TIME_FORMATTER);
+        return updatedDateTime.format(CommonUtility.DATE_TIME_FORMATTER);
     }
 
     public int getReplyCount() {

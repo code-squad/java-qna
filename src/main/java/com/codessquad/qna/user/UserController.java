@@ -1,6 +1,6 @@
 package com.codessquad.qna.user;
 
-import com.codessquad.qna.common.CommonString;
+import com.codessquad.qna.common.CommonUtility;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -48,7 +48,7 @@ public class UserController {
         try {
             modelAndView.addObject("user", getUserIfExist(id));
         } catch (NotFoundException e) {
-            return new ModelAndView(CommonString.ERROR_USER_NOT_FOUND);
+            return new ModelAndView(CommonUtility.ERROR_USER_NOT_FOUND);
         }
         return modelAndView;
     }
@@ -59,11 +59,11 @@ public class UserController {
         try {
             User user = getUserIfExist(id);
             if (!getLoginUserAndCheckEqualsRequestedUser(session, user)) {
-                return CommonString.ERROR_CANNOT_EDIT_OTHER_USER_INFO;
+                return CommonUtility.ERROR_CANNOT_EDIT_OTHER_USER_INFO;
             }
             model.addAttribute("user", user);
         } catch (NotFoundException e) {
-            return CommonString.ERROR_USER_NOT_FOUND;
+            return CommonUtility.ERROR_USER_NOT_FOUND;
         }
         model.addAttribute("actionUrl", "/users/" + id);
         model.addAttribute("httpMethod", "PUT");
@@ -80,11 +80,11 @@ public class UserController {
         try {
             User user = getUserIfExist(id);
             if (!getLoginUserAndCheckEqualsRequestedUser(session, user)) {
-                return CommonString.ERROR_CANNOT_EDIT_OTHER_USER_INFO;
+                return CommonUtility.ERROR_CANNOT_EDIT_OTHER_USER_INFO;
             }
             updateUserNameAndEmail(user, userName, userPassword, userEmail);
         } catch (NotFoundException e) {
-            return CommonString.ERROR_USER_NOT_FOUND;
+            return CommonUtility.ERROR_USER_NOT_FOUND;
         } catch (TransactionSystemException e) {
             return "redirect:/users/" + id + "/form";
         }
@@ -93,7 +93,7 @@ public class UserController {
     }
 
     private boolean getLoginUserAndCheckEqualsRequestedUser(HttpSession session, User user) {
-        Object userAttribute = session.getAttribute(CommonString.SESSION_LOGIN_USER);
+        Object userAttribute = session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
         return checkUserEqualsLoginUser(user, userAttribute);
     }
 
@@ -120,7 +120,7 @@ public class UserController {
         if (user == null || !user.getUserPassword().equals(userPassword)) {
             return "users/login_failed";
         }
-        session.setAttribute(CommonString.SESSION_LOGIN_USER, user);
+        session.setAttribute(CommonUtility.SESSION_LOGIN_USER, user);
         return "redirect:/";
     }
 

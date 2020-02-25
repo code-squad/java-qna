@@ -1,8 +1,13 @@
 package com.codessquad.qna.domain;
 
 import java.util.Date;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
+@Entity
 public class Question {
+  @Id
+  private Long id;
 
   private String writer;
   private String title;

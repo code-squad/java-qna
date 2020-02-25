@@ -25,7 +25,7 @@ public class Question {
     private LocalDateTime createdTime;
 
     public Question() {
-        setCreatedTime();
+        setCreatedTimeNow();
     }
 
     public Long getId() {
@@ -64,13 +64,16 @@ public class Question {
         return createdTime;
     }
 
-    public void setCreatedTime() {
-        this.createdTime = LocalDateTime.now();
+    public void setCreatedTime(LocalDateTime createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    private void setCreatedTimeNow() {
+        setCreatedTime(LocalDateTime.now());
     }
 
     public String getFormattedCreatedTime() {
         return createdTime.format(DateTimeFormatter.ofPattern(DATE_FORMAT));
     }
-
 
 }

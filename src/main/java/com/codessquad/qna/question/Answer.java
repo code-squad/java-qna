@@ -21,10 +21,22 @@ public class Answer {
     private String comment;
     @Column(nullable = false)
     private LocalDateTime createdDateTime;
+    @Column(nullable = false)
+    private LocalDateTime updatedDateTime;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
     private Question question;
+
+    public Answer() {}
+
+    public Answer(User writer, Question question, String comment) {
+        this.writer = writer;
+        this.question = question;
+        this.comment = comment;
+        this.createdDateTime = LocalDateTime.now();
+        this.updatedDateTime = LocalDateTime.now();
+    }
 
     public long getId() {
         return id;
@@ -68,5 +80,17 @@ public class Answer {
 
     public void setQuestion(Question question) {
         this.question = question;
+    }
+
+    public LocalDateTime getUpdatedDateTime() {
+        return updatedDateTime;
+    }
+
+    public void setUpdatedDateTime(LocalDateTime updatedDateTime) {
+        this.updatedDateTime = updatedDateTime;
+    }
+
+    public String getFormattedUpdatedDateTime() {
+        return updatedDateTime.format(DATE_TIME_FORMATTER);
     }
 }

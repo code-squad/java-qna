@@ -60,7 +60,7 @@
                   <div class="article-header-text">
                     <a class="article-author-name" href="/users/{{this.writer.userId}}">{{this.writer.userName}}</a>
                     <a class="article-header-time" href="#answer-{{this.id}}" title="퍼머링크">
-                      {{this.formattedCreatedDateTime}}
+                      {{this.formattedUpdatedDateTime}}
                     </a>
                   </div>
                 </div>
@@ -85,9 +85,9 @@
               {{#loginUser}}
               <form class="submit-write" action="/questions/{{question.id}}/answers" method="POST">
                 <div class="form-group" style="padding:14px;">
-                  <textarea class="form-control" placeholder="Update your status"></textarea>
+                  <textarea class="form-control" placeholder="Update your status" id="comments" name="comments"></textarea>
                 </div>
-                <button class="btn btn-success pull-right" type="button">답변하기</button>
+                <button class="btn btn-success pull-right" type="submit">답변하기</button>
                 <div class="clearfix"/>
               </form>
               {{/loginUser}}

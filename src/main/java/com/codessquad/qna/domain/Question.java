@@ -1,13 +1,20 @@
-package com.codessquad.qna;
+package com.codessquad.qna.domain;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+@Entity
 public class Question {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
+    private String title;
     private String date;
     private String writer;
-    private String title;
     private String contents;
 
     public Question() {

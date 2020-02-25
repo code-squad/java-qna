@@ -41,4 +41,19 @@ public class UserController {
         return "users/profile";
     }
 
+    @GetMapping("/{id}/form")
+    public String updateForm(@PathVariable Long id, Model model) throws NotFoundException {
+        System.out.println("사용자 정보 수정 폼");
+        model.addAttribute("user", userRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 회원입니다.")));
+        return "users/updateForm";
+    }
+
+    @PutMapping("/{id}")
+    public String updateUser(@PathVariable Long id, User updatedUser) {
+        User user = userRepository.findById(id).get();
+        user.update(updatedUser);
+        userRepository.save(user);
+        return "redirect:/users/list";
+    }
+
 }

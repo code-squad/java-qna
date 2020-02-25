@@ -1,5 +1,6 @@
 package com.codessquad.qna.question;
 
+import com.codessquad.qna.common.CommonString;
 import com.codessquad.qna.user.User;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class AnswerController {
     public String createAnswer(@PathVariable Long questionId,
                                @RequestParam String comments,
                                HttpSession session) {
-        Object loginUserAttribute = session.getAttribute("loginUser");
+        Object loginUserAttribute = session.getAttribute(CommonString.SESSION_LOGIN_USER);
         if (loginUserAttribute == null) {
             return "redirect:/users/login";
         }
@@ -43,7 +44,7 @@ public class AnswerController {
                                      @PathVariable Long answerId,
                                      HttpSession session,
                                      Model model) {
-        Object loginUserAttribute = session.getAttribute("loginUser");
+        Object loginUserAttribute = session.getAttribute(CommonString.SESSION_LOGIN_USER);
         if (loginUserAttribute == null) {
             return "redirect:/users/login";
         }
@@ -65,7 +66,7 @@ public class AnswerController {
                                @PathVariable Long answerId,
                                @RequestParam String comments,
                                HttpSession session) {
-        Object loginUserAttribute = session.getAttribute("loginUser");
+        Object loginUserAttribute = session.getAttribute(CommonString.SESSION_LOGIN_USER);
         if (loginUserAttribute == null) {
             return "redirect:/users/login";
         }

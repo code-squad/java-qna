@@ -93,7 +93,7 @@ public class UserController {
     }
 
     private boolean getLoginUserAndCheckEqualsRequestedUser(HttpSession session, User user) {
-        Object userAttribute = session.getAttribute("loginUser");
+        Object userAttribute = session.getAttribute(CommonString.SESSION_LOGIN_USER);
         return checkUserEqualsLoginUser(user, userAttribute);
     }
 
@@ -120,7 +120,7 @@ public class UserController {
         if (user == null || !user.getUserPassword().equals(userPassword)) {
             return "users/login_failed";
         }
-        session.setAttribute("loginUser", user);
+        session.setAttribute(CommonString.SESSION_LOGIN_USER, user);
         return "redirect:/";
     }
 

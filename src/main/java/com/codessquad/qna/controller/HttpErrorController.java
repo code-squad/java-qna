@@ -6,20 +6,23 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
 @RequestMapping("/error")
 public class HttpErrorController {
     @GetMapping("/notFond")
-    @ResponseBody
-    public ResponseEntity sendNotFound() {
-        return new ResponseEntity(HttpStatus.NOT_FOUND);
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public void sendNotFound() {
     }
 
     @GetMapping("/badRequest")
-    @ResponseBody
-    public ResponseEntity sendbadRequest() {
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public void sendBadRequest() {
     }
 
+    @GetMapping("/unauthorized")
+    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+    public void sendUnauthorized() {
+    }
 }

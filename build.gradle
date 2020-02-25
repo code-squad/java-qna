@@ -13,6 +13,9 @@ configurations {
     runtimeClasspath {
         extendsFrom developmentOnly
     }
+    all {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging' // log4j2 로깅 설정 : 중복되는 logging 제거
+    }
 }
 
 repositories {
@@ -23,8 +26,16 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
     compile("com.h2database:h2")
     compile 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.boot:spring-boot-starter-web'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    // log4j2 로깅 설정
+    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.13.0'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.13.0'
+
+    // slf4j 설정
+    compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.13.0'
+
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
@@ -33,4 +44,3 @@ dependencies {
 test {
     useJUnitPlatform()
 }
-

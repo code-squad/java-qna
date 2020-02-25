@@ -13,26 +13,24 @@ public class Question {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long index;
+  private long id;
 
   @Column(nullable = false, length = 20)
   private String writer;
   private String title;
   private String contents;
-  private String dateTime;
+  private LocalDateTime dateTime;
 
   public Question() {
-    LocalDateTime localDateTime = LocalDateTime.now();
-    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm");
-    this.dateTime = localDateTime.format(dateTimeFormatter);
+    this.dateTime = LocalDateTime.now();
   }
 
-  public long getIndex() {
-    return index;
+  public long getId() {
+    return id;
   }
 
-  public void setIndex(long index) {
-    this.index = index;
+  public void setId(long index) {
+    this.id = index;
   }
 
   public String getWriter() {
@@ -60,10 +58,11 @@ public class Question {
   }
 
   public String getDateTime() {
-    return dateTime;
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm");
+    return dateTime.format(dateTimeFormatter);
   }
 
-  public void setDateTime(String dateTime) {
+  public void setDateTime(LocalDateTime dateTime) {
     this.dateTime = dateTime;
   }
 }

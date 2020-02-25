@@ -8,7 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Optional;
+import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/users")
@@ -22,7 +22,7 @@ public class UserController {
     public String create(User user) {
         log.info("User :  '{}' ", user);
         userRepository.save(user);
-        return "redirect:/users";
+        return "redirect:/users/list";
     }
 
     @GetMapping("/form")
@@ -30,7 +30,7 @@ public class UserController {
         return "user/form";
     }
 
-    @GetMapping("")
+    @GetMapping("/list")
     public String userList(Model model) {
         model.addAttribute("users", userRepository.findAll());
         return "user/list";
@@ -41,6 +41,29 @@ public class UserController {
         ModelAndView showMav = new ModelAndView("user/profile");
         showMav.addObject("user", userRepository.findById(id).get());
         return showMav;
+    }
+
+    @GetMapping("/{id}/password")
+    public ModelAndView passwordForm(@PathVariable Long id) {
+        ModelAndView passwordMav = new ModelAndView("user/password");
+        passwordMav.addObject("user", userRepository.findById(id).get());
+        log.info("passwordUser: '{}'", passwordMav);
+        return passwordMav;
+    }
+
+    @PostMapping("/{id}/password")
+    public String passwordCheck(@PathVariable Long id, String password, HttpSession session) {
+        User user = userRepository.findById(id).get();
+        log.info("check : '{}'", user);
+        if (user == null) {
+            return "redirect:/users/list";
+        }
+        if (!password.equals(user.getPassword())) {
+            return "redirect:/users/list";
+        }
+        session.setAttribute("user", user);
+
+        return "redirect:/users/{id}/form";
     }
 
     @GetMapping("/{id}/form")
@@ -54,7 +77,8 @@ public class UserController {
     public String updateUser(@PathVariable Long id, User updateUser) {
         User user = userRepository.findById(id).get();
         user.update(updateUser);
+        log.info("User : '{}'", updateUser);
         userRepository.save(user);
-        return "redirect:/users";
+        return "redirect:/users/list";
     }
 }

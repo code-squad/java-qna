@@ -76,6 +76,12 @@ public ModelAndView show(@PathVariable long id) {
 }
 ```
 
+userRepository.findById(id).orElse()는 어떨까?
+
+Optional이 무엇인지 알아보자.
+
+
+
 - 접속하는 템플릿에서 해당 url 입력할 것. 
 
 ```html
@@ -113,10 +119,15 @@ public ModelAndView show(@PathVariable long id) {
 ### 요구사항
 
 - [x] 회원 목록에서 회원가입한 사용자의 정보를 수정할 수 있어야 한다.
-- [ ] 비밀번호, 이름, 이메일만 수정할 수 있으며, 사용자 아이디는 수정할 수 없다.
-- [ ] 비밀번호가 일치하는 경우에만 수정 가능하다.
+- [x] 비밀번호, 이름, 이메일만 수정할 수 있으며, 사용자 아이디는 수정할 수 없다.
+- [x] 비밀번호가 일치하는 경우에만 수정 가능하다.
 
 
 
 ## 2.8 회원정보 수정 구현
 
+- redirect는 받는 컨트롤러가 GetMapping이 되어야한다. 
+- Get은 리소스를 받아오는것
+- Post는 엔티티를 가져온다.
+- URL주소를 항상 올바른지 확인할 것.
+- Get과 Post 메소드만 존재 --> Put 메소드를 사용하려면 hidden으로 줘야한다.

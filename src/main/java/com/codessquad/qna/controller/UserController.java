@@ -12,7 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -38,14 +37,14 @@ public class UserController {
     return "redirect:/";
   }
 
-  @PostMapping(value = "/create")
-  public String createUser(User user) {
+  @PostMapping(value = "")
+  public String create(User user) {
     userRepository.save(user);
     return "redirect:/";
   }
 
   @PostMapping(value = "/{id}")
-  public String updateUser(@PathVariable("id") long id, User updateUser,
+  public String update(@PathVariable("id") long id, User updateUser,
       HttpSession httpSession) {
     if (!HttpSessionUtils.isLoginUser(httpSession)) {
       return "redirect:/user/login";
@@ -69,20 +68,20 @@ public class UserController {
     return "redirect:/";
   }
 
-  @GetMapping(value = "/list")
+  @GetMapping(value = "")
   public String getUsers(Model model) {
     model.addAttribute("users", userRepository.findAll());
     return "user/list";
   }
 
   @GetMapping(value = "/{writer}")
-  public String profile(@PathVariable("writer") String userId, Model model) {
+  public String getProfile(@PathVariable("writer") String userId, Model model) {
     model.addAttribute("user", userRepository.findUserByUserId(userId));
     return "user/profile";
   }
 
   @GetMapping(value = "/{id}/form")
-  public String modifyUserProfile(@PathVariable("id") long id, Model model,
+  public String updateProfile(@PathVariable("id") long id, Model model,
       HttpSession httpSession) {
     if (!HttpSessionUtils.isLoginUser(httpSession)) {
       return "redirect:/user/login";

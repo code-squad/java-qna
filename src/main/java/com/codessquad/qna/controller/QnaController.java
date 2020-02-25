@@ -21,11 +21,11 @@ public class QnaController {
   @Autowired
   private QnaRepository qnaRepository;
 
-  @PostMapping(value = "/post")
-  public String postQuestion(Question question) {
-    log.info(question.toString());
+  @PostMapping(value = "")
+  public String create(Question question) {
+//    log.info(question.toString());
     qnaRepository.save(question);
-    return "redirect:/questions/list";
+    return "redirect:/";
   }
 
   @GetMapping(value = "/{index}")
@@ -34,8 +34,8 @@ public class QnaController {
     return "/qna/show";
   }
 
-  @GetMapping(value = "/list")
-  public String redirectToQnaList(Model model) {
+  @GetMapping(value = "")
+  public String getQuestions(Model model) {
     model.addAttribute("questions", qnaRepository.findAll());
     return "index";
   }

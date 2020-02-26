@@ -4,10 +4,7 @@ import com.codesquad.web.HttpSessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
@@ -98,4 +95,23 @@ public class QuestionController {
         return "redirect:/questions/" + id;
     }
 
+    @DeleteMapping("/questions/{id}/delete")
+    public String deleteQuestion(@PathVariable("id") Long id, HttpSession session) throws IllegalAccessException {
+        if (!HttpSessionUtils.isUserLogin(session)) {
+            return "redirect:/login";
+        }
+
+        Optional optionalQuestion = questionRepository.findById(id);
+        if (!optionalQuestion.isPresent()) {
+            return "redirect:/";
+        }
+
+        Question question = (Question) optionalQuestion.get();
+        if (!HttpSessionUtils.getUserFromSession(session).matchName(question.getWriter())) {
+            throw new IllegalAccessException("자신이 올린 게시글만 삭제할 수 있습니다.");
+        }
+
+        questionRepository.delete(question);
+        return "redirect:/";
+    }
 }

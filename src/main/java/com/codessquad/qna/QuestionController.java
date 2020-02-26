@@ -65,6 +65,17 @@ public class QuestionController {
         }
     }
 
+    @DeleteMapping("/{id}")
+    public String deleteQuestion(@PathVariable Long id, HttpSession session) {
+        try {
+            Question question = getVerifiedQuestion(id, session);
+            questionRepository.delete(question);
+            return "redirect:/";
+        } catch (NullPointerException | IllegalAccessException | NoSuchElementException e) {
+            return e.getMessage();
+        }
+    }
+
     private Question getVerifiedQuestion(Long id, HttpSession session) throws IllegalAccessException {
         if (!HttpSessionUtils.isLogin(session)) {
             throw new NullPointerException();

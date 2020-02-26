@@ -93,3 +93,8 @@
 16. 댓글 표시기능을 구현하였습니다.
 17. 댓글 작성기능을 구현하였습니다.
 18. 댓글 수정기능을 구현하였습니다.
+
+## 로그 써보기
+
+1. spring boot log4j2 starter를 import하였습니다.
+   [참고](https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto-configure-log4j-for-logging)

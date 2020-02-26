@@ -3,6 +3,8 @@ package com.codessquad.qna.question;
 import com.codessquad.qna.common.CommonUtility;
 import com.codessquad.qna.user.User;
 import javassist.NotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +16,7 @@ import java.util.List;
 
 @Controller
 public class QuestionController {
+    private static Logger log = LoggerFactory.getLogger(QuestionController.class);
     @Autowired
     private QuestionRepository questionRepository;
     @Autowired
@@ -22,6 +25,7 @@ public class QuestionController {
     @GetMapping("/")
     public String goIndexPage(Model model) {
         model.addAttribute("questions", questionRepository.findAll());
+        log.info("GET \"/\"");
         return "main";
     }
 

@@ -1,9 +1,6 @@
 package com.codesquad.qna.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -13,31 +10,22 @@ public class Question {
     @Id
     @GeneratedValue
     private Long questionId;
-    @NotEmpty
-    private String writer;
+    @ManyToOne
+    private User writer;
+    @Column(nullable = false)
     @NotEmpty
     private String title;
     private String contents;
     @Column(nullable = false)
     private LocalDateTime createdDateTime;
 
-    public void setQuestionId(Long questionId) {
-        this.questionId = questionId;
+    public Question() {
     }
 
-    public void setWriter(String writer) {
+    public Question(User writer, String title, String contents, LocalDateTime createdDateTime) {
         this.writer = writer;
-    }
-
-    public void setTitle(String title) {
         this.title = title;
-    }
-
-    public void setContents(String contents) {
         this.contents = contents;
-    }
-
-    public void setCreatedDateTime(LocalDateTime createdDateTime) {
         this.createdDateTime = createdDateTime;
     }
 
@@ -46,7 +34,7 @@ public class Question {
     }
 
     public String getWriter() {
-        return writer;
+        return writer.getName();
     }
 
     public String getTitle() {
@@ -59,6 +47,15 @@ public class Question {
 
     public String getCreatedDateTimetoString() {
         return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(createdDateTime);
+    }
+
+    public boolean matchWriter(User sessionedUser) {
+        return this.writer.equals(sessionedUser.getUserId());
+    }
+
+    public void update(String title, String contents) {
+        this.title = title;
+        this.contents = contents;
     }
 
     @Override

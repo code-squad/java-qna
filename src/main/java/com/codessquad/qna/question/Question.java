@@ -2,10 +2,10 @@ package com.codessquad.qna.question;
 
 import com.codessquad.qna.common.CommonUtility;
 import com.codessquad.qna.user.User;
-import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 @Entity
 public class Question {
@@ -23,8 +23,9 @@ public class Question {
     @Column(nullable = false)
     private LocalDateTime createdDateTime;
     private LocalDateTime updatedDateTime;
-    @Formula("(select count(*) from answer ans where ans.question_id = id)")
-    private int replyCount;
+
+    @OneToMany(mappedBy = "question")
+    private Collection<Answer> answers;
 
     public Question() {}
 
@@ -93,8 +94,8 @@ public class Question {
         return updatedDateTime.format(CommonUtility.DATE_TIME_FORMATTER);
     }
 
-    public int getReplyCount() {
-        return replyCount;
+    public int getAnswerCount() {
+        return answers.size();
     }
 
     public void updateQuestionData(String title, String contents, LocalDateTime updatedDateTime) {

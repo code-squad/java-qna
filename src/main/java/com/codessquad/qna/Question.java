@@ -1,21 +1,32 @@
 package com.codessquad.qna;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Question {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 20)
     private String writer;
+
+    @Column(nullable = false)
     private String title;
     private String contents;
     private String writtenTime;
     private int questionIndex = 0;
 
     public Question() {
-        Date today = new Date();
-        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat time = new SimpleDateFormat("HH:mm");
-
-        writtenTime = date.format(today) + " " + time.format(today);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime localDateTime = LocalDateTime.now();
+        writtenTime = localDateTime.format(dateTimeFormatter);
+        System.out.println(writtenTime);
     }
 
     public String getWriter() {

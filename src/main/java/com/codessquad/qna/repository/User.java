@@ -2,13 +2,11 @@ package com.codessquad.qna.repository;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.ObjectUtils;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.util.Optional;
+
 
 @Entity
 @Getter
@@ -17,7 +15,7 @@ public class User {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20, unique = true)
     @Setter
     private String userId;
 

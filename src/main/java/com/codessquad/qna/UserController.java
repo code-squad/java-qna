@@ -2,6 +2,8 @@ package com.codessquad.qna;
 
 import com.codessquad.qna.domain.User;
 import com.codessquad.qna.domain.UserRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +14,8 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/users")
 public class UserController {
+
+    private static final Logger LOGGER = LogManager.getLogger(UserController.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -31,17 +35,18 @@ public class UserController {
     @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
         User user = userRepository.findByUserId(userId);
+
         if (user == null) {
-            System.out.println("Login Failure1!");
+            LOGGER.warn("Login Failure1!");
             return "redirect:/users/loginForm";
         }
 
         if (!user.matchPassword(password)) {
-            System.out.println("Login Fauilure2!");
+            LOGGER.warn("Login Failure2!");
             return "redirect:/users/loginForm";
         }
 
-        System.out.println("Login Success");
+        LOGGER.info("Login Success");
         session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
 
         return "redirect:/";

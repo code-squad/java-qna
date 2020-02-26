@@ -93,4 +93,18 @@ public class User {
     public boolean matchPassword(User user) {
         return this.password.equals(user.getPassword());
     }
+
+    public boolean matchPassword(String inputPassword) {
+        if (inputPassword == null) {
+            return false;
+        }
+        return inputPassword.equals(password);
+    }
+
+    public boolean matchId(Long inputId) {
+        if (inputId == null) {
+            return false;
+        }
+        return inputId.equals(id);
+    }
 }

@@ -18,7 +18,8 @@ public class Question {
     private String contents;
 
     public Question() {
-        date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD hh:mm:ss"));
+        date = LocalDateTime.now().
+                format(DateTimeFormatter.ofPattern("YYYY-MM-DD hh:mm:ss"));
     }
 
     public Long getId() {

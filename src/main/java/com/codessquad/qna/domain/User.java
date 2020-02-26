@@ -55,6 +55,12 @@ public class User {
         this.email = email;
     }
 
+    public void update(String name, String email, String newPassword) {
+        this.name = name;
+        this.email = email;
+        this.password = newPassword;
+    }
+
     @Override
     public String toString() {
         return "User{" +

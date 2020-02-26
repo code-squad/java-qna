@@ -49,7 +49,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/update")
-    public String updateUser(@PathVariable Long id,
+    public String updateUser(@PathVariable("id") Long id,
                              @RequestParam String password,
                              @RequestParam String newPassword,
                              @RequestParam String checkPassword,
@@ -58,9 +58,7 @@ public class UserController {
         User user = userRepository.findById(id).get();
         if (user.getPassword().equals(password)) {
             if (newPassword.equals(checkPassword)) {
-                user.setPassword(newPassword);
-                user.setName(name);
-                user.setEmail(email);
+                user.update(name, email, newPassword);
                 userRepository.save(user);
                 return "redirect:/users";
             }

@@ -35,7 +35,8 @@
         <li>
           <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-bell"></i></a>
           <ul class="dropdown-menu">
-            <li><a href="https://slipp.net" target="_blank">SLiPP</a></li> <li><a href="https://facebook.com" target="_blank">Facebook</a></li>
+            <li><a href="https://slipp.net" target="_blank">SLiPP</a></li>
+            <li><a href="https://facebook.com" target="_blank">Facebook</a></li>
           </ul>
         </li>
         <li><a href="/user/list.html"><i class="glyphicon glyphicon-user"></i></a></li>
@@ -63,6 +64,7 @@
     <div class="collapse navbar-collapse" id="navbar-collapse2">
       <ul class="nav navbar-nav navbar-right">
         <li class="active"><a href="/index.html">Posts</a></li>
+        >
         <li><a href="/user/login.html" role="button">로그인</a></li>
         <li><a href="/user/form.html" role="button">회원가입</a></li>
         <li><a href="#" role="button">로그아웃</a></li>
@@ -73,28 +75,25 @@
 </div>
 
 <div class="container" id="main">
-  <div class="col-md-10 col-md-offset-1">
+  <div class="col-md-6 col-md-offset-3">
     <div class="panel panel-default">
-      <table class="table table-hover">
-        <thead>
-        <tr>
-          <th>사용자 아이디</th>
-          <th>이름</th>
-          <th>이메일</th>
-          <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        {{#users}}
-        <tr>
-          <td>{{userId}}</td>
-          <td>{{name}}</td>
-          <td>{{email}}</td>
-          <td><a href="/users/{{userId}}/profile" class="btn btn-success" role="button">프로필</a></td>
-        </tr>
-        {{/users}}
-        </tbody>
-      </table>
+      <div class="panel-heading"><h4>Profiles</h4></div>
+      <div class="panel-body">
+        <div class="well well-sm">
+          <div class="media">
+            <a class="thumbnail pull-left" href="#">
+              <img class="media-object" src="/images/80-text.png">
+            </a>
+            <div class="media-body">
+              <h4 class="media-heading">{{user.userId}}</h4>
+              <p>
+                {{user.name}}<br>
+                <a href="#" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-envelope"></span>&nbsp;{{user.email}}</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

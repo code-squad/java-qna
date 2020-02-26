@@ -3,6 +3,7 @@ package io.david215.qna;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.HashMap;
@@ -26,5 +27,12 @@ public class UserController {
     public String users(Model model) {
         model.addAttribute("users", users.values());
         return "users/list";
+    }
+
+    @GetMapping("/users/{userId}/profile")
+    public String profile(Model model, @PathVariable String userId) {
+        User user = users.get(userId);
+        model.addAttribute("user", user);
+        return "users/profile";
     }
 }

@@ -5,17 +5,18 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
 @Entity
-public class User {
+@NoArgsConstructor
+public class Users {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  private Long Id;
 
   @Column(nullable = false, length = 20)
   private String userId;
@@ -23,16 +24,18 @@ public class User {
   private String name;
   private String email;
 
-  public void update(User newUser) {
-    this.name = newUser.name;
-    this.password = newUser.password;
-    this.email = newUser.email;
+  @Builder
+  public Users(String userId, String password, String name, String email) {
+    this.userId = userId;
+    this.password = password;
+    this.name = name;
+    this.email = email;
   }
 
   @Override
   public String toString() {
     return "User{" +
-        "id=" + id +
+        "id=" + Id +
         ", userId='" + userId + '\'' +
         ", password='" + password + '\'' +
         ", name='" + name + '\'' +

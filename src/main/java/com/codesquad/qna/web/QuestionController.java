@@ -1,5 +1,6 @@
 package com.codesquad.qna.web;
 
+import com.codesquad.qna.domain.AnswerRepository;
 import com.codesquad.qna.domain.Question;
 import com.codesquad.qna.domain.QuestionRepository;
 import com.codesquad.qna.domain.User;
@@ -20,6 +21,8 @@ public class QuestionController {
     private static final Logger log = LoggerFactory.getLogger(QuestionController.class);
     @Autowired
     private QuestionRepository questionRepository;
+    @Autowired
+    private AnswerRepository answerRepository;
 
     @GetMapping("/form")
     public String createForm(HttpSession session) {
@@ -35,7 +38,7 @@ public class QuestionController {
             return "redirect:/user/login";
 
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-        Question newQuestion = new Question(sessionedUser, title, contents, LocalDateTime.now());
+        Question newQuestion = new Question(sessionedUser, title, contents);
         questionRepository.save(newQuestion);
         log.info("create : {}", newQuestion);
         return "redirect:/";
@@ -45,6 +48,7 @@ public class QuestionController {
     public String show(@PathVariable Long questionId, Model model) {
         Question focusQuestion = findQuestion(questionId);
         model.addAttribute("question", focusQuestion);
+        model.addAttribute("answers", answerRepository.findByQuestionQuestionId(questionId));
         return "qna/show";
     }
 
@@ -86,6 +90,7 @@ public class QuestionController {
     private Question getMatchedQuestion(Long questionId, HttpSession session) {
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
         Question matchedQuestion = findQuestion(questionId);
+        log.info("matchedQuestion : {}, sessionedUser : {}", matchedQuestion, sessionedUser);
         if (!matchedQuestion.matchWriter(sessionedUser))
             throw new IllegalStateException("You can only update your own");
 

@@ -22,11 +22,11 @@ public class Question {
     public Question() {
     }
 
-    public Question(User writer, String title, String contents, LocalDateTime createdDateTime) {
+    public Question(User writer, String title, String contents) {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-        this.createdDateTime = createdDateTime;
+        this.createdDateTime = LocalDateTime.now();
     }
 
     public Long getQuestionId() {
@@ -34,7 +34,7 @@ public class Question {
     }
 
     public String getWriter() {
-        return writer.getName();
+        return writer.getUserId();
     }
 
     public String getTitle() {
@@ -46,11 +46,11 @@ public class Question {
     }
 
     public String getCreatedDateTimetoString() {
-        return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(createdDateTime);
+        return DateTimeFormatUtils.localDateTimeToString(this.createdDateTime);
     }
 
     public boolean matchWriter(User sessionedUser) {
-        return this.writer.equals(sessionedUser.getUserId());
+        return this.writer.equals(sessionedUser);
     }
 
     public void update(String title, String contents) {

@@ -3,20 +3,18 @@ package com.codessquad.qna;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.NoSuchElementException;
 
 @Controller
+@RequestMapping("/questions")
 public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
 
-    @GetMapping("/qna/form")
+    @GetMapping("/form")
     public String viewQuestionForm(HttpSession session) {
         if (!HttpSessionUtils.isLogin(session)) {
             return "/users/loginForm";
@@ -24,7 +22,7 @@ public class QuestionController {
         return "/qna/form";
     }
 
-    @PostMapping("/questions")
+    @PostMapping("")
     public String createQuestion(String title, String contents, HttpSession session) {
         if (!HttpSessionUtils.isLogin(session)) {
             return "/users/loginForm";
@@ -35,13 +33,7 @@ public class QuestionController {
         return "redirect:/";
     }
 
-    @GetMapping("/")
-    public String viewQnaList(Model model) {
-        model.addAttribute("questions", questionRepository.findAll());
-        return "/index";
-    }
-
-    @GetMapping("/questions/{id}")
+    @GetMapping("/{id}")
     public String viewQuestionContents(@PathVariable Long id, Model model) {
         try {
             model.addAttribute("question", questionRepository.findById(id).get());
@@ -51,7 +43,7 @@ public class QuestionController {
         }
     }
 
-    @GetMapping("/questions/{id}/form")
+    @GetMapping("/{id}/form")
     public String viewUpdatedForm(@PathVariable Long id, Model model, HttpSession session) {
         try {
             model.addAttribute("question", getSessionQuestion(id, session));
@@ -61,7 +53,7 @@ public class QuestionController {
         }
     }
 
-    @PutMapping("/questions/{id}")
+    @PutMapping("/{id}")
     public String updateQuestion(@PathVariable Long id, String title, String contents, HttpSession session) {
         try {
             Question question = getSessionQuestion(id, session);

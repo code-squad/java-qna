@@ -44,11 +44,8 @@ public class UserController {
         if (!HttpSessionUtils.isLogined(session))
             return "redirect:/user/login";
 
-        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-        if (sessionedUser == null || !sessionedUser.matchId(userId))
-            throw new IllegalStateException("You can only update your own");
-
-        model.addAttribute("user", findUser(userId, false));
+        User user = getMatchedUser(userId, session);
+        model.addAttribute("user", user);
         return "users/updateForm";
     }
 
@@ -57,11 +54,7 @@ public class UserController {
         if (!HttpSessionUtils.isLogined(session))
             return "redirect:/user/login";
 
-        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-        if (sessionedUser == null || !sessionedUser.matchId(userId))
-            throw new IllegalStateException("You can only update your own");
-
-        User originUser = findUser(userId, false);
+        User originUser = getMatchedUser(userId, session);
         if (!originUser.matchPassword(updateUser))
             return "users/update_failed";
 
@@ -96,5 +89,13 @@ public class UserController {
         log.info("findUser: {}", userId);
         Optional<User> user = userRepository.findById(userId);
         return isNullable ? user.orElse(null) : user.orElseThrow(IllegalArgumentException::new);
+    }
+
+    private User getMatchedUser(String userId, HttpSession session) {
+        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+        if (!sessionedUser.matchId(userId))
+            throw new IllegalStateException("You can only update your own");
+
+        return findUser(userId, false);
     }
 }

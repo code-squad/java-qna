@@ -2,13 +2,13 @@ package com.codesquad.qna.web;
 
 import com.codesquad.qna.domain.User;
 import com.codesquad.qna.domain.UserRepository;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 
@@ -70,16 +70,25 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ModelAndView viewProfile(@PathVariable long id) {
-            ModelAndView mav = new ModelAndView("/users/profile");
-            mav.addObject("currentUser", userRepository.getOne(id)); //NoSuchElementException
-            return mav;
+    public String viewProfile(@PathVariable long id, Model model) {
+        try {
+            model.addAttribute("currentUser", userRepository.findById(id).orElseThrow(() -> new NotFoundException("그런 회원 없어욧")));
+            return "/users/profile";
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
     }
 
     @GetMapping("/{id}/modify")
     public String moveUpdateForm(@PathVariable Long id, Model model) {
-            model.addAttribute("currentUser", userRepository.getOne(id)); //EntityNotFoundException
+        try {
+            model.addAttribute("currentUser", userRepository.findById(id).orElseThrow(() -> new NotFoundException("그런 회원 없는뎅")));
             return "/users/modify";
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")

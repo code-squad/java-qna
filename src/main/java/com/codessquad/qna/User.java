@@ -1,7 +1,11 @@
 package com.codessquad.qna;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 public class User {
     private String id;
+
     private String password;
     private String name;
     private String email;
@@ -41,7 +45,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "userId='" + id + '\'' +
+                "id='" + id + '\'' +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +

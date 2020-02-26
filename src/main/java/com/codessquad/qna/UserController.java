@@ -10,24 +10,25 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 
 @Controller
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/users/loginForm")
+    @GetMapping("/loginForm")
     public String loginForm() {
         return "/user/login";
     }
 
-    @PostMapping("/users")
+    @PostMapping("")
     public String create(User user) {
         System.out.println("user : " + user);
         userRepository.save(user);
         return "redirect:/users";
     }
 
-    @PostMapping("/users/login")
+    @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
         User user = userRepository.findByUserId(userId);
         if (user == null) {
@@ -46,19 +47,19 @@ public class UserController {
         return "redirect:/";
     }
 
-    @GetMapping("/users/logout")
+    @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
         return "redirect:/";
     }
 
-    @GetMapping("/users")
+    @GetMapping("")
     public String list(Model model) {
         model.addAttribute("users", userRepository.findAll());
         return "user/list";
     }
 
-    @GetMapping("/users/{id}/form")
+    @GetMapping("/{id}/form")
     public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/users/loginForm";
@@ -73,7 +74,7 @@ public class UserController {
         return "/user/updateform";
     }
 
-    @PutMapping("/users/{id}")
+    @PutMapping("/{id}")
     public String update(@PathVariable Long id, Model model, User updateUser, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/users/loginForm";

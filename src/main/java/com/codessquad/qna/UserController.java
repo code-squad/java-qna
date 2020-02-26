@@ -85,8 +85,7 @@ public class UserController {
         }
 
         model.addAttribute("user", userRepository.findById(id).orElse(null));
-        User user = userRepository.findById(id).orElse(null);
-        assert user != null;
+        User user = userRepository.findById(id).orElseThrow(NullPointerException::new);
         user.update(updateUser);
         userRepository.save(user);
         return "redirect:/users";

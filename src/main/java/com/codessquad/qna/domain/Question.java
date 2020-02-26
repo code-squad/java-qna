@@ -10,54 +10,36 @@ public class Question {
 
     @Id
     @GeneratedValue
-    public Long id;
+    private Long id;
 
     @Column(nullable=false, length = 20)
-    public String writer;
+    private String writer;
     @Column(nullable=false)
-    public String title;
-    public String contents;
-    public String localDateTime;
+    private String title;
+    private String contents;
+    private String localDateTime;
+
+    public Question() {}
+
+    public Question(String writer, String title, String contents) {
+        this.writer = writer;
+        this.title = title;
+        this.contents = contents;
+    }
 
     public Long getId() {
         return id;
     }
+    public String getWriter() { return writer; }
+    public String getTitle() { return title; }
+    public String getContents() { return contents; }
+    public String getLocalDateTime() { return localDateTime; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getLocalDateTime() {
-        return localDateTime;
-    }
-
-    public void setLocalDateTime(String localDateTime) {
-        this.localDateTime = localDateTime;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getContents() {
-        return contents;
-    }
-
-    public String getWriter() {
-        return writer;
-    }
-
-    public void setWriter(String writer) {
-        this.writer = writer;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setContents(String contents) {
-        this.contents = contents;
-    }
+    public void setId(Long id) { this.id = id; }
+    public void setWriter(String writer) { this.writer = writer; }
+    public void setTitle(String title) { this.title = title; }
+    public void setContents(String contents) { this.contents = contents; }
+    public void setLocalDateTime(String localDateTime) { this.localDateTime = localDateTime; }
 
     @Override
     public String toString() {

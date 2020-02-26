@@ -98,3 +98,5 @@
 
 1. spring boot log4j2 starter를 import하였습니다.
    [참고](https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto-configure-log4j-for-logging)
+2. log4j2 설정파일을 추가하였습니다.
+   [참고](https://www.baeldung.com/spring-boot-logging)

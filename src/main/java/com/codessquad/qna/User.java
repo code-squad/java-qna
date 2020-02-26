@@ -1,11 +1,7 @@
 package com.codessquad.qna;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 public class User {
     private String id;
-
     private String password;
     private String name;
     private String email;

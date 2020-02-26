@@ -23,10 +23,10 @@ public class UserController {
     @PostMapping("/create")
     public String create(User user) {
         users.add(user);
-        return "redirect:/user";
+        return "redirect:/user/list";
     }
 
-    @GetMapping
+    @GetMapping("/list")
     public String list(Model model) {
         model.addAttribute("users", users);
         return "user/list";

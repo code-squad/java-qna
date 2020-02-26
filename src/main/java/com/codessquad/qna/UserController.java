@@ -6,9 +6,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -18,11 +15,6 @@ public class UserController {
     @GetMapping("/form")
     public String createUserForm() {
         return "/user/form";
-    }
-
-    @GetMapping("/login")
-    public String userLoginForm() {
-        return "/user/login";
     }
 
     @PostMapping("/create")
@@ -38,43 +30,31 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ModelAndView show(@PathVariable long id) {
+    public ModelAndView show(@PathVariable Long id) {
         ModelAndView modelAndView = new ModelAndView("user/profile");
-        modelAndView.addObject("user",userRepository.findById(id).get());
+        modelAndView.addObject("user",userRepository.findById(id).orElse(null));
         return modelAndView;
     }
-//
-//    @GetMapping("/changeUserInfoLogin")
-//    public String changeUserInfo() {
-//        return "/user/changeUserInfoLogin";
-//    }
-//
-//    @PostMapping("/changeUserInfoLogin")
-//    public String changeUserInfoLogin(String userId, String password, Model model) {
-//        model.addAttribute("userId", userId);
-//        for (User user : users) {
-//            if (user.getUserId().equals(userId) && user.getPassword().equals(password)) {
-//                return "user/updateForm";
-//            }
-//        }
-//        return "/user/login_failed";
-//    }
-//
-//    @PostMapping("/{userId}/update")
-//    public String changeUserInfoForm(@PathVariable("userId") String userId, String password, String name, String email) {
-//        for (User user : users) {
-//            if (user.getUserId().equals(userId)) {
-//                if (password.length() > 0) {
-//                    user.setPassword(password);
-//                }
-//                if (name.length() > 0) {
-//                    user.setName(name);
-//                }
-//                if (email.length() > 0) {
-//                    user.setEmail(email);
-//                }
-//            }
-//        }
-//        return "redirect:/users";
-//    }
+
+    @GetMapping("/changeUserInfo/{id}")
+    public ModelAndView userLoginForm(@PathVariable Long id) {
+        ModelAndView modelAndView = new ModelAndView("user/updateForm");
+        modelAndView.addObject("user",userRepository.findById(id).orElse(null));
+        return modelAndView;
+    }
+    @PostMapping("/{id}/update")
+    public String changeUserInfoForm(@PathVariable("id") Long id, String userId, String password, String name, String email) {
+        User user = userRepository.findById(id).orElse(null);
+        if(password.length() > 0){
+            user.setPassword(password);
+        }
+        if(name.length() > 0){
+            user.setName(name);
+        }
+        if(email.length() > 0){
+            user.setEmail(email);
+        }
+        userRepository.save(user);
+        return "redirect:/users";
+    }
 }

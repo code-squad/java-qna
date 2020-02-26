@@ -20,7 +20,8 @@ public class QuestionController {
         if (!HttpSessionUtils.isUserLogin(session)) {
             return "redirect:/login";
         }
-
+        User loginedUser = HttpSessionUtils.getUserFromSession(session);
+        question.setWriter(loginedUser);
         questionRepository.save(question);
         return "redirect:/";
     }
@@ -33,7 +34,7 @@ public class QuestionController {
 
     @GetMapping("/questions/{id}")
     public String post(@PathVariable("id") Long id, Model model) {
-        Optional optionalQuestion = questionRepository.findById(id);
+        Optional<Question> optionalQuestion = questionRepository.findById(id);
 
         if (!optionalQuestion.isPresent()) {
             return "redirect:/";
@@ -65,7 +66,7 @@ public class QuestionController {
         }
 
         Question question = (Question) optionalQuestion.get();
-        if (!HttpSessionUtils.getUserFromSession(session).matchName(question.getWriter())) {
+        if (!HttpSessionUtils.getUserFromSession(session).matchId(question.getWriter().getId())) {
             throw new IllegalAccessException("자신이 올린 게시글만 수정할 수 있습니다.");
         }
 
@@ -86,7 +87,7 @@ public class QuestionController {
         }
 
         Question question = (Question) optionalQuestion.get();
-        if (!HttpSessionUtils.getUserFromSession(session).matchName(question.getWriter())) {
+        if (!HttpSessionUtils.getUserFromSession(session).matchId(question.getWriter().getId())) {
             throw new IllegalAccessException("자신이 올린 게시글만 수정할 수 있습니다.");
         }
 
@@ -107,7 +108,7 @@ public class QuestionController {
         }
 
         Question question = (Question) optionalQuestion.get();
-        if (!HttpSessionUtils.getUserFromSession(session).matchName(question.getWriter())) {
+        if (!HttpSessionUtils.getUserFromSession(session).matchId(question.getWriter().getId())) {
             throw new IllegalAccessException("자신이 올린 게시글만 삭제할 수 있습니다.");
         }
 

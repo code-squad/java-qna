@@ -38,6 +38,11 @@ public class Question {
     public void setTitle(String title) { this.title = title; }
     public void setContents(String contents) { this.contents = contents; }
 
+    public void update (Question newQuestion) {
+        this.title = newQuestion.title;
+        this.contents = newQuestion.contents;
+    }
+
     @Override
     public String toString() {
         return "Question {" +

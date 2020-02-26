@@ -6,10 +6,7 @@ import com.codessquad.qna.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -50,4 +47,33 @@ public class QuestionController {
 
         return "/question/show";
     }
+
+
+    @GetMapping("/{id}/form")
+    public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "redirect:/users/loginForm";
+        }
+
+        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+
+        model.addAttribute("question", questionRepository.findById(id).orElseThrow(NullPointerException::new));
+        return "/question/updateForm";
+    }
+
+    @PutMapping("/{id}")
+    public String update(@PathVariable Long id, Model model, Question updateQuestion, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "redirect:/users/loginForm";
+        }
+
+        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+
+        model.addAttribute("question", questionRepository.findById(id).orElseThrow(NullPointerException::new));
+        Question question = questionRepository.findById(id).orElseThrow(NullPointerException::new);
+        question.update(updateQuestion);
+        questionRepository.save(question);
+        return "redirect:/";
+    }
+
 }

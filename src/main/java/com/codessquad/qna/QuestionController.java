@@ -46,7 +46,7 @@ public class QuestionController {
 
     @GetMapping("/{id}")
     public String show(Model model, @PathVariable Long id) {
-        model.addAttribute("question", questionRepository.findById(id).orElse(null));
+        model.addAttribute("question", questionRepository.findById(id).orElseThrow(NullPointerException::new));
 
         return "/question/show";
     }

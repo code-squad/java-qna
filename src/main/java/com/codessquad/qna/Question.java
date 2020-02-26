@@ -12,8 +12,9 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 20, unique = true)
-    private String writer;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    private User writer;
 
     @NotEmpty
     private String title;
@@ -23,12 +24,13 @@ public class Question {
     private String postingTime;
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
 
-    public Question() {
-        setPostingTime();
-    }
+    public Question() {}
 
-    public void setWriter(String sessionUserId) {
-        this.writer = sessionUserId;
+    public Question(User writer, String title, String contents) {
+        this.writer = writer;
+        this.title = title;
+        this.contents = contents;
+        setPostingTime();
     }
 
     public void setTitle(String title) {
@@ -45,7 +47,7 @@ public class Question {
 
     public Long getId() { return id; }
 
-    public String getWriter() {
+    public User getWriter() {
         return writer;
     }
 
@@ -63,6 +65,13 @@ public class Question {
 
     private String getLocalDateTime() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT));
+    }
+
+    public boolean isWriterEquals(String sessionUserId) {
+        if (sessionUserId == null) {
+            return false;
+        }
+        return sessionUserId.equals(writer);
     }
 
     @Override

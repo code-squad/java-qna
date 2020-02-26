@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import javax.servlet.http.HttpSession;
 
@@ -23,12 +24,12 @@ public class QuestionController {
     }
 
     @PostMapping("/questions")
-    public String createQuestion(Question question, HttpSession session) {
+    public String createQuestion(String title, String contents, HttpSession session) {
         if (!HttpSessionUtils.isLogin(session)) {
             return "/users/loginForm";
         }
         User sessionUser = HttpSessionUtils.getUserFromSession(session);
-        question.setWriter(sessionUser.getUserId());
+        Question question = new Question(sessionUser, title, contents);
         questionRepository.save(question);
         return "redirect:/";
     }

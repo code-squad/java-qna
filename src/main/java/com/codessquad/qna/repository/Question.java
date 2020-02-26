@@ -18,6 +18,7 @@ public class Question {
     private Long id;
 
     @Column(nullable = false)
+    @Setter
     private String writer;
 
     @Column(nullable = false)

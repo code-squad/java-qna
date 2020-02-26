@@ -21,7 +21,7 @@ public class Question {
 
     @NotEmpty
     private String contents;
-    private String postingTime;
+    private LocalDateTime postingTime;
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
 
     public Question() {}
@@ -30,7 +30,7 @@ public class Question {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-        setPostingTime();
+        this.postingTime = LocalDateTime.now();
     }
 
     public void setTitle(String title) {
@@ -39,10 +39,6 @@ public class Question {
 
     public void setContents(String contents) {
         this.contents = contents;
-    }
-
-    public void setPostingTime() {
-        this.postingTime = getLocalDateTime();
     }
 
     public Long getId() { return id; }
@@ -60,11 +56,7 @@ public class Question {
     }
 
     public String getPostingTime() {
-        return postingTime;
-    }
-
-    private String getLocalDateTime() {
-        return LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT));
+        return postingTime.format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT));
     }
 
     public boolean isWriterEquals(User sessionUser) {

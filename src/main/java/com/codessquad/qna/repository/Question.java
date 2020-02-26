@@ -4,10 +4,8 @@ package com.codessquad.qna.repository;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.ObjectUtils;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
@@ -17,9 +15,9 @@ public class Question {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false)
-    @Setter
-    private String writer;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    private User writer;
 
     @Column(nullable = false)
     @Setter
@@ -34,7 +32,7 @@ public class Question {
     public Question(String title, String contents, User user) {
         this.title = title;
         this.contents = contents;
-        this.writer = user.getUserId();
+        this.writer = user;
     }
 
     public void update(Question question) {
@@ -51,6 +49,6 @@ public class Question {
     }
 
     public boolean isCorrectWriter(User user) {
-        return this.writer.equals(user.getUserId());
+        return this.writer.equals(user);
     }
 }

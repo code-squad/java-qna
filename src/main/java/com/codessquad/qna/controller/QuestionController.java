@@ -5,7 +5,6 @@ import com.codessquad.qna.repository.QuestionRepository;
 import com.codessquad.qna.repository.User;
 import com.codessquad.qna.util.HttpSessionUtil;
 import com.codessquad.qna.util.PathUtil;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -48,7 +47,7 @@ public class QuestionController {
         if (!question.isPresent()) {
             return PathUtil.NOT_FOUND;
         }
-        if (!question.get().isCorrectWriter(user)) {
+        if (question.get().isCorrectWriter(user)) {
             return PathUtil.UNAUTHORIZED;
         }
         model.addAttribute("question", question.get());
@@ -79,7 +78,7 @@ public class QuestionController {
         if (!question.isPresent()) {
             return PathUtil.NOT_FOUND;
         }
-        if (!question.get().isCorrectWriter(user)) {
+        if (question.get().isCorrectWriter(user)) {
             return PathUtil.UNAUTHORIZED;
         }
         return update(question.get(), updateData);
@@ -95,7 +94,7 @@ public class QuestionController {
         if (!question.isPresent()) {
             return PathUtil.NOT_FOUND;
         }
-        if (!question.get().isCorrectWriter(user)) {
+        if (question.get().isCorrectWriter(user)) {
             return PathUtil.UNAUTHORIZED;
         }
         questionRepository.deleteById(id);

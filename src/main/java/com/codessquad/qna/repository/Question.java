@@ -1,9 +1,9 @@
 package com.codessquad.qna.repository;
 
+
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.ObjectUtils;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,7 +18,6 @@ public class Question {
     private Long id;
 
     @Column(nullable = false)
-    @Setter
     private String writer;
 
     @Column(nullable = false)
@@ -29,6 +28,13 @@ public class Question {
     @Setter
     private String contents;
     private LocalDate createdAt = LocalDate.now();
+
+    public Question () {}
+    public Question(String title, String contents, User user) {
+        this.title = title;
+        this.contents = contents;
+        this.writer = user.getUserId();
+    }
 
     public void update(Question question) {
         this.title = question.title;
@@ -41,5 +47,9 @@ public class Question {
         boolean writerIsExist = ObjectUtils.isNotEmpty(question.getWriter());
 
         return titleIsExist && contentIsExist && writerIsExist;
+    }
+
+    public boolean isCorrectWriter(User user) {
+        return this.writer.equals(user.getUserId());
     }
 }

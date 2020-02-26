@@ -2,75 +2,89 @@ package com.codessquad.qna.controller;
 
 import com.codessquad.qna.repository.Question;
 import com.codessquad.qna.repository.QuestionRepository;
-import org.apache.commons.lang3.ObjectUtils;
+import com.codessquad.qna.repository.User;
+import com.codessquad.qna.util.HttpSessionUtil;
+import com.codessquad.qna.util.PathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 
 @Controller
+@RequestMapping("/questions")
 public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
 
-    @GetMapping("/")
-    public String showQuestionList(Model model) {
-        model.addAttribute("questions", questionRepository.findAll());
-        return "index";
+    @GetMapping("/form")
+    public String showForm(HttpSession session) {
+        User user = HttpSessionUtil.getUserFromSession(session);
+        if (user == null) {
+            return PathUtil.UNAUTHORIZED;
+        }
+        return PathUtil.QUESTION_FORM_TEMPLATE;
     }
 
-    @GetMapping("/questions/{id}")
+    @GetMapping("/{id}")
     public Object showQuestion(@PathVariable Long id, Model model) {
         Optional<Question> question = questionRepository.findById(id);
         if (question.isPresent()) {
             model.addAttribute("question", question.get());
-            return "/qna/show";
+            return PathUtil.QUESTION_DETAIL_TEMPLATE;
         }
-        return "redirect:/error/notFound";
+        return PathUtil.NOT_FOUND;
     }
 
-    @GetMapping("/questions/{id}/editForm")
-    public Object showEditPage(@PathVariable Long id, Model model) {
+    @GetMapping("{id}/editForm")
+    public Object showEditPage(@PathVariable Long id, Model model, HttpSession session) {
+        User user = HttpSessionUtil.getUserFromSession(session);
         Optional<Question> question = questionRepository.findById(id);
-        if (question.isPresent()) {
-            model.addAttribute("question", question.get());
-            return "/qna/edit";
+        if (user == null) {
+            return PathUtil.UNAUTHORIZED;
         }
-        return "redirect:/error/notFound";
+        if (!question.isPresent()) {
+            return PathUtil.NOT_FOUND;
+        }
+        if (!question.get().isCorrectWriter(user)) {
+            return PathUtil.UNAUTHORIZED;
+        }
+        model.addAttribute("question", question.get());
+        return PathUtil.QUESTION_EDIT_TEMPLATE;
     }
 
-    @PostMapping("/questions")
-    public String createQuestion(Question question) {
-        if(isCorrectForm(question)) {
+    @PostMapping
+    public String createQuestion(String title, String contents, HttpSession session) {
+        if (!HttpSessionUtil.isAuthorizedUser(session))
+            return PathUtil.UNAUTHORIZED;
+
+        User user = HttpSessionUtil.getUserFromSession(session);
+        Question question = new Question(title, contents, user);
+
+        if(question.isCorrectFormat(question)) {
             questionRepository.save(question);
-            return "redirect:/";
+            return PathUtil.HOME;
         }
-        return "redirect:/error/badRequest";
+        return PathUtil.BAD_REQUEST;
     }
 
-    @PutMapping("/questions/{id}")
-    public Object updateQuestion(@PathVariable Long id, Question updateQuestion) {
+    @PutMapping("/{id}")
+    public Object updateQuestion(@PathVariable Long id, Question updateData) {
         Optional<Question> originalQuestion = questionRepository.findById(id);
-        return originalQuestion.map(question -> update(question, updateQuestion)).orElseGet(ResponseEntity::notFound);
+       if (originalQuestion.isPresent()) {
+           return update(originalQuestion.get(), updateData);
+       }
+       return PathUtil.NOT_FOUND;
     }
 
-    private Object update(Question originalQuestion, Question updateQuestion) {
-        if (isCorrectForm(updateQuestion)){
-            originalQuestion.update(updateQuestion);
-            questionRepository.save(originalQuestion);
+    private Object update(Question question, Question updateData) {
+        if (question.isCorrectFormat(updateData)){
+            question.update(updateData);
+            questionRepository.save(question);
             return "redirect:/questions/{id}";
         }
-        return "redirect:/error/badRequest";
-    }
-
-    private boolean isCorrectForm(Question question) {
-        boolean titleIsExist = ObjectUtils.isNotEmpty(question.getTitle());
-        boolean contentIsExist = ObjectUtils.isNotEmpty(question.getContents());
-        boolean writerIsExist = ObjectUtils.isNotEmpty(question.getWriter());
-
-        return titleIsExist && contentIsExist && writerIsExist;
+        return PathUtil.BAD_REQUEST;
     }
 }

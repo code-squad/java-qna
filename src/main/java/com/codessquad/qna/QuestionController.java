@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping("/questions")
+@RequestMapping("/question")
 public class QuestionController {
-    private List<Question> questions = new ArrayList<>();
+    public static List<Question> questions = new ArrayList<>();
 
     @GetMapping("/form")
     public String createForm() {
@@ -30,15 +30,9 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}")
-    public String read(@PathVariable Integer id, Model model) {
+    public String read(@PathVariable int id, Model model) {
         Question question = questions.get(id - 1);
         model.addAttribute("question", question);
         return "qna/show";
-    }
-
-    @GetMapping
-    public String main(Model model) {
-        model.addAttribute("questions", questions);
-        return "main";
     }
 }

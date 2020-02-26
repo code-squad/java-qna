@@ -32,10 +32,10 @@ public class UserController {
         return "user/list";
     }
 
-    @GetMapping("/{userId}")
-    public String read(@PathVariable String userId, Model model) {
+    @GetMapping("/{id}")
+    public String read(@PathVariable String id, Model model) {
         for (User user : users) {
-            if(userId.equals(user.getUserId())) {
+            if(id.equals(user.getId())) {
                 model.addAttribute("user", user);
                 return "user/profile";
             }

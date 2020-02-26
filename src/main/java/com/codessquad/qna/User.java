@@ -5,8 +5,8 @@ import javax.validation.constraints.Size;
 
 public class User {
     @NotNull
-    @Size(min = 1, max = 10)
-    private String userId;
+    @Size(min = 1, max = 10, message = "1자 이상 10자 미만으로 작성해야합니다.")
+    private String id;
 
     @NotNull
     @Size(min = 1, max = 10)
@@ -20,12 +20,12 @@ public class User {
     @Size(min = 1, max = 100)
     private String email;
 
-    public String getUserId() {
-        return userId;
+    public String getId() {
+        return id;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getPassword() {
@@ -55,7 +55,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "userId='" + userId + '\'' +
+                "userId='" + id + '\'' +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +

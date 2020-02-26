@@ -10,7 +10,7 @@ public class Question {
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
 
     @Min(1)
-    private Integer id;
+    private int id;
 
     @NotNull
     @Size(min = 1, max = 10)
@@ -26,11 +26,11 @@ public class Question {
 
     private LocalDateTime currentTime;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 

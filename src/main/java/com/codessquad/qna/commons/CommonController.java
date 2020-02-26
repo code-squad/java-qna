@@ -1,4 +1,4 @@
-package com.codessquad.qna;
+package com.codessquad.qna.commons;
 
 import com.codessquad.qna.question.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;

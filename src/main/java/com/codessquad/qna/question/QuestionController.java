@@ -1,5 +1,6 @@
 package com.codessquad.qna.question;
 
+import com.codessquad.qna.errors.ForbiddenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,9 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/questions")
 public class QuestionController {
 
-  private String returnRedirect = "redirect:/questions";
-  private String returnView = "/questions";
-
   @Autowired
   private QuestionRepository questionRepository;
 
@@ -23,7 +21,7 @@ public class QuestionController {
    */
   @GetMapping("/form")
   public String form(Model model) {
-    return returnView + "/form";
+    return "/questions/form";
   }
 
   /**
@@ -41,8 +39,8 @@ public class QuestionController {
    */
   @GetMapping("/{id}")
   public String show(@PathVariable long id, Model model) {
-    model.addAttribute("question", questionRepository.findById(id).get());
+    model.addAttribute("question", questionRepository.findById(id).orElseThrow(ForbiddenException::new));
 
-    return returnView + "/show";
+    return "/questions/show";
   }
 }

@@ -34,13 +34,13 @@ public class UserController {
       return "user/login_failed";
     }
     httpSession.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
-    return "redirect:/";
+    return "redirect:/questions/";
   }
 
   @PostMapping(value = "")
   public String create(User user) {
     userRepository.save(user);
-    return "redirect:/";
+    return "redirect:/questions/";
   }
 
   @PostMapping(value = "/{id}")
@@ -57,13 +57,13 @@ public class UserController {
     User user = userRepository.getOne(sessionUser.getId());
     user.update(updateUser);
     userRepository.save(user);
-    return "redirect:/";
+    return "redirect:/questions/";
   }
 
   @GetMapping(value = "/logout")
   public String logout(HttpSession httpSession) {
-    httpSession.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
-    return "redirect:/";
+    httpSession.invalidate();
+    return "redirect:/questions/";
   }
 
   @GetMapping(value = "")

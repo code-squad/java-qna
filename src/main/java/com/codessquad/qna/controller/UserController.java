@@ -2,12 +2,14 @@ package com.codessquad.qna.controller;
 
 import com.codessquad.qna.repository.User;
 import com.codessquad.qna.repository.UserRepository;
-import org.apache.commons.lang3.ObjectUtils;
+import com.codessquad.qna.util.HttpSessionUtil;
+import com.codessquad.qna.util.PathUtil;
+import com.codessquad.qna.util.VerifyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
+import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 @Controller
@@ -19,7 +21,7 @@ public class UserController {
     @GetMapping
     public String showUserList(Model model) {
         model.addAttribute("users", userRepository.findAll());
-        return "user/list";
+        return PathUtil.USER_LIST_TEMPLATE;
     }
 
     @GetMapping("/{id}")
@@ -27,67 +29,63 @@ public class UserController {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
             model.addAttribute("user", user.get());
-            return "user/profile";
+            return PathUtil.USER_PROFILE_TEMPLATE;
         }
-        return "redirect:/error/notFound";
+        return PathUtil.NOT_FOUND;
     }
 
-    @GetMapping("/{id}/editForm")
-    public String showUpdatePage(@PathVariable Long id, Model model) {
-        Optional<User> user = userRepository.findById(id);
+    @GetMapping("/editForm")
+    public String showUpdatePage(Model model, HttpSession session) {
+        User authorizedUser = HttpSessionUtil.getUserFromSession(session);
+        if (authorizedUser == null) {
+            return PathUtil.UNAUTHORIZED;
+        }
+
+        Optional<User> user = userRepository.findById(authorizedUser.getId());
         if (user.isPresent()){
             model.addAttribute("user", user.get());
-            return "user/edit";
+            return PathUtil.USER_EDIT_TEMPLATE;
         }
-        return "redirect:/error/notFound";
+        return PathUtil.NOT_FOUND;
     }
 
     @PostMapping
     public String createUser(User user) {
-        if (isCorrectUserFormat(user)) {
+        if (VerifyUtil.isCorrectUserFormat(user)) {
             userRepository.save(user);
-            return "redirect:/users";
+            return PathUtil.USER_LIST;
         }
-        return "redirect:/error/badRequest";
+        return PathUtil.BAD_REQUEST;
     }
 
-    @PutMapping("/{id}")
-    public String updateUser(@PathVariable Long id, User updateUser, String currentPassword) {
-        Optional<User> originUser = userRepository.findById(id);
+    @PutMapping
+    public String updateUser(User updateUser, String currentPassword, HttpSession session) {
+        User authorizedUser = HttpSessionUtil.getUserFromSession(session);
+        if (authorizedUser == null) {
+            return PathUtil.UNAUTHORIZED;
+        }
+        Optional<User> originUser = userRepository.findById(authorizedUser.getId());
         if (originUser.isPresent()) {
             User origin = originUser.get();
             return update(origin, updateUser, currentPassword);
         }
-        return "redirect:/error/notFound";
+        return PathUtil.NOT_FOUND;
     }
 
-    private String update(User originUser, User updateData, String currentPassword) {
-        boolean isCorrectPassword = isCorrectPassword(originUser.getPassword(), currentPassword);
-        boolean isCorrectForm = isCorrectUserFormat(updateData);
+    private String update(User user, User updateData, String currentPassword) {
+        boolean isCorrectPassword = VerifyUtil.isCorrectPassword(user.getPassword(), currentPassword);
+        boolean isCorrectForm = VerifyUtil.isCorrectUserFormat(updateData);
 
-        if (isCorrectForm) {
-            if (isCorrectPassword) {
-                originUser.update(updateData);
-                userRepository.save(originUser);
-                return "redirect:/users";
-            }
-            return "redirect:/error/unauthorized";
+        if (!isCorrectForm) {
+            return PathUtil.BAD_REQUEST;
         }
-        return "redirect:/error/badRequest";
+        if (!isCorrectPassword) {
+            return PathUtil.UNAUTHORIZED;
+        }
+
+        user.update(updateData);
+        userRepository.save(user);
+        return PathUtil.USER_LIST;
     }
-
-    private boolean isCorrectUserFormat(User user) {
-        boolean userIdIsExist = ObjectUtils.isNotEmpty(user.getUserId());
-        boolean nameIsExist = ObjectUtils.isNotEmpty(user.getName());
-        boolean passwordIsExist = ObjectUtils.isNotEmpty(user.getPassword());
-        boolean emailIsExist = ObjectUtils.isNotEmpty(user.getEmail());
-
-        return userIdIsExist && nameIsExist && passwordIsExist && emailIsExist;
-    }
-
-    private boolean isCorrectPassword(String originPassword, String currentPassword){
-        return originPassword.equals(currentPassword);
-    }
-
 }
 

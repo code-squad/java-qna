@@ -60,12 +60,12 @@ public class QuestionController {
             return "redirect:/login";
         }
 
-        Optional optionalQuestion = questionRepository.findById(id);
+        Optional<Question> optionalQuestion = questionRepository.findById(id);
         if (!optionalQuestion.isPresent()) {
             return "redirect:/";
         }
 
-        Question question = (Question) optionalQuestion.get();
+        Question question = optionalQuestion.get();
         if (!HttpSessionUtils.getUserFromSession(session).matchId(question.getWriter().getId())) {
             throw new IllegalAccessException("자신이 올린 게시글만 수정할 수 있습니다.");
         }
@@ -80,13 +80,13 @@ public class QuestionController {
             return "redirect:/login";
         }
 
-        Optional optionalQuestion = questionRepository.findById(id);
+        Optional<Question> optionalQuestion = questionRepository.findById(id);
 
         if (!optionalQuestion.isPresent()) {
             return "redirect:/";
         }
 
-        Question question = (Question) optionalQuestion.get();
+        Question question = optionalQuestion.get();
         if (!HttpSessionUtils.getUserFromSession(session).matchId(question.getWriter().getId())) {
             throw new IllegalAccessException("자신이 올린 게시글만 수정할 수 있습니다.");
         }
@@ -102,12 +102,12 @@ public class QuestionController {
             return "redirect:/login";
         }
 
-        Optional optionalQuestion = questionRepository.findById(id);
+        Optional<Question> optionalQuestion = questionRepository.findById(id);
         if (!optionalQuestion.isPresent()) {
             return "redirect:/";
         }
 
-        Question question = (Question) optionalQuestion.get();
+        Question question = optionalQuestion.get();
         if (!HttpSessionUtils.getUserFromSession(session).matchId(question.getWriter().getId())) {
             throw new IllegalAccessException("자신이 올린 게시글만 삭제할 수 있습니다.");
         }

@@ -1,22 +1,37 @@
 package com.codessquad.qna;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Question {
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
-    private int postIndex;
+
+    @Min(1)
+    private Integer id;
+
+    @NotNull
+    @Size(min = 1, max = 10)
     private String writer;
+
+    @NotNull
+    @Size(min = 1, max = 10)
     private String title;
+
+    @NotNull
+    @Size(min = 1, max = 100)
     private String contents;
+
     private LocalDateTime currentTime;
 
-    public int getPostIndex() {
-        return postIndex;
+    public Integer getId() {
+        return id;
     }
 
-    public void setPostIndex(int postIndex) {
-        this.postIndex = postIndex;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getWriter() {

@@ -5,41 +5,40 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@RequestMapping("/questions")
 public class QuestionController {
     private List<Question> questions = new ArrayList<>();
 
-    @GetMapping("/question/form")
-    public String createQuestionForm() {
+    @GetMapping("/form")
+    public String createForm() {
         return "qna/form";
     }
 
-    @PostMapping("/questions")
-    public String createQuestion(Question question) {
+    @PostMapping("/create")
+    public String create(Question question, Model model) {
         question.setCurrentTime(LocalDateTime.now());
-        question.setPostIndex(questions.size() + 1);
+        question.setId(questions.size() + 1);
         questions.add(question);
         return "redirect:/";
     }
 
-    @GetMapping("/questions/{postIndex}")
-    public String showQuestion(@PathVariable int postIndex, Model model) {
-        Question question = questions.get(postIndex - 1);
-        if(question!=null) {
-            model.addAttribute("question", question);
-            return "qna/show";
-        }
-        return "redirect:/error/notFound.html";
+    @GetMapping("/{id}")
+    public String read(@PathVariable Integer id, Model model) {
+        Question question = questions.get(id - 1);
+        model.addAttribute("question", question);
+        return "qna/show";
     }
 
-    @GetMapping("/")
-    public String listQuestions(Model model) {
+    @GetMapping
+    public String main(Model model) {
         model.addAttribute("questions", questions);
-        return "home";
+        return "main";
     }
 }

@@ -21,25 +21,25 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public String createUser(User user) {
+    public String create(User user) {
         users.add(user);
         return "redirect:/users";
     }
 
     @GetMapping
-    public String listUsers(Model model) {
+    public String list(Model model) {
         model.addAttribute("users", users);
         return "user/list";
     }
 
     @GetMapping("/{userId}")
-    public String showUserProfile(@PathVariable String userId, Model model) {
+    public String read(@PathVariable String userId, Model model) {
         for (User user : users) {
             if(userId.equals(user.getUserId())) {
                 model.addAttribute("user", user);
                 return "user/profile";
             }
         }
-        return "redirect:/error/notFound.html";
+        return "/error/notFound.html";
     }
 }

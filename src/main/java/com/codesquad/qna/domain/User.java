@@ -10,7 +10,7 @@ public class User {
     private Long id;
 
     @NotEmpty
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, unique = true)
     private String userId;
     @NotEmpty
     @Column(nullable = false)

@@ -81,9 +81,20 @@ public class UserController {
     }
 
     @GetMapping("/{id}/modify")
-    public String moveUpdateForm(@PathVariable Long id, Model model) {
+    public String moveUpdateForm(Model model, @PathVariable Long id, HttpSession session) {
+        Object loggedUser = session.getAttribute("sessionUser");
+        if (loggedUser == null) {
+            return "redirect:/users/login";
+        }
+
+        User sessionUser = (User)loggedUser;
+        if(!id.equals(sessionUser.getId())) {
+            throw new IllegalStateException("자신의 정보만 수정할 수 있습니다.");
+        }
+
         try {
-            model.addAttribute("currentUser", userRepository.findById(id).orElseThrow(() -> new NotFoundException("그런 회원 없는뎅")));
+            //session에 들어있는 사용자의 id 값으로 데이터를 가져와서 모델에 담아줌 -> 자신의 정보만 수정가능
+            model.addAttribute("currentUser", userRepository.findById(sessionUser.getId()).orElseThrow(() -> new NotFoundException("그런 회원 없는뎅")));
             return "/users/modify";
         } catch (NotFoundException e) {
             e.printStackTrace();
@@ -92,16 +103,34 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public String updateUser(User sesssionUser, String newPassword , @PathVariable long id) throws ResponseStatusException{
-        User currentUser = userRepository.getOne(id);
-        //TODO : 기존 비밀번호 확인 로직
-        System.out.println(currentUser.matchPassword(sesssionUser));
-        if (!currentUser.matchPassword(sesssionUser)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "비밀번호가 맞지 않아요!");
+    public String updateUser(User updatedUser, String newPassword , @PathVariable Long id, HttpSession session) throws ResponseStatusException{
+//        User currentUser = userRepository.getOne(id);
+        Object loggedUser = session.getAttribute("sessionUser");
+        if (loggedUser == null) {
+            return "redirect:/users/login";
         }
-        currentUser.update(sesssionUser, newPassword); //새로 입력한 정보로 회원정보 수정
-        userRepository.save(currentUser);
-        return "redirect:/users";
+
+        User sessionUser = (User)loggedUser;
+        if (!id.equals(sessionUser.getId())) {
+            throw new IllegalStateException("자신의 정보만 수정할 수 있습니다.");
+        }
+
+        try {
+            //session에 들어있는 사용자의 id 값으로 데이터를 가져와서 모델에 담아줌 -> 자신의 정보만 수정가능
+            User currentUser = userRepository.findById(sessionUser.getId()).orElseThrow(() -> new NotFoundException("그런 회원 없는뎅"));
+            //TODO : 기존 비밀번호 확인 로직
+            System.out.println(currentUser.matchPassword(updatedUser));
+            if (!currentUser.matchPassword(updatedUser)) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "비밀번호가 맞지 않아요!");
+            }
+            currentUser.update(updatedUser, newPassword); //새로 입력한 정보로 회원정보 수정
+            userRepository.save(currentUser);
+            return "redirect:/users";
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+
     }
 
 }

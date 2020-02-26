@@ -1,60 +1,51 @@
 package com.codessquad.qna.web;
 
+import com.codessquad.qna.domain.User;
+import com.codessquad.qna.domain.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
+@RequestMapping("/users")
 public class UserController {
-    private List<User> users = Collections.synchronizedList(new ArrayList<>());
 
-    @GetMapping("/users")
-    public String userList(Model model) {
-        model.addAttribute("users", users);
-        return "/user/list";
+    @Autowired
+    UserRepository userRepository;
+
+    @GetMapping("")
+    public String listPage(Model model) {
+        model.addAttribute("users", userRepository.findAll());
+        return "users/list";
     }
 
-    @PostMapping("/users")
-    public String createUser(User user) {
-        users.add(user);
+    @GetMapping("/new")
+    public String createFormPage() {
+        return "users/createForm";
+    }
+
+    @GetMapping("/{id}")
+    public String showDetailPage(@PathVariable Long id, Model model) {
+        model.addAttribute("user", userRepository.getOne(id));
+        return "users/show";
+    }
+
+    @GetMapping("/{id}/edit")
+    public String editFormPage(@PathVariable Long id, Model model) {
+        model.addAttribute("user", userRepository.getOne(id));
+        return "users/editForm";
+    }
+
+    @PostMapping("")
+    public String createUser(@ModelAttribute User user) {
+        userRepository.save(user);
         return "redirect:/users";
     }
 
-    @GetMapping("/users/{userId}/form")
-    public String updateUser(@PathVariable String userId, Model model) {
-        model.addAttribute("userId", userId);
-        return "/user/updateForm";
-    }
-
-    @PostMapping("/users/{userId}/update")
-    public String updateUser(@PathVariable String userId, String password, String name, String email) {
-        for(User user: users) {
-            if(user.getUserId().equals(userId)) {
-                user.setPassword(password);
-                user.setName(name);
-                user.setEmail(email);
-                break;
-            }
-        }
+    @PatchMapping("/{id}")
+    public String editUser(@PathVariable Long id, User newUser) {
+        userRepository.save(userRepository.getOne(id).merge(newUser));
         return "redirect:/users";
-    }
-
-    @GetMapping("/users/{userId}")
-    public String userProfile(@PathVariable String userId, Model model) {
-        User target = null;
-        for(User user: users) {
-            if(user.getUserId().equals(userId)) {
-                target = user;
-                break;
-            }
-        }
-        model.addAttribute("user", target);
-        return "/user/profile";
     }
 }

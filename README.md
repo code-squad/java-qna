@@ -1,77 +1,86 @@
-# 질문 답변 게시판
+# Step 2
 
-#### 헤로쿠 배포 주소
+헤로쿠 배포 주소
 
 https://serene-journey-91670.herokuapp.com/
 
-## Step1
+## 1. 학습정리
 
-### 1. 학습정리
+### 1. 웹 3 계층 구성
 
-#### gradle
+#### 웹 서버
 
-소프트웨어 빌드 자동화 시스템으로 `build.gradle` 파일을 통해 라이브러리 의존성 설정할 수 있다.
+클라이언의 HTTP 요청을 가장 먼저 받는다. 보통 웹 서버에 하나 이상의 에플리케이션이 존재하거나, 간단한 로드 밸런싱을 하기 위해 사용한다. Apache, nginx가 존재한다.
 
-```groovy
-// 1.  플러그인 적용
-apply plugin: 'java'
+#### 어플리케이션 서버
 
-// 2.  라이브러리를 다운로드할 repository 설정
-repositories {
-    mavenCentral()
+개발자가 구현한 비지니스 로직을 실행하는 계층이다. 톰켓은 요청에 맞는 서블릿을 통해 로직을 수행하고 응답한다.
+
+#### 데이터베이스
+
+데이터의 영속성을 유지하기 위해 존재한다. MySQL, Oracle, PostgreSQL, MongoDB 등이 존재한다. 
+
+### 2. Servlet thread issue
+
+서블릿의 서비스 메소드는 요청이 발생했을 때, 새로운 스레드를 생성해서 응답을 처리하기 때문에 요청을 병렬적으로 처리할 수 있다. 하지만, 생성된 쓰레드가 인스턴스 변수를 통해 동시에 같은 메모리에 접근할 수 있기 때문에 예상치 못한 결과를 얻을 수 있다.
+
+> Reference
+>
+> https://stackoverflow.com/questions/9555842/why-servlets-are-not-thread-safe/
+> https://www.geeksforgeeks.org/introduction-java-servlets/
+> https://docs.oracle.com/cd/E19146-01/819-2634/abxbh/index.html
+
+
+### 3. HTTP의 query parameter vs body
+
+HTTP 프로토콜에서 GET 메소드는 query parameter를 통해 POST 메소드는 body를 통해 필요한 인수를 서버에게 전송한다. 기본적으로 로그인을 GET 메소드로 처리할 경우 url에 패스워드가 포함되기 때문에 보안성 좋지 않기 때문에 query parameter 방식을 사용하지 않는다. 그렇다면 왜 GET 메소드는 body에 인수를 담지 않고 query parameter를 사용할까?
+
+URL이 같은 GET 요청에 같은 페이지를 제공하기 위해서라고 생각한다. 예를 들면 사용자 리스트를 보여주는 페이지의 경우 url에 `?page=3&limit=10` 페이지 번호와 유저 수가 존재하기 때문에 사용자는 같은 url을 통해 서버는 동일한 페이지를 제공할 수 있다.
+
+## 2. 질문사항
+
+### 1. put 메소드는 완전한 entity를 서버에게 제공해햐 하는가?
+
+PUT 메소드와 PATCH 메소드에 대해서 공부했습니다. put 메소드는 요청할 때 완전한 entity를 제공해서 resource를 변경하는 반면 patch 메소드는 제공된 필드만 리소스를 변경하기 때문에 멱등하지 않다고 이해했습니다. 그렇다면 개인정보를 수정할 때, 사용자로부터 필요한 모든 필드(아이디, 비밀번호 등)를 제공 받을 수 있게 form 페이지를 구성하는 것이 맞을까요?
+
+저는 이 방법이 이상하다고 느껴서 patch 메소드를 이용해 구현했습니다.
+
+> Reference
+>
+> https://stackoverflow.com/questions/28459418/rest-api-put-vs-patch-with-real-life-examples
+
+```
+# 수정 전
+GET /users/1
+{"userId": "kyungrae", "password": "1234", "nickName: "dingo"}
+
+# PUT 메소드
+PUT /users/1
+{
+    "userID": "kyungrae",
+    "password": "1234",
+    "nickName": "question"
 }
 
-// 3. 의존성  설정
-dependencies {
-    compile 'org.springframework.boot:spring-boot-starter-web'
-    testCompile 'org.springframework을.boot:spring-boot-starter-test'
+# 수정 후
+GET /users/1
+{"userId": "kyungrae", "password": "1234", "nickName: "question"}
+```
+
+```
+# 수정 전
+GET /users/1
+{"userId": "kyungrae", "password": "1234", "nickName: "dingo"}
+
+# PUT 메소드
+PUT /users/1
+{
+    "userID": "kyungrae",
+    "password": ,
+    "nickName": "question"
 }
+
+# 수정 후
+GET /users/1
+{"userId": "kyungrae", "password": null, "nickName: "dingo"}
 ```
-
-##### 의존성 설정 옵션
-
-1. compile: 프로젝트의 소스가 컴파일시 사용되는 설정
-2. testCompile: 프로젝트의 테스트 소스가 컴파일될 때 요구되는설정
-
-##### 의존성 명시하는 방법
-
-```groovy
-// (방법 1) group: '~',, name: '~', version: '~' 형식순으로 명시한다.
-compile group: 'org.springframework.boot', name: 'spring-boot-devtools', version: '2.2.4.RELEASE'
-
-// (방법 2) 'group':'name':'version' 명시한다.
-compile 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
-```
-
-
-#### Live reloading
-
-소스 파일이 수정되었을 때 재실행 없이 변경된 사항을 적용하는 방법이다.
-
-1. spring-boot-devtools 의존성 주입
-2. `application.properties` 파일에 내용 추가
-```
-spring.devtools.livereload.enabled=true
-spring.freemarker.cache=false
-```
-3. File->Settings->Compiler->Build project automatically 체크
-4. ctrl+shift+a->registry->compiler.allow.automake.when.app.running 체크
-5. Edit configurations->Running Application Update Policies 설정
-
-### 2. 고민사항
-
-Question 객체에 writer 필드 타입을 User로 하고 싶었지만 input tag의 userId와 setMethod가 매핑 되어 있는 것 같아 일단 String 타입으로 지정해두었다.
-
-### 3. 질문사항
-
-html에서 하이퍼링크 경로를 작성할 때, 앞에 `/`를 붙이면 절대경로 `/` 없이 작성하면 상대경로로 동작하는 것 같습니다.
-```html
-<!-- 절대 경로 이동 -->
-<form method="post" action="/users">
-</form>
-
-<!-- 상대 경로 이동 -->
-<form method="post" action="users">
-</form>
-```
-유지보수 관점에서 볼 때, 어는 방법이 더 좋을까요?

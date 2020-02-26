@@ -3,6 +3,28 @@
 <div class="container" id="main">
    <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
       <div class="panel panel-default qna-list">
+
+          {{#questions}}
+          <li>
+              <div class="wrap">
+                  <div class="main">
+                      <strong class="subject">
+                          <a href="/questions/{{id}}">{{title}}</a>
+                      </strong>
+                      <div class="auth-info">
+                          <i class="icon-add-comment"></i>
+<!--                          <span class="time">created time</span>-->
+                          <a class="author" href="/users/{{writer}}">{{writer}}</a>
+                      </div>
+                      <div class="reply" title="댓글">
+                          <i class="icon-reply"></i>
+                          <span class="point"></span>
+                      </div>
+                  </div>
+              </div>
+          </li>
+          {{/questions}}
+
           <div class="row">
               <div class="col-md-3"></div>
               <div class="col-md-6 text-center">

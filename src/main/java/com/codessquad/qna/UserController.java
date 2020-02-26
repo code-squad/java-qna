@@ -25,12 +25,11 @@ public class UserController {
     public String login(String userId, String password, HttpSession session) {
         User user = userRepository.findByUserId(userId);
         if(user == null) {
-            System.out.println("ID does not exist");
-            return "redirect:/users/loginForm";
+            System.out.println("Login Failure");
+            return "userDir/login_failed";
         }
         if (!password.equals(user.getPassword())) {
             System.out.println("ID does not match password");
-//            return "redirect:/users/loginForm";
             return "userDir/login_failed";
         }
 
@@ -70,6 +69,13 @@ public class UserController {
         user.update(newUser);
         userRepository.save(user);
         return "redirect:/users";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.removeAttribute("user");
+        System.out.println("logged out successfully");
+        return "redirect:/";
     }
 
 

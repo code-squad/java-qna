@@ -26,19 +26,19 @@ public class QuestionController {
     }
 
     @PostMapping("/questions")
-    public String create(String title, String contents, HttpSession session) {
-        User sessionUser = HttpSessionUtils.getUserFromSession(session);
-        Question newQuestion = new Question(sessionUser.getUserId(), title, contents);
+    public String create(String title, String contents, String writer, Model model) {
+
+        Question newQuestion = new Question(writer, title, contents);
+        questionRepository.save(newQuestion);
         System.out.println("posted");
-        return "redirect:/";
+        System.out.println(title + " : " + contents);
+        model.addAttribute("title", title);
+        model.addAttribute("contents", contents);
+        model.addAttribute("writer", writer);
+        model.addAttribute("questions", questionRepository.findAll());
+        return "index";
 
     }
-//
-//    @GetMapping("/")
-//    public String viewQnaList(Model model) {
-//        model.addAttribute("questions", questionRepository.findAll());
-//        return "/index";
-//    }
 
 
 }

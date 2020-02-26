@@ -60,7 +60,7 @@ public class UserController {
 
     @GetMapping("/users/{id}/form")
     public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
-        if (HttpSessionUtils.isLoginUser(session)) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/users/loginForm";
         }
 
@@ -69,13 +69,13 @@ public class UserController {
             throw new IllegalStateException("자신의 정보만 수정할 수 있습니다.");
         }
 
-        model.addAttribute("user", userRepository.findById(id).orElse(null));
+        model.addAttribute("user", userRepository.findById(id).orElseThrow(NullPointerException::new));
         return "/user/updateform";
     }
 
     @PutMapping("/users/{id}")
     public String update(@PathVariable Long id, Model model, User updateUser, HttpSession session) {
-        if (HttpSessionUtils.isLoginUser(session)) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/users/loginForm";
         }
 

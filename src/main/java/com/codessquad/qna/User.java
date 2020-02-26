@@ -1,23 +1,9 @@
 package com.codessquad.qna;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 public class User {
-    @NotNull
-    @Size(min = 1, max = 10, message = "1자 이상 10자 미만으로 작성해야합니다.")
     private String id;
-
-    @NotNull
-    @Size(min = 1, max = 10)
     private String password;
-
-    @NotNull
-    @Size(min = 1, max = 10)
     private String name;
-
-    @NotNull
-    @Size(min = 1, max = 100)
     private String email;
 
     public String getId() {

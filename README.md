@@ -1,293 +1,289 @@
-### Heroku
-> https://wooody92.herokuapp.com/
+
+### 0. Heroku
+
+- https://wooody92.herokuapp.com/
+
+### 1. 구현 기능
+
+- 세션을 활용 한 아래 기능 구현
+  - 로그인
+  - 개인정보 수정
+  - 로그인 상태에서 질문, 수정, 삭제 기능 
+- @ManyToOn 매핑을 이용한 User-Question 연결
+- 테스트 데이터 추가
+- Step2 피드백 리팩토링
+  - LocalDateTime class 사용
+  - 불필요 주석제거
+  - wrapper class -> primitive type 변경
+  - JpaRepository와 CrudRepository의 차이
+- 401 unauthorized, 404 not found 에 대한 에러 페이지 추가
+
+### 2. 회고
+
+어디서부터 어떻게 시작할까 막막할 때, pobi님의 동영상 강의가 방향을 잡아줘서 참 좋은 것 같다. 이번 스텝에서는 에러페이지 html 생성 후 예외처리로 해당 에러 url로 연결시켜 주었는데, 다음 스텝에서는 spring boot framework의 error controller class 학습 후 활용해봐야 겠다.
 
 -------
-# STEP 2
-# 사용자 데이터를 DB에 저장하는 동영상
+# STEP 3
+# 인증 기반으로 구현하는 동영상
 
-## [H2 DB 추가 및 설정](https://youtu.be/F3koiTIJCwM)
+## [로그인 기능 구현](https://youtu.be/-J9f_LQILCY)
 
-- 질문/답변 게시판을 구현하기 위한 HTML 템플릿을 추가(**이미 진행했기 때문에 생략 가능**)
-- H2 데이터베이스에 대한 의존관계 설정 및 설정
-- H2 데이터베이스 관리툴 확인
+- 로그인 성공과 실패에 대한 처리 구현
+- 로그인이 성공할 경우 세션에 로그인 상태 저장
 
-## [회원가입, 목록 기능 구현](https://youtu.be/69tNvDm-iiI)
+## [로그인 상태에 따른 메뉴 처리 및 로그아웃 ](https://youtu.be/9xmTAmyv_ic)
 
-- 데이터베이스의 테이블과 자바 객체를 매핑
-- 회원가입 기능을 DB를 사용하도록 수정
-- 회원목록 기능을 DB를 사용하도록 수정
+- 로그인 유무에 따라 상단 메뉴 처리.
+  - 로그인 상태이면 개인정보수정과 로그아웃 메뉴, 로그아웃 상태이면 로그인과 회원가입 메뉴가 나타나도록 처리함.
+- 로그아웃 기능 구현함
 
-## [개인정보 수정 기능 구현 1](https://youtu.be/D3PjDIYZYW0), [개인정보 수정 기능 구현 2](https://youtu.be/V2AhIjdfcMg)
+## [자기 자신의 정보만 수정](https://youtu.be/HfW5kvsaAEA)
 
-- 웹 애플리케이션 개발의 기본 흐름을 이해할 때 가장 복잡한 과정 중의 하나가 데이터베이스에 추가된 정보를 수정하는 것이다.
-- 회원가입한 사용자의 정보를 수정하는 기능을 1단계와 2단계로 나누어 진행한다.
+- 로그인한 사용자의 경우에 한해 자기 자신의 정보만 수정 가능하도록 구현
 
-------
+## [중복 제거, clean code, 쿼리 보기 설정](https://youtu.be/DaqWKDvdmAk)
 
-# 사용자 데이터를 DB에 저장
+- 개발 과정에서 발생한 중복 코드를 제거
+- SQL 쿼리를 볼 수 있도록 설정
 
-## 데이터베이스 설정
+## [질문하기, 질문 목록 기능 구현](https://youtu.be/aaC07qy3JXQ)
 
-#### 의존관계 설정
-
-- pom.xml 파일에 다음 라이브러리에 대한 의존관계를 설정한다.
-
-```
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-data-jpa</artifactId>
-</dependency>
-<dependency>
-    <groupId>com.h2database</groupId>
-    <artifactId>h2</artifactId>
-    <version>1.4.192</version>
-</dependency>
-코드복사
-```
+- 로그인한 사용자에 대한 질문 가능하도록 구현
+- 질문 목록 기능 구현
 
 ------
 
-#### DB Connection 설정 – application.properties
-
-```
-spring.datasource.url=jdbc:h2:mem://localhost/~/java-qna;MVCC=TRUE;DB_CLOSE_ON_EXIT=FALSE
-spring.datasource.driverClassName=org.h2.Driver
-spring.datasource.username=sa
-spring.datasource.password=
-
-spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
-코드복사
-```
-
-------
-
-#### 실행 쿼리 보기 설정 – application.properties
-
-```
-spring.jpa.show-sql=true
-spring.jpa.properties.hibernate.format_sql=true
-코드복사
-```
-
-------
-
-#### 테이블 자동 생성 설정 – application.properties
-
-- 서버를 시작하는 시점에 DB 테이블을 drop후에 다시 생성하도록 설정하는 방법.
-
-```
-spring.jpa.hibernate.ddl-auto=create-drop
-코드복사
-```
-
-- 서버를 시작하는 시점에 DB 테이블을 drop하지 않도록 설정하는 방법.
-
-```
-spring.jpa.hibernate.ddl-auto=validate
-코드복사
-```
-
-------
-
-#### h2 db console에 접근 설정 – application.properties
-
-```
-spring.h2.console.enabled=true
-spring.h2.console.path=/h2-console
-코드복사
-```
-
-------
-
-#### User 클래스를 DB 테이블에 매핑
-
-- User 클래스와 DB의 테이블에 매핑한다.
-- DB 테이블은 별도로 생성할 필요없이 자동으로 생성된다.
-
-```java
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GeneratedType;
-import javax.persistence.Id;
-
-@Entity
-public class User {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	
-	@Column(nullable=false, length=20)
-	private String userId;
-	
-	private String password;
-	private String name;
-	private String email;
-	
-	[...각 필드에 대한 setter, getter method...]
-}
-코드복사
-```
-
-- User 클래스를 @Entity로 설정한다.
-- User 클래스에 대한 유일한 key 값을 @Id로 매핑한다.
-- @Id에 @GeneratedValue 애노테이션을 추가하면 key가 자동으로 증가한다.
-- 각 필드를 테이블 칼럼과 매핑할 때는 @Column 애노테이션을 사용한다.
-
-------
-
-#### 사용자 데이터에 대한 CRUD 구현
-
-- CrudRepository 인터페이스를 상속하는 것만으로 CRUD 기본 기능을 구현할 수 있다.
-
-```java
-import org.springframework.data.jpa.repository.CrudRepository;
-
-public interface UserRepository extends CrudRepository<User, Long>{
-}
-코드복사
-```
-
-------
-
-## Controller에서 Repository 사용
-
-- 사용자 데이터를 추가, 조회하기 위해 더 이상 ArrayList를 사용하지 않는다.
-- @Autowired 애노테이션을 활용해 UserRepository를 추가한다.
-
-#### 사용자 데이터 추가
-
-- UserRepository의 save() 메소드를 통해 DB에 사용자 데이터를 추가한다.
-
-```java
-@Controller
-@RequestMapping("/users")
-public class UserController {
-
-  @Autowired
-  private UserRepository userRepository;
-
-  @PostMapping("")
-  public String create(User user) {
-    System.out.println("user : " + user);
-    userRepository.save(user);
-    return "redirect:/users";
-  }
-}
-코드복사
-```
-
-------
-
-#### 사용자 목록 조회
-
-- UserRepository의 findAll() 메소드를 통해 DB에 저장되어 있는 전체 사용자 목록을 조회한다.
-
-```java
-@Controller
-@RequestMapping("/users")
-public class UserController {
-
-  @Autowired
-  private UserRepository userRepository;
-
-  [... 사용자 추가 코드 ...]
-
-  @GetMapping("")
-  public String list(Model model) {
-    model.addAttribute("users", userRepository.findAll());
-    return "/user/list";
-  }
-}
-코드복사
-```
-
-------
-
-#### 사용자 조회
-
-- 사용자 목록을 출력하는 곳에서 {{@index}}를 사용하는 대신 {{id}}를 사용한다.
-- UserRepository의 findOne() 메소드를 통해 DB에 저장되어 있는 사용자 데이터 조회한다.
-
-```java
-@Controller
-@RequestMapping("/users")
-public class UserController {
-  @Autowired
-  private UserRepository userRepository;
-
-  @GetMapping("/{id}")
-  public ModelAndView show(@PathVariable long id) {
-    ModelAndView mav = new ModelAndView("user/profile");
-    mav.addObject("user", userRepository.findById(id).get());
-    return mav;
-  }
-}
-코드복사
-```
-
-------
-
-# 실습 - 질문 데이터를 DB에 저장 및 조회
-
-## 질문 데이터 저장하기
-
-- @Entity를 활용해 Question 클래스를 DB 테이블과 매핑한다.
-- @Id, @GeneratedValue를 활용해 Question의 key를 생성한다.
-- @Column을 활용해 각 필드를 테이블의 칼럼과 매핑한다.
-- QuestionRepostory를 생성한다. QuestionRepository는 CrudRepository를 extends한다.
-- QuestionController에서 QuestionRepository를 @Autowired를 활용해 의존관계를 설정한다.
-- QuestionRepository의 save() 메소드를 이용해 Question 데이터를 DB에 저장한다.
-
-------
-
-## 질문 목록 구현하기
-
-- QuestionRepository의 findAll() 메소드를 활용해 전체 질문 목록 데이터를 조회한다.
-
-------
-
-## 질문 상세보기 구현하기
-
-- QuestionRepository의 findOne() 메소드를 활용한다.
-
-------
-
-# 회원정보 수정
+# 로그인 기능 구현
 
 ## 요구사항
 
-> 회원 목록에서 회원가입한 사용자의 정보를 수정할 수 있어야 한다.
-> 비밀번호, 이름, 이메일만 수정할 수 있으며, 사용자 아이디는 수정할 수 없다.
+> 로그인이 가능해야 한다.
+>
+> 현재 상태가 로그인 상태이면 상단 메뉴가 “로그아웃”, “개인정보수정”이 나타나야 하며, 로그아웃 상태이면 상단 메뉴가 “로그인”, “회원가입”이 나타나야 한다.
+
+------
+
+## 로그인 기능 구현 힌트
+
+- 로그인이 성공하는 경우 HttpSession에 로그인 정보 추가
+
+```
+session.setAttribute(“sessionedUser", user);
+코드복사
+```
+
+- Spring MVC에서 HttpSession 메소드의 인자로 전달 가능
+
+```java
+@PostMapping("/login")
+public String login(String userId, String password, HttpSession session) {
+   // 로그인 로직 구현
+}
+코드복사
+```
+
+- UserRepository에서 userId에 해당하는 데이터 조회
+
+```java
+public interface UserRepository extends JpaRepository<User, Long>{
+    User findByUserId(String userId);
+}
+코드복사
+```
+
+------
+
+## 로그인에 따른 메뉴 처리 구현 힌트
+
+#### 세션 설정
+
+- Mustache에서 HttpSession 데이터를 접근하기 위한 설정(application.properties)
+
+```
+handlebars.expose-session-attributes=true
+코드복사
+```
+
+- URL에 jsessionid가 추가되는 이슈를 해결하는 설정
+
+```
+// spring boot 1.5
+server.session.tracking-modes=cookie
+
+// spring boot 2.x
+server.servlet.session.tracking-modes=cookie
+코드복사
+```
+
+#### mustache/handlebars에서 if/else
+
+```
+{{^sessionedUser}}
+    [[HTML 구문]
+{{/sessionedUser}}
+{{#sessionedUser}}
+    [[HTML 구문]
+{{/sessionedUser}}
+코드복사
+```
+
+------
+
+# 테스트 데이터 추가
+
+로그인 기능을 테스트하기 위해 매번 회원가입을 먼저 해야 한다.
+
+로그인 기능을 테스트하는데 어려움이 있다. 테스트 데이터를 미리 추가한 후 개발을 하면 좋겠다.
+
+## 테스트 데이터 추가 방법
+
+- src/main/resources 폴더에 data.sql 파일을 추가한다.
+- 사용자 데이터를 다음과 같이 insert sql 쿼리를 추가한다.
+
+```
+INSERT INTO USER (id, user_id, password, name, email) VALUES (1, 'javajigi', 'test', '자바지기', 'javajigi@slipp.net');
+INSERT INTO USER (id, user_id, password, name, email) VALUES (2, 'sanjigi', 'test', '산지기', 'sanjigi@slipp.net');
+코드복사
+```
+
+- 권한 체크에 대한 테스트를 위해 2명 이상의 테스트 데이터를 추가한다.
+
+------
+
+# 개인정보 수정
+
+## 요구사항
+
+> 회원가입한 사용자의 정보를 수정할 수 있어야 한다.
+>
+> 이름, 이메일만 수정할 수 있으며, 사용자 아이디는 수정할 수 없다.
+>
 > 비밀번호가 일치하는 경우에만 수정 가능하다.
 
-#### 힌트 1 - 회원정보 수정 화면 기능 구현
+------
 
-- 회원가입한 사용자 정보를 수정할 수 있는 수정 화면과 사용자가 수정한 값을 업데이트할 수 있는 기능을 나누어 개발해야 한다.
-- 사용자 정보를 수정하는 화면 구현 과정은 다음과 같다.
+#### 힌트
 
-![user_update_form.PNG](https://firebasestorage.googleapis.com/v0/b/nextstep-real.appspot.com/o/lesson-attachments%2F-KpD8DNo7tp5Vhx9vg-9%2Fuser_update_form.PNG?alt=media&token=b5ddc6a0-d050-430e-bade-bf2a4f8d5672)
+- HttpSession에 저장된 User 데이터를 가져온다.
 
-- /user/form.html 파일을 /user/updateForm.html로 복사한 후 수정화면을 생성한다.
-- URL 매핑을 할 때 "/users/{id}/form"와 같이 URL을 통해 인자를 전달하는 경우 @PathVariable 애노테이션을 활용해 인자 값을 얻을 수 있다.
-- public String updateForm(@PathVariable String id)와 같이 구현 가능하다.
-- Controller에서 전달한 값을 입력 폼에서 출력하려면 value를 사용하면 된다.
-- ``
+```
+Object value = session.getAttribute(”sessionedUser");
+if (value != null) {
+    User user = (User)value;
+}
+코드복사
+```
 
-#### 힌트 2 - 회원정보 수정
+- 로그인한 사용자와 수정하는 계정의 id가 같은 경우만 수정하도록 한다.
+- 다른 사용자의 정보를 수정하려는 경우 에러 페이지를 만든 후 에러 메시지를 출력한다.
 
-- 사용자 정보를 최종적으로 수정하는 과정은 다음과 같다.
+------
 
-![user_update.PNG](https://firebasestorage.googleapis.com/v0/b/nextstep-real.appspot.com/o/lesson-attachments%2F-KpD8DNo7tp5Vhx9vg-9%2Fuser_update.PNG?alt=media&token=7b0408f8-c670-4c97-88c9-6440d9edef0a)
+# 질문 기능 구현 실습
 
-- URL 매핑을 할 때 "/users/{id}"와 같이 URL을 통해 인자를 전달하는 경우 @PathVariable 애노테이션을 활용해 인자 값을 얻을 수 있다.
-- UserController의 사용자가 수정한 정보를 User 클래스에 저장한다.
-- {id}에 해당하는 User를 DB에서 조회한다(UserRepository의 findOne()).
-- DB에서 조회한 User 데이터를 새로 입력받은 데이터로 업데이트한다.
-- UserRepository의 save() 메소드를 사용해 업데이트한다.
+## 요구사항
 
-**POST 대신 PUT method를 사용하는 방법**
+> 사용자는 질문을 할 수 있으며, 모든 질문을 볼 수 있다.
+>
+> 단, 질문을 할 수 있는 사람은 로그인 사용자만 할 수 있다.
+>
+> 질문한 사람은 자신의 글을 수정/삭제할 수 있다.
 
-- 수정 화면(updateForm.html)에서 수정된 값을 전송할 때 PUT값을 다음과 같이 hidden으로 전송한다.
-  - ``
-- 위와 같이 `_method`로 PUT을 전달하면 UserController에서는 @PutMapping으로 URL을 매핑할 수 있다.
+------
+
+## 질문하기 구현 힌트
+
+- 로그인한 사용자는 질문하기 화면에 접근한다.
+- 로그인한 사용자가 누구인지 알 수 있기 때문에 질문하기 화면에서 글쓴이 입력 필드가 삭제해도 된다.
+- 로그인하지 않은 사용자는 로그인 페이지로 이동한다.
+- Question의 글쓴이 값은 User의 name 값을 가지는 것으로 구현한다.
+
+------
+
+## 질문 수정하기 구현 힌트
+
+- 전체적인 흐름은 개인정보수정의 흐름과 같다.
+- 수정화면 접근/수정하기 모두 로그인 사용자와 글쓴이의 사용자 아이디가 같은 경우에만 가능하다.
+- 로그인하지 않은 사용자 또는 자신의 글이 아닌 경우 "다른 사람의 글을 수정할 수 없다."와 같은 에러 메시지를 출력하는 페이지로 이동하도록 한다.
+- @PutMapping을 사용해 매핑한다.
+  - html에서 form submit을 할 때 ``과 같이 PUT method를 값으로 전송한다.
+
+------
+
+## 질문 삭제하기 구현 힌트
+
+- 삭제하기는 로그인 사용자와 글쓴이의 사용자 아이디가 같은 경우에만 가능하다.
+- 로그인하지 않은 사용자 또는 자신의 글이 아닌 경우 로그인 화면으로 이동한다.
+- @DeleteMapping을 사용해 매핑하고 구현한다.
+  - html에서 form submit을 할 때 ``와 같이 PUT method를 값으로 전송한다.
+
+------
+
+# User와 Question 연결 실습(선택)
+
+## 요구사항
+
+> 현재 Question의 글쓴이는 User의 name 값을 가지는 것으로 구현했다.
+>
+> 이와 같이 구현하는 경우 User의 name을 수정하는 경우 Question의 글쓴이와 다른 값을 가지는 문제가 발생한다.
+> 이 문제를 해결하기 위해 User의 name이 변경될 때마다 Question의 writer 값을 수정할 수도 있지만 이와 같이 구현할 경우 writer가 같은 이름을 가지는 경우 문제가 될 수 있다.
+>
+> 이 같은 문제 상황에 대해 원론적으로 문제가 발생하지 않도록 해결한다.
+
+## 힌트
+
+#### User의 id를 저장하는 방법
+
+- User의 primary key인 id 값을 Question에 저장한다.
+- Question을 조회할 때 id 값을 통해 User도 같이 조회한다.
+
+#### @ManyToOne 매핑을 사용하는 방법
+
+- Question에 다음과 같이 @ManyToOne 매핑을 한다.
+
+```java
+@Entity
+public class Question {
+	@ManyToOne
+	@JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+	private User writer;
+	
+	[...]
+}
+코드복사
+```
+
+- 위와 같이 매핑할 경우 Question을 조회할 때 User도 같이 조회한다.
+
+------
+
+# Answer 구현하기 실습(선택)
+
+## 요구사항
+
+> 사용자는 질문 상세보기 화면에서 답변 목록을 볼 수 있다.
+> 로그인한 사용자는 답변을 추가할 수 있다.
+> 자신이 쓴 답변을 삭제할 수 있다.
+
+## 힌트
+
+- Answer를 추가하고 DB와의 매핑을 한다.
+- Question은 Answer와 one-to-many 관계이다. Answer에 @ManyToOne 애노테이션을 활용해 매핑한다.
+
+```java
+@Entity
+public class Answer {
+  @ManyToOne
+  @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
+  private Question question;
+
+  [...]
+}
+코드복사
+```
+
+- Question에 종속되어 있는 Answer 목록을 조회하는 메소드를 AnswerRepository에 추가한다.
+  - findByQuestionId(questionId)와 같은 메소드를 추가한다.
+- 답변 기능 구현을 담당할 AnswerController를 추가하고 구현한다.
+- 답변은 질문에 종속되기 때문에 URL 매핑을 다음과 같이 할 수 있다.
+  - `/questions/{questionId}/answers/{id}`

@@ -9,16 +9,18 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpSession;
 
 @Controller
+@RequestMapping("/questions")
 public class QuestionController {
 
     @Autowired
     private QuestionRepository questionRepository;
 
-    @GetMapping("questions/form")
+    @GetMapping("/form")
     public String form(HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "/users/loginForm";
@@ -27,7 +29,7 @@ public class QuestionController {
         return "/question/form";
     }
 
-    @PostMapping("/questions")
+    @PostMapping("")
     public String create(String title, String contents, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "/users/loginForm";
@@ -42,7 +44,7 @@ public class QuestionController {
         return "redirect:/";
     }
 
-    @GetMapping("/questions/{id}")
+    @GetMapping("/{id}")
     public String show(Model model, @PathVariable Long id) {
         model.addAttribute("question", questionRepository.findById(id).orElse(null));
 

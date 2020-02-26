@@ -19,6 +19,7 @@ public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
     @Autowired
     private UserRepository userRepository;
+    private final String loginSessionName = "sessionedUser";
 
     @PostMapping("")
     public String create(User newUser) {
@@ -40,13 +41,31 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/form")
-    public String updateForm(@PathVariable String userId, Model model) {
+    public String updateForm(@PathVariable String userId, Model model, HttpSession session) {
+        Object tempUser = session.getAttribute(loginSessionName);
+        log.info("current Session User Data : {}", tempUser);
+        if (tempUser == null)
+            return "redirect:/user/login";
+
+        User sessionedUser = (User)tempUser;
+        if (!userId.equals(sessionedUser.getUserId()))
+            throw new IllegalStateException("You can only update your own");
+
         model.addAttribute("user", findUser(userId, true));
         return "users/updateForm";
     }
 
     @PutMapping("/{userId}/update")
-    public String update(@PathVariable String userId, User updateUser) {
+    public String update(@PathVariable String userId, User updateUser, HttpSession session) {
+        Object tempUser = session.getAttribute(loginSessionName);
+        log.info("current Session User Data : {}", tempUser);
+        if (tempUser == null)
+            return "redirect:/user/login";
+
+        User sessionedUser = (User)tempUser;
+        if (!userId.equals(sessionedUser.getUserId()))
+            throw new IllegalStateException("You can only update your own");
+
         User originUser = findUser(userId, true);
         if (!originUser.matchPassword(updateUser))
             return "users/update_failed";
@@ -66,14 +85,14 @@ public class UserController {
         if (!user.matchPassword(sessionUser))
             return loginFailedTemplate;
 
-        session.setAttribute("sessionedUser", user);
+        session.setAttribute(loginSessionName, user);
         log.info("login Success : {}" , user);
         return "redirect:/";
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.removeAttribute("sessionedUser");
+        session.removeAttribute(loginSessionName);
         log.info("logout Success");
         return "redirect:/";
     }

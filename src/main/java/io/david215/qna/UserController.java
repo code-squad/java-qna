@@ -1,6 +1,8 @@
 package io.david215.qna;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.HashMap;
@@ -17,6 +19,12 @@ public class UserController {
             return "redirect:/user/signup-fail.html";
         }
         users.put(userId, user);
-        return "redirect:/user/signup-success.html";
+        return "redirect:/users/list";
+    }
+
+    @GetMapping("/users/list")
+    public String users(Model model) {
+        model.addAttribute("users", users.values());
+        return "users/list";
     }
 }

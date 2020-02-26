@@ -51,8 +51,8 @@ public class User {
         this.email = updateUser.email;
     }
 
-    public boolean matchPassword(User sessionUser) {
-        return this.password.equals(sessionUser.getPassword());
+    public boolean matchPassword(User sessionedUser) {
+        return this.password.equals(sessionedUser.getPassword());
     }
 
     @Override

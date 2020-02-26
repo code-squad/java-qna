@@ -4,11 +4,14 @@ public class PathUtil {
     private static final String REDIRECT = "redirect:";
     //home
     public static final String HOME = REDIRECT + "/";
+    public static final String HOME_TEMPLATE = "index";
     //user
     public static final String USER_LIST = REDIRECT + "/users";
     public static final String USER_LIST_TEMPLATE = "user/list";
     public static final String USER_PROFILE_TEMPLATE = "user/profile";
     public static final String USER_EDIT_TEMPLATE = "user/edit";
+    //question
+    public static final String QUESTION_DETAIL_TEMPLATE = "qna/show";
     //error
     public static final String NOT_FOUND = REDIRECT + "/error/notFond";
     public static final String BAD_REQUEST = REDIRECT + "/error/badRequest";

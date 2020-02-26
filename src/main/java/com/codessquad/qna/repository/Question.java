@@ -2,6 +2,8 @@ package com.codessquad.qna.repository;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.ObjectUtils;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,5 +33,13 @@ public class Question {
     public void update(Question question) {
         this.title = question.title;
         this.contents = question.contents;
+    }
+
+    public boolean isCorrectFormat(Question question) {
+        boolean titleIsExist = ObjectUtils.isNotEmpty(question.getTitle());
+        boolean contentIsExist = ObjectUtils.isNotEmpty(question.getContents());
+        boolean writerIsExist = ObjectUtils.isNotEmpty(question.getWriter());
+
+        return titleIsExist && contentIsExist && writerIsExist;
     }
 }

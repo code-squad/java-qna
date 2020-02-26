@@ -25,7 +25,6 @@ public class Question {
     @Column(nullable = false)
     private String contents;
 
-    @NotEmpty
     @Column(nullable = false)
     private LocalDateTime createdTime;
 
@@ -73,7 +72,7 @@ public class Question {
         this.createdTime = createdTime;
     }
 
-    private void setCreatedTimeNow() {
+    public void setCreatedTimeNow() {
         setCreatedTime(LocalDateTime.now());
     }
 

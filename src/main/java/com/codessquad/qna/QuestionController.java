@@ -76,4 +76,14 @@ public class QuestionController {
         return "redirect:/";
     }
 
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable Long id, Question deleteQuestion, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "redirect:/users/loginForm";
+        }
+
+        Question question = questionRepository.findById(id).orElseThrow(NullPointerException::new);
+        questionRepository.delete(question);
+        return "redirect:/";
+    }
 }

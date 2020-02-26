@@ -15,6 +15,8 @@ public class User {
     private String name;
     @Column(nullable = false)
     private String email;
+    @Transient
+    private String updatedPassword;
 
     public Long getId() {
         return id;
@@ -56,10 +58,25 @@ public class User {
         this.email = email;
     }
 
+    public String getUpdatedPassword() {
+        return updatedPassword;
+    }
+
+    public void setUpdatedPassword(String updatedPassword) {
+        this.updatedPassword = updatedPassword;
+    }
+
     public void update(User updatedUser) {
-        this.password = updatedUser.getPassword();
+        this.password = checkPassword(updatedUser);
         this.name = updatedUser.getName();
         this.email = updatedUser.getEmail();
+    }
+
+    private String checkPassword(User updatedUser) {
+        if(updatedUser.getUpdatedPassword().length()!=0){
+            return updatedUser.getUpdatedPassword();
+        }
+        return updatedUser.getPassword();
     }
 
     @Override

@@ -55,6 +55,10 @@ public class User {
         return this.password.equals(sessionedUser.getPassword());
     }
 
+    public boolean matchId(String userId) {
+        return this.userId.equals(userId);
+    }
+
     @Override
     public String toString() {
         return "User{" +

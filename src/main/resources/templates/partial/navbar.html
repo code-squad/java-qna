@@ -52,10 +52,14 @@
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="/">Posts</a></li>
-                <li><a href="/users/login" role="button">로그인</a></li>
+                {{^authorizedUser}}
+                <li><a href="/loginForm" role="button">로그인</a></li>
                 <li><a href="/users/join" role="button">회원가입</a></li>
-                <li><a href="#" role="button">로그아웃</a></li>
-                <li><a href="#" role="button">개인정보수정</a></li>
+                {{/authorizedUser}}
+                {{#authorizedUser}}
+                <li><a role="button" href="javascript:logout()">로그아웃</a></li>
+                <li><a href="/users/{{authorizedUser.id}}/editForm" role="button">개인정보수정</a></li>
+                {{/authorizedUser}}
             </ul>
         </div>
     </div>

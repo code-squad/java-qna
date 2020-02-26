@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
@@ -54,4 +55,47 @@ public class QuestionController {
         model.addAttribute("writer", HttpSessionUtils.getUserFromSession(session).getName());
         return "/qna/form";
     }
+
+    @GetMapping("/questions/{id}/update")
+    public String updateQuestion(@PathVariable("id") Long id, HttpSession session, Model model) throws IllegalAccessException {
+        if (!HttpSessionUtils.isUserLogin(session)) {
+            return "redirect:/login";
+        }
+
+        Optional optionalQuestion = questionRepository.findById(id);
+        if (!optionalQuestion.isPresent()) {
+            return "redirect:/";
+        }
+
+        Question question = (Question) optionalQuestion.get();
+        if (!HttpSessionUtils.getUserFromSession(session).matchName(question.getWriter())) {
+            throw new IllegalAccessException("자신이 올린 게시글만 수정할 수 있습니다.");
+        }
+
+        model.addAttribute("question", question);
+        return "/qna/updateForm";
+    }
+
+    @PutMapping("/questions/{id}/update")
+    public String putQuestion(@PathVariable("id") Long id, Question updatedQuestion, HttpSession session) throws IllegalAccessException {
+        if (!HttpSessionUtils.isUserLogin(session)) {
+            return "redirect:/login";
+        }
+
+        Optional optionalQuestion = questionRepository.findById(id);
+
+        if (!optionalQuestion.isPresent()) {
+            return "redirect:/";
+        }
+
+        Question question = (Question) optionalQuestion.get();
+        if (!HttpSessionUtils.getUserFromSession(session).matchName(question.getWriter())) {
+            throw new IllegalAccessException("자신이 올린 게시글만 수정할 수 있습니다.");
+        }
+
+        question.update(updatedQuestion);
+        questionRepository.save(question);
+        return "redirect:/questions/" + id;
+    }
+
 }

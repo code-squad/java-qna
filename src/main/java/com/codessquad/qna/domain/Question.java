@@ -17,7 +17,6 @@ public class Question {
     @Column(nullable=false)
     private String title;
     private String contents;
-    private String localDateTime;
 
     public Question() {}
 
@@ -33,21 +32,19 @@ public class Question {
     public String getWriter() { return writer; }
     public String getTitle() { return title; }
     public String getContents() { return contents; }
-    public String getLocalDateTime() { return localDateTime; }
 
     public void setId(Long id) { this.id = id; }
     public void setWriter(String writer) { this.writer = writer; }
     public void setTitle(String title) { this.title = title; }
     public void setContents(String contents) { this.contents = contents; }
-    public void setLocalDateTime(String localDateTime) { this.localDateTime = localDateTime; }
 
     @Override
     public String toString() {
         return "Question {" +
-                "writer='" + writer + '\'' +
+                "id=" + id +
+                ", writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
-                ", localDateTime='" + localDateTime + '\'' +
                 '}';
     }
 }

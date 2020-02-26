@@ -19,7 +19,6 @@ public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
     @Autowired
     private UserRepository userRepository;
-    private final String loginSessionName = "sessionedUser";
 
     @PostMapping("")
     public String create(User newUser) {
@@ -36,37 +35,33 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public String show(@PathVariable String userId, Model model) {
-        model.addAttribute("user", findUser(userId, true));
+        model.addAttribute("user", findUser(userId, false));
         return "users/profile";
     }
 
     @GetMapping("/{userId}/form")
     public String updateForm(@PathVariable String userId, Model model, HttpSession session) {
-        Object tempUser = session.getAttribute(loginSessionName);
-        log.info("current Session User Data : {}", tempUser);
-        if (tempUser == null)
+        if (!HttpSessionUtils.isLogined(session))
             return "redirect:/user/login";
 
-        User sessionedUser = (User)tempUser;
-        if (!userId.equals(sessionedUser.getUserId()))
+        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+        if (sessionedUser == null || !sessionedUser.matchId(userId))
             throw new IllegalStateException("You can only update your own");
 
-        model.addAttribute("user", findUser(userId, true));
+        model.addAttribute("user", findUser(userId, false));
         return "users/updateForm";
     }
 
     @PutMapping("/{userId}/update")
     public String update(@PathVariable String userId, User updateUser, HttpSession session) {
-        Object tempUser = session.getAttribute(loginSessionName);
-        log.info("current Session User Data : {}", tempUser);
-        if (tempUser == null)
+        if (!HttpSessionUtils.isLogined(session))
             return "redirect:/user/login";
 
-        User sessionedUser = (User)tempUser;
-        if (!userId.equals(sessionedUser.getUserId()))
+        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+        if (sessionedUser == null || !sessionedUser.matchId(userId))
             throw new IllegalStateException("You can only update your own");
 
-        User originUser = findUser(userId, true);
+        User originUser = findUser(userId, false);
         if (!originUser.matchPassword(updateUser))
             return "users/update_failed";
 
@@ -76,32 +71,30 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(User sessionUser, HttpSession session) {
-        User user = findUser(sessionUser.getUserId(), false);
+    public String login(User loginUser, HttpSession session) {
         String loginFailedTemplate = "/users/login_failed";
+        User user = findUser(loginUser.getUserId(), true);
         if (user == null)
             return loginFailedTemplate;
 
-        if (!user.matchPassword(sessionUser))
+        if (!user.matchPassword(loginUser))
             return loginFailedTemplate;
 
-        session.setAttribute(loginSessionName, user);
+        session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
         log.info("login Success : {}" , user);
         return "redirect:/";
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.removeAttribute(loginSessionName);
+        session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
         log.info("logout Success");
         return "redirect:/";
     }
 
-    private User findUser(String userId, boolean isThrowable) {
+    private User findUser(String userId, boolean isNullable) {
         log.info("findUser: {}", userId);
         Optional<User> user = userRepository.findById(userId);
-        if (isThrowable)
-            return user.orElseThrow(IllegalArgumentException::new);
-        return user.orElse(null);
+        return isNullable ? user.orElse(null) : user.orElseThrow(IllegalArgumentException::new);
     }
 }

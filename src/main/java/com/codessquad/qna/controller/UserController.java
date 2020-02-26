@@ -4,7 +4,6 @@ import com.codessquad.qna.repository.User;
 import com.codessquad.qna.repository.UserRepository;
 import com.codessquad.qna.util.HttpSessionUtil;
 import com.codessquad.qna.util.PathUtil;
-import com.codessquad.qna.util.VerifyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -51,7 +50,7 @@ public class UserController {
 
     @PostMapping
     public String createUser(User user) {
-        if (VerifyUtil.isCorrectUserFormat(user)) {
+        if (user.isCorrectFormat(user)) {
             userRepository.save(user);
             return PathUtil.USER_LIST;
         }
@@ -73,10 +72,10 @@ public class UserController {
     }
 
     private String update(User user, User updateData, String currentPassword) {
-        boolean isCorrectPassword = VerifyUtil.isCorrectPassword(user.getPassword(), currentPassword);
-        boolean isCorrectForm = VerifyUtil.isCorrectUserFormat(updateData);
+        boolean isCorrectPassword = user.isCorrectPassword(currentPassword);
+        boolean isCorrectFormat = user.isCorrectFormat(updateData);
 
-        if (!isCorrectForm) {
+        if (!isCorrectFormat) {
             return PathUtil.BAD_REQUEST;
         }
         if (!isCorrectPassword) {

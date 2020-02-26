@@ -12,9 +12,6 @@ public class HttpSessionUtil {
     }
 
     public static User getUserFromSession(HttpSession session) {
-        if (isAuthorizedUser(session)) {
-            return (User)session.getAttribute(USER_SESSION_KEY);
-        }
-        return null;
+        return (User)session.getAttribute(USER_SESSION_KEY);
     }
 }

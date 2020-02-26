@@ -58,6 +58,11 @@ public class User {
         return email;
     }
 
+    public void update(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
+
     public boolean isIdEquals(Long inputId) {
         if (inputId == null) {
             return false;
@@ -70,11 +75,6 @@ public class User {
             return false;
         }
         return inputPassword.equals(password);
-    }
-
-    public void update(String name, String email) {
-        this.name = name;
-        this.email = email;
     }
 
     @Override

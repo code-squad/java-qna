@@ -36,9 +36,11 @@ public class QuestionController {
     @GetMapping("/{id}")
     public String viewQuestionContents(@PathVariable Long id, Model model) {
         try {
+            checkNotFound(id);
             model.addAttribute("question", questionRepository.findById(id).get());
             return "/qna/show";
         } catch (NoSuchElementException e) {
+            System.out.println("ERROR CODE > " + e.toString());
             return e.getMessage();
         }
     }
@@ -49,6 +51,7 @@ public class QuestionController {
             model.addAttribute("question", getVerifiedQuestion(id, session));
             return "/qna/updatedForm";
         } catch (NullPointerException | IllegalAccessException | NoSuchElementException e) {
+            System.out.println("ERROR CODE > " + e.toString());
             return e.getMessage();
         }
     }
@@ -61,6 +64,7 @@ public class QuestionController {
             questionRepository.save(question);
             return "redirect:/questions/" + id;
         } catch (NullPointerException | IllegalAccessException | NoSuchElementException e) {
+            System.out.println("ERROR CODE > " + e.toString());
             return e.getMessage();
         }
     }
@@ -72,18 +76,26 @@ public class QuestionController {
             questionRepository.delete(question);
             return "redirect:/";
         } catch (NullPointerException | IllegalAccessException | NoSuchElementException e) {
+            System.out.println("ERROR CODE > " + e.toString());
             return e.getMessage();
         }
     }
 
+    private void checkNotFound(Long id) {
+        if (!questionRepository.findById(id).isPresent()) {
+            throw new NoSuchElementException("/error/notFound");
+        }
+    }
+
     private Question getVerifiedQuestion(Long id, HttpSession session) throws IllegalAccessException {
+        checkNotFound(id);
         if (!HttpSessionUtils.isLogin(session)) {
-            throw new NullPointerException();
+            throw new NullPointerException("/error/unauthorized");
         }
         User sessionUser = HttpSessionUtils.getUserFromSession(session);
         Question question = questionRepository.findById(id).get();
         if (!question.isWriterEquals(sessionUser)) {
-            throw new IllegalAccessException();
+            throw new IllegalAccessException("/error/unauthorized");
         }
         return question;
     }

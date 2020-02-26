@@ -39,7 +39,6 @@ public class UserController {
             session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
             return "redirect:/";
         } catch (NullPointerException e) {
-            System.out.println("ERROR CODE > user not found");
             return "redirect:/users/loginForm";
         }
     }
@@ -96,11 +95,11 @@ public class UserController {
 
     private User getSessionUser(Long id, HttpSession session) throws IllegalAccessException {
         if (!HttpSessionUtils.isLogin(session)) {
-            throw new NullPointerException();
+            throw new NullPointerException("/error/unauthorized");
         }
         User sessionUser = HttpSessionUtils.getUserFromSession(session);
         if (!sessionUser.isIdEquals(id)) {
-            throw new IllegalAccessException();
+            throw new IllegalAccessException("/error/unauthorized");
         }
         return sessionUser;
     }

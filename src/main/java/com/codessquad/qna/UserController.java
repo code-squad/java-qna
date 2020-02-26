@@ -78,16 +78,20 @@ public class UserController {
         }
     }
 
-    @PutMapping("/{id}/update")
-    public String viewUpdatedList(@PathVariable Long id, String password, String name, String email) {
-        User user = userRepository.findById(id).get();
-        if (!user.isPasswordEquals(password)) {
+    @PutMapping("/{id}")
+    public String updateUser(@PathVariable Long id, String password, String name, String email, HttpSession session) {
+        try {
+            User user = getSessionUser(id, session);
+            if (!user.isPasswordEquals(password)) {
+                return "redirect:/users";
+            }
+            user.update(name, email);
+            userRepository.save(user);
             return "redirect:/users";
+        } catch (NullPointerException | IllegalAccessException e) {
+            System.out.println("ERROR CODE > " + e.toString());
+            return e.getMessage();
         }
-        userRepository.findById(id).get().setName(name);
-        userRepository.findById(id).get().setEmail(email);
-        userRepository.save(userRepository.findById(id).get());
-        return "redirect:/users";
     }
 
     private User getSessionUser(Long id, HttpSession session) throws IllegalAccessException {

@@ -72,6 +72,11 @@ public class User {
         return inputPassword.equals(password);
     }
 
+    public void update(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
+
     @Override
     public String toString() {
         return "index: " + id + "  userId: " + userId + " password: " + password + " name: " + name + " email: " + email;

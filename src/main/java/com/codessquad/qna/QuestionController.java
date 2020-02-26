@@ -46,7 +46,7 @@ public class QuestionController {
     @GetMapping("/{id}/form")
     public String viewUpdatedForm(@PathVariable Long id, Model model, HttpSession session) {
         try {
-            model.addAttribute("question", getSessionQuestion(id, session));
+            model.addAttribute("question", getVerifiedQuestion(id, session));
             return "/qna/updatedForm";
         } catch (NullPointerException | IllegalAccessException | NoSuchElementException e) {
             return e.getMessage();
@@ -56,7 +56,7 @@ public class QuestionController {
     @PutMapping("/{id}")
     public String updateQuestion(@PathVariable Long id, String title, String contents, HttpSession session) {
         try {
-            Question question = getSessionQuestion(id, session);
+            Question question = getVerifiedQuestion(id, session);
             question.update(title, contents);
             questionRepository.save(question);
             return "redirect:/questions/" + id;
@@ -65,7 +65,7 @@ public class QuestionController {
         }
     }
 
-    private Question getSessionQuestion(Long id, HttpSession session) throws IllegalAccessException {
+    private Question getVerifiedQuestion(Long id, HttpSession session) throws IllegalAccessException {
         if (!HttpSessionUtils.isLogin(session)) {
             throw new NullPointerException();
         }

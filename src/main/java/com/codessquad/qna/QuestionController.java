@@ -18,13 +18,6 @@ public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
 
-    @GetMapping("/")
-    public String index(Model model) {
-        model.addAttribute("questions", questionRepository.findAll());
-
-        return "index";
-    }
-
     @GetMapping("questions/form")
     public String form(HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {

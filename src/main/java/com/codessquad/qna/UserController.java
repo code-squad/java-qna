@@ -6,8 +6,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @RequestMapping("/users")
@@ -32,14 +30,12 @@ public class UserController {
         }
         if (!password.equals(user.getPassword())) {
             System.out.println("ID does not match password");
-            return "redirect:/users/loginForm";
+//            return "redirect:/users/loginForm";
+            return "userDir/login_failed";
         }
 
         System.out.println("Login Success");
         session.setAttribute("user", user);
-
-
-
 
         return "redirect:/";
     }

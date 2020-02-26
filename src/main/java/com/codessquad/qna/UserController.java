@@ -1,5 +1,6 @@
 package com.codessquad.qna;
 
+import com.codesquad.web.HttpSessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,20 +34,40 @@ public class UserController {
     }
 
     @RequestMapping(value = "/{id}/update", method = RequestMethod.PUT)
-    public String update(@PathVariable("id") Long id, User updateUser) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isPresent() && optionalUser.get().getPassword().equals(updateUser.getPassword())) {
-            User user = optionalUser.get();
-            user.update(updateUser);
+    public String update(@PathVariable("id") Long id, User updatedUser, HttpSession session) throws IllegalAccessException {
+        if (!HttpSessionUtils.isUserLogin(session)) {
+            return "redirect:/login";
+        }
+
+        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+        if (!sessionedUser.matchId(id)) {
+            throw new IllegalAccessException("자신의 정보만 수정할 수 있습니다.");
+        }
+
+        User user = userRepository.getOne(sessionedUser.getId());
+
+        if (user.matchPassword(updatedUser.getPassword())) {
+            user.update(updatedUser);
             userRepository.save(user);
         }
+
         return "redirect:/users";
     }
 
     @GetMapping("/{id}/update")
-    public String updateForm(@PathVariable("id") Long id, Model model) {
-        String userId = userRepository.getOne(id).getUserId();
-        model.addAttribute("userId", userId);
+    public String updateForm(@PathVariable("id") Long id, Model model, HttpSession session) throws IllegalAccessException {
+        if (!HttpSessionUtils.isUserLogin(session)) {
+            return "redirect:/login";
+        }
+
+        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+        if (!sessionedUser.matchId(id)) {
+            throw new IllegalAccessException("자신의 정보만 수정할 수 있습니다.");
+        }
+
+        User user = userRepository.getOne(sessionedUser.getId());
+        model.addAttribute("user", user);
+
         return "/users/updateForm";
     }
 
@@ -64,18 +85,18 @@ public class UserController {
             System.out.println("Login Failure");
             return "redirect:/login";
         }
-        if (!password.equals(user.getPassword())) {
+        if (!user.matchPassword(password)) {
             System.out.println("Login Failure");
             return "redirect:/login";
         }
         System.out.println("Login Success!");
-        session.setAttribute("sessionedUser", user);
+        session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
         return "redirect:/";
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.removeAttribute("sessionedUser");
+        session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
         return "redirect:/";
     }
 }

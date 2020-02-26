@@ -32,4 +32,12 @@ public class UserController {
         model.addAttribute("users", users);
         return "user/list";
     }
+
+    private User checkUser(String userId) {
+        for (User user : users) {
+            if (userId.equals(user.getUserId()))
+                return user;
+        }
+        return null;
+    }
 }

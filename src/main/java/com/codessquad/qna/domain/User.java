@@ -67,4 +67,8 @@ public class User {
         setIntroduction(newUser.introduction);
         return this;
     }
+
+    public boolean verify(User target) {
+        return password.equals(target.password);
+    }
 }

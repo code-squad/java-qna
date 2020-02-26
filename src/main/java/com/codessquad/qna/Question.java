@@ -67,11 +67,8 @@ public class Question {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT));
     }
 
-    public boolean isWriterEquals(String sessionUserId) {
-        if (sessionUserId == null) {
-            return false;
-        }
-        return sessionUserId.equals(writer);
+    public boolean isWriterEquals(User sessionUser) {
+        return sessionUser.getId().equals(writer.getId());
     }
 
     public void update(String title, String contents) {

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
 import javax.servlet.http.HttpSession;
+import java.util.NoSuchElementException;
 
 @Controller
 public class QuestionController {
@@ -42,39 +43,45 @@ public class QuestionController {
 
     @GetMapping("/questions/{id}")
     public String viewQuestionContents(@PathVariable Long id, Model model) {
-        if(!(isIdPresent(id))) {
-            return "redirect:/";
+        try {
+            model.addAttribute("question", questionRepository.findById(id).get());
+            return "/qna/show";
+        } catch (NoSuchElementException e) {
+            return e.getMessage();
         }
-        model.addAttribute("question", questionRepository.findById(id).get());
-        return "/qna/show";
     }
 
     @GetMapping("/questions/{id}/form")
     public String viewUpdatedForm(@PathVariable Long id, Model model, HttpSession session) {
-        model.addAttribute("question", questionRepository.findById(id).get());
-        return "/qna/updatedForm";
+        try {
+            model.addAttribute("question", getSessionQuestion(id, session));
+            return "/qna/updatedForm";
+        } catch (NullPointerException | IllegalAccessException | NoSuchElementException e) {
+            return e.getMessage();
+        }
     }
 
     @PutMapping("/questions/{id}")
-    public String updateQuestion(@PathVariable Long id, String title, String contents) {
-        Question question = questionRepository.findById(id).get();
-        question.update(title, contents);
-        questionRepository.save(question);
-        return "redirect:/questions/" + id;
+    public String updateQuestion(@PathVariable Long id, String title, String contents, HttpSession session) {
+        try {
+            Question question = getSessionQuestion(id, session);
+            question.update(title, contents);
+            questionRepository.save(question);
+            return "redirect:/questions/" + id;
+        } catch (NullPointerException | IllegalAccessException | NoSuchElementException e) {
+            return e.getMessage();
+        }
     }
 
-//    private User getSessionUser(User writer, HttpSession session) throws IllegalAccessException {
-//        if (!HttpSessionUtils.isLogin(session)) {
-//            throw new NullPointerException();
-//        }
-//        User sessionUser = HttpSessionUtils.getUserFromSession(session);
-//        if (!sessionUser.isIdEquals(writer.getId())) {
-//            throw new IllegalAccessException();
-//        }
-//        return sessionUser;
-//    }
-
-    private Boolean isIdPresent(Long id) {
-        return questionRepository.findById(id).isPresent();
+    private Question getSessionQuestion(Long id, HttpSession session) throws IllegalAccessException {
+        if (!HttpSessionUtils.isLogin(session)) {
+            throw new NullPointerException();
+        }
+        User sessionUser = HttpSessionUtils.getUserFromSession(session);
+        Question question = questionRepository.findById(id).get();
+        if (!question.isWriterEquals(sessionUser)) {
+            throw new IllegalAccessException();
+        }
+        return question;
     }
 }

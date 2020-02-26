@@ -74,6 +74,11 @@ public class Question {
         return sessionUserId.equals(writer);
     }
 
+    public void update(String title, String contents) {
+        this.title = title;
+        this.contents = contents;
+    }
+
     @Override
     public String toString() {
         return "writer: " + writer + "\ntitle: " + title + "\ncontents: " + contents +

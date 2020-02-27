@@ -1,25 +1,31 @@
-package com.codessquad.qna;
+package com.codessquad.qna.domain;
 
-import java.text.SimpleDateFormat;
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
+@Entity
 public class Question {
-    private int id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String title;
     private String date;
     private String writer;
-    private String title;
     private String contents;
 
     public Question() {
-        long time = System.currentTimeMillis();
-        SimpleDateFormat daytime = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-        date = daytime.format(time);
+        date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD hh:mm:ss"));
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

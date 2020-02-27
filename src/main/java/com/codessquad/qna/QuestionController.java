@@ -1,5 +1,8 @@
 package com.codessquad.qna;
 
+import com.codessquad.qna.domain.Question;
+import com.codessquad.qna.domain.QuestionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,33 +14,30 @@ import java.util.List;
 
 @Controller
 public class QuestionController {
-    private List<Question> questions = new ArrayList<>();
 
-    @GetMapping("/qna/form")
+    @Autowired
+    private QuestionRepository questionRepository;
+
+    @GetMapping("/questions/form")
     public String questionForm() {
-        return "questionForm";
+        return "question/questionForm";
     }
 
     @PostMapping("/questions")
     public String questions(Question question) {
-        question.setId(questions.size()+1);
-        questions.add(question);
-        System.out.println("question : "+ question);
+        questionRepository.save(question);
         return "redirect:/";
     }
 
     @GetMapping("/")
     public String index(Model model) {
-        model.addAttribute("questions", questions);
+        model.addAttribute("questions", questionRepository.findAll());
         return "index";
     }
 
-    @GetMapping("/question/{id}")
-    public String questionPage(@PathVariable int id, Model model) {
-        for (Question each : questions) {
-            if (each.getId() == id) model.addAttribute("question", each);
-        }
-        return "show";
+    @GetMapping("/questions/{id}")
+    public String questionPage(@PathVariable Long id, Model model) {
+        model.addAttribute("question", questionRepository.findById(id).get());
+        return "question/show";
     }
-
 }

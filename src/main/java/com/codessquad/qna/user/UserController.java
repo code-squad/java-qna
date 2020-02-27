@@ -117,7 +117,7 @@ public class UserController {
         User user = userRepository.findByUserId(userId);
 
         // 사용자가 없거나, 비밀번호 일치하지 않는 경우
-        if (user == null || !user.getUserPassword().equals(userPassword)) {
+        if (user == null || !user.isEqualsPassword(userPassword)) {
             return "users/login_failed";
         }
         session.setAttribute(CommonUtility.SESSION_LOGIN_USER, user);
@@ -139,7 +139,7 @@ public class UserController {
                                         String userName,
                                         String userPassword,
                                         String userEmail) {
-        if (user.getUserPassword().equals(userPassword)) {
+        if (user.isEqualsPassword(userPassword)) {
             user.setUserName(userName);
             user.setUserEmail(userEmail);
             userRepository.save(user);

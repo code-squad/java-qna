@@ -70,6 +70,10 @@ public class User implements Serializable {
         this.userEmail = userEmail;
     }
 
+    public boolean isEqualsPassword(String password) {
+        return this.userPassword.equals(password);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

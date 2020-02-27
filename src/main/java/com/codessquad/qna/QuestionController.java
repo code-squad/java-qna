@@ -17,7 +17,7 @@ public class QuestionController {
 
     @PostMapping("/questions")
     public String createQuestion(Question question) {
-        String id = Integer.toString(questions.size() + 1);
+        Long id = (long) (questions.size() + 1);
         String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
         question.setId(id);

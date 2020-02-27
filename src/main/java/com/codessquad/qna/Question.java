@@ -1,11 +1,11 @@
 package com.codessquad.qna;
 
 public class Question {
+    private Long id;
     private String writer;
     private String title;
     private String contents;
     private String time;
-    private String id;
 
     public String getWriter() {
         return writer;
@@ -39,22 +39,22 @@ public class Question {
         this.time = time;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
     @Override
     public String toString() {
         return "Question{" +
-                "writer='" + writer + '\'' +
+                "id=" + id +
+                ", writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
                 ", time='" + time + '\'' +
-                ", id='" + id + '\'' +
                 '}';
     }
 }

@@ -17,14 +17,13 @@ public class Posts extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  private Long Id;
 
-  private String author;
-  private String title;
 
   @Column(columnDefinition = "TEXT", nullable = false)
+  private String author;
+  private String title;
   private String content;
-  private LocalDateTime createdTime;
 
   @Builder
   public Posts(String author, String title, String content) {
@@ -33,14 +32,18 @@ public class Posts extends BaseTimeEntity {
     this.content = content;
   }
 
+  public void update(String title, String content) {
+    this.title = title;
+    this.content = content;
+  }
+
   @Override
   public String toString() {
     return "Posts{" +
-        "id=" + id +
+        "Id=" + Id +
         ", author='" + author + '\'' +
         ", title='" + title + '\'' +
         ", content='" + content + '\'' +
-        ", createdTime=" + createdTime +
         '}';
   }
 }

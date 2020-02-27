@@ -1,38 +1,39 @@
 package com.codessquad.qna.question;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
+@RequestMapping("/questions")
 public class QuestionController {
-    private List<Question> questions = new ArrayList<>();
+    private static Logger log = LoggerFactory.getLogger(QuestionController.class);
 
-    @PostMapping("/questions")
-    public String qna(Question question) {
-        question.setIndex(questions.size() + 1);
-        questions.add(question);
+    @Autowired
+    private QuestionRepository questionRepository;
+
+    @PostMapping("")
+    public String qnaCreate(Question question) {
+        log.info("Question : '{}' ", question.toString());
+        questionRepository.save(question);
         return "redirect:/";
     }
 
-    @GetMapping("/")
-    public String questionList(Model model) {
-        model.addAttribute("questions", questions);
-        return "index";
+    @GetMapping("/form")
+    public String qnaForm() {
+        return "qna/form";
     }
 
-    @GetMapping("/questions/{index}")
-    public String questionContents(@PathVariable int index, Model model) {
-        Question question = questions.get(index - 1);
-        model.addAttribute("question", question);
-        return "qna/show";
+    @GetMapping("/{id}")
+    public ModelAndView showQuestionContents(@PathVariable Long id) {
+        ModelAndView mav = new ModelAndView("qna/show");
+        mav.addObject("question", questionRepository.findById(id).get());
+        return mav;
     }
 }
-
-
-

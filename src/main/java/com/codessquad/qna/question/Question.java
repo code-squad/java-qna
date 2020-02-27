@@ -1,28 +1,42 @@
 package com.codessquad.qna.question;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+@Entity
 public class Question {
-    private int index;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 20)
     private String writer;
+
+    @Column(nullable = false, length = 25)
     private String title;
+
     private String contents;
-    private String writtenTime;
+    private String formattedWrittenTime;
 
-    public Question(String writer, String title, String contents, String writtenTime) {
+    public void setWriter(String writer) {
         this.writer = writer;
+    }
+
+    public void setTitle(String title) {
         this.title = title;
+    }
+
+    public void setContents(String contents) {
         this.contents = contents;
-        this.writtenTime = writtenTime;
     }
 
-    public void setIndex(int index) {
-        this.index = index;
+    public void setFormattedWrittenTime(String formattedWrittenTime) {
+        this.formattedWrittenTime = formattedWrittenTime;
     }
 
-    public int getIndex() {
-        return index;
+    public Long getId() {
+        return id;
     }
 
     public String getWriter() {
@@ -37,8 +51,8 @@ public class Question {
         return contents;
     }
 
-    public String getWrittenTime() {
-        return writtenTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    public String getFormattedWrittenTime() {
+        return formattedWrittenTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
     @Override
@@ -47,7 +61,7 @@ public class Question {
                 "writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
-                ", writtenTime='" + writtenTime + '\'' +
+                ", formattedWrittenTime='" + formattedWrittenTime + '\'' +
                 '}';
     }
 }

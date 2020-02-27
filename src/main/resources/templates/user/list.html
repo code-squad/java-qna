@@ -21,11 +21,11 @@
                 <tbody>
                 {{#each users}}
                 <tr>
-                    <th scope="row"></th>
-                    <td><a href="/profile/{{userId}}">{{userId}}</a></td>
+                    <th scope="row">{{id}}</th>
+                    <td><a href="/users/{{id}}">{{userId}}</a></td>
                     <td>{{name}}</td>
                     <td>{{email}}</td>
-                    <td><a href="#" class="btn btn-success" role="button">수정</a></td>
+                    <td><a href="/users/{{id}}/password" class="btn btn-success" role="button">수정</a></td>
                 </tr>
                 {{/each}}
                 </tbody>

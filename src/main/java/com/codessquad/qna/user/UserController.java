@@ -1,37 +1,84 @@
 package com.codessquad.qna.user;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.servlet.http.HttpSession;
 
 @Controller
+@RequestMapping("/users")
 public class UserController {
-    private List<User> users = new ArrayList<>();
+    private static Logger log = LoggerFactory.getLogger(UserController.class);
 
-    @PostMapping("/user/create")
+    @Autowired
+    private UserRepository userRepository;
+
+    @PostMapping("")
     public String create(User user) {
-        users.add(user);
-        return "redirect:/user/list";
+        log.info("User :  '{}' ", user);
+        userRepository.save(user);
+        return "redirect:/users/list";
     }
 
-    @GetMapping("/user/list")
-    public String list(Model model) {
-        model.addAttribute("users", users);
+    @GetMapping("/form")
+    public String form() {
+        return "user/form";
+    }
+
+    @GetMapping("/list")
+    public String userList(Model model) {
+        model.addAttribute("users", userRepository.findAll());
         return "user/list";
     }
 
-    @GetMapping("/profile/{userId}")
-    public String profile(@PathVariable String userId, Model model) {
-        User user = users.stream()
-                .filter(user1 -> user1.getUserId().equals(userId))
-                .findAny()
-                .orElse(null);
-        model.addAttribute("user", user);
-        return "user/profile";
+    @GetMapping("/{id}")
+    public ModelAndView showUser(@PathVariable Long id) {
+        ModelAndView showMav = new ModelAndView("user/profile");
+        showMav.addObject("user", userRepository.findById(id).get());
+        return showMav;
+    }
+
+    @GetMapping("/{id}/password")
+    public ModelAndView passwordForm(@PathVariable Long id) {
+        ModelAndView passwordMav = new ModelAndView("user/password");
+        passwordMav.addObject("user", userRepository.findById(id).get());
+        log.info("passwordUser: '{}'", passwordMav);
+        return passwordMav;
+    }
+
+    @PostMapping("/{id}/password")
+    public String passwordCheck(@PathVariable Long id, String password, HttpSession session) {
+        User user = userRepository.findById(id).get();
+        log.info("check : '{}'", user);
+        if (user == null) {
+            return "redirect:/users/list";
+        }
+        if (!password.equals(user.getPassword())) {
+            return "redirect:/users/list";
+        }
+        session.setAttribute("user", user);
+
+        return "redirect:/users/{id}/form";
+    }
+
+    @GetMapping("/{id}/form")
+    public ModelAndView updateForm(@PathVariable Long id) {
+        ModelAndView updateMav = new ModelAndView("user/updateForm");
+        updateMav.addObject("user", userRepository.findById(id).get());
+        return updateMav;
+    }
+
+    @PostMapping("/{id}")
+    public String updateUser(@PathVariable Long id, User updateUser) {
+        User user = userRepository.findById(id).get();
+        user.update(updateUser);
+        log.info("User : '{}'", updateUser);
+        userRepository.save(user);
+        return "redirect:/users/list";
     }
 }

@@ -1,133 +1,133 @@
-# step1. 회원 가입 및 사용자 목록 기능 구현
+# step2. 데이터베이스 활용
 
+## comment 사항
 
-# 회원가입, 사용자 목록 기능 구현
+- [x] index는 색인의 의미, id나 questionNum으로 고칠것.
 
-## 실습 진행 방법
+- [x] getWrittenTime -> getFormattedWrittenTime
 
-- [질문답변 게시판에 대한 github 저장소](https://github.com/code-squad/java-qna)를 기반으로 실습을 진행한다.
-- 요구사항에 대한 구현을 완료한 후 자신의 github 아이디에 해당하는 브랜치에 Pull Request(이하 PR)를 통해 코드 리뷰 요청을 한다.
-- 코드 리뷰 피드백에 대한 개선 작업을 하고 다시 PUSH한다.
-- 모든 피드백을 완료하면 다음 단계를 도전하고 앞의 과정을 반복한다.
+- [x] @Controller
 
+  @RequestMapping("/questions") 설정
 
+- [x] 홈에선 index보단 main이나 welcome으로 변경
 
-## 영상과의 차이점
+- [x] PostMapping("/user/create") -> ("/users")
 
-- 배포는 heroku를 사용한다.
-- 템플릿 엔진은 handlebars를 사용한다.
-- 로깅 라이브러리는 log4j2를 사용한다.
+- [ ] spring.thymeleaf.cache=false 는 타임리프는 안쓰니까 지우기
 
----
+# 사용자 데이터를 DB에 저장
 
+## 2.1 데이터베이스 설정
 
+#### MVNRepository
 
-## Step1 진행요약
+- h2: 1.4.192
+- JPA: 2.2.4 (스프링부트와 버전 동일)
 
-진행하면서 간단한 느낀점입니다.
+### 2.1.2 application.properties 설정
 
-## 1.1 MVC 간단 설명 및 mustache 초간단 설명
+#### DB Connection 설정
 
-templates!! 복수명이 중요하다. 단수명이면 작동하지 않음
+- jdbc:h2:mem://localhost/~/java-qna 을 h2 접속경로에 넣을 것.
 
+#### 실행 쿼리 보기 설정
 
+#### 테이블 자동 생성 결정
 
-## 1.2 회원가입 기능 구현
-
-GetMapping 사용시 개인정보가 노출위험이 있음.
-
-get -> post로 받을 것.
-
-setter를 이용해 유저 정보 세팅 -> to String 할 것.
-
-getter가 필요하다 getter넣지 않으면 출력이 안됨.
-
-## 1.3 사용자 목록 기능 구현
-
-mustache / handlebars: 반복문
-
-Springboot에선 src/main/resources/static은 URL에서 / 로지정
-
-도움이 되었던 블로그
-
-[창천항로](https://jojoldu.tistory.com/255)
-
-template으로 간 html은 해당 controller의 설정한 매핑으로 설정해야 가능. 일반경로는 static.
-
-## 1.4 회원 프로필 정보보기
-
-@PathVariable이란?
-
-해당 파라메터를 사용하면 URI의 일부를 변수로 전달할 수 있다.
-
-@GetMapping("/users/{barid}")
-
-public String abc(@PathVariable String barid) {
-
-}
-
-자바 함수형이 중요하다!
-
-stream을 대해 공부할 것.
-
-
-
-## 1.5 HTML의 중복 제거
-
-과감하게 없앨것. 해당 static html을 전부 templates폴더로 이동시켜야한다.
-
-xxx.html에 중복될 것을 모두 넣고 해당 코드에
-
-{{> xxx}} 넣으면 된다. (겁나쉬움)
-
-
-
-### 1.5.2 URL과 html 쉽게 연결하기
-
-config 패키지를 생성하고 MvcConfig이름으로 클래스를 생성한다.
+- [x] 서버를 시작하는 시점에 DB테이블을 drop후에 다시 생성하도록 설정하는 방법.
+- [ ] ~~서버를 시작하는 시점에 DB 테이블을 drop하지 않도록 설정하는 방법.~~
 
 ```
-@Configuration
-public class MvcConfig implements WebMvcConfigurer {
+spring.jpa.hibernate.ddl-auto=validate
+```
 
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
-        
-		registry.addViewController("URL주소").setViewName("template html명");
-		
-        registry.addViewController("/user/login").setViewName("user/login");
-        registry.addViewController("/user/form").setViewName("user/form");
- }
+이걸 입력하면 오류가 뜬다. 왜그럴까?
+
+#### h2 db console에 접근 설정
+
+
+
+## 2.2 User 클래스를 DB 테이블에 매핑
+
+- User파일에서 데이터 베이스 Entity주입할 경우 생성자를 만들면 안된다. 오류걸림
+- 그냥 setter만들어야 오류가 걸리지 않는다.
+
+
+
+## 2.3 Controller에서 Repository 사용
+
+#### 사용자 데이터 추가
+
+- UserRepository.save()
+
+#### 사용자 목록 조회
+
+- UserRepository의 findAll() 메소드를 통해 DB에 저장되어 있는 전체 사용자 목록을 조회한다.
+
+#### 사용자 조회
+
+```java
+@GetMapping("/{id}")
+public ModelAndView show(@PathVariable long id) {
+	ModelAndView mav = new ModelAndView(템플릿 html);
+	mav.addObject("핸들바", userRepository.findById(id).get());
+	return mav;
 }
 ```
 
+userRepository.findById(id).orElse()는 어떨까?
 
-
-## 1.6 질문하기, 질문목록 기능구현
-
-위에 있는 문제와 비슷함.
-
-그러나! 리스트가 안떠서 3시간동안 삽질함.
-
-원인: URL과 html연결하기위해서 "/"를 넣은것이 패착. 이걸 지우니 바로 떳음.
+Optional이 무엇인지 알아보자.
 
 
 
-## 1.7 질문 상세보기
+- 접속하는 템플릿에서 해당 url 입력할 것. 
 
-```
-{{#each abc}}
-{{/each}}
-
-{{#abc}}	
-{{/abc}}
+```html
+<th scope="row"><a href="/users/{{id}}">{{id}}</a></th>
 ```
 
-차이점이 뭘까?
+## 2.4 질문 데이터 저장하기
 
-setter를 따로 끄집어내서 index를 객체 id설정했다. 쓰지않고 하는방법은 없을까?
+## 2.5 질문 목록 구현하기
+
+- 굳이 QuestionController에서 QuestionList를 출력하지말고 다른곳에 만들었으면 그곳에서 제어하자.
+
+## 2.6 질문 상세보기 구현하기
+
+- CrudRepository에선 findOne()이 아닌 findById()를 사용한다.
+
+- @Id키가 공유되는 사태가 벌어졌다. 예를들어,
+
+- 회원가입을 할 때 User에서 id는 1이 뜬다.
+
+- 이 때, 질문글을 작성하면 Question의 id에서 2로 변환된다.
+
+- 이럴때는 
+
+  ```java
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  ```
+
+  넣어보자. (https://jojoldu.tistory.com/295)
+
+- id가 안뜰때는 getter를 넣었는지 확인해보자.
+
+## 2.7 회원정보 수정화면 기능 구현하기
+
+### 요구사항
+
+- [x] 회원 목록에서 회원가입한 사용자의 정보를 수정할 수 있어야 한다.
+- [x] 비밀번호, 이름, 이메일만 수정할 수 있으며, 사용자 아이디는 수정할 수 없다.
+- [x] 비밀번호가 일치하는 경우에만 수정 가능하다.
 
 
 
-## 회원정보 수정은 다음기회에...
+## 2.8 회원정보 수정 구현
+
+- redirect는 받는 컨트롤러가 GetMapping이 되어야한다. 
+- Get은 리소스를 받아오는것
+- Post는 엔티티를 가져온다.
+- URL주소를 항상 올바른지 확인할 것.
+- Get과 Post 메소드만 존재 --> Put 메소드를 사용하려면 hidden으로 줘야한다.

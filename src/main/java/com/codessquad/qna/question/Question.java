@@ -96,4 +96,10 @@ public class Question {
     public int getReplyCount() {
         return replyCount;
     }
+
+    public void updateQuestionData(String title, String contents, LocalDateTime updatedDateTime) {
+        this.title = title;
+        this.contents = contents;
+        this.updatedDateTime = updatedDateTime;
+    }
 }

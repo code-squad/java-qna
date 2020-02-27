@@ -83,6 +83,7 @@ public class UserController {
                 return CommonUtility.ERROR_CANNOT_EDIT_OTHER_USER_INFO;
             }
             updateUserNameAndEmail(user, userName, userPassword, userEmail);
+            session.setAttribute(CommonUtility.SESSION_LOGIN_USER, user);
         } catch (NotFoundException e) {
             return CommonUtility.ERROR_USER_NOT_FOUND;
         } catch (TransactionSystemException e) {

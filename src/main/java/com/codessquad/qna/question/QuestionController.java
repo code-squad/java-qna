@@ -37,12 +37,11 @@ public class QuestionController {
     public String createQuestion(HttpSession session,
                                  @RequestParam String title,
                                  @RequestParam String contents) {
-        Object userAttribute = session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
-        if (userAttribute == null) {
+        User loginUser = getLoginUser(session);
+        if (loginUser == null) {
             return CommonUtility.REDIRECT_LOGIN_PAGE;
         }
-        User writer = (User) userAttribute;
-        Question question = new Question(writer, title, contents);
+        Question question = new Question(loginUser, title, contents);
         questionRepository.save(question);
         return "redirect:/";
     }
@@ -50,12 +49,12 @@ public class QuestionController {
     @GetMapping("/questions/{id}")
     public String showQuestion(@PathVariable long id, Model model, HttpSession session) {
         try {
+            User loginUser = getLoginUser(session);
             Question question = getQuestionIfExist(id);
-            Object userAttribute = session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
             List<Answer> answers = answerRepository.findByQuestionId(id);
             model.addAttribute("question", question);
             model.addAttribute("isLoginUserEqualsWriter",
-                    isLoginUserEqualsWriter(question, userAttribute));
+                    isLoginUserEqualsWriter(question, loginUser));
             model.addAttribute("answers", answers);
         } catch (NotFoundException e) {
             return CommonUtility.ERROR_QUESTION_NOT_FOUND;
@@ -67,9 +66,12 @@ public class QuestionController {
     @GetMapping("/questions/{id}/form")
     public String goQuestionModifyForm(@PathVariable long id, Model model, HttpSession session) {
         try {
+            User loginUser = getLoginUser(session);
+            if (loginUser == null) {
+                return CommonUtility.REDIRECT_LOGIN_PAGE;
+            }
             Question question = getQuestionIfExist(id);
-            Object userAttribute = session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
-            if (!isLoginUserEqualsWriter(question, userAttribute)) {
+            if (!isLoginUserEqualsWriter(question, loginUser)) {
                 return "redirect:/questions/" + id;
             }
             model.addAttribute("question", question);
@@ -86,14 +88,15 @@ public class QuestionController {
                                  @RequestParam String title,
                                  @RequestParam String contents) {
         try {
+            User loginUser = getLoginUser(session);
+            if (loginUser == null) {
+                return CommonUtility.REDIRECT_LOGIN_PAGE;
+            }
             Question question = getQuestionIfExist(id);
-            Object userAttribute = session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
-            if (!isLoginUserEqualsWriter(question, userAttribute)) {
+            if (!isLoginUserEqualsWriter(question, loginUser)) {
                 return "redirect:/questions/" + id;
             }
-            question.setTitle(title);
-            question.setContents(contents);
-            question.setUpdatedDateTime(LocalDateTime.now());
+            question.updateQuestionData(title, contents, LocalDateTime.now());
             questionRepository.save(question);
         } catch (NotFoundException e) {
             return CommonUtility.ERROR_QUESTION_NOT_FOUND;
@@ -104,9 +107,12 @@ public class QuestionController {
     @DeleteMapping("/questions/{id}")
     public String deleteQuestion(@PathVariable long id, HttpSession session) {
         try {
+            User loginUser = getLoginUser(session);
+            if (loginUser == null) {
+                return CommonUtility.REDIRECT_LOGIN_PAGE;
+            }
             Question question = getQuestionIfExist(id);
-            Object userAttribute = session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
-            if (!isLoginUserEqualsWriter(question, userAttribute)) {
+            if (!isLoginUserEqualsWriter(question, loginUser)) {
                 return "redirect:/questions/" + id;
             }
             questionRepository.delete(question);
@@ -116,12 +122,14 @@ public class QuestionController {
         return "redirect:/";
     }
 
-    private boolean isLoginUserEqualsWriter(Question question, Object userAttribute) {
-        if (userAttribute == null) {
-            return false;
-        }
-        String loginUserName = ((User) userAttribute).getUserName();
-        return loginUserName.equals(question.getWriter().getUserName());
+    private boolean isLoginUserEqualsWriter(Question question, User loginUser) {
+        if (loginUser == null) return false;
+        return loginUser.equals(question.getWriter());
+    }
+
+    private User getLoginUser(HttpSession session) {
+        Object userAttribute = session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
+        return userAttribute == null ? null : (User) userAttribute;
     }
 
     private Question getQuestionIfExist(long id) throws NotFoundException {

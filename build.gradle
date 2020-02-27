@@ -37,6 +37,9 @@ dependencies {
     compile group: 'org.projectlombok', name: 'lombok', version: '1.18.8'
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.8'
 
+    // handelbars 설정
+    compile 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
+
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }

@@ -1,8 +1,9 @@
 package com.codessquad.qna.web.dto;
 
 import com.codessquad.qna.domain.Users;
-import java.time.LocalDateTime;
+import lombok.Getter;
 
+@Getter
 public class UsersListResponseDto {
   private Long Id;
   private String UserId;

@@ -22,7 +22,10 @@ public class Question {
     private String contents;
     @Column(nullable = false)
     private LocalDateTime createdDateTime;
+    @Column(nullable = false)
     private LocalDateTime updatedDateTime;
+    @Column(nullable = false)
+    private boolean isDeleted;
 
     @OneToMany(mappedBy = "question")
     private Collection<Answer> answers;
@@ -36,6 +39,7 @@ public class Question {
         this.contents = contents;
         this.createdDateTime = now;
         this.updatedDateTime = now;
+        this.isDeleted = false;
     }
 
     public long getId() {
@@ -94,6 +98,22 @@ public class Question {
         return updatedDateTime.format(CommonUtility.DATE_TIME_FORMATTER);
     }
 
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public Collection<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(Collection<Answer> answers) {
+        this.answers = answers;
+    }
+
     public int getAnswerCount() {
         return answers.size();
     }
@@ -104,8 +124,17 @@ public class Question {
         this.updatedDateTime = updatedDateTime;
     }
 
-    public boolean isWriterEqualsLoginUser(User loginUser) {
-        if (loginUser == null) return false;
+    public boolean isWrittenBy(User loginUser) {
+        if (loginUser == null) {
+            return false;
+        }
         return this.writer.equals(loginUser);
     }
+
+    public boolean isDeletable() {
+        // 게시물 작성자와 답변 작성자가 일치
+        boolean isSameWriter = answers.stream().allMatch(a -> this.writer.equals(a.getWriter()));
+        return answers.isEmpty() || isSameWriter;
+    }
+
 }

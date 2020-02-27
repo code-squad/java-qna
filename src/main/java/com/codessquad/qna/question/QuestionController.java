@@ -54,7 +54,7 @@ public class QuestionController {
             List<Answer> answers = answerRepository.findByQuestionId(id);
             model.addAttribute("question", question);
             model.addAttribute("isLoginUserEqualsWriter",
-                    question.isWriterEqualsLoginUser(loginUser));
+                    question.isWrittenBy(loginUser));
             model.addAttribute("answers", answers);
         } catch (NotFoundException e) {
             return CommonUtility.ERROR_QUESTION_NOT_FOUND;
@@ -71,7 +71,7 @@ public class QuestionController {
                 return CommonUtility.REDIRECT_LOGIN_PAGE;
             }
             Question question = getQuestionIfExist(id);
-            if (!question.isWriterEqualsLoginUser(loginUser)) {
+            if (!question.isWrittenBy(loginUser)) {
                 return "redirect:/questions/" + id;
             }
             model.addAttribute("question", question);
@@ -93,7 +93,7 @@ public class QuestionController {
                 return CommonUtility.REDIRECT_LOGIN_PAGE;
             }
             Question question = getQuestionIfExist(id);
-            if (!question.isWriterEqualsLoginUser(loginUser)) {
+            if (!question.isWrittenBy(loginUser)) {
                 return "redirect:/questions/" + id;
             }
             question.updateQuestionData(title, contents, LocalDateTime.now());
@@ -112,14 +112,18 @@ public class QuestionController {
                 return CommonUtility.REDIRECT_LOGIN_PAGE;
             }
             Question question = getQuestionIfExist(id);
-            if (!question.isWriterEqualsLoginUser(loginUser)) {
+            if (!question.isWrittenBy(loginUser)) {
                 return "redirect:/questions/" + id;
             }
-            questionRepository.delete(question);
+            if (question.isDeletable()) {
+                answerRepository.deleteAll(question.getAnswers());
+                questionRepository.delete(question);
+                return "redirect:/";
+            }
         } catch (NotFoundException e) {
             return CommonUtility.ERROR_QUESTION_NOT_FOUND;
         }
-        return "redirect:/";
+        return "redirect:/questions/" + id;
     }
 
     private User getLoginUser(HttpSession session) {

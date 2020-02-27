@@ -104,3 +104,4 @@
 # STEP4
 
 1. OneToMany Mapping으로 question과 answer의 연관관계를 설정해주었습니다.
+2. Question을 Delete할 때, 삭제 조건을 줄 수 있도록 하였습니다. 그리고 하위 Answer들도 삭제되도록 하였습니다.

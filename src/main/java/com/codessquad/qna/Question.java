@@ -1,10 +1,10 @@
 package com.codessquad.qna;
 
 import javax.persistence.*;
-import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Entity
 public class Question {
@@ -21,6 +21,11 @@ public class Question {
 
     @NotEmpty
     private String contents;
+
+    @OneToMany(mappedBy = "question")
+    @OrderBy("id ASC")
+    private List<Answer> answers;
+
     private LocalDateTime postingTime;
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
 

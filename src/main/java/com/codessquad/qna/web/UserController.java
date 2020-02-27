@@ -20,7 +20,7 @@ public class UserController {
         return "users/list";
     }
 
-    @GetMapping("/new")
+    @GetMapping("/createForm")
     public String createFormPage() {
         return "users/createForm";
     }
@@ -31,10 +31,10 @@ public class UserController {
         return "users/show";
     }
 
-    @GetMapping("/{id}/edit")
-    public String editFormPage(@PathVariable Long id, Model model) {
+    @GetMapping("/{id}/updateForm")
+    public String updateFormPage(@PathVariable Long id, Model model) {
         model.addAttribute("user", userRepository.getOne(id));
-        return "users/editForm";
+        return "users/updateForm";
     }
 
     @PostMapping("")
@@ -44,7 +44,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public String editUser(@PathVariable Long id, User newUser) {
+    public String updateUser(@PathVariable Long id, User newUser) {
         userRepository.save(userRepository.getOne(id).merge(newUser));
         return "redirect:/users";
     }

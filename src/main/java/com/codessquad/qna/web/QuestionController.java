@@ -22,7 +22,7 @@ public class QuestionController {
         return "questions/home";
     }
 
-    @GetMapping("/questions/new")
+    @GetMapping("/questions/createForm")
     public String createFormPage() {
         return "questions/createForm";
     }

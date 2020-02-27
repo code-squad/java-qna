@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpSession;
@@ -48,6 +45,51 @@ public class QuestionController {
         try {
             model.addAttribute("currentQuestion", questionRepostory.findById(id).orElseThrow(() -> new NotFoundException("자료가 없어용")));
             return "/questions/show";
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/modify")
+    public String moveUpdateForm(Model model, @PathVariable Long id, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "redirect:/users/login";
+        }
+
+        try {
+            User sessionUser = HttpSessionUtils.getUserFromSession(session);
+            //해당 게시물 정보 가져오기
+            Question currentQuestion = questionRepostory.findById(id).orElseThrow(() -> new NotFoundException("게시물 없어욧!!"));
+            model.addAttribute("currentQuestion", currentQuestion);
+            //TODO : 겍체가 match일을 하도록 수정
+            if(!sessionUser.getUserId().equals(currentQuestion.getWriter())) { //해당 Id 질문글의 writer가 session의 userId와 같은지 확인
+                throw new IllegalStateException("자신의 게시글만 수정할 수 있는뎅??");
+            }
+            return "/questions/updateForm";
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}")
+    public String updateQuestion(Question updateQuestion, @PathVariable Long id, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "redirect:/users/login";
+        }
+
+        try {
+            User sessionUser = HttpSessionUtils.getUserFromSession(session);
+            Question currentQuestion = questionRepostory.findById(updateQuestion.getId()).orElseThrow(() -> new NotFoundException("게시물 없어영~!"));
+
+            if (!sessionUser.getUserId().equals(currentQuestion.getWriter())) {
+                throw new IllegalStateException("자신의 게시글만 수정할 수 있는뎅??");
+            }
+
+            currentQuestion.update(updateQuestion);
+            questionRepostory.save(currentQuestion);
+            return "redirect:/questions";
         } catch (NotFoundException e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());

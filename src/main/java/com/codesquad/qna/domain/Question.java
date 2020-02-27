@@ -87,4 +87,9 @@ public class Question {
         return createdTime.format(DateTimeFormatter.ofPattern(DATE_FORMAT));
     }
 
+    public void update(Question question) {
+        this.title = question.getTitle();
+        this.contents = question.getContents();
+        setCreatedTimeNow(); //수정된 시간으로 업데이트
+    }
 }

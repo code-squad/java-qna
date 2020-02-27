@@ -4,10 +4,11 @@ import com.codessquad.qna.domain.User;
 import com.codessquad.qna.domain.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/auth")
@@ -26,14 +27,27 @@ public class AuthController {
         return "auth/loginFailForm";
     }
 
-    @PostMapping()
-    public String authenticate(@ModelAttribute User entrant) {
+    @PostMapping("/login")
+    public String authenticate(@ModelAttribute User entrant, HttpSession session) {
         User originInfo = userRepository.findByUserId(entrant.getUserId());
 
         if(originInfo != null && originInfo.verify(entrant)) {
+            session.setAttribute("id", originInfo.getId());
             return "redirect:/";
         }
 
         return "redirect:/auth/failure";
+    }
+
+    @PostMapping("/logout")
+    public String leave(HttpSession session, HttpServletResponse response) {
+        session.invalidate();
+
+        Cookie cookie = new Cookie("JSESSIONID", null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
+        return "redirect:/";
     }
 }

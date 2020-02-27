@@ -41,7 +41,7 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}")
-    public String viewQuestion(@PathVariable long id, Model model) { //여기서는 long으로
+    public String viewQuestion(@PathVariable long id, Model model) {
         try {
             model.addAttribute("currentQuestion", questionRepostory.findById(id).orElseThrow(() -> new NotFoundException("자료가 없어용")));
             return "/questions/show";
@@ -89,6 +89,28 @@ public class QuestionController {
 
             currentQuestion.update(updateQuestion);
             questionRepostory.save(currentQuestion);
+            return "redirect:/questions";
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public String removeQuestion(Question deleteQuestion, @PathVariable Long id, HttpSession session) {
+        if(!HttpSessionUtils.isLoginUser(session)) {
+            return "redirect:/users/login";
+        }
+
+        try {
+            User sessionUser = HttpSessionUtils.getUserFromSession(session);
+            Question currentQuestion = questionRepostory.findById(deleteQuestion.getId()).orElseThrow(() -> new NotFoundException("게시글 없는데요??!!!"));
+
+            if(!sessionUser.getUserId().equals(currentQuestion.getWriter())) {
+                throw new IllegalStateException("자기 글만 삭제할 수 있어요!!!");
+            }
+
+            questionRepostory.delete(currentQuestion);
             return "redirect:/questions";
         } catch (NotFoundException e) {
             e.printStackTrace();

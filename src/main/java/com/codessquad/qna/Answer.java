@@ -3,6 +3,7 @@ package com.codessquad.qna;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Answer {
@@ -21,6 +22,7 @@ public class Answer {
     @NotEmpty
     private String contents;
     private LocalDateTime postingTime;
+    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
 
     public Answer() {}
 
@@ -31,4 +33,19 @@ public class Answer {
         this.postingTime = LocalDateTime.now();
     }
 
+    public User getWriter() {
+        return writer;
+    }
+
+    public Question getQuestion() {
+        return question;
+    }
+
+    public String getContents() {
+        return contents;
+    }
+
+    public String getPostingTime() {
+        return postingTime.format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT));
+    }
 }

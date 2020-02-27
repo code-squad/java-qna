@@ -6,6 +6,7 @@ import com.codessquad.qna.controller.PostsRepository;
 import com.codessquad.qna.controller.UsersRepository;
 import com.codessquad.qna.domain.Posts;
 import com.codessquad.qna.domain.Users;
+import com.codessquad.qna.web.dto.UsersUpdateRequestDto;
 import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -73,5 +76,38 @@ public class UsersAPIControllerTest {
     //then
     assertThat(body).contains(title);
     //TestRestTemplate으로 RestTemplate를 Test해보았을 때, 넘겨주는 body 문자열에 우리가 기대하는 값이 있으면 된다.
+  }
+
+  @Test
+  public void Users가_수정된다() {
+    Long thisId = (long) 1;
+    //given
+    Users testUser = usersRepository.save(Users.builder()
+        .userId("jypthemiracle")
+        .password("codesquad")
+        .name("Jin Hyung Park")
+        .email("hophfg@yahoo.co.kr")
+        .build()
+    );
+
+    String newId = "honux77";
+    String newPassword = "ilovecodesquad";
+    String newName = "Honux";
+    String newEmail = "yodacodd@codesquad.kr";
+
+    UsersUpdateRequestDto requestDto = UsersUpdateRequestDto.builder()
+        .userId(newId)
+        .password(newPassword)
+        .name(newName)
+        .email(newEmail)
+        .build();
+
+    String url = "http://localhost:" + port + "/api/v1/users" + thisId;
+    HttpEntity<UsersUpdateRequestDto> requestEntity = new HttpEntity<>(requestDto);
+    ResponseEntity<Long> responseEntity = testRestTemplate.exchange(url, HttpMethod.PUT, requestEntity, Long.class);
+
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    List<Users> all = usersRepository.findAllDesc();
+    assertThat(all.get(0).getName()).isEqualTo(newName);
   }
 }

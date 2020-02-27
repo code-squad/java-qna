@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 public interface PostsRepository extends CrudRepository<Posts, Long> {
-  @Query("SELECT p FROM Posts p ORDER BY p.id DESC")
+  @Query("SELECT p FROM Posts p ORDER BY p.Id DESC")
   List<Posts> findAllDesc();
 }

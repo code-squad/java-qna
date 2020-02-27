@@ -1,4 +1,4 @@
-package com.codesquad.qna.domain;
+package com.codesquad.qna.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public class Answer {
     @Id
     @GeneratedValue
-    private Long answerId;
+    private Long id;
     @ManyToOne
     private Question question;
     @ManyToOne
@@ -29,8 +29,8 @@ public class Answer {
         this.createDateTime = LocalDateTime.now();
     }
 
-    public Long getAnswerId() {
-        return answerId;
+    public Long getId() {
+        return id;
     }
 
     public Question getQuestion() {
@@ -47,5 +47,9 @@ public class Answer {
 
     public String getCreateDateTimeToString() {
         return DateTimeFormatUtils.localDateTimeToString(this.createDateTime);
+    }
+
+    public boolean matchWriter(User user) {
+        return this.user.equals(user);
     }
 }

@@ -1,4 +1,4 @@
-package com.codesquad.qna.domain;
+package com.codesquad.qna.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

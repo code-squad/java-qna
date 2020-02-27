@@ -1,15 +1,14 @@
-package com.codesquad.qna.domain;
+package com.codesquad.qna.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Question {
     @Id
     @GeneratedValue
-    private Long questionId;
+    private Long id;
     @ManyToOne
     private User writer;
     @Column(nullable = false)
@@ -29,8 +28,8 @@ public class Question {
         this.createdDateTime = LocalDateTime.now();
     }
 
-    public Long getQuestionId() {
-        return questionId;
+    public Long getId() {
+        return id;
     }
 
     public String getWriter() {
@@ -61,7 +60,7 @@ public class Question {
     @Override
     public String toString() {
         return "Question{" +
-                "questionId=" + questionId +
+                "id=" + id +
                 ", writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +

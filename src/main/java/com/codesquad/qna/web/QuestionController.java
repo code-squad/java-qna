@@ -39,7 +39,7 @@ public class QuestionController {
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
         Question newQuestion = new Question(sessionedUser, title, contents);
         questionRepository.save(newQuestion);
-        log.info("create : {}", newQuestion);
+        log.info("create : {}, writer : {}", newQuestion, sessionedUser);
         return "redirect:/";
     }
 

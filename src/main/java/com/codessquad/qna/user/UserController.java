@@ -1,11 +1,17 @@
 package com.codessquad.qna.user;
 
 import com.codessquad.qna.errors.ForbiddenException;
+import com.codessquad.qna.errors.InternalServerException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
+import java.util.Optional;
+
+@Slf4j
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -14,7 +20,7 @@ public class UserController {
   private UserRepository userRepository;
 
   /**
-   * User 생성을 위한 form 페이지로 이동합니다.
+   * User 생성을 위한 form.html 로 이동합니다.
    */
   @GetMapping("/form")
   public String form(Model model) {
@@ -22,7 +28,7 @@ public class UserController {
   }
 
   /**
-   * from 페이지에서 create 를 호출히여 User 추가합니다.
+   * from.html 에서 호출하며 User 를 추가합니다.
    */
   @PostMapping("")
   public String create(User user) {
@@ -32,7 +38,7 @@ public class UserController {
   }
 
   /**
-   * User 의 list 를 보여주는 list 페이지로 이동합니다.
+   * User 의 list 를 보여주는 list.html 로 이동합니다.
    */
   @GetMapping("/list")
   public String list(Model model) {
@@ -42,7 +48,7 @@ public class UserController {
   }
 
   /**
-   * list 페이지에서 선택된 id 를 상세 프로필 페이지로 보여줍니다.
+   * list.html 에서 선택된 id 의 정보를 profile.html 에서 출력합니다.
    */
   @GetMapping("/{id}")
   public String profile(@PathVariable long id, Model model) {
@@ -52,7 +58,7 @@ public class UserController {
   }
 
   /**
-   * 선택된 id 의 정보를 update form 페이지로 전달해줍니다.
+   * 선택된 id 의 정보를 update.html 로 전달해줍니다.
    */
   @GetMapping("/{id}/form")
   public String updateForm(@PathVariable long id, Model model) {
@@ -62,13 +68,13 @@ public class UserController {
   }
 
   /**
-   * 수정된 정보로 update 해줍니다.
+   * 수정된 정보를 update 해줍니다.
    */
   @PutMapping("/{id}")
   public String update(@PathVariable long id, User newUser) {
     User origin = userRepository.findById(id).orElseThrow(ForbiddenException::new);
 
-    if (!(newUser.getOldPassword().equals(origin.getPassword()))) {
+    if (!(origin.getPassword().equals(newUser.getOldPassword()))) {
       throw new ForbiddenException();
     }
 
@@ -76,5 +82,45 @@ public class UserController {
     userRepository.save(origin);
 
     return "redirect:/users/list";
+  }
+
+  /**
+   * Login.html 로 이동합니다.
+   */
+  @GetMapping("/loginForm")
+  public String loginForm(Model model) {
+    log.info("loginForm()");
+    return "/users/login";
+  }
+
+  /**
+   * 올바른 User 인지 확인합니다.
+   */
+  public boolean isMatched(User findUser, String password) {
+    return (findUser.getId() != 0
+        && findUser.getPassword().equals(password))
+        ? true : false;
+  }
+
+
+  /**
+   * login 성공 : 시작 페이지로 이동합니다.
+   * login 실패 : 입력된 정보를 가지고 login.html 로 이동합니다.
+   */
+  @PostMapping("/login")
+  public String login(String userId, String password, HttpSession session, Model model) {
+    log.info("login()");
+
+    User user = Optional.ofNullable(userRepository.findByUserId(userId)).orElse(new User());
+
+    if (isMatched(user, password)) {
+      session.setAttribute("sessionedUser", user);
+      return "redirect:/";
+    }
+
+    model.addAttribute("userId", userId);
+    model.addAttribute("wrongPassword", true);
+
+    return "/users/login";
   }
 }

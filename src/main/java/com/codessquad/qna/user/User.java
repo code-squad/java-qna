@@ -74,6 +74,11 @@ public class User implements Serializable {
         return this.userPassword.equals(password);
     }
 
+    public void updateNameAndEmail(String userName, String userEmail) {
+        this.userName = userName;
+        this.userEmail = userEmail;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

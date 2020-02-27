@@ -140,8 +140,7 @@ public class UserController {
                                         String userPassword,
                                         String userEmail) {
         if (user.isEqualsPassword(userPassword)) {
-            user.setUserName(userName);
-            user.setUserEmail(userEmail);
+            user.updateNameAndEmail(userName, userEmail);
             userRepository.save(user);
         }
     }

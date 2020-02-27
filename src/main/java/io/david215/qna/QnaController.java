@@ -33,8 +33,11 @@ public class QnaController {
 
     @GetMapping("/questions/{id}/show")
     public String show(Model model, @PathVariable int id) {
-        Question question = questions.get(id);
-        model.addAttribute("question", question);
-        return "qna/show";
+        if (questions.containsKey(id)) {
+            Question question = questions.get(id);
+            model.addAttribute("question", question);
+            return "qna/show";
+        }
+        return "qna/not-found";
     }
 }

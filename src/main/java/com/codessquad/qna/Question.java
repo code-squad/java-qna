@@ -1,35 +1,40 @@
 package com.codessquad.qna;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import java.time.LocalDateTime;
 
+@Entity
 public class Question {
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(nullable = false)
     private String writer;
+
+    @Column(nullable = false)
     private String title;
+
+    @Column(nullable = false)
     private String contents;
-    private String created;
-    private int id;
+
+    @Column(nullable = false)
+    private LocalDateTime created;
 
     public Question() {
-        this.created = date();
+        this.setCreated();
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-
-    public String getCreated() {
+    public LocalDateTime getCreated() {
         return created;
-    }
-
-    public void setCreated(String created) {
-        this.created = created;
     }
 
     public String getWriter() {
@@ -56,6 +61,10 @@ public class Question {
         this.contents = contents;
     }
 
+    public void setCreated() {
+        this.created = LocalDateTime.now();
+    }
+
     @Override
     public String toString() {
         return "Question{" +
@@ -65,11 +74,5 @@ public class Question {
                 ", created='" + created + '\'' +
                 ", id=" + id +
                 '}';
-    }
-
-    private String date() {
-        String pattern = "MM-dd-yyyy HH:mm:ss";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, new Locale("kr", "KR"));
-        return simpleDateFormat.format(new Date());
     }
 }

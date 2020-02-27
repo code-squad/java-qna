@@ -1,30 +1,29 @@
 package com.codessquad.qna;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Controller
 @RequestMapping("/users")
 public class UserController {
-    private List<User> users = new ArrayList<>();
+
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping
     public String list(Model model) {
-        model.addAttribute("users", users);
+        model.addAttribute("users", userRepository.findAll());
+        System.out.println(userRepository.findAll());
         return "/users/list";
     }
 
-    @GetMapping("/{userId}")
-    public String profile(@PathVariable("userId") String userId, Model model) {
-        Optional<User> matchedUser = findUser(userId);
+    @GetMapping("/{id}")
+    public String profile(@PathVariable("id") Long id, Model model) {
+        Optional<User> matchedUser = userRepository.findById(id);
         if (matchedUser.isPresent()) {
             model.addAttribute("user", matchedUser.get());
             return "/users/profile";
@@ -32,41 +31,27 @@ public class UserController {
         return "redirect:/users";
     }
 
-    @PostMapping("/{userId}/update")
-    public String update(@PathVariable("userId") String userId, String password, String name, String email) {
-        Optional<User> optionalUser = findUser(userId);
-        if (optionalUser.isPresent() && optionalUser.get().getPassword().equals(password)) {
+    @RequestMapping(value = "/{id}/update", method = RequestMethod.PUT)
+    public String update(@PathVariable("id") Long id, User updateUser) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent() && optionalUser.get().getPassword().equals(updateUser.getPassword())) {
             User user = optionalUser.get();
-            updateUser(user, name, password, email);
+            user.update(updateUser);
+            userRepository.save(user);
         }
         return "redirect:/users";
     }
 
-    @GetMapping("/{userId}/update")
-    public String updateForm(@PathVariable("userId") String userId, Model model) {
-        System.out.println(userId);
+    @GetMapping("/{id}/update")
+    public String updateForm(@PathVariable("id") Long id, Model model) {
+        String userId = userRepository.getOne(id).getUserId();
         model.addAttribute("userId", userId);
         return "/users/updateForm";
     }
 
     @PostMapping("/create")
     public String create(User user) {
-        users.add(user);
+        userRepository.save(user);
         return "redirect:/users";
-    }
-
-    private Optional<User> findUser(String userId) {
-        for (User user : users) {
-            if (user.getUserId().equals(userId)) {
-                return Optional.of(user);
-            }
-        }
-        return Optional.empty();
-    }
-
-    private void updateUser(User user, String name, String password, String email) {
-        user.setName(name);
-        user.setPassword(password);
-        user.setEmail(email);
     }
 }

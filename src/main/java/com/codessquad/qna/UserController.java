@@ -33,13 +33,13 @@ public class UserController {
             return "redirect:/users/loginForm";
         }
 
-        httpSession.setAttribute("user", user);
+        httpSession.setAttribute("sessionedUser", user);
         return "redirect:/";
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.removeAttribute("user");
+        session.removeAttribute("sessionedUser");
         return "redirect:/";
     }
 
@@ -67,7 +67,16 @@ public class UserController {
     }
 
     @GetMapping("/{id}/form")
-    public String updateForm(@PathVariable Long id, Model model) {
+    public String updateForm(@PathVariable Long id, Model model, HttpSession httpSession) {
+        User sessionedUser = (User) httpSession.getAttribute("sessionedUser");
+        if (sessionedUser == null) {
+            return "redirect:/users/loginForm";
+        }
+
+        if (!id.equals(sessionedUser.getId())) {
+            throw new IllegalStateException("Yon can't update another user.");
+        }
+
         model.addAttribute("user", userRepository.findById(id).get());
         return "user/updateForm";
     }
@@ -78,7 +87,17 @@ public class UserController {
                              @RequestParam String newPassword,
                              @RequestParam String checkPassword,
                              @RequestParam String name,
-                             @RequestParam String email) {
+                             @RequestParam String email,
+                             HttpSession httpSession) {
+        User sessionedUser = (User) httpSession.getAttribute("sessionedUser");
+        if (sessionedUser == null) {
+            return "redirect:/users/loginForm";
+        }
+
+        if (!id.equals(sessionedUser.getId())) {
+            throw new IllegalStateException("Yon can't update another user.");
+        }
+
         User user = userRepository.findById(id).get();
         if (user.getPassword().equals(password)) {
             if (newPassword.equals(checkPassword)) {

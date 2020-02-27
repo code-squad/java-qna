@@ -24,5 +24,10 @@
     - mushtach 문법 중 if - else와 비슷한 문법 사용. {{^user}} , {{#user}} .. 
     - httpSession 정보를 mushtach한테 전달할 수 있게 properties를 수정해야 한다.
 - 로그아웃 시 session에 저장된 user 제거한다. 제거하면 muschtach는 세션에서 user가 안 넘어오니 로그인, 회원가입 메뉴만 남긴다.
+
+## 로그인 시 개인정보 수정 기능 구현 
+- 개인정보 수정 버튼 누르면 /users/{{id}}/form으로 이동. session된 user의 id를 Controller에 넘기기. 세션과 모델에 담긴 데이터의 이름을 다르게 해야 에러가 없다.
+- 개인정보수정 url을 누구나 접근하고 수정할 수 있는 상황이니 로그인한 상태에만 수정할 수 있도록 기능을 추가. sesstion에서 넘어오는 데이터값은 Object이다.
+- 로그인 상태면 다른 사용자의 개인정보수정을 막는 기능 필요
    
  

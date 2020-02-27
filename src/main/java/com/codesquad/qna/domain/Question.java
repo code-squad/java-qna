@@ -32,6 +32,13 @@ public class Question {
         setCreatedTimeNow();
     }
 
+    public Question(String writer, String title, String contents) {
+        this.writer = writer;
+        this.title = title;
+        this.contents = contents;
+        setCreatedTimeNow();
+    }
+
     public Long getId() {
         return id;
     }

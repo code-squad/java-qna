@@ -59,8 +59,8 @@
                 <li><a href="/users/form" role="button">회원가입</a></li>
                 <li><a href="/users/list" role="button">회원목록</a></li>
                 {{#sessionedUser}}
-                    <li><a role="button">로그아웃</a></li>
-                    <li><a href="/users/{{sessionedUser.id}}/form"role="button">개인정보수정</a></li>
+                    <li><a href="/users/logout"role="button">로그아웃</a></li>
+                    <li><a href="/users/{{sessionedUser.id}}/form" role="button">개인정보수정</a></li>
                 {{/sessionedUser}}
             </ul>
         </div>

@@ -119,4 +119,10 @@ public class UserController {
 
     return "/users/login";
   }
+
+  @GetMapping("/logout")
+  public String logout(HttpSession session){
+    session.removeAttribute("sessionedUser");
+    return "redirect:/";
+  }
 }

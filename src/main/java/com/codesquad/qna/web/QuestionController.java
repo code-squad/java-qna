@@ -79,6 +79,7 @@ public class QuestionController {
             return "redirect:/user/login";
 
         Question deleteQuestion = getMatchedQuestion(id, session);
+        answerRepository.deleteAllByIdInQuery(id);
         questionRepository.delete(deleteQuestion);
         return "redirect:/";
     }

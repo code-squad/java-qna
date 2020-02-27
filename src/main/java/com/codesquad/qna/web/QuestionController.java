@@ -1,9 +1,9 @@
 package com.codesquad.qna.web;
 
-import com.codesquad.qna.domain.AnswerRepository;
-import com.codesquad.qna.domain.Question;
-import com.codesquad.qna.domain.QuestionRepository;
-import com.codesquad.qna.domain.User;
+import com.codesquad.qna.model.AnswerRepository;
+import com.codesquad.qna.model.Question;
+import com.codesquad.qna.model.QuestionRepository;
+import com.codesquad.qna.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.time.LocalDateTime;
 
 @Controller
 @RequestMapping("/questions")
@@ -26,7 +25,7 @@ public class QuestionController {
 
     @GetMapping("/form")
     public String createForm(HttpSession session) {
-        if (!HttpSessionUtils.isLogined(session))
+        if (HttpSessionUtils.isNotLogined(session))
             return "redirect:/user/login";
 
         return "qna/form";
@@ -34,7 +33,7 @@ public class QuestionController {
 
     @PostMapping("")
     public String create(String title, String contents, HttpSession session) {
-        if (!HttpSessionUtils.isLogined(session))
+        if (HttpSessionUtils.isNotLogined(session))
             return "redirect:/user/login";
 
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
@@ -44,47 +43,48 @@ public class QuestionController {
         return "redirect:/";
     }
 
-    @GetMapping("/{questionId}")
-    public String show(@PathVariable Long questionId, Model model) {
-        Question focusQuestion = findQuestion(questionId);
+    @GetMapping("/{id}")
+    public String show(@PathVariable Long id, Model model) {
+        Question focusQuestion = findQuestion(id);
         model.addAttribute("question", focusQuestion);
-        model.addAttribute("answers", answerRepository.findByQuestionQuestionId(questionId));
+        model.addAttribute("answers", answerRepository.findByQuestionId(id));
+        model.addAttribute("countOfAnswers", answerRepository.countByQuestionId(id));
         return "qna/show";
     }
 
-    @GetMapping("/{questionId}/form")
-    public String updateForm(@PathVariable Long questionId, HttpSession session, Model model) {
-        if (!HttpSessionUtils.isLogined(session))
+    @GetMapping("/{id}/form")
+    public String updateForm(@PathVariable Long id, HttpSession session, Model model) {
+        if (HttpSessionUtils.isNotLogined(session))
             return "redirect:/user/login";
 
-        Question updateQuestion = getMatchedQuestion(questionId, session);
+        Question updateQuestion = getMatchedQuestion(id, session);
         model.addAttribute("question", updateQuestion);
         return "qna/updateForm";
     }
 
-    @PutMapping("/{questionId}/update")
-    public String update(@PathVariable Long questionId, String title, String contents, HttpSession session) {
-        if (!HttpSessionUtils.isLogined(session))
+    @PutMapping("/{id}/update")
+    public String update(@PathVariable Long id, String title, String contents, HttpSession session) {
+        if (HttpSessionUtils.isNotLogined(session))
             return "redirect:/user/login";
 
-        Question updateQuestion = getMatchedQuestion(questionId, session);
+        Question updateQuestion = getMatchedQuestion(id, session);
         updateQuestion.update(title, contents);
         questionRepository.save(updateQuestion);
-        return "redirect:/questions/" + questionId;
+        return String.format("redirect:/questions/%d", id);
     }
 
-    @DeleteMapping("/{questionId}/delete")
-    public String delete(@PathVariable Long questionId, HttpSession session) {
-        if (!HttpSessionUtils.isLogined(session))
+    @DeleteMapping("/{id}/delete")
+    public String delete(@PathVariable Long id, HttpSession session) {
+        if (HttpSessionUtils.isNotLogined(session))
             return "redirect:/user/login";
 
-        Question deleteQuestion = getMatchedQuestion(questionId, session);
+        Question deleteQuestion = getMatchedQuestion(id, session);
         questionRepository.delete(deleteQuestion);
         return "redirect:/";
     }
 
-    private Question findQuestion(Long questionId) {
-        return questionRepository.findById(questionId).orElseThrow(IllegalArgumentException::new);
+    private Question findQuestion(Long id) {
+        return questionRepository.findById(id).orElseThrow(()->new IllegalArgumentException(Error.ILLEGAL_ARGUMENT.getMessage()));
     }
 
     private Question getMatchedQuestion(Long questionId, HttpSession session) {
@@ -92,7 +92,7 @@ public class QuestionController {
         Question matchedQuestion = findQuestion(questionId);
         log.info("matchedQuestion : {}, sessionedUser : {}", matchedQuestion, sessionedUser);
         if (!matchedQuestion.matchWriter(sessionedUser))
-            throw new IllegalStateException("You can only update your own");
+            throw new IllegalStateException(Error.ILLEGAL_STATE.getMessage());
 
         return matchedQuestion;
     }

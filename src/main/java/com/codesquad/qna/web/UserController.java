@@ -1,7 +1,7 @@
 package com.codesquad.qna.web;
 
-import com.codesquad.qna.domain.User;
-import com.codesquad.qna.domain.UserRepository;
+import com.codesquad.qna.model.User;
+import com.codesquad.qna.model.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ public class UserController {
 
     @GetMapping("/{userId}/form")
     public String updateForm(@PathVariable String userId, Model model, HttpSession session) {
-        if (!HttpSessionUtils.isLogined(session))
+        if (HttpSessionUtils.isNotLogined(session))
             return "redirect:/user/login";
 
         User user = getMatchedUser(userId, session);
@@ -51,7 +51,7 @@ public class UserController {
 
     @PutMapping("/{userId}/update")
     public String update(@PathVariable String userId, User updateUser, HttpSession session) {
-        if (!HttpSessionUtils.isLogined(session))
+        if (HttpSessionUtils.isNotLogined(session))
             return "redirect:/user/login";
 
         User originUser = getMatchedUser(userId, session);
@@ -88,13 +88,13 @@ public class UserController {
     private User findUser(String userId, boolean isNullable) {
         log.info("findUser: {}", userId);
         Optional<User> user = userRepository.findById(userId);
-        return isNullable ? user.orElse(null) : user.orElseThrow(IllegalArgumentException::new);
+        return isNullable ? user.orElse(null) : user.orElseThrow(()->new IllegalArgumentException(Error.ILLEGAL_ARGUMENT.getMessage()));
     }
 
     private User getMatchedUser(String userId, HttpSession session) {
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
         if (!sessionedUser.matchId(userId))
-            throw new IllegalStateException("You can only update your own");
+            throw new IllegalStateException(Error.ILLEGAL_STATE.getMessage());
 
         return findUser(userId, false);
     }

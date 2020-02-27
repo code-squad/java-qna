@@ -1,6 +1,6 @@
 buildscript {
-	ext {
-		springBootVersion = '2.1.9.RELEASE'
+	ext { //build.gradle에서 사용하는 전역변수를 설정합니다.
+		springBootVersion = '2.1.7.RELEASE' //그 값을 2.1.7로 합니다.
 	}
 	repositories {
 		mavenCentral()
@@ -8,35 +8,36 @@ buildscript {
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		//즉, spring-boot-gradle-plugin라는 스프링부트 그레이들 플러그인을 의존성으로 받겠다는 이야기입니다.
 	}
 }
 
+//앞서 선언한 플러그인 의존성을 어떻게 적용할 것인가?
+plugins {
+	id 'com.gradle.build-scan' version '1.16'
+}
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 group 'com.jojoldu.book'
-version '1.0.4-SNAPSHOT-'+new Date().format("yyyyMMddHHmmss")
+version '1.0-SNAPSHOT'
 sourceCompatibility = 1.8
 
-repositories {
+repositories { //어느 원격 저장소에서 의존성을 받고 싶니?
 	mavenCentral()
-	jcenter()
+	jcenter() //최근에는 jcenter로 이동하고 있는 추세이다.
 }
 
-dependencies {
-	compile('org.springframework.boot:spring-boot-starter-web')
-	compile('org.projectlombok:lombok')
-	compile('org.springframework.boot:spring-boot-starter-data-jpa')
-	compile('org.springframework.boot:spring-boot-starter-mustache')
-	compile('com.h2database:h2')
-
-	compile('org.springframework.boot:spring-boot-starter-oauth2-client')
-	compile('org.springframework.session:spring-session-jdbc')
-
-	compile("org.mariadb.jdbc:mariadb-java-client")
-
-	testCompile('org.springframework.boot:spring-boot-starter-test')
-	testCompile("org.springframework.security:spring-security-test")
+dependencies { //특정 버전을 명시하지 않으면 ${springBootVersion}에서 지정한 버전을 따라가게 된다.
+	testCompile group: 'junit', name: 'junit', version: '4.12'
+	compile ('org.springframework.boot:spring-boot-starter-web')
+	compile ('org.projectlombok:lombok')
+	//h2는 인메모리 데이터베이스다. 메모리에서 실행되기 떄문에 애플리케이션을 재시작할 때마다 초기화되며, 테스트 용도로 쓰인다.
+	compile ('com.h2database:h2')
+	//spring-boot-starter-data-jpa는 추상화 라이브러리로, 스프링부트 버전에 맞추어 JPA 관련 라이브러리의 버전을 관리해준다.
+	compile ('org.springframework.boot:spring-boot-starter-data-jpa')
+	compile ('org.springframework.boot:spring-boot-starter-mustache')
+	testCompile ('org.springframework.boot:spring-boot-starter-test')
 }

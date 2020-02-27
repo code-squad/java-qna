@@ -63,7 +63,7 @@ public class QuestionController {
             Question currentQuestion = questionRepostory.findById(id).orElseThrow(() -> new NotFoundException("게시물 없어욧!!"));
             model.addAttribute("currentQuestion", currentQuestion);
             //TODO : 겍체가 match일을 하도록 수정
-            if(!sessionUser.getUserId().equals(currentQuestion.getWriter())) { //해당 Id 질문글의 writer가 session의 userId와 같은지 확인
+            if(!currentQuestion.matchUser(sessionUser)) { //해당 Id 질문글의 writer가 session의 userId와 같은지 확인
                 throw new IllegalStateException("자신의 게시글만 수정할 수 있는뎅??");
             }
             return "/questions/updateForm";
@@ -83,7 +83,7 @@ public class QuestionController {
             User sessionUser = HttpSessionUtils.getUserFromSession(session);
             Question currentQuestion = questionRepostory.findById(updateQuestion.getId()).orElseThrow(() -> new NotFoundException("게시물 없어영~!"));
 
-            if (!sessionUser.getUserId().equals(currentQuestion.getWriter())) {
+            if (!currentQuestion.matchUser(sessionUser)) {
                 throw new IllegalStateException("자신의 게시글만 수정할 수 있는뎅??");
             }
 
@@ -106,7 +106,7 @@ public class QuestionController {
             User sessionUser = HttpSessionUtils.getUserFromSession(session);
             Question currentQuestion = questionRepostory.findById(deleteQuestion.getId()).orElseThrow(() -> new NotFoundException("게시글 없는데요??!!!"));
 
-            if(!sessionUser.getUserId().equals(currentQuestion.getWriter())) {
+            if(!currentQuestion.matchUser(sessionUser)) {
                 throw new IllegalStateException("자기 글만 삭제할 수 있어요!!!");
             }
 

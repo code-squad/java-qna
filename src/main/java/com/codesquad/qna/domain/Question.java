@@ -92,4 +92,8 @@ public class Question {
         this.contents = question.getContents();
         setCreatedTimeNow(); //수정된 시간으로 업데이트
     }
+
+    public boolean matchUser(User sessionUser) {
+        return sessionUser.getUserId().equals(writer);
+    }
 }

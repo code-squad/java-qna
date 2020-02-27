@@ -2,9 +2,10 @@ package com.codessquad.qna.web;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.codessquad.qna.controller.PostsRepository;
 import com.codessquad.qna.controller.UsersRepository;
+import com.codessquad.qna.domain.Posts;
 import com.codessquad.qna.domain.Users;
-import com.codessquad.qna.web.dto.UsersRegisterRequestDto;
 import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +33,9 @@ public class UsersAPIControllerTest {
   @Autowired
   private UsersRepository usersRepository;
 
+  @Autowired
+  private PostsRepository postsRepository;
+
   @Test
   public void Users가_등록된다() {
 
@@ -49,5 +53,25 @@ public class UsersAPIControllerTest {
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     List<Users> all = usersRepository.findAllDesc();
     assertThat(all.get(0).getName()).isEqualTo("Jin Hyung Park");
+  }
+
+  @Test
+  public void Users가_조회된다() {
+    //when
+    String title = "this is test title";
+    String content = "this is test content";
+    String author = "this is test author";
+    //getForObject: Retrieve a representation by doing a GET on the URI template.
+    postsRepository.save(Posts.builder()
+        .title(title)
+        .content(content)
+        .author(author)
+        .build()
+    );
+    String body = this.testRestTemplate.getForObject("/api/v1/users/list", String.class);
+    //getForObject: Retrieve a representation by doing a GET on the URI template.
+    //then
+    assertThat(body).contains(title);
+    //TestRestTemplate으로 RestTemplate를 Test해보았을 때, 넘겨주는 body 문자열에 우리가 기대하는 값이 있으면 된다.
   }
 }

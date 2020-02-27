@@ -18,8 +18,13 @@ var index = {
       _this.delete();
     });
 
-    $('#btn-register').on('click', function () {
+    $('#btn-userregister').on('click', function () {
+      debugger;
       _this.register();
+    });
+
+    $('#btn-userupdate').on('click', function () {
+      _this.userUpdate();
     });
   },
 
@@ -39,7 +44,30 @@ var index = {
       data: JSON.stringify(data)
     }).done(function () {
       alert('회원가입을 환영합니다.');
-      window.location.href = '/';
+      window.location.href = '/users/show';
+    }).fail(function (error) {
+      alert(JSON.stringify(error));
+    });
+  },
+
+  userUpdate: function () {
+    var data = {
+      userId: $('#userId').val(),
+      password: $('#password').val(),
+      name: $('#name').val(),
+      email: $('#email').val()
+    };
+    var Id = $('#Id').val();
+
+    $.ajax({
+      type: 'PUT',
+      url: '/api/v1/users/' + Id,
+      dataType: 'json',
+      contentType: 'application/json; charset=utf-8',
+      data: JSON.stringify(data)
+    }).done(function () {
+      alert('회원정보를 수정했습니다.');
+      window.location.href = '/users/show';
     }).fail(function (error) {
       alert(JSON.stringify(error));
     });
@@ -60,6 +88,27 @@ var index = {
       data: JSON.stringify(data)
     }).done(function () {
       alert('글이 등록되었습니다.');
+      window.location.href = '/';
+    }).fail(function (error) {
+      alert(JSON.stringify(error));
+    });
+  },
+
+  update: function () {
+    var data = {
+      title: $('#title').val(),
+      content: $('#content').val()
+    };
+    var Id = $('#Id').val();
+
+    $.ajax({
+      type: 'PUT',
+      url: '/api/v1/posts/' + Id,
+      dataType: 'json',
+      contentType: 'application/json; charset=utf-8',
+      data: JSON.stringify(data)
+    }).done(function () {
+      alert('글이 수정되었습니다.');
       window.location.href = '/';
     }).fail(function (error) {
       alert(JSON.stringify(error));

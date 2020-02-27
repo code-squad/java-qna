@@ -31,11 +31,11 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     // log4j2 로깅 설정
-    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.13.0'
-    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.13.0'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-log4j2'
 
-    // slf4j 설정
-    compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.13.0'
+    // lombok 설정
+    compile group: 'org.projectlombok', name: 'lombok', version: '1.18.8'
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.8'
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'

@@ -54,7 +54,7 @@ public class QuestionController {
             List<Answer> answers = answerRepository.findByQuestionId(id);
             model.addAttribute("question", question);
             model.addAttribute("isLoginUserEqualsWriter",
-                    isLoginUserEqualsWriter(question, loginUser));
+                    question.isWriterEqualsLoginUser(loginUser));
             model.addAttribute("answers", answers);
         } catch (NotFoundException e) {
             return CommonUtility.ERROR_QUESTION_NOT_FOUND;
@@ -71,7 +71,7 @@ public class QuestionController {
                 return CommonUtility.REDIRECT_LOGIN_PAGE;
             }
             Question question = getQuestionIfExist(id);
-            if (!isLoginUserEqualsWriter(question, loginUser)) {
+            if (!question.isWriterEqualsLoginUser(loginUser)) {
                 return "redirect:/questions/" + id;
             }
             model.addAttribute("question", question);
@@ -93,7 +93,7 @@ public class QuestionController {
                 return CommonUtility.REDIRECT_LOGIN_PAGE;
             }
             Question question = getQuestionIfExist(id);
-            if (!isLoginUserEqualsWriter(question, loginUser)) {
+            if (!question.isWriterEqualsLoginUser(loginUser)) {
                 return "redirect:/questions/" + id;
             }
             question.updateQuestionData(title, contents, LocalDateTime.now());
@@ -112,7 +112,7 @@ public class QuestionController {
                 return CommonUtility.REDIRECT_LOGIN_PAGE;
             }
             Question question = getQuestionIfExist(id);
-            if (!isLoginUserEqualsWriter(question, loginUser)) {
+            if (!question.isWriterEqualsLoginUser(loginUser)) {
                 return "redirect:/questions/" + id;
             }
             questionRepository.delete(question);
@@ -122,14 +122,8 @@ public class QuestionController {
         return "redirect:/";
     }
 
-    private boolean isLoginUserEqualsWriter(Question question, User loginUser) {
-        if (loginUser == null) return false;
-        return loginUser.equals(question.getWriter());
-    }
-
     private User getLoginUser(HttpSession session) {
-        Object userAttribute = session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
-        return userAttribute == null ? null : (User) userAttribute;
+        return (User) session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
     }
 
     private Question getQuestionIfExist(long id) throws NotFoundException {

@@ -102,4 +102,9 @@ public class Question {
         this.contents = contents;
         this.updatedDateTime = updatedDateTime;
     }
+
+    public boolean isWriterEqualsLoginUser(User loginUser) {
+        if (loginUser == null) return false;
+        return this.writer.equals(loginUser);
+    }
 }

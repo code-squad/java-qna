@@ -3,8 +3,14 @@
 <h2>코드스쿼드 마스터즈 코스 생활에 대한 모든 질문을 받습니다.</h2>
 <div class="col-md-12">
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-2">
       <a href="/posts/save" role="button" class="btn btn-primary">글 등록하러 가기</a>
+    </div>
+    <div class="col-md-2">
+      <a href="/users/show" role="button" class="btn btn-primary">회원 정보 보러 가기</a>
+    </div>
+    <div class="col-md-2">
+      <a href="/users/register" role="button" class="btn btn-primary">회원 등록하기</a>
     </div>
   </div>
   <!-- 목록 출력 영역 -->
@@ -20,10 +26,10 @@
     <tbody id="tbody">
     {{#posts}}
       <tr>
-        <!-- id 추가 요망 -->
-        <td>{{title}}</td>
+        <td>{{Id}}</td>
+        <td><a href="/posts/update/{{Id}}">{{title}}</td>
         <td>{{author}}</td>
-        <!-- createdTime 추가 요망 -->
+        <td>{{modifiedDate}}</td>
       </tr>
     {{/posts}}
     </tbody>

@@ -1,7 +1,14 @@
-{{#partial "content" }}
+<head>
+    {{> include/header}}
+</head>
+<body>
+{{> include/navigation}}
 <div class="container" id="main">
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default content-main">
+            {{#wrongPassword}}
+                <div class="alert alert-danger" role="alert">비밀번호가 틀렸습니다.</div>
+            {{/wrongPassword}}
             <form name="question" method="post" action="/users/{{user.id}}">
                 <input type="hidden" name="_method" value="put"/>
                 <div class="form-group">
@@ -32,6 +39,7 @@
         </div>
     </div>
 </div>
-{{/partial}}
+{{> include/footer}}
+</body>
+</html>
 
-{{> base}}

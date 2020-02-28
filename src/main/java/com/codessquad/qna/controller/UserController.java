@@ -2,6 +2,8 @@ package com.codessquad.qna.controller;
 
 import com.codessquad.qna.domain.User;
 import com.codessquad.qna.repository.UserRepository;
+import com.codessquad.qna.web.HttpSessionUtils;
+import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,37 +23,72 @@ public class UserController {
   @Autowired
   private UserRepository userRepository;
 
-  @PostMapping(value = "/create")
-  public String createUser(User user) {
+
+  @PostMapping(value = "/login")
+  public String login(String userId, String password, HttpSession httpSession) {
+    User user = userRepository.findByUserId(userId);
+    if (user == null) {
+      return "user/login";
+    }
+    if (!user.matchPassword(password)) {
+      return "user/login_failed";
+    }
+    httpSession.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
+    return "redirect:/";
+  }
+
+  @PostMapping(value = "")
+  public String create(User user) {
     userRepository.save(user);
     return "redirect:/";
   }
 
   @PostMapping(value = "/{id}")
-  public String modifyUser(User modifiedUser, @PathVariable("id") long id) {
-    User user = userRepository.getOne(id);
-    user.setName(modifiedUser.getName());
-    user.setPassword(modifiedUser.getPassword());
-    user.setEmail(modifiedUser.getEmail());
+  public String update(@PathVariable("id") long id, User updateUser,
+      HttpSession httpSession) {
+    if (!HttpSessionUtils.isLoginUser(httpSession)) {
+      return "redirect:/user/login";
+    }
+    User sessionUser = HttpSessionUtils.getUserFromSession(httpSession);
+    if (!sessionUser.matchId(id)) {
+      throw new IllegalStateException("자신이 아닌 다른 유저를 업데이트 할 수 없습니다.");
+    }
+
+    User user = userRepository.getOne(sessionUser.getId());
+    user.update(updateUser);
     userRepository.save(user);
     return "redirect:/";
   }
 
-  @GetMapping(value = "/")
+  @GetMapping(value = "/logout")
+  public String logout(HttpSession httpSession) {
+    httpSession.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
+    return "redirect:/";
+  }
+
+  @GetMapping(value = "")
   public String getUsers(Model model) {
     model.addAttribute("users", userRepository.findAll());
     return "user/list";
   }
 
   @GetMapping(value = "/{writer}")
-  public String getUserProfile(Model model, @PathVariable("writer") String writer) {
-    model.addAttribute("user", userRepository.findUserByName(writer));
+  public String getProfile(@PathVariable("writer") String userId, Model model) {
+    model.addAttribute("user", userRepository.findByUserId(userId));
     return "user/profile";
   }
 
   @GetMapping(value = "/{id}/form")
-  public String modifyUserProfile(Model model, @PathVariable("id") long id) {
-    model.addAttribute("user", userRepository.getOne(id));
+  public String updateProfile(@PathVariable("id") long id, Model model,
+      HttpSession httpSession) {
+    if (!HttpSessionUtils.isLoginUser(httpSession)) {
+      return "redirect:/user/login";
+    }
+    User sessionUser = HttpSessionUtils.getUserFromSession(httpSession);
+    if (!sessionUser.matchId(id)) {
+      throw new IllegalStateException("자신이 아닌 다른 유저를 업데이트 할 수 없습니다.");
+    }
+    model.addAttribute("user", userRepository.getOne(sessionUser.getId()));
     return "user/updateForm";
   }
 

@@ -1,7 +1,6 @@
 package com.codessquad.qna.domain;
 
 import java.time.format.DateTimeFormatter;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -11,36 +10,40 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-public class Question extends BaseTimeEntity {
+public class Answer extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @ManyToOne
-  @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+  @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
+  @OnDelete(action = OnDeleteAction.CASCADE)
+  private Question question;
+
+  @ManyToOne
+  @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_writer"))
   private User writer;
 
-  @Column(nullable = false)
-  private String title;
 
   @Lob
   @Column(nullable = false)
   private String contents;
 
-  public Question() {
+  public Answer() {
   }
 
-  public Question(User writer, String title, String contents) {
+  public Answer(Question question, User writer, String contents) {
+    this.question = question;
     this.writer = writer;
-    this.title = title;
     this.contents = contents;
   }
 
-  public void update(String title, String contents) {
-    this.title = title;
+  public void update(String contents) {
     this.contents = contents;
   }
 
@@ -52,28 +55,36 @@ public class Question extends BaseTimeEntity {
     return id;
   }
 
+  public Answer setId(Long id) {
+    this.id = id;
+    return this;
+  }
+
+  public Question getQuestion() {
+    return question;
+  }
+
+  public Answer setQuestion(Question question) {
+    this.question = question;
+    return this;
+  }
+
   public String getWriter() {
     return writer.getUserId();
   }
 
-  public void setWriter(User writer) {
+  public Answer setWriter(User writer) {
     this.writer = writer;
-  }
-
-  public String getTitle() {
-    return title;
-  }
-
-  public void setTitle(String title) {
-    this.title = title;
+    return this;
   }
 
   public String getContents() {
     return contents;
   }
 
-  public void setContents(String contents) {
+  public Answer setContents(String contents) {
     this.contents = contents;
+    return this;
   }
 
   public String getCreatedTime() {
@@ -84,11 +95,4 @@ public class Question extends BaseTimeEntity {
     return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(createdTime);
   }
 
-
-  @Override
-  public String toString() {
-    return "writer : " + writer + '\n' +
-        "title : " + title + '\n' +
-        "contents : " + contents + '\n';
-  }
 }

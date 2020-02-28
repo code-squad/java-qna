@@ -1,6 +1,7 @@
 handlebars:
   suffix: .html
   cache: false
+  expose-session-attributes: true
 
 spring:
   devtools:
@@ -23,5 +24,11 @@ spring:
     properties:
       hibernate:
         format_sql: true
-  thymeleaf:
-    enabled: false
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+
+logging:
+  level:
+    com.codessquad.qna.controller: debug

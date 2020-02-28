@@ -90,7 +90,7 @@ public class UserController {
             throw new IllegalStateException("자신의 정보만 수정할 수 있습니다.");
         }
 
-        model.addAttribute("user", userRepository.findById(id).orElse(null));
+//        model.addAttribute("user", userRepository.findById(id).orElse(null));
         User user = userRepository.findById(id).orElseThrow(NullPointerException::new);
         user.update(updateUser);
         userRepository.save(user);

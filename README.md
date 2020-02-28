@@ -61,7 +61,22 @@ https://jay-simple-qna.herokuapp.com/
             id=?
     ```
 
+  + (추가 내용) on delete cascade 속성을 지정하려면 ```@OneToMany``` 를 해줘야 한다고 생각했는데 다른 분 코드 보니까 다른 방법이 있었음
 
+    ```java
+    @Entity
+    public class Answer {
+        // (생략)
+      @ManyToOne
+      @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
+      // @OnDelete 어노테이션이 있었구나
+      @OnDelete(action = OnDeleteAction.CASCADE)
+      private Question question;
+      // (생략)
+    }
+    ```
+
+    > 이 방법으로 하면 한 건씩 가져와서 delete를 수행할까? 아니면 범위 기반으로 제거될까?
 
 ### 궁금한 점
 

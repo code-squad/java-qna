@@ -21,10 +21,7 @@ public class UserController {
     private UserRepository userRepository;
 
     @GetMapping("/form")
-    public String goUserForm(Model model) {
-        model.addAttribute("actionUrl", "/users");
-        model.addAttribute("httpMethod", "POST");
-        model.addAttribute("buttonName", "회원가입");
+    public String goUserForm() {
         return "users/form";
     }
 
@@ -68,9 +65,7 @@ public class UserController {
             return CommonConstants.ERROR_USER_NOT_FOUND;
         }
         model.addAttribute("actionUrl", "/users/" + id);
-        model.addAttribute("httpMethod", "PUT");
-        model.addAttribute("buttonName", "수정");
-        return "/users/form";
+        return "/users/modify-form";
     }
 
     @PutMapping("/{id}")

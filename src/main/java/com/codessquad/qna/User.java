@@ -57,9 +57,9 @@ public class User {
     }
 
     public void update(User user) {
-        this.name = user.getName();
-        this.email = user.getEmail();
-        this.password = user.getPassword();
+        this.name = user.name;
+        this.email = user.email;
+        this.password = user.password;
     }
 
     public boolean matchPassword(String newPassword) {

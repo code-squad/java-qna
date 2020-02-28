@@ -33,6 +33,10 @@ public class Answer {
         this.postingTime = LocalDateTime.now();
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public User getWriter() {
         return writer;
     }

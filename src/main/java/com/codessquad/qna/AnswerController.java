@@ -28,13 +28,12 @@ public class AnswerController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteAnswer(@PathVariable Long id, Long questionId, HttpSession session) {
-//        if (!HttpSessionUtils.isLogin(session)) {
-//            return "/users/loginForm";
-//        }
-//        Answer answer = answerRepository.getOne(id);
-//        answerRepository.delete(answer);
-//        return "redirect:/questions/" + questionId;
-        return "/";
+    public String deleteAnswer(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
+        if (!HttpSessionUtils.isLogin(session)) {
+            return "/users/loginForm";
+        }
+        Answer answer = answerRepository.getOne(id);
+        answerRepository.delete(answer);
+        return "redirect:/questions/" + questionId;
     }
 }

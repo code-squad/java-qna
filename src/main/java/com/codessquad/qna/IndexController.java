@@ -1,14 +1,18 @@
 package com.codessquad.qna;
 
+import com.codessquad.qna.controller.UsersRepository;
+import com.codessquad.qna.domain.Users;
 import com.codessquad.qna.service.posts.PostsService;
 import com.codessquad.qna.service.users.UsersService;
 import com.codessquad.qna.web.dto.PostsResponseDto;
 import com.codessquad.qna.web.dto.UsersResponseDto;
+import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @RequiredArgsConstructor
 @Controller
@@ -33,10 +37,10 @@ public class IndexController {
     return "posts-save";
   }
 
-  @GetMapping ("/users/login")
+  @GetMapping("/users/login")
   public String usersLogin() { return "users-login"; }
 
-  @GetMapping ("/users/login")
+  @GetMapping("/users/login/fail")
   public String usersLoginFailed() { return "users-login-failed"; }
 
   @GetMapping("/users/register")

@@ -21,7 +21,7 @@ public class Question {
     private String contents;
 
     @Column(nullable = false)
-    private LocalDateTime created;
+    private LocalDateTime createdAt;
 
     public Question() {
         this.setCreated();
@@ -32,7 +32,7 @@ public class Question {
     }
 
     public LocalDateTime getCreated() {
-        return created;
+        return createdAt;
     }
 
     public User getWriter() {
@@ -60,7 +60,7 @@ public class Question {
     }
 
     public void setCreated() {
-        this.created = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
     }
 
     public void update(Question question) {
@@ -74,7 +74,7 @@ public class Question {
                 "writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
-                ", created='" + created + '\'' +
+                ", createdAt='" + createdAt + '\'' +
                 ", id=" + id +
                 '}';
     }

@@ -33,7 +33,7 @@ public class UserController {
         return "redirect:/users";
     }
 
-    @RequestMapping(value = "/{id}/update", method = RequestMethod.PUT)
+    @PutMapping("/{id}/update")
     public String update(@PathVariable("id") Long id, User updatedUser, HttpSession session) throws IllegalAccessException {
         if (!HttpSessionUtils.isUserLogin(session)) {
             return "redirect:/login";

@@ -24,7 +24,7 @@ public class Question {
     private LocalDateTime createdAt;
 
     public Question() {
-        this.setCreated();
+        markCreatedTime();
     }
 
     public Long getId() {
@@ -59,7 +59,7 @@ public class Question {
         this.contents = contents;
     }
 
-    public void setCreated() {
+    private void markCreatedTime() {
         this.createdAt = LocalDateTime.now();
     }
 

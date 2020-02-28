@@ -23,7 +23,7 @@ public class Answer {
     private LocalDateTime createdAt;
 
     public Answer() {
-        this.createdAt = LocalDateTime.now();
+        this.markCreatedTime();
     }
 
     public Long getId() {
@@ -60,6 +60,10 @@ public class Answer {
 
     public void update(Answer answer) {
         this.contents = answer.contents;
+    }
+
+    private void markCreatedTime() {
+        this.createdAt = LocalDateTime.now();
     }
 
     @Override

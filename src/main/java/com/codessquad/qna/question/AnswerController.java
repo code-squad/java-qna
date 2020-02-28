@@ -22,13 +22,12 @@ public class AnswerController {
 
     @PostMapping("/questions/{questionId}/answers")
     public String createAnswer(@PathVariable Long questionId, @RequestParam String comments, HttpSession session) {
-        Object loginUserAttribute = session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
-        if (loginUserAttribute == null) {
-            return CommonConstants.REDIRECT_LOGIN_PAGE;
-        }
-
         try {
-            User loginUser = (User) loginUserAttribute;
+            User loginUser = (User) session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
+            if (loginUser == null) {
+                return CommonConstants.REDIRECT_LOGIN_PAGE;
+            }
+
             Question question = questionRepository.findById(questionId).orElseThrow(() -> new NotFoundException("못찾음"));
             Answer answer = new Answer(loginUser, question, comments);
             answerRepository.save(answer);
@@ -44,13 +43,12 @@ public class AnswerController {
                                      @PathVariable Long answerId,
                                      HttpSession session,
                                      Model model) {
-        Object loginUserAttribute = session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
-        if (loginUserAttribute == null) {
-            return CommonConstants.REDIRECT_LOGIN_PAGE;
-        }
-
         try {
-            User loginUser = (User) loginUserAttribute;
+            User loginUser = (User) session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
+            if (loginUser == null) {
+                return CommonConstants.REDIRECT_LOGIN_PAGE;
+            }
+
             Question question = questionRepository.findById(questionId).orElseThrow(() -> new NotFoundException("못찾음"));
             Answer answer = answerRepository.findByQuestionIdAndId(questionId, answerId);
             if (!loginUser.equals(answer.getWriter())) {
@@ -70,12 +68,11 @@ public class AnswerController {
                                @PathVariable Long answerId,
                                @RequestParam String comments,
                                HttpSession session) {
-        Object loginUserAttribute = session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
-        if (loginUserAttribute == null) {
+        User loginUser = (User) session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
+        if (loginUser == null) {
             return CommonConstants.REDIRECT_LOGIN_PAGE;
         }
 
-        User loginUser = (User) loginUserAttribute;
         Answer answer = answerRepository.findByQuestionIdAndId(questionId, answerId);
         if (!loginUser.equals(answer.getWriter())) {
             return "redirect:/questions/" + questionId;
@@ -89,12 +86,11 @@ public class AnswerController {
 
     @DeleteMapping("/questions/{questionId}/answers/{answerId}")
     public String deleteAnswer(@PathVariable Long questionId, @PathVariable Long answerId, HttpSession session) {
-        Object loginUserAttribute = session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
-        if (loginUserAttribute == null) {
+        User loginUser = (User) session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
+        if (loginUser == null) {
             return CommonConstants.REDIRECT_LOGIN_PAGE;
         }
 
-        User loginUser = (User) loginUserAttribute;
         Answer answer = answerRepository.findByQuestionIdAndId(questionId, answerId);
         if (!loginUser.equals(answer.getWriter())) {
             return "redirect:/questions/" + questionId;

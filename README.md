@@ -108,6 +108,7 @@
 3. URI에 underscore 보다 hyphen이 더 검색 결과에 좋다는 걸 알고 있었는데, 까먹어서 아예 template 파일의 Naming Convention을 kebab case로 변경하였습니다.
 4. Annotation이 붙어서 읽기 힘들어지는 필드들을 분리하였습니다.
 5. 클래스의 경우 맨 윗줄을 항상 띄워주도록 나름의 컨벤션을 정의하였습니다.
+6. UserAttribute를 바로 User로 형변환 해서 받도록 하였습니다.
 
 # STEP4
 

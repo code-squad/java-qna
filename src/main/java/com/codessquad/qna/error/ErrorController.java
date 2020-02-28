@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/error")
 public class ErrorController {
+
     @GetMapping("/user-not-found")
     public String goUserNotFoundPage() {
         return CommonConstants.ERROR_USER_NOT_FOUND;

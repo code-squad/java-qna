@@ -9,6 +9,7 @@ import java.util.Collection;
 
 @Entity
 public class Question {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

@@ -16,12 +16,16 @@ public class Answer {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
     private User writer;
+
     @Column(nullable = false)
     private String comment;
+
     @Column(nullable = false)
     private LocalDateTime createdDateTime;
+
     @Column(nullable = false)
     private LocalDateTime updatedDateTime;
+
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
     private Question question;

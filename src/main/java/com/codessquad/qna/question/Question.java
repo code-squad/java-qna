@@ -16,14 +16,19 @@ public class Question {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     private User writer;
+
     @Column(nullable = false)
     private String title;
+
     @Column(nullable = false)
     private String contents;
+
     @Column(nullable = false)
     private LocalDateTime createdDateTime;
+
     @Column(nullable = false)
     private LocalDateTime updatedDateTime;
+
     @Column(nullable = false)
     private boolean isDeleted;
 

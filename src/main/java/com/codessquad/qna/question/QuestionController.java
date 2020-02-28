@@ -17,8 +17,10 @@ import java.util.List;
 @Controller
 public class QuestionController {
     private static Logger log = LoggerFactory.getLogger(QuestionController.class);
+
     @Autowired
     private QuestionRepository questionRepository;
+
     @Autowired
     private AnswerRepository answerRepository;
 

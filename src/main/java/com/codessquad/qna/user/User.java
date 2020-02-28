@@ -14,10 +14,13 @@ public class User implements Serializable {
     @Column(nullable = false, length = 20)
     @NotEmpty
     private String userId;
+
     @NotEmpty
     private String userPassword;
+
     @NotEmpty
     private String userName;
+
     @NotEmpty
     private String userEmail;
 
@@ -81,12 +84,11 @@ public class User implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
+        if (this == o) { return true; }
+        if (!(o instanceof User)) { return false; }
         User user = (User) o;
-        return getId().equals(user.getId()) && getUserId().equals(user.getUserId()) && getUserPassword()
-                .equals(user.getUserPassword()) && getUserName().equals(user.getUserName()) && getUserEmail()
-                .equals(user.getUserEmail());
+        return getId().equals(user.getId()) && getUserId().equals(user.getUserId()) && getUserPassword().equals(user.getUserPassword()) && getUserName()
+                .equals(user.getUserName()) && getUserEmail().equals(user.getUserEmail());
     }
 
     @Override

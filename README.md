@@ -106,6 +106,7 @@
 1. 전역 상수 클래스의 네이밍의 변경(Util성 클래스는 메소드를 포함하고, Constants는 포함하지 않음).
 2. DATE_TIME_FORMATTER의 명칭 변경 => POST_DATA를 앞에 붙여주어 게시물 데이터에만 사용하는 형식임을 보여주고자 하였습니다.
 3. URI에 underscore 보다 hyphen이 더 검색 결과에 좋다는 걸 알고 있었는데, 까먹어서 아예 template 파일의 Naming Convention을 kebab case로 변경하였습니다.
+4. Annotation이 붙어서 읽기 힘들어지는 필드들을 분리하였습니다.
 
 # STEP4
 

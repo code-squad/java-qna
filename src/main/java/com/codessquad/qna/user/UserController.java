@@ -15,6 +15,7 @@ import javax.validation.ConstraintViolationException;
 @Controller
 @RequestMapping("/users")
 public class UserController {
+
     @Autowired
     private UserRepository userRepository;
 
@@ -112,9 +113,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String loginUser(@RequestParam String userId,
-                            @RequestParam String userPassword,
-                            HttpSession session) {
+    public String loginUser(@RequestParam String userId, @RequestParam String userPassword, HttpSession session) {
         User user = userRepository.findByUserId(userId);
 
         // 사용자가 없거나, 비밀번호 일치하지 않는 경우
@@ -132,8 +131,7 @@ public class UserController {
     }
 
     private User getUserIfExist(long id) throws NotFoundException {
-        return userRepository.findById(id)
-                             .orElseThrow(() -> new NotFoundException("해당 사용자는 존재하지 않는 사용자입니다."));
+        return userRepository.findById(id).orElseThrow(() -> new NotFoundException("해당 사용자는 존재하지 않는 사용자입니다."));
     }
 
     private User updateUserNameAndEmail(User user, String userName, String userPassword, String userEmail) {

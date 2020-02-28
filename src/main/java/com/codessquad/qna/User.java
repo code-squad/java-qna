@@ -76,4 +76,8 @@ public class User {
         this.name = updateuser.name;
         this.email = updateuser.email;
     }
+
+    public boolean isCheckPassword(User updateUser) {
+        return this.password.equals(updateUser.getPassword());
+    }
 }

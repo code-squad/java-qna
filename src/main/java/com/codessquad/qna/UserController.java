@@ -3,10 +3,7 @@ package com.codessquad.qna;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/users")
@@ -45,9 +42,12 @@ public class UserController {
     @PostMapping("/{id}/update")
     public String updateUserProfile(@PathVariable Long id, Model model, User updateUser) {
         User oldUser = userRepository.findById(id).get();
-        oldUser.update(updateUser);
-        userRepository.save(oldUser);
-         model.addAttribute("userProfile", oldUser);
+        if(oldUser.isCheckPassword(updateUser)){
+            oldUser.update(updateUser);
+            userRepository.save(oldUser);
+        }
+        model.addAttribute("userProfile", oldUser);
+
         return "redirect:/users";
     }
 }

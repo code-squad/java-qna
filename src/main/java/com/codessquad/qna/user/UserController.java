@@ -70,17 +70,19 @@ public class UserController {
 
     @PutMapping("/{id}")
     public String updateUserInfo(@PathVariable long id,
-                                 @RequestParam String userPassword,
-                                 @RequestParam String userName,
-                                 @RequestParam String userEmail,
+                                 User updateUser,
+                                 @RequestParam String newPassword,
                                  HttpSession session) {
         try {
             User user = getUserIfExist(id);
             if (!getLoginUserAndCheckEqualsRequestedUser(session, user)) {
                 return CommonConstants.ERROR_CANNOT_EDIT_OTHER_USER_INFO;
             }
-            updateUserNameAndEmail(user, userName, userPassword, userEmail);
-            session.setAttribute(CommonConstants.SESSION_LOGIN_USER, user);
+            if (!user.isEqualsPassword(updateUser.getUserPassword())) {
+                return "redirect:/users/" + id + "/form";
+            }
+            user.update(updateUser, newPassword);
+            session.setAttribute(CommonConstants.SESSION_LOGIN_USER, userRepository.save(user));
         } catch (NotFoundException e) {
             return CommonConstants.ERROR_USER_NOT_FOUND;
         } catch (TransactionSystemException e) {
@@ -128,13 +130,6 @@ public class UserController {
 
     private User getUserIfExist(long id) throws NotFoundException {
         return userRepository.findById(id).orElseThrow(() -> new NotFoundException("해당 사용자는 존재하지 않는 사용자입니다."));
-    }
-
-    private User updateUserNameAndEmail(User user, String userName, String userPassword, String userEmail) {
-        if (user.isEqualsPassword(userPassword)) {
-            user.updateNameAndEmail(userName, userEmail);
-        }
-        return userRepository.save(user);
     }
 
 }

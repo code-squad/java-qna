@@ -80,9 +80,12 @@ public class User implements Serializable {
         return this.userPassword.equals(password);
     }
 
-    public void updateNameAndEmail(String userName, String userEmail) {
-        this.userName = userName;
-        this.userEmail = userEmail;
+    public void update(User updateUser, String newPassword) {
+        if (!newPassword.equals("")) {
+            this.userPassword = newPassword;
+        }
+        this.userName = updateUser.userName;
+        this.userEmail = updateUser.userEmail;
     }
 
     @Override

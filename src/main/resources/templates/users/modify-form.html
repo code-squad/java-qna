@@ -11,11 +11,15 @@
         <input name="_method" type="hidden" value="PUT"/>
         <div class="form-group">
           <label for="userId">사용자 아이디</label>
-          <input class="form-control" id="userId" name="userId" placeholder="User ID" value="{{user.userId}}">
+          <input class="form-control" disabled id="userId" name="userId" placeholder="User ID" value="{{user.userId}}">
         </div>
         <div class="form-group">
-          <label for="userPassword">비밀번호</label>
+          <label for="userPassword">비밀번호 확인</label>
           <input class="form-control" id="userPassword" name="userPassword" placeholder="Password" type="password">
+        </div>
+        <div class="form-group">
+          <label for="newPassword">새로운 비밀번호</label>
+          <input class="form-control" id="newPassword" name="newPassword" placeholder="Password" type="password">
         </div>
         <div class="form-group">
           <label for="userName">이름</label>

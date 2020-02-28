@@ -4,7 +4,7 @@ plugins {
 	id 'java'
 }
 
-group = 'com.codessquad'
+group = 'io.david215'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 

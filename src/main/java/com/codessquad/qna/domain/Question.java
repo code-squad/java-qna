@@ -1,21 +1,23 @@
-package com.codessquad.qna;
+package com.codessquad.qna.domain;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
+@Entity
 public class Question {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(nullable = false, length = 20)
     private String writer;
+    @Column(nullable = false, length = 50)
     private String title;
     private String contents;
-    private Date writeTime;
-    private int index;
+    private LocalDateTime writeTime;
 
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
+    public Long getId() {
+        return id;
     }
 
     public String getWriter() {
@@ -43,26 +45,21 @@ public class Question {
     }
 
     public String getWriteTime() {
-        return dateToString(writeTime);
+        return writeTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
-    public void setWriteTime(Date writeTime) {
-        this.writeTime = writeTime;
+    public void setWriteTime() {
+        this.writeTime = LocalDateTime.now();
     }
-
-    public String dateToString(Date writeTime) {
-        SimpleDateFormat format = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss");
-        return format.format(writeTime);
-    }
-
+    
     @Override
     public String toString() {
         return "Question{" +
-                "writer='" + writer + '\'' +
+                "id=" + id +
+                ", writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
-                ", time='" + writeTime + '\'' +
-                ", index=" + index +
+                ", writeTime=" + writeTime +
                 '}';
     }
 }

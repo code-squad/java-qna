@@ -12,7 +12,7 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, unique = true)
     @NotEmpty
     private String userId;
 
@@ -20,9 +20,11 @@ public class User implements Serializable {
     private String userPassword;
 
     @NotEmpty
+    @Column(unique = true)
     private String userName;
 
     @NotEmpty
+    @Column(unique = true)
     private String userEmail;
 
     public User() {}
@@ -88,12 +90,11 @@ public class User implements Serializable {
         if (this == o) { return true; }
         if (!(o instanceof User)) { return false; }
         User user = (User) o;
-        return getId().equals(user.getId()) && getUserId().equals(user.getUserId()) && getUserPassword().equals(user.getUserPassword()) && getUserName()
-                .equals(user.getUserName()) && getUserEmail().equals(user.getUserEmail());
+        return getUserEmail().equals(user.userEmail);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getUserId(), getUserPassword(), getUserName(), getUserEmail());
+        return Objects.hash(userEmail);
     }
 }

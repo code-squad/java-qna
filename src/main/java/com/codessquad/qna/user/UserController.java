@@ -3,6 +3,7 @@ package com.codessquad.qna.user;
 import com.codessquad.qna.common.CommonConstants;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.ui.Model;
@@ -31,7 +32,7 @@ public class UserController {
     public String createUser(User user) {
         try {
             userRepository.save(user);
-        } catch (ConstraintViolationException e) {
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             return "redirect:/users/form";
         }
         return "redirect:/users";

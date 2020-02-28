@@ -8,13 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Controller
 @RequestMapping("/users")
 public class UserController {
-    List<User> users = new ArrayList<>();
 
     @Autowired
     private UserRepository userRepository;
@@ -33,35 +29,25 @@ public class UserController {
         return "user/list";
     }
 
-    @GetMapping("/{userId}")
-    public String showUserProfile(@PathVariable String userId, Model model) {
-        users.stream()
-                .filter(user -> user.getUserId().equals(userId))
-                .forEach(user -> model.addAttribute("userprofile", user));
-
+    @GetMapping("/{id}")
+    public String showUserProfile(@PathVariable Long id, Model model) {
+        model.addAttribute("userProfile", userRepository.findById(id).get());
         return "user/profile";
     }
 
-    @GetMapping("/{userId}/form")
-    public String modifyUserProfile(@PathVariable String userId, Model model) {
-        users.stream()
-                .filter(user -> user.getUserId().equals(userId))
-                .forEach(user -> model.addAttribute("userprofile", user));
+    @GetMapping("/{id}/form")
+    public String modifyUserProfile(@PathVariable Long id, Model model) {
+        model.addAttribute("userProfile", userRepository.findById(id).get());
 
         return "user/updateForm";
     }
 
-    @PostMapping("/{userId}/update")
-    public String updateUserProfile(@PathVariable String userId, Model model, User updateuser) {
-        users.stream()
-                .filter(user -> user.getUserId().equals(userId))
-                .forEach(user -> {
-                    user.setPassword(updateuser.getPassword());
-                    user.setName(updateuser.getName());
-                    user.setEmail(updateuser.getEmail());
-                    model.addAttribute("userprofile", user);
-                });
-
+    @PostMapping("/{id}/update")
+    public String updateUserProfile(@PathVariable Long id, Model model, User updateUser) {
+        User oldUser = userRepository.findById(id).get();
+        oldUser.update(updateUser);
+        userRepository.save(oldUser);
+         model.addAttribute("userProfile", oldUser);
         return "redirect:/users";
     }
 }

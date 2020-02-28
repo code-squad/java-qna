@@ -1,6 +1,6 @@
 package com.codessquad.qna.question;
 
-import com.codessquad.qna.common.CommonUtility;
+import com.codessquad.qna.common.CommonConstants;
 import com.codessquad.qna.user.User;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +22,9 @@ public class AnswerController {
     public String createAnswer(@PathVariable Long questionId,
                                @RequestParam String comments,
                                HttpSession session) {
-        Object loginUserAttribute = session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
+        Object loginUserAttribute = session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
         if (loginUserAttribute == null) {
-            return CommonUtility.REDIRECT_LOGIN_PAGE;
+            return CommonConstants.REDIRECT_LOGIN_PAGE;
         }
 
         try {
@@ -33,7 +33,7 @@ public class AnswerController {
             Answer answer = new Answer(loginUser, question, comments);
             answerRepository.save(answer);
         } catch (NotFoundException e) {
-            return CommonUtility.ERROR_QUESTION_NOT_FOUND;
+            return CommonConstants.ERROR_QUESTION_NOT_FOUND;
         }
 
         return "redirect:/questions/" + questionId;
@@ -44,9 +44,9 @@ public class AnswerController {
                                      @PathVariable Long answerId,
                                      HttpSession session,
                                      Model model) {
-        Object loginUserAttribute = session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
+        Object loginUserAttribute = session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
         if (loginUserAttribute == null) {
-            return CommonUtility.REDIRECT_LOGIN_PAGE;
+            return CommonConstants.REDIRECT_LOGIN_PAGE;
         }
 
         try {
@@ -60,7 +60,7 @@ public class AnswerController {
             model.addAttribute("question", question);
             model.addAttribute("answer", answer);
         } catch (NotFoundException e) {
-            return CommonUtility.ERROR_QUESTION_NOT_FOUND;
+            return CommonConstants.ERROR_QUESTION_NOT_FOUND;
         }
 
         return "questions/answer_modify_form";
@@ -71,9 +71,9 @@ public class AnswerController {
                                @PathVariable Long answerId,
                                @RequestParam String comments,
                                HttpSession session) {
-        Object loginUserAttribute = session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
+        Object loginUserAttribute = session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
         if (loginUserAttribute == null) {
-            return CommonUtility.REDIRECT_LOGIN_PAGE;
+            return CommonConstants.REDIRECT_LOGIN_PAGE;
         }
 
         User loginUser = (User) loginUserAttribute;
@@ -92,9 +92,9 @@ public class AnswerController {
     public String deleteAnswer(@PathVariable Long questionId,
                                @PathVariable Long answerId,
                                HttpSession session) {
-        Object loginUserAttribute = session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
+        Object loginUserAttribute = session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
         if (loginUserAttribute == null) {
-            return CommonUtility.REDIRECT_LOGIN_PAGE;
+            return CommonConstants.REDIRECT_LOGIN_PAGE;
         }
 
         User loginUser = (User) loginUserAttribute;

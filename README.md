@@ -100,7 +100,11 @@
    [참고](https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto-configure-log4j-for-logging)
 2. log4j2 설정파일을 추가하였습니다.
    [참고](https://www.baeldung.com/spring-boot-logging)
-   
+
+# STEP3 리뷰 사항 적용
+
+1. 전역 상수 클래스의 네이밍의 변경(Util성 클래스는 메소드를 포함하고, Constants는 포함하지 않음).
+
 # STEP4
 
 1. OneToMany Mapping으로 question과 answer의 연관관계를 설정해주었습니다.

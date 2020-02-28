@@ -1,6 +1,6 @@
 package com.codessquad.qna.question;
 
-import com.codessquad.qna.common.CommonUtility;
+import com.codessquad.qna.common.CommonConstants;
 import com.codessquad.qna.user.User;
 
 import javax.persistence.*;
@@ -83,7 +83,7 @@ public class Question {
     }
 
     public String getFormattedCreatedDateTime() {
-        return createdDateTime.format(CommonUtility.DATE_TIME_FORMATTER);
+        return createdDateTime.format(CommonConstants.DATE_TIME_FORMATTER);
     }
 
     public LocalDateTime getUpdatedDateTime() {
@@ -95,7 +95,7 @@ public class Question {
     }
 
     public String getFormattedUpdatedDateTime() {
-        return updatedDateTime.format(CommonUtility.DATE_TIME_FORMATTER);
+        return updatedDateTime.format(CommonConstants.DATE_TIME_FORMATTER);
     }
 
     public boolean isDeleted() {

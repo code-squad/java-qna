@@ -5,7 +5,7 @@ import com.codessquad.qna.user.User;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-import static com.codessquad.qna.common.CommonUtility.DATE_TIME_FORMATTER;
+import static com.codessquad.qna.common.CommonConstants.DATE_TIME_FORMATTER;
 
 @Entity
 public class Answer {

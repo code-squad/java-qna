@@ -1,6 +1,6 @@
 package com.codessquad.qna.user;
 
-import com.codessquad.qna.common.CommonUtility;
+import com.codessquad.qna.common.CommonConstants;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -48,7 +48,7 @@ public class UserController {
         try {
             modelAndView.addObject("user", getUserIfExist(id));
         } catch (NotFoundException e) {
-            return new ModelAndView(CommonUtility.ERROR_USER_NOT_FOUND);
+            return new ModelAndView(CommonConstants.ERROR_USER_NOT_FOUND);
         }
         return modelAndView;
     }
@@ -59,11 +59,11 @@ public class UserController {
         try {
             User user = getUserIfExist(id);
             if (!getLoginUserAndCheckEqualsRequestedUser(session, user)) {
-                return CommonUtility.ERROR_CANNOT_EDIT_OTHER_USER_INFO;
+                return CommonConstants.ERROR_CANNOT_EDIT_OTHER_USER_INFO;
             }
             model.addAttribute("user", user);
         } catch (NotFoundException e) {
-            return CommonUtility.ERROR_USER_NOT_FOUND;
+            return CommonConstants.ERROR_USER_NOT_FOUND;
         }
         model.addAttribute("actionUrl", "/users/" + id);
         model.addAttribute("httpMethod", "PUT");
@@ -80,12 +80,12 @@ public class UserController {
         try {
             User user = getUserIfExist(id);
             if (!getLoginUserAndCheckEqualsRequestedUser(session, user)) {
-                return CommonUtility.ERROR_CANNOT_EDIT_OTHER_USER_INFO;
+                return CommonConstants.ERROR_CANNOT_EDIT_OTHER_USER_INFO;
             }
             updateUserNameAndEmail(user, userName, userPassword, userEmail);
-            session.setAttribute(CommonUtility.SESSION_LOGIN_USER, user);
+            session.setAttribute(CommonConstants.SESSION_LOGIN_USER, user);
         } catch (NotFoundException e) {
-            return CommonUtility.ERROR_USER_NOT_FOUND;
+            return CommonConstants.ERROR_USER_NOT_FOUND;
         } catch (TransactionSystemException e) {
             return "redirect:/users/" + id + "/form";
         }
@@ -94,7 +94,7 @@ public class UserController {
     }
 
     private boolean getLoginUserAndCheckEqualsRequestedUser(HttpSession session, User user) {
-        Object userAttribute = session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
+        Object userAttribute = session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
         return checkUserEqualsLoginUser(user, userAttribute);
     }
 
@@ -121,7 +121,7 @@ public class UserController {
         if (user == null || !user.isEqualsPassword(userPassword)) {
             return "users/login_failed";
         }
-        session.setAttribute(CommonUtility.SESSION_LOGIN_USER, user);
+        session.setAttribute(CommonConstants.SESSION_LOGIN_USER, user);
         return "redirect:/";
     }
 
@@ -136,14 +136,11 @@ public class UserController {
                              .orElseThrow(() -> new NotFoundException("해당 사용자는 존재하지 않는 사용자입니다."));
     }
 
-    private void updateUserNameAndEmail(User user,
-                                        String userName,
-                                        String userPassword,
-                                        String userEmail) {
+    private User updateUserNameAndEmail(User user, String userName, String userPassword, String userEmail) {
         if (user.isEqualsPassword(userPassword)) {
             user.updateNameAndEmail(userName, userEmail);
-            userRepository.save(user);
         }
+        return userRepository.save(user);
     }
 
 }

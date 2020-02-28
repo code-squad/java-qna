@@ -1,6 +1,6 @@
 package com.codessquad.qna.question;
 
-import com.codessquad.qna.common.CommonUtility;
+import com.codessquad.qna.common.CommonConstants;
 import com.codessquad.qna.user.User;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
@@ -39,7 +39,7 @@ public class QuestionController {
                                  @RequestParam String contents) {
         User loginUser = getLoginUser(session);
         if (loginUser == null) {
-            return CommonUtility.REDIRECT_LOGIN_PAGE;
+            return CommonConstants.REDIRECT_LOGIN_PAGE;
         }
         Question question = new Question(loginUser, title, contents);
         questionRepository.save(question);
@@ -57,7 +57,7 @@ public class QuestionController {
                     question.isWrittenBy(loginUser));
             model.addAttribute("answers", answers);
         } catch (NotFoundException e) {
-            return CommonUtility.ERROR_QUESTION_NOT_FOUND;
+            return CommonConstants.ERROR_QUESTION_NOT_FOUND;
         }
 
         return "questions/show";
@@ -68,7 +68,7 @@ public class QuestionController {
         try {
             User loginUser = getLoginUser(session);
             if (loginUser == null) {
-                return CommonUtility.REDIRECT_LOGIN_PAGE;
+                return CommonConstants.REDIRECT_LOGIN_PAGE;
             }
             Question question = getQuestionIfExist(id);
             if (!question.isWrittenBy(loginUser)) {
@@ -76,7 +76,7 @@ public class QuestionController {
             }
             model.addAttribute("question", question);
         } catch (NotFoundException e) {
-            return CommonUtility.ERROR_QUESTION_NOT_FOUND;
+            return CommonConstants.ERROR_QUESTION_NOT_FOUND;
         }
 
         return "questions/modify_form";
@@ -90,7 +90,7 @@ public class QuestionController {
         try {
             User loginUser = getLoginUser(session);
             if (loginUser == null) {
-                return CommonUtility.REDIRECT_LOGIN_PAGE;
+                return CommonConstants.REDIRECT_LOGIN_PAGE;
             }
             Question question = getQuestionIfExist(id);
             if (!question.isWrittenBy(loginUser)) {
@@ -99,7 +99,7 @@ public class QuestionController {
             question.updateQuestionData(title, contents, LocalDateTime.now());
             questionRepository.save(question);
         } catch (NotFoundException e) {
-            return CommonUtility.ERROR_QUESTION_NOT_FOUND;
+            return CommonConstants.ERROR_QUESTION_NOT_FOUND;
         }
         return "redirect:/questions/" + id;
     }
@@ -109,7 +109,7 @@ public class QuestionController {
         try {
             User loginUser = getLoginUser(session);
             if (loginUser == null) {
-                return CommonUtility.REDIRECT_LOGIN_PAGE;
+                return CommonConstants.REDIRECT_LOGIN_PAGE;
             }
             Question question = getQuestionIfExist(id);
             if (!question.isWrittenBy(loginUser)) {
@@ -121,13 +121,13 @@ public class QuestionController {
                 return "redirect:/";
             }
         } catch (NotFoundException e) {
-            return CommonUtility.ERROR_QUESTION_NOT_FOUND;
+            return CommonConstants.ERROR_QUESTION_NOT_FOUND;
         }
         return "redirect:/questions/" + id;
     }
 
     private User getLoginUser(HttpSession session) {
-        return (User) session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
+        return (User) session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
     }
 
     private Question getQuestionIfExist(long id) throws NotFoundException {

@@ -83,7 +83,7 @@ public class Question {
     }
 
     public String getFormattedCreatedDateTime() {
-        return createdDateTime.format(CommonConstants.DATE_TIME_FORMATTER);
+        return createdDateTime.format(CommonConstants.POST_DATA_DATE_TIME_FORMATTER);
     }
 
     public LocalDateTime getUpdatedDateTime() {
@@ -95,7 +95,7 @@ public class Question {
     }
 
     public String getFormattedUpdatedDateTime() {
-        return updatedDateTime.format(CommonConstants.DATE_TIME_FORMATTER);
+        return updatedDateTime.format(CommonConstants.POST_DATA_DATE_TIME_FORMATTER);
     }
 
     public boolean isDeleted() {

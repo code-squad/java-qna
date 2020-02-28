@@ -1,11 +1,10 @@
 package com.codessquad.qna.question;
 
+import com.codessquad.qna.common.CommonConstants;
 import com.codessquad.qna.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-
-import static com.codessquad.qna.common.CommonConstants.DATE_TIME_FORMATTER;
 
 @Entity
 public class Answer {
@@ -70,7 +69,7 @@ public class Answer {
     }
 
     public String getFormattedCreatedDateTime() {
-        return createdDateTime.format(DATE_TIME_FORMATTER);
+        return createdDateTime.format(CommonConstants.POST_DATA_DATE_TIME_FORMATTER);
     }
 
     public Question getQuestion() {
@@ -90,6 +89,6 @@ public class Answer {
     }
 
     public String getFormattedUpdatedDateTime() {
-        return updatedDateTime.format(DATE_TIME_FORMATTER);
+        return updatedDateTime.format(CommonConstants.POST_DATA_DATE_TIME_FORMATTER);
     }
 }

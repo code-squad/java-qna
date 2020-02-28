@@ -29,6 +29,16 @@ public class UserController {
         return "user/list";
     }
 
+    @GetMapping("/form")
+    public String goForm() {
+        return "user/form";
+    }
+
+    @GetMapping("/login")
+    public String goLoginForm() {
+        return "user/login";
+    }
+
     @GetMapping("/{id}")
     public String showUserProfile(@PathVariable Long id, Model model) {
         model.addAttribute("userProfile", userRepository.findById(id).get());
@@ -45,7 +55,7 @@ public class UserController {
     @PostMapping("/{id}/update")
     public String updateUserProfile(@PathVariable Long id, Model model, User updateUser) {
         User oldUser = userRepository.findById(id).get();
-        if(oldUser.isCheckPassword(updateUser)){
+        if (oldUser.isCheckPassword(updateUser)) {
             oldUser.update(updateUser);
             userRepository.save(oldUser);
         }

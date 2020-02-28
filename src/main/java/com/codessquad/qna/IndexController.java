@@ -33,10 +33,14 @@ public class IndexController {
     return "posts-save";
   }
 
+  @GetMapping ("/users/login")
+  public String usersLogin() { return "users-login"; }
+
+  @GetMapping ("/users/login")
+  public String usersLoginFailed() { return "users-login-failed"; }
+
   @GetMapping("/users/register")
-  public String usersRegister() {
-    return "users-register";
-  }
+  public String usersRegister() { return "users-register"; }
 
   @GetMapping("/users/show")
   public String usersShow(Model model) {

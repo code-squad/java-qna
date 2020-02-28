@@ -2,6 +2,7 @@ package com.codessquad.qna.controller;
 
 import com.codessquad.qna.domain.Question;
 import com.codessquad.qna.domain.User;
+import com.codessquad.qna.error.Result;
 import com.codessquad.qna.repository.AnswerRepository;
 import com.codessquad.qna.repository.QnaRepository;
 import com.codessquad.qna.web.HttpSessionUtils;
@@ -40,15 +41,12 @@ public class QnaController {
 
   @PutMapping(value = "/{id}")
   public String update(@PathVariable("id") Long questionId, String title,
-      String contents, HttpSession httpSession) {
-    if (!HttpSessionUtils.isLoginUser(httpSession)) {
-      return "/user/login";
-    }
-
-    User sessionUser = HttpSessionUtils.getUserFromSession(httpSession);
+      String contents, Model model, HttpSession httpSession) {
     Question question = qnaRepository.getOne(questionId);
-    if (!question.isSameWriter(sessionUser)) {
-      throw new IllegalStateException("자신이 쓴 질문만 수정할 수 있습니다.");
+    Result result = valid(httpSession, question);
+    if (!result.isValid()) {
+      model.addAttribute("errorMessage", result.getErrorMessage());
+      return "/user/login";
     }
     question.update(title, contents);
     qnaRepository.save(question);
@@ -56,32 +54,29 @@ public class QnaController {
   }
 
   @DeleteMapping(value = "/{id}")
-  public String delete(@PathVariable("id") Long questionId, HttpSession httpSession) {
-    if (!HttpSessionUtils.isLoginUser(httpSession)) {
-      return "/user/login";
-    }
-
-    User sessionUser = HttpSessionUtils.getUserFromSession(httpSession);
+  public String delete(@PathVariable("id") Long questionId, Model model, HttpSession httpSession) {
     Question question = qnaRepository.getOne(questionId);
-    if (!question.isSameWriter(sessionUser)) {
-      throw new IllegalStateException("자신이 쓴 질문만 삭제할 수 있습니다.");
+    Result result = valid(httpSession, question);
+    if (!result.isValid()) {
+      model.addAttribute("errorMessage", result.getErrorMessage());
+      return "/user/login";
     }
     qnaRepository.delete(question);
     return "redirect:/";
   }
 
-
   @GetMapping(value = "/{id}/form")
   public String updateForm(@PathVariable("id") Long questionId, Model model,
       HttpSession httpSession) {
-    if (!HttpSessionUtils.isLoginUser(httpSession)) {
+    Question question = qnaRepository.getOne(questionId);
+    Result result = valid(httpSession, question);
+    if (!result.isValid()) {
+      model.addAttribute("errorMessage", result.getErrorMessage());
       return "/user/login";
     }
-    Question question = qnaRepository.getOne(questionId);
     model.addAttribute("question", question);
     return "/qna/update_form";
   }
-
 
   @PostMapping(value = "")
   public String create(String title, String contents, HttpSession httpSession) {
@@ -106,5 +101,16 @@ public class QnaController {
   public String index(Model model) {
     model.addAttribute("questions", qnaRepository.findAll());
     return "index";
+  }
+
+  private Result valid(HttpSession httpSession, Question question) {
+    if (!HttpSessionUtils.isLoginUser(httpSession)) {
+      return Result.fail("로그인이 필요합니다");
+    }
+    User sessionUser = (User) httpSession.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
+    if (!question.isSameWriter(sessionUser)) {
+      return Result.fail("자신이 쓴 질문만 수정 혹은 삭제할 수 있습니다.");
+    }
+    return Result.ok();
   }
 }

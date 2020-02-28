@@ -24,7 +24,6 @@ public class UserController {
   @Autowired
   private UserRepository userRepository;
 
-
   @PostMapping(value = "/login")
   public String login(String userId, String password, HttpSession httpSession) {
     User user = userRepository.findByUserId(userId);

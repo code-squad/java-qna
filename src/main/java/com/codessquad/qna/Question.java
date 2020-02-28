@@ -1,11 +1,24 @@
 package com.codessquad.qna;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import java.time.LocalDateTime;
+
+@Entity
 public class Question {
+
+    @Id
+    @GeneratedValue
     private Long id;
+
+    @Column(nullable = false, length = 20)
     private String writer;
+
     private String title;
     private String contents;
-    private String time;
+    private LocalDateTime time;
 
     public String getWriter() {
         return writer;
@@ -31,11 +44,11 @@ public class Question {
         this.contents = contents;
     }
 
-    public String getTime() {
+    public LocalDateTime getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(LocalDateTime time) {
         this.time = time;
     }
 

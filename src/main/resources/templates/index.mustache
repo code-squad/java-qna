@@ -13,6 +13,17 @@
       <a href="/users/register" role="button" class="btn btn-primary">회원 등록하기</a>
     </div>
   </div>
+  <ul class="nav navbar-nav navbar-right">
+    <ul class="active"><a href="">Posts</a></ul>
+    {{^user}}
+      <li><a href="/users/login" role="button">로그인</a></li>
+      <li><a href="/users/register" role="button">회원가입</a></li>
+    {{/user}}
+    {{#user}}
+      <li><a href="/logout" role="button">로그아웃</a></li>
+      <li><a href="/users/update" role="button">개인정보수정</a></li>
+    {{/user}}
+  </ul>
   <!-- 목록 출력 영역 -->
   <table class="table table-dark table-bordered">
     <thead class="thead-strong">

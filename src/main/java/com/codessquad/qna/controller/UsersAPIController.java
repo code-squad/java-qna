@@ -36,20 +36,4 @@ public class UsersAPIController {
   public Long update(@PathVariable Long Id, @RequestBody UsersUpdateRequestDto requestDto) {
     return usersService.update(Id, requestDto);
   }
-
-  @PostMapping("/login") //@RestController에서 하면 리다이렉트가 안된다고 한다. 왜인지는 모르겠다.
-  public String login(String userId, String password, HttpSession session) {
-    Users user = usersRepository.findByUserId(userId);
-    if (user == null) {
-      System.out.println("login failure!");
-      return "users-login-failed";
-    }
-    if (!password.equals(user.getPassword())) {
-      System.out.println("login failure!");
-      return "users-login-failed";
-    }
-    session.setAttribute("user", user);
-    System.out.println("login success");
-    return "index";
-  }
 }

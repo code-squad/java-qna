@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class IndexController {
   private final PostsService postsService;
   private final UsersService usersService;
+  private final UsersRepository usersRepository;
 
   @GetMapping("/")
   public String index(Model model){
@@ -31,7 +32,8 @@ public class IndexController {
     model.addAttribute("posts", postsService.findAllDesc());
     return "index";
   }
-
+  //"/users/logout" 로그아웃 기능 만들어야 함
+  //"/users/update" 개인정보 수정 기능 만들어야 함
   @GetMapping("/posts/save")
   public String postsSave() {
     return "posts-save";
@@ -45,6 +47,13 @@ public class IndexController {
 
   @GetMapping("/users/register")
   public String usersRegister() { return "users-register"; }
+
+  @GetMapping("/logout")
+  public String usersLogout(HttpSession httpSession) {
+    httpSession.removeAttribute("user");
+    System.out.println("logout succeed");
+    return "redirect:/";
+  }
 
   @GetMapping("/users/show")
   public String usersShow(Model model) {
@@ -64,5 +73,21 @@ public class IndexController {
     PostsResponseDto responseDto = postsService.findById(Id);
     model.addAttribute("posts", responseDto);
     return "posts-update";
+  }
+
+  @PostMapping("/login") //@RestController에서 하면 리다이렉트가 안된다고 한다. 왜인지는 모르겠다.
+  public String login(String userId, String password, HttpSession session) {
+    Users user = usersRepository.findByUserId(userId);
+    if (user == null) {
+      System.out.println("login failure!");
+      return "users-login-failed";
+    }
+    if (!password.equals(user.getPassword())) {
+      System.out.println("login failure!");
+      return "users-login-failed";
+    }
+    session.setAttribute("user", user);
+    System.out.println("login success");
+    return "redirect:/";
   }
 }

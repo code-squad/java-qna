@@ -3,6 +3,7 @@ package com.codessquad.qna.domain;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 @Entity
 public class Question {
@@ -41,11 +42,6 @@ public class Question {
     public void setTitle(String title) { this.title = title; }
     public void setContents(String contents) { this.contents = contents; }
 
-//    public void update (Question newQuestion) {
-//        this.title = newQuestion.title;
-//        this.contents = newQuestion.contents;
-//    }
-
     public void update(String title, String contents) {
         this.title = title;
         this.contents = contents;
@@ -56,6 +52,10 @@ public class Question {
             return "";
         }
         return createdDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
+    }
+
+    public boolean isSameWriter(User loginUser) {
+        return this.writer.equals(loginUser);
     }
 
     @Override

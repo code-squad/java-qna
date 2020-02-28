@@ -6,10 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @Entity
 @NoArgsConstructor
 public class Users {
@@ -49,5 +47,39 @@ public class Users {
         ", name='" + name + '\'' +
         ", email='" + email + '\'' +
         '}';
+  }
+
+  public boolean matchId(Long newId) {
+    if (newId == null) {
+      return false;
+    }
+    return newId.equals(Id);
+  }
+
+  public boolean matchPassword(String newPassword) {
+    if (newPassword == null) {
+      return false;
+    }
+    return newPassword.equals(password);
+  }
+
+  public Long getId() {
+    return this.Id;
+  }
+
+  public String getUserId() {
+    return this.userId;
+  }
+
+  public String getPassword() {
+    return this.password;
+  }
+
+  public String getName() {
+    return this.name;
+  }
+
+  public String getEmail() {
+    return this.email;
   }
 }

@@ -14,9 +14,6 @@ public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
 
-    @Autowired
-    private AnswerRepository answerRepository;
-
     @GetMapping("/form")
     public String viewQuestionForm(HttpSession session) {
         if (!HttpSessionUtils.isLogin(session)) {
@@ -41,7 +38,6 @@ public class QuestionController {
         try {
             checkNotFound(id);
             model.addAttribute("question", questionRepository.findById(id).get());
-            model.addAttribute("answers", answerRepository.findAll());
             return "/qna/show";
         } catch (NoSuchElementException e) {
             System.out.println("ERROR CODE > " + e.toString());

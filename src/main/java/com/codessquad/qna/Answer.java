@@ -48,4 +48,15 @@ public class Answer {
     public String getPostingTime() {
         return postingTime.format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT));
     }
+
+    @Override
+    public String toString() {
+        return "Answer{" +
+                "id=" + id +
+                ", writer=" + writer +
+                ", question=" + question +
+                ", contents='" + contents + '\'' +
+                ", postingTime=" + postingTime +
+                '}';
+    }
 }

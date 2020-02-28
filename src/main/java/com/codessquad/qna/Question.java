@@ -22,9 +22,9 @@ public class Question {
     @NotEmpty
     private String contents;
 
-//    @OneToMany(mappedBy = "question")
-//    @OrderBy("id ASC")
-//    private List<Answer> answers;
+    @OneToMany(mappedBy = "question")
+    @OrderBy("id ASC")
+    private List<Answer> answers;
 
     private LocalDateTime postingTime;
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
@@ -62,6 +62,10 @@ public class Question {
 
     public String getPostingTime() {
         return postingTime.format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT));
+    }
+
+    public List<Answer> getAnswers() {
+        return answers;
     }
 
     public boolean isWriterEquals(User sessionUser) {

@@ -49,7 +49,7 @@
                   <div class="qna-comment-slipp">
                       <p class="qna-comment-count"><strong>1</strong>개의 의견</p>
                       <div class="qna-comment-slipp-articles">
-                          {{#answers}}
+                          {{#question.answers}}
                           <article class="article" id="answer-1405">
                               <div class="article-header">
                                   <div class="article-header-thumb">
@@ -68,10 +68,10 @@
                               <div class="article-util">
                                   <ul class="article-util-list">
                                       <li>
-                                          <a class="link-modify-article" href="/questions/413/answers/1405/form">수정</a>
+                                          <a class="link-modify-article" href="/questions/{{question.id}}/answers/{{id}}/form">수정</a>
                                       </li>
                                       <li>
-                                          <form class="delete-answer-form" action="/questions/{{questionId}}/answers/{{id}}" method="POST">
+                                          <form class="delete-answer-form" action="/questions/{{question.id}}/answers/{{id}}" method="POST">
                                               <input type="hidden" name="_method" value="DELETE">
                                               <button type="submit" class="delete-answer-button">삭제</button>
                                           </form>
@@ -79,7 +79,7 @@
                                   </ul>
                               </div>
                           </article>
-                          {{/answers}}
+                          {{/question.answers}}
                           <form class="submit-write" method="post" action="/questions/{{question.id}}/answers">
                               <div class="form-group" style="padding:14px;">
                                   <textarea class="form-control" placeholder="Update your status" name="contents"></textarea>

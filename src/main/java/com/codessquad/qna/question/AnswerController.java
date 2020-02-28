@@ -19,9 +19,7 @@ public class AnswerController {
     private AnswerRepository answerRepository;
 
     @PostMapping("/questions/{questionId}/answers")
-    public String createAnswer(@PathVariable Long questionId,
-                               @RequestParam String comments,
-                               HttpSession session) {
+    public String createAnswer(@PathVariable Long questionId, @RequestParam String comments, HttpSession session) {
         Object loginUserAttribute = session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
         if (loginUserAttribute == null) {
             return CommonConstants.REDIRECT_LOGIN_PAGE;
@@ -51,8 +49,7 @@ public class AnswerController {
 
         try {
             User loginUser = (User) loginUserAttribute;
-            Question question = questionRepository.findById(questionId)
-                                                  .orElseThrow(() -> new NotFoundException("못찾음"));
+            Question question = questionRepository.findById(questionId).orElseThrow(() -> new NotFoundException("못찾음"));
             Answer answer = answerRepository.findByQuestionIdAndId(questionId, answerId);
             if (!loginUser.equals(answer.getWriter())) {
                 return "redirect:/questions/" + questionId;
@@ -63,7 +60,7 @@ public class AnswerController {
             return CommonConstants.ERROR_QUESTION_NOT_FOUND;
         }
 
-        return "questions/answer_modify_form";
+        return "questions/answer-modify-form";
     }
 
     @PutMapping("/questions/{questionId}/answers/{answerId}")
@@ -89,9 +86,7 @@ public class AnswerController {
     }
 
     @DeleteMapping("/questions/{questionId}/answers/{answerId}")
-    public String deleteAnswer(@PathVariable Long questionId,
-                               @PathVariable Long answerId,
-                               HttpSession session) {
+    public String deleteAnswer(@PathVariable Long questionId, @PathVariable Long answerId, HttpSession session) {
         Object loginUserAttribute = session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
         if (loginUserAttribute == null) {
             return CommonConstants.REDIRECT_LOGIN_PAGE;

@@ -34,9 +34,7 @@ public class QuestionController {
     }
 
     @PostMapping("/questions")
-    public String createQuestion(HttpSession session,
-                                 @RequestParam String title,
-                                 @RequestParam String contents) {
+    public String createQuestion(HttpSession session, @RequestParam String title, @RequestParam String contents) {
         User loginUser = getLoginUser(session);
         if (loginUser == null) {
             return CommonConstants.REDIRECT_LOGIN_PAGE;
@@ -53,8 +51,7 @@ public class QuestionController {
             Question question = getQuestionIfExist(id);
             List<Answer> answers = answerRepository.findByQuestionId(id);
             model.addAttribute("question", question);
-            model.addAttribute("isLoginUserEqualsWriter",
-                    question.isWrittenBy(loginUser));
+            model.addAttribute("isLoginUserEqualsWriter", question.isWrittenBy(loginUser));
             model.addAttribute("answers", answers);
         } catch (NotFoundException e) {
             return CommonConstants.ERROR_QUESTION_NOT_FOUND;
@@ -79,7 +76,7 @@ public class QuestionController {
             return CommonConstants.ERROR_QUESTION_NOT_FOUND;
         }
 
-        return "questions/modify_form";
+        return "questions/modify-form";
     }
 
     @PutMapping("/questions/{id}")
@@ -131,8 +128,7 @@ public class QuestionController {
     }
 
     private Question getQuestionIfExist(long id) throws NotFoundException {
-        return questionRepository.findById(id)
-                                 .orElseThrow(() -> new NotFoundException("해당 질문글을 찾을 수 없습니다."));
+        return questionRepository.findById(id).orElseThrow(() -> new NotFoundException("해당 질문글을 찾을 수 없습니다."));
     }
 
 }

@@ -83,9 +83,9 @@
               </article>
               {{/each}}
               {{#loginUser}}
-              <form class="submit-write" action="/questions/{{question.id}}/answers" method="POST">
+              <form action="/questions/{{question.id}}/answers" class="submit-write" method="POST">
                 <div class="form-group" style="padding:14px;">
-                  <textarea class="form-control" placeholder="Update your status" id="comments" name="comments"></textarea>
+                  <textarea class="form-control" id="comments" name="comments" placeholder="Update your status"></textarea>
                 </div>
                 <button class="btn btn-success pull-right" type="submit">답변하기</button>
                 <div class="clearfix"/>
@@ -99,6 +99,6 @@
   </div>
 </div>
 
-{{> script_references}}
+{{> script-references}}
 </body>
 </html>

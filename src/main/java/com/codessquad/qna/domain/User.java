@@ -31,18 +31,23 @@ public class User {
     password = updateUser.getPassword();
   }
 
-  public boolean matchId(Long inputId) {
-    if (inputId == null) {
-      return false;
-    }
-    return id.equals(inputId);
+  public boolean isSameUser(User sessionUser) {
+    return matchId(sessionUser.getId());
   }
 
-  public boolean matchPassword(String inputPassword) {
-    if (inputPassword == null) {
+
+  public boolean matchId(Long id) {
+    if (id == null) {
       return false;
     }
-    return password.equals(inputPassword);
+    return this.id.equals(id);
+  }
+
+  public boolean matchPassword(String password) {
+    if (password == null) {
+      return false;
+    }
+    return this.password.equals(password);
   }
 
   public Long getId() {
@@ -90,4 +95,5 @@ public class User {
         ", email :'" + email + '\'' +
         '}';
   }
+
 }

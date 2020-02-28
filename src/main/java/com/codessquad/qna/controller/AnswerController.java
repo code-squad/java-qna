@@ -61,7 +61,6 @@ public class AnswerController {
 
     String referer = request.getHeader("Referer");
     return "redirect:" + referer;
-
   }
 
 

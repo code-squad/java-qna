@@ -62,7 +62,7 @@ public class QnaController {
       return "/user/login";
     }
     qnaRepository.delete(question);
-    return "redirect:/";
+    return "redirect:/questions/";
   }
 
   @GetMapping(value = "/{id}/form")
@@ -87,7 +87,7 @@ public class QnaController {
     User sessionUser = (User) httpSession.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
     Question question = new Question(sessionUser, title, contents);
     qnaRepository.save(question);
-    return "redirect:/";
+    return "redirect:/questions/";
   }
 
   @GetMapping(value = "/{id}")

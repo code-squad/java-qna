@@ -34,6 +34,22 @@ public class QuestionController {
         return "redirect:/questions/" + questionId;
     }
 
+    @DeleteMapping("questions/{questionId}/answers/{id}")
+    public String deleteAnswer(@PathVariable("questionId") Long questionId, @PathVariable("id") Long id, HttpSession session) {
+        Optional<Answer> optionalAnswer = answerRepository.findById(id);
+        if (!HttpSessionUtils.isUserLogin(session)) {
+            return "redirect:/login";
+        }
+
+        optionalAnswer.ifPresent(answer -> {
+            if (HttpSessionUtils.getUserFromSession(session).matchId(optionalAnswer.get().getWriter().getId())) {
+                answerRepository.deleteById(id);
+            }
+        });
+
+        return "redirect:/questions/" + questionId;
+    }
+
     @PostMapping("/qna/form")
     public String question(Question question, HttpSession session) {
         if (!HttpSessionUtils.isUserLogin(session)) {

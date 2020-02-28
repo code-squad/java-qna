@@ -50,6 +50,23 @@ public class QuestionController {
         return "redirect:/questions/" + questionId;
     }
 
+    @PutMapping("/questions/{questionId}/answers/{id}")
+    public String updateAnswer(@PathVariable("questionId") Long questionId, @PathVariable("id") Long id, HttpSession session, Answer updatedAnswer) {
+        Optional<Answer> optionalAnswer = answerRepository.findById(id);
+        if (!HttpSessionUtils.isUserLogin(session)) {
+            return "redirect:/login";
+        }
+
+        optionalAnswer.ifPresent(answer -> {
+            if (HttpSessionUtils.getUserFromSession(session).matchId(optionalAnswer.get().getWriter().getId())) {
+                answer.update(updatedAnswer);
+                answerRepository.save(answer);
+            }
+        });
+
+        return "redirect:/questions/" + questionId;
+    }
+
     @PostMapping("/qna/form")
     public String question(Question question, HttpSession session) {
         if (!HttpSessionUtils.isUserLogin(session)) {

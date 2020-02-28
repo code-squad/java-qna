@@ -49,7 +49,8 @@
                           <article class="article" id="answer-1405">
                               <div class="article-header">
                                   <div class="article-header-thumb">
-                                      <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
+                                      <img src="https://graph.facebook.com/v2.3/1324855987/picture"
+                                           class="article-author-thumb" alt="">
                                   </div>
                                   <div class="article-header-text">
                                       <a class="article-author-name" href="/users/1/자바지기">{{writer.name}}</a>
@@ -58,13 +59,26 @@
                                       </a>
                                   </div>
                               </div>
+
+                              <div class="comment__modify--input hidden">
+                                  <form action="/questions/{{question.id}}/answers/{{id}}"
+                                        class="delete-answer-form"
+                                        method="POST"
+                                        name="answer">
+                                      <input name="_method" type="hidden" value="PUT">
+                                      <textarea class="form-control" name="contents"
+                                                placeholder="Update your status">{{contents}}</textarea>
+                                      <button type="submit">수정하기</button>
+                                  </form>
+                              </div>
+
                               <div class="article-doc comment-doc">
                                   <p>{{contents}}</p>
                               </div>
-                              <div class="article-util">
+                              <div class="article-util article-util__comment">
                                   <ul class="article-util-list">
                                       <li>
-                                          <a class="link-modify-article" href="/questions/413/answers/1405/form">수정</a>
+                                          <a class="link-modify-article" href="#" id="answer__modify--btn">수정</a>
                                       </li>
                                       <li>
                                           <form action="/questions/{{question.id}}/answers/{{id}}"

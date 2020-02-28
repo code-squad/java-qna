@@ -57,4 +57,19 @@ public class Answer {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+
+    public void update(Answer answer) {
+        this.contents = answer.contents;
+    }
+
+    @Override
+    public String toString() {
+        return "Answer{" +
+                "id=" + id +
+                ", question=" + question +
+                ", writer=" + writer +
+                ", contents='" + contents + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
+    }
 }

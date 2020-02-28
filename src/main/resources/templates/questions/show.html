@@ -12,7 +12,7 @@
             <article class="article">
                 <div class="article-header">
                     <div class="article-header-thumb">
-                        <img src="../images/solarc.JPG" class="article-author-thumb" alt=""  width="20" height="20">
+                        <img src="/images/solarc.jpg" class="article-author-thumb" alt=""  width="20" height="20">
                     </div>
                     <div class="article-header-text">
                         <a href="/users/{userId}" class="article-author-name">{{writer.userId}}</a>
@@ -40,6 +40,83 @@
                             <a class="link-modify-article" href="/questions">목록</a>
                         </li>
                     </ul>
+                </div>
+                <div class="qna-comment">
+                    <div class="qna-comment-solar">
+                        <p class="qna-comment-count"><strong>4</strong>개의 의견</p>
+                        <div class="qna-comment-solar-articles">
+
+                            <article class="article" id="answer-1">
+                                <div class="article-header">
+                                    <div class="article-header-thumb">
+                                        <img alt="" class="article-author-thumb" src="/images/pangsu.jpg">
+                                    </div>
+                                    <div class="article-header-text">
+                                        <a class="article-author-name" href="">코드스쿼드</a>
+                                        <a class="article-header-time" href="" title="퍼머링크">
+                                            2020-02-27 13:07:48
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="article-doc comment-doc">
+                                    <p>댓글입니다</p>
+                                </div>
+                                <div class="article-util">
+                                    <ul class="article-util-list">
+                                        <li>
+                                            <a class="link-modify-article" href="">수정</a>
+                                        </li>
+                                        <li>
+                                            <form action="" class="delete-answer-form" method="POST">
+                                                <input name="_method" type="hidden" value="DELETE">
+                                                <button class="delete-answer-button" type="submit">삭제</button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </article>
+
+                            <article class="article" id="answer-2">
+                                <div class="article-header">
+                                    <div class="article-header-thumb">
+                                        <img alt="" class="article-author-thumb" src="/images/pangsu.jpg">
+                                    </div>
+                                    <div class="article-header-text">
+                                        <a class="article-author-name" href="">펭수</a>
+                                        <a class="article-header-time" href="" title="퍼머링크">
+                                            2020-02-27 13:07:48
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="article-doc comment-doc">
+                                    <p>아 그런가요?</p>
+                                </div>
+                                <div class="article-util">
+                                    <ul class="article-util-list">
+                                        <li>
+                                            <a class="link-modify-article" href="">수정</a>
+                                        </li>
+                                        <li>
+                                            <form action="" class="delete-answer-form" method="POST">
+                                                <input name="_method" type="hidden" value="DELETE">
+                                                <button class="delete-answer-button" type="submit">삭제</button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </article>
+
+                            <form class="submit-write" action="/questions/{{id}}/answers" method="POST">
+                                <div class="form-group" style="padding:14px;">
+                                    <textarea class="form-control" placeholder="Update your status" id="comments" name="comments"></textarea>
+                                </div>
+                                <button class="btn btn_answer pull-right" type="submit">답변하기</button>
+                                <div class="clearfix">
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
                 </div>
             </article>
             {{/currentQuestion}}

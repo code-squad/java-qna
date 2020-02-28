@@ -72,7 +72,7 @@
 
 .article-header-time {
     display: block;
-    font-size: .8em;
+    font-size: .5em;
     color: #666;
 }
 
@@ -246,7 +246,7 @@
 
 .form-control {
     border-color: #5989b6;
-    width: 80%;
+    width: 100%;
     height: 34px;
     padding: 6px 12px;
     font-size: 14px;
@@ -255,3 +255,51 @@
 }
 
 textarea.form-control{height:auto}
+
+.qna-comment-solar {
+  margin-top: 2em;
+  border-top: 4px solid #efefef;
+}
+
+.qna-comment-count {
+    margin: 0;
+    padding: 1em 0 0;
+    font-weight: bold;
+    font-size: 1.0em;
+    color: darkgray;
+}
+
+.qna-comment-solar-articles {
+  box-sizing: border-box
+  /* 테두리를 기준으로 박스의 크기를 지정 */
+}
+
+.article {
+    position: relative;
+    padding: .6em 0 .8em;
+}
+
+.qna-comment .article {
+    border-bottom: 1px solid #dfdfdf;
+    background-color: whitesmoke;
+}
+
+.qna-comment .article:first-child {
+    border-top: 1px solid #dfdfdf;
+}
+
+.article-author-name {
+    font-weight: bold;
+    font-size: 0.9em;
+    color: darkseagreen;
+    /*color: sandybrown;*/
+}
+
+.pull-right {
+    float: right!important;
+}
+
+.btn {
+    border-radius: 1px;
+    box-shadow: 0 0 0;
+}

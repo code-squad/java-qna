@@ -21,46 +21,46 @@ public class UserController {
     private UserRepository userRepository;
 
     @GetMapping("/form")
-    public String getQuestionFrom() {
-        LOGGER.info("[page]회원가입 폼");
+    public String signUpFrom() {
+        LOGGER.debug("[page]회원가입 폼");
         return "users/form";
     }
 
     @PostMapping("/create")
     public String createUser(User user) {
-        LOGGER.info("[page]사용자 생성");
+        LOGGER.debug("[page]사용자 생성");
         userRepository.save(user);
         return "redirect:/users/list";
     }
 
     @GetMapping("/list")
-    public String getUserList(Model model) {
-        LOGGER.info("[page]사용자 리스트");
+    public String userList(Model model) {
+        LOGGER.debug("[page]사용자 리스트");
         model.addAttribute("users", userRepository.findAll());
         return "users/list";
     }
 
     @GetMapping("/{id}")
-    public String getUserProfile(@PathVariable Long id, Model model) throws NotFoundException {
-        LOGGER.info("[page]사용자 프로필");
+    public String userProfile(@PathVariable Long id, Model model) throws NotFoundException {
+        LOGGER.debug("[page]사용자 프로필");
         model.addAttribute("user", userRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 회원입니다.")));
         return "users/profile";
     }
 
     @GetMapping("/{id}/form")
     public String updateForm(@PathVariable Long id, Model model) throws NotFoundException {
-        LOGGER.info("[page]사용자 정보 수정 폼");
+        LOGGER.debug("[page]사용자 정보 수정 폼");
         model.addAttribute("user", userRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 회원입니다.")));
         return "users/updateForm";
     }
 
     @PutMapping("/{id}")
     public String updateUser(@PathVariable Long id, User updatedUser) throws NotFoundException {
-        LOGGER.info("[page]사용자 정보 수정");
+        LOGGER.debug("[page]사용자 정보 수정");
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 회원입니다."));
 
         if(!isMatchPassword(user,updatedUser)){
-            LOGGER.info("[page]비밀번호 불일치");
+            LOGGER.debug("[page]비밀번호 불일치");
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not Match Password");
         }
 

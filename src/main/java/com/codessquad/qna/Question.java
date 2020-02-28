@@ -69,7 +69,7 @@ public class Question {
     }
 
     public boolean isWriterEquals(User sessionUser) {
-        return sessionUser.getId().equals(writer.getId());
+        return sessionUser.equals(writer);
     }
 
     public void update(String title, String contents) {
@@ -79,7 +79,12 @@ public class Question {
 
     @Override
     public String toString() {
-        return "writer: " + writer + "\ntitle: " + title + "\ncontents: " + contents +
-                "\npostingTime: " + postingTime + "\n";
+        return "Question{" +
+                "id=" + id +
+                ", writer=" + writer +
+                ", title='" + title + '\'' +
+                ", contents='" + contents + '\'' +
+                ", postingTime=" + postingTime +
+                '}';
     }
 }

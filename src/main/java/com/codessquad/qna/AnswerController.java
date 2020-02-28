@@ -29,11 +29,26 @@ public class AnswerController {
 
     @DeleteMapping("/{id}")
     public String deleteAnswer(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
-        if (!HttpSessionUtils.isLogin(session)) {
-            return "/users/loginForm";
+        try {
+            Answer answer = getVerifiedAnswer(id, session);
+            answerRepository.delete(answer);
+            return "redirect:/questions/" + questionId;
+        } catch (NullPointerException | IllegalAccessException e) {
+            System.out.println("ERROR CODE > " + e.toString());
+            return e.getMessage();
         }
+    }
+
+    private Answer getVerifiedAnswer(Long id, HttpSession session) throws IllegalAccessException {
+        //checkNotFound(id);
+        if (!HttpSessionUtils.isLogin(session)) {
+            throw new NullPointerException("/error/unauthorized");
+        }
+        User sessionUser = HttpSessionUtils.getUserFromSession(session);
         Answer answer = answerRepository.getOne(id);
-        answerRepository.delete(answer);
-        return "redirect:/questions/" + questionId;
+        if (!answer.isWriterEquals(sessionUser)) {
+            throw new IllegalAccessException("/error/unauthorized");
+        }
+        return answer;
     }
 }

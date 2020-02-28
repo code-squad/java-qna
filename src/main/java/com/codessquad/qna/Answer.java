@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 @Entity
 public class Answer {
@@ -51,6 +52,10 @@ public class Answer {
 
     public String getPostingTime() {
         return postingTime.format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT));
+    }
+
+    public boolean isWriterEquals(User sessionUser) {
+        return sessionUser.equals(writer);
     }
 
     @Override

@@ -65,7 +65,7 @@ public class UserController {
     userRepository.save(user);
     return "redirect:/questions/";
   }
-  
+
   @GetMapping(value = "")
   public String list(Model model) {
     model.addAttribute("users", userRepository.findAll());

@@ -7,6 +7,6 @@ INSERT INTO QUESTION (id, created_time, contents, title, writer_id) VALUES (2, C
 INSERT INTO ANSWER (id, created_time, contents, question_id, writer_id) VALUES (1, CURRENT_TIMESTAMP, '테스트 댓글 입니다1', 1, 1);
 INSERT INTO ANSWER (id, created_time, contents, question_id, writer_id) VALUES (2, CURRENT_TIMESTAMP, '테스트 댓글 입니다2', 1, 2);
 
-INSERT INTO ANSWER (id, created_time, contents, question_id, writer_id) VALUES (3, CURRENT_TIMESTAMP, '테스트 댓글 입니다3', 2, 1);
-INSERT INTO ANSWER (id, created_time, contents, question_id, writer_id) VALUES (4, CURRENT_TIMESTAMP, '테스트 댓글 입니다4', 2, 2);
+INSERT INTO ANSWER (id, created_time, contents, question_id, writer_id) VALUES (3, CURRENT_TIMESTAMP, '테스트 댓글 입니다3', 1, 1);
+INSERT INTO ANSWER (id, created_time, contents, question_id, writer_id) VALUES (4, CURRENT_TIMESTAMP, '테스트 댓글 입니다4', 1, 2);
 

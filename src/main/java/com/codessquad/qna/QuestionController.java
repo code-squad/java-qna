@@ -15,6 +15,25 @@ public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
 
+    @Autowired
+    private AnswerRepository answerRepository;
+
+    @PostMapping("/questions/{questionId}/answers")
+    public String createAnswer(@PathVariable("questionId") Long questionId, HttpSession session, Answer answer) {
+        Optional<Question> optionalQuestion = questionRepository.findById(questionId);
+        if (!HttpSessionUtils.isUserLogin(session)) {
+            return "redirect:/login";
+        }
+
+        optionalQuestion.ifPresent(question -> {
+            answer.setQuestion(question);
+            answer.setWriter(HttpSessionUtils.getUserFromSession(session));
+            answerRepository.save(answer);
+        });
+
+        return "redirect:/questions/" + questionId;
+    }
+
     @PostMapping("/qna/form")
     public String question(Question question, HttpSession session) {
         if (!HttpSessionUtils.isUserLogin(session)) {
@@ -40,7 +59,11 @@ public class QuestionController {
             return "redirect:/";
         }
 
+        Answer[] answers = answerRepository.findByQuestionId(id);
+
         model.addAttribute("question", optionalQuestion.get());
+        model.addAttribute("answers", answers);
+        model.addAttribute("answerLength", answers.length);
         return "qna/show";
     }
 

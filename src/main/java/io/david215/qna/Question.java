@@ -1,16 +1,21 @@
 package io.david215.qna;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class Question {
     private static int count = 0;
 
     private int id;
     private String author;
     private String title;
-    private String time;
+    private ZonedDateTime time;
     private String content;
 
     public Question() {
         id = count++;
+        time = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
     }
 
     public void setAuthor(String author) {
@@ -19,10 +24,6 @@ public class Question {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
     }
 
     public void setContent(String content) {
@@ -41,8 +42,12 @@ public class Question {
         return title;
     }
 
-    public String getTime() {
+    public ZonedDateTime getTime() {
         return time;
+    }
+
+    public String getFormattedTime() {
+        return time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
     public String getContent() {

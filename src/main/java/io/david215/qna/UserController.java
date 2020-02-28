@@ -11,29 +11,29 @@ import java.util.Map;
 public class UserController {
     Map<String, User> users = new HashMap<>();
 
-    @PostMapping("/users/new")
+    @PostMapping("/users")
     public String createNewUser(User user) {
         String userId = user.getUserId();
         if (!users.containsKey(userId)) {
             users.put(userId, user);
-            return "redirect:/users/list";
+            return "redirect:/users";
         }
-        return "redirect:/users/signup-fail?userId=" + userId;
+        return "redirect:/signup-fail?userId=" + userId;
     }
 
-    @GetMapping("/users/signup-fail")
-    public String signupFail(Model model, @RequestParam String userId) {
+    @GetMapping("/signup-fail")
+    public String signupFail(Model model, String userId) {
         model.addAttribute("userId", userId);
         return "users/signup-fail";
     }
 
-    @GetMapping("/users/list")
+    @GetMapping("/users")
     public String users(Model model) {
         model.addAttribute("users", users.values());
         return "users/list";
     }
 
-    @GetMapping("/users/{userId}/profile")
+    @GetMapping("/users/{userId}")
     public String profile(Model model, @PathVariable String userId) {
         if (users.containsKey(userId)) {
             User user = users.get(userId);

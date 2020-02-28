@@ -2,7 +2,6 @@ package com.codessquad.qna.domain;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Question {
@@ -13,13 +12,12 @@ public class Question {
 
     @Column(nullable = false)
     private String title;
-    private String date;
+    private LocalDateTime date;
     private String writer;
     private String contents;
 
     public Question() {
-        date = LocalDateTime.now().
-                format(DateTimeFormatter.ofPattern("YYYY-MM-DD hh:mm:ss"));
+        date = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -30,8 +28,20 @@ public class Question {
         this.id = id;
     }
 
-    public String getDate() {
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public LocalDateTime getDate() {
         return date;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
     }
 
     public String getWriter() {
@@ -40,14 +50,6 @@ public class Question {
 
     public void setWriter(String writer) {
         this.writer = writer;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getContents() {
@@ -62,9 +64,9 @@ public class Question {
     public String toString() {
         return "Question{" +
                 "id=" + id +
-                ", date='" + date + '\'' +
-                ", writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
+                ", date=" + date +
+                ", writer='" + writer + '\'' +
                 ", contents='" + contents + '\'' +
                 '}';
     }

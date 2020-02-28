@@ -54,6 +54,11 @@ public class Answer {
         return postingTime.format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT));
     }
 
+    public void update(String contents) {
+        this.contents = contents;
+        this.postingTime = LocalDateTime.now();
+    }
+
     public boolean isWriterEquals(User sessionUser) {
         return sessionUser.equals(writer);
     }

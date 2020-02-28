@@ -2,9 +2,12 @@ package com.codessquad.qna;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
+import java.util.NoSuchElementException;
 
 @Controller
 @RequestMapping("/questions/{questionId}/answers")
@@ -27,20 +30,53 @@ public class AnswerController {
         return "redirect:/questions/" + questionId;
     }
 
-    @DeleteMapping("/{id}")
-    public String deleteAnswer(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
+    @GetMapping("/{id}/form")
+    public String viewUpdateForm(@PathVariable Long questionId, @PathVariable Long id, Model model, HttpSession session) {
         try {
-            Answer answer = getVerifiedAnswer(id, session);
-            answerRepository.delete(answer);
-            return "redirect:/questions/" + questionId;
-        } catch (NullPointerException | IllegalAccessException e) {
+            model.addAttribute("answer", getVerifiedAnswer(id, questionId, session));
+            return "/qna/updatedAnswerForm";
+        } catch (NullPointerException | IllegalAccessException | EntityNotFoundException e) {
             System.out.println("ERROR CODE > " + e.toString());
             return e.getMessage();
         }
     }
 
-    private Answer getVerifiedAnswer(Long id, HttpSession session) throws IllegalAccessException {
-        //checkNotFound(id);
+    @PutMapping("/{id}/form")
+    public String updateAnswer(@PathVariable Long questionId, @PathVariable Long id, String contents, HttpSession session) {
+        try {
+            Answer answer = getVerifiedAnswer(id, questionId, session);
+            answer.update(contents);
+            answerRepository.save(answer);
+            return "redirect:/questions/" + questionId;
+        } catch (NullPointerException | IllegalAccessException | EntityNotFoundException e) {
+            System.out.println("ERROR CODE > " + e.toString());
+            return e.getMessage();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteAnswer(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
+        try {
+            Answer answer = getVerifiedAnswer(id, questionId,session);
+            answerRepository.delete(answer);
+            return "redirect:/questions/" + questionId;
+        } catch (NullPointerException | IllegalAccessException | EntityNotFoundException e) {
+            System.out.println("ERROR CODE > " + e.getMessage());
+            return e.getMessage();
+        }
+    }
+
+    private void checkNotFound(Long id, Long questionId) {
+        if (!answerRepository.findById(id).isPresent()) {
+            throw new EntityNotFoundException("/error/notFound");
+        }
+        if (!questionRepository.findById(questionId).isPresent()) {
+            throw new EntityNotFoundException("/error/notFound");
+        }
+    }
+
+    private Answer getVerifiedAnswer(Long id, Long questionId, HttpSession session) throws IllegalAccessException {
+        checkNotFound(id, questionId);
         if (!HttpSessionUtils.isLogin(session)) {
             throw new NullPointerException("/error/unauthorized");
         }

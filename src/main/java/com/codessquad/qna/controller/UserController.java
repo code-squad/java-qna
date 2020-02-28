@@ -62,6 +62,7 @@ public class UserController {
 
   @GetMapping(value = "/logout")
   public String logout(HttpSession httpSession) {
+    httpSession.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
     httpSession.invalidate();
     return "redirect:/questions/";
   }
@@ -89,7 +90,7 @@ public class UserController {
       throw new IllegalStateException("자신이 아닌 다른 유저를 업데이트 할 수 없습니다.");
     }
     model.addAttribute("user", userRepository.getOne(sessionUser.getId()));
-    return "user/updateForm";
+    return "user/update_form";
   }
 
 }

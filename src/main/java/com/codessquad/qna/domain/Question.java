@@ -1,7 +1,6 @@
 package com.codessquad.qna.domain;
 
 import java.time.format.DateTimeFormatter;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;

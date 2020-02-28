@@ -72,14 +72,14 @@ public class QnaController {
 
 
   @GetMapping(value = "/{id}/form")
-  public String getQuestionForm(@PathVariable("id") Long questionId, Model model,
+  public String updateForm(@PathVariable("id") Long questionId, Model model,
       HttpSession httpSession) {
     if (!HttpSessionUtils.isLoginUser(httpSession)) {
       return "/user/login";
     }
     Question question = qnaRepository.getOne(questionId);
     model.addAttribute("question", question);
-    return "/qna/edit_form";
+    return "/qna/update_form";
   }
 
 
@@ -96,14 +96,14 @@ public class QnaController {
   }
 
   @GetMapping(value = "/{id}")
-  public String getQuestion(@PathVariable("id") long id, Model model) {
+  public String show(@PathVariable("id") long id, Model model) {
     model.addAttribute("question", qnaRepository.getOne(id));
     model.addAttribute("answers", answerRepository.findByQuestionId(id));
     return "/qna/show";
   }
 
   @GetMapping(value = "")
-  public String getQuestions(Model model) {
+  public String index(Model model) {
     model.addAttribute("questions", qnaRepository.findAll());
     return "index";
   }

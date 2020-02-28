@@ -95,4 +95,13 @@ public class Answer extends BaseTimeEntity {
     return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(createdTime);
   }
 
+  @Override
+  public String toString() {
+    return "Answer{" +
+        "id=" + id +
+        ", question=" + question.getTitle() +
+        ", writer=" + writer.getUserId() +
+        ", contents='" + contents + '\'' +
+        '}';
+  }
 }

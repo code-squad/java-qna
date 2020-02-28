@@ -1,53 +1,55 @@
 package com.codessquad.qna.question;
 
-import com.codessquad.qna.common.Common;
+import com.codessquad.qna.common.CommonUtility;
+import com.codessquad.qna.user.User;
+import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Collection;
 
 @Entity
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long index;
+    private long id;
 
-    @Column(nullable = false)
-    private String writer;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    private User writer;
     @Column(nullable = false)
     private String title;
     @Column(nullable = false)
     private String contents;
     @Column(nullable = false)
     private LocalDateTime createdDateTime;
+    private LocalDateTime updatedDateTime;
+    @Formula("(select count(*) from answer ans where ans.question_id = id)")
+    private int replyCount;
 
-    @OneToMany
-    private Collection<Reply> replies;
+    public Question() {}
 
-    public Question() {
-    }
-
-    public Question(String writer, String title, String contents) {
+    public Question(User writer, String title, String contents) {
+        LocalDateTime now = LocalDateTime.now();
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-        this.createdDateTime = LocalDateTime.now();
+        this.createdDateTime = now;
+        this.updatedDateTime = now;
     }
 
-    public long getIndex() {
-        return index;
+    public long getId() {
+        return id;
     }
 
-    public void setIndex(long index) {
-        this.index = index;
+    public void setId(long index) {
+        this.id = index;
     }
 
-    public String getWriter() {
+    public User getWriter() {
         return writer;
     }
 
-    public void setWriter(String writer) {
+    public void setWriter(User writer) {
         this.writer = writer;
     }
 
@@ -76,19 +78,33 @@ public class Question {
     }
 
     public String getFormattedCreatedDateTime() {
-        return createdDateTime.format(DateTimeFormatter.ofPattern(Common.DATE_FORMAT));
+        return createdDateTime.format(CommonUtility.DATE_TIME_FORMATTER);
     }
 
-    public Collection<Reply> getReplies() {
-        return replies;
+    public LocalDateTime getUpdatedDateTime() {
+        return updatedDateTime;
     }
 
-    public void setReplies(Collection<Reply> replies) {
-        this.replies = replies;
+    public void setUpdatedDateTime(LocalDateTime updatedDateTime) {
+        this.updatedDateTime = updatedDateTime;
+    }
+
+    public String getFormattedUpdatedDateTime() {
+        return updatedDateTime.format(CommonUtility.DATE_TIME_FORMATTER);
     }
 
     public int getReplyCount() {
-        return replies.size();
+        return replyCount;
     }
 
+    public void updateQuestionData(String title, String contents, LocalDateTime updatedDateTime) {
+        this.title = title;
+        this.contents = contents;
+        this.updatedDateTime = updatedDateTime;
+    }
+
+    public boolean isWriterEqualsLoginUser(User loginUser) {
+        if (loginUser == null) return false;
+        return this.writer.equals(loginUser);
+    }
 }

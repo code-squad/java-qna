@@ -55,4 +55,48 @@
    - [참고1](https://hue9010.github.io/spring/Spring-MVC-PUT,-DELETE-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0/)
    - [참고2](http://honeymon.io/tech/2019/11/06/spring-boot-2.2.html)
    둘 다 적용해야 합니다. 💩
-6. Question 부분을 JPA를 사용하여 리팩토링하였습니다. 
+6. Question 부분을 JPA를 사용하여 리팩토링하였습니다.
+7. 기존 코드를 리팩토링 하였습니다.
+   - Common Class에 private 생성자를 추가하였습니다. (Util성 클래스이므로)
+   - 공통으로 사용되는 Error Page String을 Common 클래스로 이동하였습니다.
+   - 영속성 엔티티를 바로 Request를 받아서 Save 하지 않도록 하였습니다.
+      - 오류를 발생시킬 가능성이 있기 때문입니다.
+   - user와 users가 혼용되어 있어 users로 통일하였습니다.
+   - questions와 qna를 questions로 통일하였습니다.
+
+## STEP2 리뷰 사항 적용
+
+1. 빈 블록을 깔끔하게 닫아주었습니다.
+2. private method에 `@PathVariable` 애노테이션이 메소드 추출과정에서 자동으로 붙어서 제거하였습니다.
+3. User 생성시 User를 파라미터로 직접 받도록 수정하였습니다. (검증로직은 어떻게 추가할지 고민해 보려고 합니다.)
+4. DateTimeFormatter를 static field로 추출하였습니다.
+
+# STEP3
+
+1. 로그인 페이지를 template으로 옮기고 login session 기능을 구현했습니다.
+2. 로그인 여부에 따라 navbar에 표시되는 메뉴가 다르게 표시되도록 하였습니다.
+3. 테스트 데이터를 추가하였습니다.
+4. 로그인한 사용자 이외의 사용자를 수정하려고 하는 경우 에러페이지를 출력하도록 하였습니다.
+5. 질문하기 버튼이 로그인된 사용자에게만 표시되도록 변경하였습니다.
+6. 로그아웃 기능을 구현하였습니다. session을 만료시키는 방식으로 구현하였습니다.
+7. 게시글 작성시 작성자를 세션에 있는 유저의 닉네임을 표시시키고 글 작성시 세션의 정보를 사용하도록 하였습니다.
+8. 게시글 조회시 작성자와 세션에 있는 유저의 닉네임을 비교하여 같을경우 수정, 삭제 버튼을 표시하도록 하였습니다.
+   - 추가로 `index`는 변수명으로 적절치 않다는 다른 리뷰를 참고하여 `id`로 변경하였습니다.
+   - 테스트를 반복적으로 수행하지 않기 위하여 `data.sql`에 게시글도 추가하였습니다.
+9. 질문 수정 form을 만들었습니다.
+10. 질문 수정 기능을 추가하였습니다.
+11. 질문 삭제 기능을 추가하였습니다.
+12. User 조건에 NotEmpty를 추가하였습니다. (Jay가 Empty한 값이 들어간데서... 수정했습니다.)
+13. 로그인 한 유저의 개인정보 수정 페이지를 navbar에서도 접근할 수 있게끔 하였습니다.
+14. index template명을 main으로 수정하였습니다.
+15. User와 Question의 연관관계를 매핑시켰습니다. 이에 따른 수정사항이 포함됩니다.
+16. 댓글 표시기능을 구현하였습니다.
+17. 댓글 작성기능을 구현하였습니다.
+18. 댓글 수정기능을 구현하였습니다.
+
+## 로그 써보기
+
+1. spring boot log4j2 starter를 import하였습니다.
+   [참고](https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto-configure-log4j-for-logging)
+2. log4j2 설정파일을 추가하였습니다.
+   [참고](https://www.baeldung.com/spring-boot-logging)

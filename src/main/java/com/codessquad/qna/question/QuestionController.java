@@ -1,51 +1,133 @@
 package com.codessquad.qna.question;
 
+import com.codessquad.qna.common.CommonUtility;
+import com.codessquad.qna.user.User;
 import javassist.NotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Controller
 public class QuestionController {
+    private static Logger log = LoggerFactory.getLogger(QuestionController.class);
     @Autowired
     private QuestionRepository questionRepository;
+    @Autowired
+    private AnswerRepository answerRepository;
 
     @GetMapping("/")
     public String goIndexPage(Model model) {
         model.addAttribute("questions", questionRepository.findAll());
-        return "index";
+        return "main";
     }
 
     @GetMapping("/questions/form")
-    public String goQnaForm() {
-        return "qna/form";
+    public String goQuestionForm() {
+        return "questions/form";
     }
 
     @PostMapping("/questions")
-    public String createQuestion(@RequestParam String writer,
+    public String createQuestion(HttpSession session,
                                  @RequestParam String title,
                                  @RequestParam String contents) {
-        Question question = new Question(writer, title, contents);
+        User loginUser = getLoginUser(session);
+        if (loginUser == null) {
+            return CommonUtility.REDIRECT_LOGIN_PAGE;
+        }
+        Question question = new Question(loginUser, title, contents);
         questionRepository.save(question);
         return "redirect:/";
     }
 
-    @GetMapping("/questions/{index}")
-    public String showQuestion(@PathVariable long index, Model model) {
+    @GetMapping("/questions/{id}")
+    public String showQuestion(@PathVariable long id, Model model, HttpSession session) {
         try {
-            model.addAttribute("question", getQuestionIfExist(index));
+            User loginUser = getLoginUser(session);
+            Question question = getQuestionIfExist(id);
+            List<Answer> answers = answerRepository.findByQuestionId(id);
+            model.addAttribute("question", question);
+            model.addAttribute("isLoginUserEqualsWriter",
+                    question.isWriterEqualsLoginUser(loginUser));
+            model.addAttribute("answers", answers);
         } catch (NotFoundException e) {
-            return "error/question_not_found";
+            return CommonUtility.ERROR_QUESTION_NOT_FOUND;
         }
-        return "qna/show";
+
+        return "questions/show";
     }
 
-    private Question getQuestionIfExist(@PathVariable long index) throws NotFoundException {
-        return questionRepository.findById(index)
+    @GetMapping("/questions/{id}/form")
+    public String goQuestionModifyForm(@PathVariable long id, Model model, HttpSession session) {
+        try {
+            User loginUser = getLoginUser(session);
+            if (loginUser == null) {
+                return CommonUtility.REDIRECT_LOGIN_PAGE;
+            }
+            Question question = getQuestionIfExist(id);
+            if (!question.isWriterEqualsLoginUser(loginUser)) {
+                return "redirect:/questions/" + id;
+            }
+            model.addAttribute("question", question);
+        } catch (NotFoundException e) {
+            return CommonUtility.ERROR_QUESTION_NOT_FOUND;
+        }
+
+        return "questions/modify_form";
+    }
+
+    @PutMapping("/questions/{id}")
+    public String updateQuestion(@PathVariable long id,
+                                 HttpSession session,
+                                 @RequestParam String title,
+                                 @RequestParam String contents) {
+        try {
+            User loginUser = getLoginUser(session);
+            if (loginUser == null) {
+                return CommonUtility.REDIRECT_LOGIN_PAGE;
+            }
+            Question question = getQuestionIfExist(id);
+            if (!question.isWriterEqualsLoginUser(loginUser)) {
+                return "redirect:/questions/" + id;
+            }
+            question.updateQuestionData(title, contents, LocalDateTime.now());
+            questionRepository.save(question);
+        } catch (NotFoundException e) {
+            return CommonUtility.ERROR_QUESTION_NOT_FOUND;
+        }
+        return "redirect:/questions/" + id;
+    }
+
+    @DeleteMapping("/questions/{id}")
+    public String deleteQuestion(@PathVariable long id, HttpSession session) {
+        try {
+            User loginUser = getLoginUser(session);
+            if (loginUser == null) {
+                return CommonUtility.REDIRECT_LOGIN_PAGE;
+            }
+            Question question = getQuestionIfExist(id);
+            if (!question.isWriterEqualsLoginUser(loginUser)) {
+                return "redirect:/questions/" + id;
+            }
+            questionRepository.delete(question);
+        } catch (NotFoundException e) {
+            return CommonUtility.ERROR_QUESTION_NOT_FOUND;
+        }
+        return "redirect:/";
+    }
+
+    private User getLoginUser(HttpSession session) {
+        return (User) session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
+    }
+
+    private Question getQuestionIfExist(long id) throws NotFoundException {
+        return questionRepository.findById(id)
                                  .orElseThrow(() -> new NotFoundException("해당 질문글을 찾을 수 없습니다."));
     }
 

@@ -83,7 +83,6 @@ public class Question extends BaseTimeEntity {
     return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(createdTime);
   }
 
-
   @Override
   public String toString() {
     return "writer : " + writer + '\n' +

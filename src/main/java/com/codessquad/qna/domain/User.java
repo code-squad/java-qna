@@ -25,6 +25,12 @@ public class User {
   @Column(nullable = false)
   private String email;
 
+  public void update(User updateUser) {
+    name = updateUser.getName();
+    email = updateUser.getEmail();
+    password = updateUser.getPassword();
+  }
+
   public boolean matchId(Long inputId) {
     if (inputId == null) {
       return false;
@@ -75,11 +81,6 @@ public class User {
     this.email = email;
   }
 
-  public void update(User updateUser) {
-    name = updateUser.getName();
-    email = updateUser.getEmail();
-    password = updateUser.getPassword();
-  }
 
   @Override
   public String toString() {

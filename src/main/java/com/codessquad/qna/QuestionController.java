@@ -61,29 +61,43 @@ public class QuestionController {
         return "/question/updateForm";
     }
 
+//    @PutMapping("/{id}")
+//    public String update(@PathVariable Long id, Model model, Question updateQuestion, HttpSession session) {
+//        if (!HttpSessionUtils.isLoginUser(session)) {
+//            return "redirect:/users/loginForm";
+//        }
+//
+//        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+//
+//        model.addAttribute("question", questionRepository.findById(id).orElseThrow(NullPointerException::new));
+//        Question question = questionRepository.findById(id).orElseThrow(NullPointerException::new);
+//        question.update(updateQuestion);
+//        questionRepository.save(question);
+//        return "redirect:/";
+//    }
+
     @PutMapping("/{id}")
-    public String update(@PathVariable Long id, Model model, Question updateQuestion, HttpSession session) {
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            return "redirect:/users/loginForm";
-        }
-
-        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-
-        model.addAttribute("question", questionRepository.findById(id).orElseThrow(NullPointerException::new));
+    public String update(@PathVariable Long id, String title, String contents) {
         Question question = questionRepository.findById(id).orElseThrow(NullPointerException::new);
-        question.update(updateQuestion);
+        question.update(title, contents);
         questionRepository.save(question);
-        return "redirect:/";
+        return String.format("redirect:/questions/%d", id);
     }
 
-    @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id, Question deleteQuestion, HttpSession session) {
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            return "redirect:/users/loginForm";
-        }
+//    @DeleteMapping("/{id}")
+//    public String delete(@PathVariable Long id, Question deleteQuestion, HttpSession session) {
+//        if (!HttpSessionUtils.isLoginUser(session)) {
+//            return "redirect:/users/loginForm";
+//        }
+//
+//        Question question = questionRepository.findById(id).orElseThrow(NullPointerException::new);
+//        questionRepository.delete(id);
+//        return "redirect:/";
+//    }
 
-        Question question = questionRepository.findById(id).orElseThrow(NullPointerException::new);
-        questionRepository.delete(question);
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable Long id) {
+        questionRepository.deleteById(id);
         return "redirect:/";
     }
 }

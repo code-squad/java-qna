@@ -4,6 +4,7 @@ import com.codessquad.qna.controller.UsersRepository;
 import com.codessquad.qna.domain.Users;
 import com.codessquad.qna.service.posts.PostsService;
 import com.codessquad.qna.service.users.UsersService;
+import com.codessquad.qna.web.HttpSessionUtils;
 import com.codessquad.qna.web.dto.PostsResponseDto;
 import com.codessquad.qna.web.dto.UsersResponseDto;
 import javax.servlet.http.HttpSession;
@@ -17,21 +18,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequiredArgsConstructor
 @Controller
 public class IndexController {
+
   private final PostsService postsService;
   private final UsersService usersService;
   private final UsersRepository usersRepository;
 
   @GetMapping("/")
-  public String index(Model model){
+  public String index(Model model) {
     model.addAttribute("posts", postsService.findAllDesc());
     return "index";
   }
 
   @GetMapping("/posts-list")
-  public String anotherIndex(Model model){
+  public String anotherIndex(Model model) {
     model.addAttribute("posts", postsService.findAllDesc());
     return "index";
   }
+
   //"/users/logout" 로그아웃 기능 만들어야 함
   //"/users/update" 개인정보 수정 기능 만들어야 함
   @GetMapping("/posts/save")
@@ -40,13 +43,19 @@ public class IndexController {
   }
 
   @GetMapping("/users/login")
-  public String usersLogin() { return "users-login"; }
+  public String usersLogin() {
+    return "users-login";
+  }
 
   @GetMapping("/users/login/fail")
-  public String usersLoginFailed() { return "users-login-failed"; }
+  public String usersLoginFailed() {
+    return "users-login-failed";
+  }
 
   @GetMapping("/users/register")
-  public String usersRegister() { return "users-register"; }
+  public String usersRegister() {
+    return "users-register";
+  }
 
   @GetMapping("/logout")
   public String usersLogout(HttpSession httpSession) {
@@ -62,7 +71,14 @@ public class IndexController {
   }
 
   @GetMapping("/users/update/{Id}")
-  public String usersUpdate(@PathVariable Long Id, Model model) {
+  public String usersUpdate(@PathVariable Long Id, Model model, HttpSession httpSession) {
+    if (HttpSessionUtils.isLoggedIn(httpSession)) {
+      return "redirect:/users/login";
+    }
+    Users sessionUser = (Users) httpSession.getAttribute("sessionUser");
+    if (!sessionUser.getId().equals(Id)) {
+      throw new IllegalStateException("invalid user info");
+    }
     UsersResponseDto responseDto = usersService.findById(Id);
     model.addAttribute("user", responseDto);
     return "users-update";
@@ -86,7 +102,7 @@ public class IndexController {
       System.out.println("login failure!");
       return "users-login-failed";
     }
-    session.setAttribute("user", user);
+    session.setAttribute("sessionUser", user);
     System.out.println("login success");
     return "redirect:/";
   }

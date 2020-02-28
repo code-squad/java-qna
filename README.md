@@ -141,6 +141,7 @@
 
 - `Http`는 무상태프로토콜. 즉 어떠한 상태도 저장하지 않는다.
   - 그런데, 쿠키, 세션을 저장하는 거 아닌가...?
+- 세션 갱신을 보려면 removeAttribute가 아닌 invalidate를 써야할듯.
 
 
 
@@ -248,3 +249,54 @@
 | `IgnoreCase`        | `findByFirstnameIgnoreCase`                                  | `… where UPPER(x.firstame) = UPPER(?1)`                      |
 
 
+
+## step4
+
+> 목표
+
+- [x] 회원, 질문간 관계 매핑
+- [x] 생성일 추가
+- [x] 질문 상세보기 기능
+- [x] 질문 수정, 삭제 기능 구현
+- [x] 수정, 삭제에 대한 보안 처리
+- [x] LocalDateTime
+- [ ] 답변 포인트 기능
+- [ ] 리팩토링
+  - [ ] 중복 코드 제거
+  - [ ] domain에 equals, hashcode 생성
+
+
+
+> 강의
+
+- User domain 내에서는 다른 관계를 맺는 것은 추천하지 않는다. 아마도 삭제 문제?
+- 객체에서 데이터를 꺼내는 로직은 지양해야함.
+- Domain code는 hascode와 equals를 구현하는 습관을 가져야함.
+  - 어떤 방식으로 구현하는 것이 좋을까?
+- @ManyToONe
+  - 해당 클래스가 Many, 아래 정의되는 변수가 One
+  - 참조를 하면 해당 클래스의 Id가 자동적으로 맵핑됨.
+- 테스트할 때, `html` 태그도 같이 테스를 해보자.
+  - 왜? 보안상 문제가 발생하는지 
+- exception을 model에 전달해줘서 template에 뿌려줄 수 있음.
+- 중복코드를 항상 어떻게 제거할 수 있을지 생각해야함.
+
+
+
+> 정리
+
+##### [@Generate Value](https://stackoverflow.com/questions/14022374/the-differences-between-generatedvalue-strategies)
+
+- Auto : user database platform에 의해 알아서 설정됨. MySQL ,SQLite , MsSQL은 identity , Oracle, PostgreSQL은 sequence
+- Sequence : 연속적, Oracle, PostgreSQL
+- Identity : row만큼 id를 생성함.
+  - MySQL/SQLite => `AUTO_INCREMENT`
+  - MSSQL => `IDENTITY`
+  - PostgreSQL => `SERIAL`
+
+
+
+##### [@JoinColumn]([https://velog.io/@conatuseus/%EC%97%B0%EA%B4%80%EA%B4%80%EA%B3%84-%EB%A7%A4%ED%95%91-%EA%B8%B0%EC%B4%88-1-i3k0xuve9i](https://velog.io/@conatuseus/연관관계-매핑-기초-1-i3k0xuve9i))
+
+- name : 매핑할 외래키 이름 : `필드명+_+참조하는 테이블 컬럼명`
+- referencedColumnName : 외래 키가 참조하는 대상 테이블의 컬럼명

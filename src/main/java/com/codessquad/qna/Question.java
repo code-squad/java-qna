@@ -1,29 +1,36 @@
 package com.codessquad.qna;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.servlet.http.HttpSession;
+import javax.validation.constraints.NotEmpty;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Question {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 20)
-    private String writer;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    private User writer;
 
+    @NotEmpty
     private String title;
+
+    @NotEmpty
     private String contents;
-    private String postingTime;
+    private LocalDateTime postingTime;
+    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
 
-    public Question() {
-        this.postingTime = new Time().getCurrentTime();
-    }
+    public Question() {}
 
-    public void setWriter(String writer) {
+    public Question(User writer, String title, String contents) {
         this.writer = writer;
+        this.title = title;
+        this.contents = contents;
+        this.postingTime = LocalDateTime.now();
     }
 
     public void setTitle(String title) {
@@ -36,7 +43,7 @@ public class Question {
 
     public Long getId() { return id; }
 
-    public String getWriter() {
+    public User getWriter() {
         return writer;
     }
 
@@ -49,12 +56,21 @@ public class Question {
     }
 
     public String getPostingTime() {
-        return postingTime;
+        return postingTime.format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT));
+    }
+
+    public boolean isWriterEquals(User sessionUser) {
+        return sessionUser.getId().equals(writer.getId());
+    }
+
+    public void update(String title, String contents) {
+        this.title = title;
+        this.contents = contents;
     }
 
     @Override
     public String toString() {
-        return "index: " + id + "\nwriter: " + writer + "\ntitle: " + title + "\ncontents: " + contents +
+        return "writer: " + writer + "\ntitle: " + title + "\ncontents: " + contents +
                 "\npostingTime: " + postingTime + "\n";
     }
 }

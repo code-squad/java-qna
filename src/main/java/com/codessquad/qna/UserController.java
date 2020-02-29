@@ -5,6 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
+
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -22,6 +24,31 @@ public class UserController {
         return "redirect:/users";
     }
 
+    @GetMapping("/loginForm")
+    public String viewLoginForm() {
+        return "/users/login";
+    }
+
+    @PostMapping("/login")
+    public String login(String userId, String password, HttpSession session) {
+        try {
+            User user = userRepository.findByUserId(userId);
+            if (!user.isPasswordEquals(password)) {
+                return "redirect:/users/loginForm";
+            }
+            session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
+            return "redirect:/";
+        } catch (NullPointerException e) {
+            return "redirect:/users/loginForm";
+        }
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
+        return "redirect:/";
+    }
+
     @GetMapping("")
     public String viewList(Model model) {
         model.addAttribute("users", userRepository.findAll());
@@ -29,39 +56,51 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public String viewProfile(@PathVariable Long id, Model model) {
-        if(!(isIdPresent(id))) {
-            return "redirect:/users";
+    public String viewProfile(@PathVariable Long id, Model model, HttpSession session) {
+        try {
+            model.addAttribute("user", getSessionUser(id, session));
+            return "/users/profile";
+        } catch (NullPointerException | IllegalAccessException e) {
+            System.out.println("ERROR CODE > " + e.toString());
+            return e.getMessage();
         }
-        model.addAttribute("user", userRepository.findById(id).get());
-        return "/users/profile";
     }
 
     @GetMapping("/{id}/form")
-    public String viewUpdateForm(@PathVariable Long id, Model model) {
-        if(!(isIdPresent(id))) {
-            return "redirect:/users";
+    public String viewUpdateForm(@PathVariable Long id, Model model, HttpSession session) {
+        try {
+            model.addAttribute("user", getSessionUser(id, session));
+            return "/users/updateForm";
+        } catch (NullPointerException | IllegalAccessException e) {
+            System.out.println("ERROR CODE > " + e.toString());
+            return e.getMessage();
         }
-        model.addAttribute("user", userRepository.findById(id).get());
-        return "/users/updateForm";
     }
 
-    @PutMapping("/{id}/update")
-    public String viewUpdatedList(@PathVariable Long id, String password, String name, String email) {
-        if(!(isPasswordEquals(id, password))) {
+    @PutMapping("/{id}")
+    public String updateUser(@PathVariable Long id, String password, String name, String email, HttpSession session) {
+        try {
+            User user = getSessionUser(id, session);
+            if (!user.isPasswordEquals(password)) {
+                return "redirect:/users";
+            }
+            user.update(name, email);
+            userRepository.save(user);
             return "redirect:/users";
+        } catch (NullPointerException | IllegalAccessException e) {
+            System.out.println("ERROR CODE > " + e.toString());
+            return e.getMessage();
         }
-        userRepository.findById(id).get().setName(name);
-        userRepository.findById(id).get().setEmail(email);
-        userRepository.save(userRepository.findById(id).get());
-        return "redirect:/users";
     }
 
-    private Boolean isIdPresent(Long id) {
-        return userRepository.findById(id).isPresent();
-    }
-
-    private Boolean isPasswordEquals(Long id, String password) {
-        return userRepository.findById(id).get().getPassword().equals(password);
+    private User getSessionUser(Long id, HttpSession session) throws IllegalAccessException {
+        if (!HttpSessionUtils.isLogin(session)) {
+            throw new NullPointerException("/error/unauthorized");
+        }
+        User sessionUser = HttpSessionUtils.getUserFromSession(session);
+        if (!sessionUser.isIdEquals(id)) {
+            throw new IllegalAccessException("/error/unauthorized");
+        }
+        return sessionUser;
     }
 }

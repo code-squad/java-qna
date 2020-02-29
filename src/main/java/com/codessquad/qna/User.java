@@ -1,21 +1,25 @@
 package com.codessquad.qna;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, unique = true)
+    @NotEmpty
     private String userId;
 
+    @NotEmpty
     private String password;
+
+    @NotEmpty
     private String name;
+
+    @NotEmpty
     private String email;
 
     public void setUserId(String userId) {
@@ -54,8 +58,27 @@ public class User {
         return email;
     }
 
+    public void update(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
+
+    public boolean isIdEquals(Long inputId) {
+        if (inputId == null) {
+            return false;
+        }
+        return inputId.equals(id);
+    }
+
+    public boolean isPasswordEquals(String inputPassword) {
+        if (inputPassword == null) {
+            return false;
+        }
+        return inputPassword.equals(password);
+    }
+
     @Override
     public String toString() {
-        return "index: " + id + " userId: " + userId + " password: " + password + " name: " + name + " email: " + email;
+        return "index: " + id + "  userId: " + userId + " password: " + password + " name: " + name + " email: " + email;
     }
 }

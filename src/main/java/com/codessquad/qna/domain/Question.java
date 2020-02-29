@@ -10,62 +10,46 @@ public class Question {
 
     @Id
     @GeneratedValue
-    public Long id;
+    private Long id;
 
     @Column(nullable=false, length = 20)
-    public String writer;
+    private String writer;
     @Column(nullable=false)
-    public String title;
-    public String contents;
-    public String localDateTime;
+    private String title;
+    private String contents;
+
+    public Question() {}
+
+    public Question(String writer, String title, String contents) {
+        this.writer = writer;
+        this.title = title;
+        this.contents = contents;
+    }
 
     public Long getId() {
         return id;
     }
+    public String getWriter() { return writer; }
+    public String getTitle() { return title; }
+    public String getContents() { return contents; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public void setId(Long id) { this.id = id; }
+    public void setWriter(String writer) { this.writer = writer; }
+    public void setTitle(String title) { this.title = title; }
+    public void setContents(String contents) { this.contents = contents; }
 
-    public String getLocalDateTime() {
-        return localDateTime;
-    }
-
-    public void setLocalDateTime(String localDateTime) {
-        this.localDateTime = localDateTime;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getContents() {
-        return contents;
-    }
-
-    public String getWriter() {
-        return writer;
-    }
-
-    public void setWriter(String writer) {
-        this.writer = writer;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setContents(String contents) {
-        this.contents = contents;
+    public void update (Question newQuestion) {
+        this.title = newQuestion.title;
+        this.contents = newQuestion.contents;
     }
 
     @Override
     public String toString() {
         return "Question {" +
-                "writer='" + writer + '\'' +
+                "id=" + id +
+                ", writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
-                ", localDateTime='" + localDateTime + '\'' +
                 '}';
     }
 }

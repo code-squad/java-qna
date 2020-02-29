@@ -11,49 +11,47 @@ public class User {
     @GeneratedValue
     public Long id;
 
-    @Column(nullable=false, length = 20)
+    @Column(nullable=false, length = 20, unique = true)
     public String userId;
     public String password;
     public String name;
     public String email;
 
-    public Long getId() {
-        return id;
+    public Long getId() { return id; }
+    public String getUserId() {
+        return userId;
     }
+    public String getPassword() { return password; }
+    public String getName() { return name; }
+    public String getEmail() { return email; }
 
     public void setId(Long id) {
         this.id = id;
     }
-
     public void setUserId(String userId) {
         this.userId = userId;
     }
-
     public void setPassword(String password) {
         this.password = password;
     }
-
     public void setName(String name) {
         this.name = name;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
 
-    public String getUserId() {
-        return userId;
+    public boolean matchPassword(String newPassword) {
+        if (newPassword == null) { return false; }
+        return newPassword.equals(password);
     }
 
-    public String getName() {
-        return name;
+    public boolean matchId(Long newId) {
+        if (newId == null) { return false; }
+        return newId.equals(id);
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void update(User newUser) {
+    public void update (User newUser) {
         this.password = newUser.password;
         this.name = newUser.name;
         this.email = newUser.email;
@@ -61,7 +59,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "User {" +
                 "userId='" + userId + '\'' +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +

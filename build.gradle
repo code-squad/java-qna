@@ -9,6 +9,9 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 configurations {
+	all {
+		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+	}
 	developmentOnly
 	runtimeClasspath {
 		extendsFrom developmentOnly
@@ -26,12 +29,13 @@ dependencies {
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
-	testCompile group: 'com.h2database', name: 'h2', version: '1.4.192'
+	compile 'com.h2database:h2:1.4.199'
 	compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.2.4.RELEASE'
 	compile 'javax.xml.bind:jaxb-api:2.3.0'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	compile 'org.springframework.boot:spring-boot-starter-web'
+	compile 'org.springframework.boot:spring-boot-starter-log4j2'
 }
-
 
 
 test {

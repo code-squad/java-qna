@@ -92,10 +92,6 @@ public class UserController {
         return "redirect:/users";
     }
 
-    private boolean isLoginUserNotEqualsRequestedUser(HttpSession session, User user) {
-        return !user.equals(session.getAttribute(CommonConstants.SESSION_LOGIN_USER));
-    }
-
     @GetMapping("/login")
     public String goLoginPage() {
         return "users/login";
@@ -117,6 +113,10 @@ public class UserController {
     public String logoutUser(HttpSession session) {
         session.invalidate();
         return "redirect:/";
+    }
+
+    private boolean isLoginUserNotEqualsRequestedUser(HttpSession session, User user) {
+        return !user.equals(session.getAttribute(CommonConstants.SESSION_LOGIN_USER));
     }
 
     private User getUserIfExist(long id) throws NotFoundException {

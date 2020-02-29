@@ -9,22 +9,3 @@
 * [텍스트와 이미지로 살펴보는 코드스쿼드의 온라인 코드 리뷰 과정](https://github.com/code-squad/codesquad-docs/blob/master/codereview/README.md)
 * [동영상으로 살펴보는 코드스쿼드의 온라인 코드 리뷰 과정](https://youtu.be/a5c9ku-_fok)
 
- <현재까지 구현한 것> 
-
-- 회원 가입 기능 구현
-- 회원 목록 보기 구현
-- 회원 정보 수정 기능 구현(현재 아무나 수정 가능하기 때문 추후에 본인만 아이디만 수정가능하도록 변경해야함)에
-- 로그인 기능 구현
-- h2 데이터베이스 연결함
-- heroku 배포함
-
-
-h2 데이터베이스 연결
-- build.gradle 파일에 compile group: 'com.h2database', name: 'h2', version: '1.4.192' 추가해
-- com.codessquad.qna.domain 디렉토리에 User 클래스 생성
-- User 클래스를 db와 연결하기 위해 @Entity 라는 annotation import 하여 사용
-- 각각의 데이터들을 고유하게 식별하기 위하여 primary key 지정, @Id 라는 annotation 사용
-- 별도의 작업을 하지 않아도 하나의 데이터를 처리할 때마다 값이 1씩 증가하도록 해주는 @GeneratedValue 
-Annotation 사용.
-- db에 데이터를 추가 할 때 userId 와 같은 값들이 null 이 되면 안되기 때문에 @Column 이라는 annotation 사용하여
-null값이 들어오지 못하게 설정. Column(nullable = false)

@@ -76,8 +76,8 @@ public class User implements Serializable {
         this.userEmail = userEmail;
     }
 
-    public boolean isEqualsPassword(String password) {
-        return this.userPassword.equals(password);
+    public boolean isUserPasswordNotEquals(String password) {
+        return !this.userPassword.equals(password);
     }
 
     public void update(User updateUser, String newPassword) {

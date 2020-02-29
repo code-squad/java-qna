@@ -57,7 +57,7 @@ public class UserController {
     public String showUserInfoModifyForm(@PathVariable long id, Model model, HttpSession session) {
         try {
             User user = getUserIfExist(id);
-            if (!getLoginUserAndCheckEqualsRequestedUser(session, user)) {
+            if (isLoginUserNotEqualsRequestedUser(session, user)) {
                 return CommonConstants.ERROR_CANNOT_EDIT_OTHER_USER_INFO;
             }
             model.addAttribute("user", user);
@@ -75,10 +75,10 @@ public class UserController {
                                  HttpSession session) {
         try {
             User user = getUserIfExist(id);
-            if (!getLoginUserAndCheckEqualsRequestedUser(session, user)) {
+            if (isLoginUserNotEqualsRequestedUser(session, user)) {
                 return CommonConstants.ERROR_CANNOT_EDIT_OTHER_USER_INFO;
             }
-            if (!user.isEqualsPassword(updateUser.getUserPassword())) {
+            if (user.isUserPasswordNotEquals(updateUser.getUserPassword())) {
                 return "redirect:/users/" + id + "/form";
             }
             user.update(updateUser, newPassword);
@@ -92,17 +92,8 @@ public class UserController {
         return "redirect:/users";
     }
 
-    private boolean getLoginUserAndCheckEqualsRequestedUser(HttpSession session, User user) {
-        Object userAttribute = session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
-        return checkUserEqualsLoginUser(user, userAttribute);
-    }
-
-    private boolean checkUserEqualsLoginUser(User user, Object userAttribute) {
-        if (userAttribute == null) {
-            return false;
-        }
-        User loginUser = (User) userAttribute;
-        return loginUser.equals(user);
+    private boolean isLoginUserNotEqualsRequestedUser(HttpSession session, User user) {
+        return !user.equals(session.getAttribute(CommonConstants.SESSION_LOGIN_USER));
     }
 
     @GetMapping("/login")
@@ -115,7 +106,7 @@ public class UserController {
         User user = userRepository.findByUserId(userId);
 
         // 사용자가 없거나, 비밀번호 일치하지 않는 경우
-        if (user == null || !user.isEqualsPassword(userPassword)) {
+        if (user == null || user.isUserPasswordNotEquals(userPassword)) {
             return "users/login_failed";
         }
         session.setAttribute(CommonConstants.SESSION_LOGIN_USER, user);

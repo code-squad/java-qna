@@ -3,5 +3,5 @@ package com.codessquad.qna.question;
 import org.springframework.data.repository.CrudRepository;
 
 public interface QuestionRepository extends CrudRepository<Question, Long> {
-    Iterable<Question> findAllByOrderByCreatedDateTimeDesc();
+    Iterable<Question> findAllByIsDeletedFalseOrderByCreatedDateTimeDesc();
 }

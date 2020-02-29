@@ -26,6 +26,9 @@ public class Answer {
     @Column(nullable = false)
     private LocalDateTime updatedDateTime;
 
+    @Column(nullable = false)
+    private boolean isDeleted;
+
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
     private Question question;
@@ -38,6 +41,7 @@ public class Answer {
         this.comment = comment;
         this.createdDateTime = LocalDateTime.now();
         this.updatedDateTime = LocalDateTime.now();
+        this.isDeleted = false;
     }
 
     public long getId() {
@@ -94,5 +98,18 @@ public class Answer {
 
     public String getFormattedUpdatedDateTime() {
         return updatedDateTime.format(CommonConstants.POST_DATA_DATE_TIME_FORMATTER);
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public Answer delete() {
+        this.isDeleted = true;
+        return this;
     }
 }

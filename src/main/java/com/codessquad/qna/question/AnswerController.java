@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 
 @Controller
+@RequestMapping("/questions/{questionId}/answers")
 public class AnswerController {
 
     @Autowired
@@ -20,7 +21,7 @@ public class AnswerController {
     @Autowired
     private AnswerRepository answerRepository;
 
-    @PostMapping("/questions/{questionId}/answers")
+    @PostMapping("")
     public String createAnswer(@PathVariable Long questionId, @RequestParam String comments, HttpSession session) {
         try {
             User loginUser = (User) session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
@@ -38,7 +39,7 @@ public class AnswerController {
         return "redirect:/questions/" + questionId;
     }
 
-    @GetMapping("/questions/{questionId}/answers/{answerId}/form")
+    @GetMapping("/{answerId}/form")
     public String goUpdateAnswerForm(@PathVariable Long questionId,
                                      @PathVariable Long answerId,
                                      HttpSession session,
@@ -63,7 +64,7 @@ public class AnswerController {
         return "questions/answer-modify-form";
     }
 
-    @PutMapping("/questions/{questionId}/answers/{answerId}")
+    @PutMapping("/{answerId}")
     public String updateAnswer(@PathVariable Long questionId,
                                @PathVariable Long answerId,
                                @RequestParam String comments,
@@ -84,7 +85,7 @@ public class AnswerController {
         return "redirect:/questions/" + questionId;
     }
 
-    @DeleteMapping("/questions/{questionId}/answers/{answerId}")
+    @DeleteMapping("/{answerId}")
     public String deleteAnswer(@PathVariable Long questionId, @PathVariable Long answerId, HttpSession session) {
         User loginUser = (User) session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
         if (loginUser == null) {
@@ -95,7 +96,7 @@ public class AnswerController {
         if (!loginUser.equals(answer.getWriter())) {
             return "redirect:/questions/" + questionId;
         }
-        answerRepository.delete(answer);
+        answerRepository.save(answer.delete());
         return "redirect:/questions/" + questionId;
     }
 

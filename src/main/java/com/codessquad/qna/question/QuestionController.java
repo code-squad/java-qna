@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class QuestionController {
 
     @GetMapping("/")
     public String goIndexPage(Model model) {
-        model.addAttribute("questions", questionRepository.findAllByOrderByCreatedDateTimeDesc());
+        model.addAttribute("questions", questionRepository.findAllByIsDeletedFalseOrderByCreatedDateTimeDesc());
         return "main";
     }
 
@@ -52,7 +53,7 @@ public class QuestionController {
         try {
             User loginUser = getLoginUser(session);
             Question question = getQuestionIfExist(id);
-            List<Answer> answers = answerRepository.findByQuestionId(id);
+            List<Answer> answers = answerRepository.findByQuestionIdAndIsDeletedFalse(id);
             model.addAttribute("question", question);
             model.addAttribute("isLoginUserEqualsWriter", question.isWrittenBy(loginUser));
             model.addAttribute("answers", answers);
@@ -105,6 +106,7 @@ public class QuestionController {
     }
 
     @DeleteMapping("/questions/{id}")
+    @Transactional
     public String deleteQuestion(@PathVariable long id, HttpSession session) {
         try {
             User loginUser = getLoginUser(session);
@@ -116,8 +118,8 @@ public class QuestionController {
                 return "redirect:/questions/" + id;
             }
             if (question.isDeletable()) {
-                answerRepository.deleteAll(question.getAnswers());
-                questionRepository.delete(question);
+                answerRepository.deleteAnswersInQuestion(question);
+                questionRepository.save(question.delete());
                 return "redirect:/";
             }
         } catch (NotFoundException e) {

@@ -124,6 +124,10 @@ public class Question {
         return answers.size();
     }
 
+    public long getAnswerCountExceptDeleted() {
+        return answers.stream().filter(answer -> !answer.isDeleted()).count();
+    }
+
     public void updateQuestionData(String title, String contents, LocalDateTime updatedDateTime) {
         this.title = title;
         this.contents = contents;
@@ -143,4 +147,8 @@ public class Question {
         return answers.isEmpty() || isSameWriter;
     }
 
+    public Question delete() {
+        this.isDeleted = true;
+        return this;
+    }
 }

@@ -31,7 +31,7 @@ public class QuestionController {
     @GetMapping("/")
     public String main(Model model) {
         model.addAttribute("questions", questions);
-        return "/index";
+        return "/main";
     }
 
     @GetMapping("questions/{questionIndex}")

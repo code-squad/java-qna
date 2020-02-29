@@ -3,6 +3,7 @@ package com.codessquad.qna;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.LocalDateTime;
@@ -33,4 +34,17 @@ public class QuestionController {
         return "/index";
     }
 
+    @GetMapping("questions/{questionIndex}")
+    public String show(@PathVariable long questionIndex, Model model) {
+        model.addAttribute("question",checkIndex(questionIndex));
+        return "qna/show";
+    }
+
+    private Question checkIndex(Long questionIndex) {
+        for (Question question : questions) {
+            if (questionIndex.equals(question.getQuestionIndex()))
+                return question;
+        }
+        return null;
+    }
 }

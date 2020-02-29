@@ -14,7 +14,8 @@ configurations {
         extendsFrom developmentOnly
     }
     all {
-        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging' // log4j2 로깅 설정 : 중복되는 logging 제거
+        // log4j2 로깅 설정 : 중복되는 logging 제거
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
     }
 }
 

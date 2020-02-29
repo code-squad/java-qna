@@ -11,6 +11,8 @@ import java.time.format.DateTimeFormatter;
 @Entity
 public class Question {
 
+  private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm");
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
@@ -58,7 +60,6 @@ public class Question {
   }
 
   public String getDateTime() {
-    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm");
     return dateTime.format(dateTimeFormatter);
   }
 

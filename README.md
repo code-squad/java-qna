@@ -219,34 +219,38 @@
 
 - https://arahansa.github.io/docs_spring/jpa.html#jpa.query-methods
 - 따로 `@Query` annotation을 지정하지 않아도, 이름만으로 쿼리를 **추정** 해줌.
-- 예시
+  - 생각보다 신박한 기능.
 
-| Keyword             | Sample                                                       | JPQL snippet                                                 |
-| :------------------ | :----------------------------------------------------------- | :----------------------------------------------------------- |
-| `And`               | `findByLastnameAndFirstname`                                 | `… where x.lastname = ?1 and x.firstname = ?2`               |
-| `Or`                | `findByLastnameOrFirstname`                                  | `… where x.lastname = ?1 or x.firstname = ?2`                |
-| `Is,Equals`         | `findByFirstname`,`findByFirstnameIs`,`findByFirstnameEquals` | `… where x.firstname = 1?`                                   |
-| `Between`           | `findByStartDateBetween`                                     | `… where x.startDate between 1? and ?2`                      |
-| `LessThan`          | `findByAgeLessThan`                                          | `… where x.age < ?1`                                         |
-| `LessThanEqual`     | `findByAgeLessThanEqual`                                     | `… where x.age ⇐ ?1`                                         |
-| `GreaterThan`       | `findByAgeGreaterThan`                                       | `… where x.age > ?1`                                         |
-| `GreaterThanEqual`  | `findByAgeGreaterThanEqual`                                  | `… where x.age >= ?1`                                        |
-| `After`             | `findByStartDateAfter`                                       | `… where x.startDate > ?1`                                   |
-| `Before`            | `findByStartDateBefore`                                      | `… where x.startDate < ?1`                                   |
-| `IsNull`            | `findByAgeIsNull`                                            | `… where x.age is null`                                      |
-| `IsNotNull,NotNull` | `findByAge(Is)NotNull`                                       | `… where x.age not null`                                     |
-| `Like`              | `findByFirstnameLike`                                        | `… where x.firstname like ?1`                                |
-| `NotLike`           | `findByFirstnameNotLike`                                     | `… where x.firstname not like ?1`                            |
-| `StartingWith`      | `findByFirstnameStartingWith`                                | `… where x.firstname like ?1` (parameter bound with appended `%`) |
-| `EndingWith`        | `findByFirstnameEndingWith`                                  | `… where x.firstname like ?1` (parameter bound with prepended `%`) |
-| `Containing`        | `findByFirstnameContaining`                                  | `… where x.firstname like ?1` (parameter bound wrapped in `%`) |
-| `OrderBy`           | `findByAgeOrderByLastnameDesc`                               | `… where x.age = ?1 order by x.lastname desc`                |
-| `Not`               | `findByLastnameNot`                                          | `… where x.lastname <> ?1`                                   |
-| `In`                | `findByAgeIn(Collection ages)`                               | `… where x.age in ?1`                                        |
-| `NotIn`             | `findByAgeNotIn(Collection age)`                             | `… where x.age not in ?1`                                    |
-| `True`              | `findByActiveTrue()`                                         | `… where x.active = true`                                    |
-| `False`             | `findByActiveFalse()`                                        | `… where x.active = false`                                   |
-| `IgnoreCase`        | `findByFirstnameIgnoreCase`                                  | `… where UPPER(x.firstame) = UPPER(?1)`                      |
+
+
+
+
+> 학습 체크 리스트
+
+1. MVC 패턴에 대해 설명하고, model view controller 각각의 역할에 대해 설명하시오.
+   - MVC 패턴
+     - 웹서비스를 구현하기에 필요한 가장 큰 로직 3가지를 나눠서 추상화한 패턴
+     - 역할에 따라 model, view, controller로 나눠서 개발에 가독성과 재사용성을 높히기 위한 패턴이지 않을까 싶음.
+   - model은 개발자가 정의한 자원. controller, view에서 model 명을 이용하여 필요할 때마다 찾아서 매칭하는 식으로 사용된다.
+   - view는 display를 담당하는 역할. controller를 통해 넘어온 데이터를 자신에게 정의된 형태로 보여주는 역할을 담당하고 있다.
+   - controller 는 dispatcherServlet에서 handlermapping으로 넘어온 url 요청을 처리하는 역할을 담당. 요청한 로직에 따라 적절한 model data를 담아서, view에게 넘겨주는 중간다리 역할임.
+
+2. 웹 클라이언트에서 요청을 보내고, 웹 서버에서 응답을 받기까지의 과정에 대해 최대한 구체적으로 설명하시오.
+   - 웹서버로 가는 데, 정적인 요청이면 여기서 바로 응답을 보내고
+   - 동적인 요청이면 WAS를 통해 Spring에 할당된 dispatcherServlet을 통해서
+   - HandlerMapping이 요청온 URL을 분석하여 Controller를 mapping 해주고,
+   - controller는 클라이언트의 요청에 필요한 model을 찾아 비즈니르 로직을 실행하고, 이걸 view resolver 에게 넘겨주면,
+   - view resolver는 어떤 view를 클라이언트에게 보낼지 결정하게 되고,
+   - 결정된 view가 응답으로 클라이언트에게 감.
+
+3. 이번 미션에서 공부한 주제 중에서 학습하기 가장 어려웠던 것은 어떤 것인가요?
+   - Spring Boot, 그리고 JPA는 생각보다 많은 부분이 추상적이라 느꼈습니다.. 이부분을 이용하기 위해서 공부해야하는 것이 상대적으로 방대하다고 생각했고, 필요한 부분만 찾아서 하였는데 이 방향이 맞는지 조금 의문점이 들었습니다.
+
+4. 그 외에 학습하기 어렵거나 시간이 오래 걸린 것은 무엇이고, 어떻게 극복했나요?
+   - Model 객체에 어노테이션과, DB와의 맵핑 부분.
+   - 생소한 언어들이 많아, 이해하기가 힘들었고 아직도 부족하다고 생각합니다.
+   - 우선 이해할 수 있는 부분만, 그리고 너무 붙잡고 있지 않으려 시도했습니다.
+   - 그리고 이해한 부분은 저 자신만의 언어로 표현하고자 해봤습니다.
 
 
 
@@ -260,16 +264,17 @@
 - [x] 질문 수정, 삭제 기능 구현
 - [x] 수정, 삭제에 대한 보안 처리
 - [x] LocalDateTime
-- [ ] 답변 포인트 기능
-- [ ] 리팩토링
-  - [ ] 중복 코드 제거
-  - [ ] domain에 equals, hashcode 생성
+  - [x] BaseTimeEntity를 통해 해결.
+- [x] 답변 포인트 기능
+- [x] 리팩토링
+  - [x] 중복 코드 제거
 
 
 
 > 강의
 
-- User domain 내에서는 다른 관계를 맺는 것은 추천하지 않는다. 아마도 삭제 문제?
+- User domain 내에서는 다른 관계를 맺는 것은 추천하지 않는다. 
+  - 아마도 삭제 문제?
 - 객체에서 데이터를 꺼내는 로직은 지양해야함.
 - Domain code는 hascode와 equals를 구현하는 습관을 가져야함.
   - 어떤 방식으로 구현하는 것이 좋을까?
@@ -280,12 +285,14 @@
   - 왜? 보안상 문제가 발생하는지 
 - exception을 model에 전달해줘서 template에 뿌려줄 수 있음.
 - 중복코드를 항상 어떻게 제거할 수 있을지 생각해야함.
+- User  id 변수와  userId 변수가 헷갈릴 때가 많음. 
+  - 이 중 하나 이름을 바꿔야 하지 않을까 생각됨.
 
 
 
 > 정리
 
-##### [@Generate Value](https://stackoverflow.com/questions/14022374/the-differences-between-generatedvalue-strategies)
+##### @Generate Value
 
 - Auto : user database platform에 의해 알아서 설정됨. MySQL ,SQLite , MsSQL은 identity , Oracle, PostgreSQL은 sequence
 - Sequence : 연속적, Oracle, PostgreSQL
@@ -294,9 +301,18 @@
   - MSSQL => `IDENTITY`
   - PostgreSQL => `SERIAL`
 
+##### @JoinColumn
 
-
-##### [@JoinColumn]([https://velog.io/@conatuseus/%EC%97%B0%EA%B4%80%EA%B4%80%EA%B3%84-%EB%A7%A4%ED%95%91-%EA%B8%B0%EC%B4%88-1-i3k0xuve9i](https://velog.io/@conatuseus/연관관계-매핑-기초-1-i3k0xuve9i))
-
-- name : 매핑할 외래키 이름 : `필드명+_+참조하는 테이블 컬럼명`
+- name : 매핑할 외래키 이름 : `필드명+_+참조하는 테이블의 기본키 컬럼명`
 - referencedColumnName : 외래 키가 참조하는 대상 테이블의 컬럼명
+- FetchType
+  - EAGER : 빨리
+  - Lazy : 느리게
+
+##### @lob
+
+- Large Object
+- 주로 많은 양의 데이터를 저장할 때 사용
+- BLOB, CLOB가 있음.
+- BLOB for binary data, ex)image...
+- CLOB for text data

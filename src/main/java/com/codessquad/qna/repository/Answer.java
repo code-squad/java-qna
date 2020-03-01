@@ -27,10 +27,20 @@ public class Answer {
     @Setter
     @Column(nullable = false)
     private String contents;
-    private LocalDateTime createdAt = LocalDateTime.now();;
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    public Answer(){}
+    public Answer(User user, Question question, String contents) {
+        this.writer = user;
+        this.question = question;
+        this.contents = contents;
+    }
 
     public void update(Answer answer) {
+        this.writer = answer.writer;
+        this.question = answer.question;
         this.contents = answer.contents;
+        this.createdAt = LocalDateTime.now();
     }
 
     public boolean isCorrectFormat(Answer answer) {
@@ -38,5 +48,10 @@ public class Answer {
         boolean contentsIsExist = ObjectUtils.isNotEmpty(answer.contents);
 
         return writerIsExist && contentsIsExist;
+    }
+
+    public boolean isCorrectWriter(User user) {
+        System.out.println();
+        return this.writer.getId().compareTo(user.getId()) == 0;
     }
 }

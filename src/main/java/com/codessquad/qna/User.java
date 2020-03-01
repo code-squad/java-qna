@@ -25,6 +25,13 @@ public class User {
         this.id = id;
     }
 
+    public boolean matchId(Long newId) {
+        if (newId == null) {
+            return false;
+        }
+        return newId.equals(id);
+    }
+
     public String getUserId() {
         return userId;
     }
@@ -39,6 +46,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean matchPassword(String loginPassword) {
+        return loginPassword.equals(password);
+    }
+
+    public boolean matchPassword(User updateUser) {
+        return updateUser.getPassword().equals(password);
     }
 
     public String getName() {
@@ -72,9 +87,5 @@ public class User {
         this.password = updateuser.password;
         this.name = updateuser.name;
         this.email = updateuser.email;
-    }
-
-    public boolean isCheckPassword(User updateUser) {
-        return this.password.equals(updateUser.getPassword());
     }
 }

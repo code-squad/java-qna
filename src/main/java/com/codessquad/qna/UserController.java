@@ -17,14 +17,12 @@ public class UserController {
     @PostMapping("")
     public String createUser(User user) {
         userRepository.save(user);
-
         return "redirect:/users";
     }
 
     @GetMapping("")
     public String showUserList(Model model) {
         model.addAttribute("users", userRepository.findAll());
-
         return "user/list";
     }
 
@@ -41,37 +39,28 @@ public class UserController {
 
     @GetMapping("/{id}/form")
     public String modifyUserProfile(@PathVariable Long id, Model model, HttpSession session) {
-        User sessionedUser = (User) session.getAttribute("sessionedUser");
-        if(sessionedUser == null){
+        if (!HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/users/login";
         }
-        if(!id.equals(sessionedUser.getId())){
+        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+        if (!sessionedUser.matchId(id)) {
             throw new IllegalStateException("자기 자신의 정보만 수정 가능합니다.");
         }
-
         User user = userRepository.findById(id).get();
         model.addAttribute("userProfile", user);
-
         return "user/updateForm";
     }
 
     @PutMapping("/{id}/update")
     public String updateUserProfile(@PathVariable Long id, Model model, User updateUser, HttpSession session) {
-        User sessionedUser = (User) session.getAttribute("sessionedUser");
-        if(sessionedUser == null){
-            return "redirect:/users/login";
-        }
-        if(!id.equals(sessionedUser.getId())){
-            throw new IllegalStateException("자기 자신의 정보만 수정 가능합니다.");
-        }
 
-        User oldUser = userRepository.findById(id).get();
-        if (oldUser.isCheckPassword(updateUser)) {
-            oldUser.update(updateUser);
-            userRepository.save(oldUser);
-        }
-        model.addAttribute("userProfile", oldUser);
+        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
 
+        if (sessionedUser.matchPassword(updateUser)) {
+            sessionedUser.update(updateUser);
+            userRepository.save(sessionedUser);
+        }
+        model.addAttribute("userProfile", sessionedUser);
         return "redirect:/users";
     }
 
@@ -82,21 +71,17 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
-        User user = userRepository.findByUserId(userId);
-        if (user == null) {
+        User loginUser = userRepository.findByUserId(userId);
+        if (loginUser == null || !loginUser.matchPassword(password)) {
             return "redirect:/users/login";
         }
-        if (!password.equals(user.getPassword())) {
-            return "redirect:/users/login";
-        }
-        session.setAttribute("sessionedUser", user);
-
+        session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, loginUser);
         return "redirect:/";
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.removeAttribute("sessionedUser");
+        session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
         return "redirect:/";
     }
 }

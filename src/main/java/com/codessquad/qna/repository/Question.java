@@ -15,6 +15,7 @@ public class Question {
     @GeneratedValue
     private Long id;
 
+    @Setter
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     private User writer;
@@ -44,7 +45,6 @@ public class Question {
         boolean titleIsExist = ObjectUtils.isNotEmpty(question.getTitle());
         boolean contentIsExist = ObjectUtils.isNotEmpty(question.getContents());
         boolean writerIsExist = ObjectUtils.isNotEmpty(question.getWriter());
-
         return titleIsExist && contentIsExist && writerIsExist;
     }
 

@@ -81,7 +81,7 @@ public class QuestionController {
         if (question.get().isCorrectWriter(user)) {
             return PathUtil.UNAUTHORIZED;
         }
-        return update(question.get(), updateData);
+        return update(question.get(), updateData, user);
     }
 
     @DeleteMapping("/{id}")
@@ -101,7 +101,8 @@ public class QuestionController {
         return PathUtil.HOME;
     }
 
-    private Object update(Question question, Question updateData) {
+    private Object update(Question question, Question updateData, User user) {
+        updateData.setWriter(user);
         if (question.isCorrectFormat(updateData)){
             question.update(updateData);
             questionRepository.save(question);

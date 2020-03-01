@@ -63,7 +63,7 @@ public class UserController {
 
     user.update(updateUser);
     userRepository.save(user);
-    return "redirect:/questions/";
+    return "redirect:/users/";
   }
 
   @GetMapping(value = "")

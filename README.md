@@ -2,9 +2,13 @@
 ## heroku url
 - https://java-qna-1.herokuapp.com/
 
-## 피드백
+## 반영한 피드백
 - 예외처리!!!!
 - input 값에 대한 검증을 반드시 할 것!
+
+> 공통 피드백
+- optional에서 get() 쓰지 않기
+- :exclamation: 이건 반영하지 못했다
 
 ## 구현한 기능
 - 로그인

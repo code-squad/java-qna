@@ -33,7 +33,7 @@ public class Question extends BaseTimeEntity {
   @Column(nullable = false)
   private String contents;
 
-  @OneToMany(fetch = FetchType.EAGER, mappedBy = "question")
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "question")
   @OrderBy(value = "id ASC ")
   private List<Answer> answerList;
 

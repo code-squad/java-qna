@@ -5,6 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
+
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -31,11 +33,6 @@ public class UserController {
         return "user/form";
     }
 
-    @GetMapping("/login")
-    public String goLoginForm() {
-        return "user/login";
-    }
-
     @GetMapping("/{id}")
     public String showUserProfile(@PathVariable Long id, Model model) {
         model.addAttribute("userProfile", userRepository.findById(id).get());
@@ -59,5 +56,24 @@ public class UserController {
         model.addAttribute("userProfile", oldUser);
 
         return "redirect:/users";
+    }
+
+    @GetMapping("/login")
+    public String goLoginForm() {
+        return "user/login";
+    }
+
+    @PostMapping("/login")
+    public String login(String userId, String password, HttpSession session) {
+        User user = userRepository.findByUserId(userId);
+        if (user == null) {
+            return "redirect:/users/login";
+        }
+        if (!password.equals(user.getPassword())) {
+            return "redirect:/users/login";
+        }
+        session.setAttribute("user", user);
+
+        return "redirect:/";
     }
 }

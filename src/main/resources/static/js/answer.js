@@ -27,10 +27,26 @@ const getAnswerList = () => {
         })
         .then(response => {
             const answerList = response.answers;
-            let element = document.querySelector('.qna-comment-slipp-articles')
-            answerList.forEach(answer => {
-                element.innerHTML = element.innerHTML +
-                    `<article class="article">
+            const totalAnswer = answerList.length;
+
+            appendTotal(totalAnswer);
+            appendAnswerList(answerList);
+        })
+}
+
+const appendTotal = (totalAnswer) => {
+    let totalElement = document.querySelector('.qna-comment-count-div');
+    document.querySelector('.qna-comment-count').remove();
+    totalElement.innerHTML = totalElement.innerHTML +
+        `<p class="qna-comment-count"><strong>${totalAnswer}</strong>개의 의견</p>`
+}
+
+const appendAnswerList = (answerList) => {
+    let answerElement = document.querySelector('.qna-comment-slipp-articles');
+    document.querySelectorAll('.comment').forEach(el => el.remove());
+    answerList.forEach(answer => {
+        answerElement.innerHTML = answerElement.innerHTML + `
+                <article class="article comment">
                     <div class="article-header">
 			            <div class="article-header-thumb">
 				            <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
@@ -44,7 +60,7 @@ const getAnswerList = () => {
 		            <div class="article-util">
 		                <ul class="article-util-list">
 			                <li>
-				                <a class="link-modify-article" href="/questions/${answer.question.id}/answers/${answer.id}">수정</a>
+				                <a class="link-modify-article" href="/questions/${answer.question.id}/answers/${answer.id}/editForm">수정</a>
 			                </li>
 			                <li>
 				                <form class="delete-answer-form" action="/questions/${answer.question.id}/answers/${answer.id}" method="POST">
@@ -55,6 +71,5 @@ const getAnswerList = () => {
 		                </ul>
 		            </div>
 	            </article>`
-            })
-        });
+    })
 }

@@ -29,7 +29,6 @@ public class Answer extends BaseTimeEntity {
   @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_writer"))
   private User writer;
 
-
   @Lob
   @Column(nullable = false)
   private String contents;

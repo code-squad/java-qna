@@ -35,7 +35,6 @@ public class User {
     return matchId(sessionUser.getId());
   }
 
-
   public boolean matchId(Long id) {
     if (id == null) {
       return false;
@@ -85,7 +84,6 @@ public class User {
   public void setEmail(String email) {
     this.email = email;
   }
-
 
   @Override
   public String toString() {

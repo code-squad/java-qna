@@ -49,6 +49,6 @@ public class Question {
     }
 
     public boolean isCorrectWriter(User user) {
-        return this.writer.equals(user);
+        return this.writer.getId().equals(user.getId());
     }
 }

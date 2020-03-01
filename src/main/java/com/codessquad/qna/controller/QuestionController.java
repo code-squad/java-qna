@@ -42,14 +42,16 @@ public class QuestionController {
         if (!HttpSessionUtil.isAuthorizedUser(session)) {
             return PathUtil.UNAUTHORIZED;
         }
-        User user = HttpSessionUtil.getUserFromSession(session);
         Optional<Question> question = questionRepository.findById(id);
         if (!question.isPresent()) {
             return PathUtil.NOT_FOUND;
         }
+
+        User user = HttpSessionUtil.getUserFromSession(session);
         if (question.get().isCorrectWriter(user)) {
             return PathUtil.UNAUTHORIZED;
         }
+
         model.addAttribute("question", question.get());
         return PathUtil.QUESTION_EDIT_TEMPLATE;
     }
@@ -73,11 +75,13 @@ public class QuestionController {
         if (!HttpSessionUtil.isAuthorizedUser(session)) {
             return PathUtil.UNAUTHORIZED;
         }
-        User user = HttpSessionUtil.getUserFromSession(session);
+
         Optional<Question> question = questionRepository.findById(id);
         if (!question.isPresent()) {
             return PathUtil.NOT_FOUND;
         }
+
+        User user = HttpSessionUtil.getUserFromSession(session);
         if (question.get().isCorrectWriter(user)) {
             return PathUtil.UNAUTHORIZED;
         }
@@ -89,14 +93,17 @@ public class QuestionController {
         if (!HttpSessionUtil.isAuthorizedUser(session)) {
             return PathUtil.UNAUTHORIZED;
         }
-        User user = HttpSessionUtil.getUserFromSession(session);
+
         Optional<Question> question = questionRepository.findById(id);
         if (!question.isPresent()) {
             return PathUtil.NOT_FOUND;
         }
-        if (question.get().isCorrectWriter(user)) {
+
+        User user = HttpSessionUtil.getUserFromSession(session);
+        if (!question.get().isCorrectWriter(user)) {
             return PathUtil.UNAUTHORIZED;
         }
+
         questionRepository.deleteById(id);
         return PathUtil.HOME;
     }

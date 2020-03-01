@@ -48,7 +48,7 @@ public class QuestionController {
         }
 
         User user = HttpSessionUtil.getUserFromSession(session);
-        if (question.get().isCorrectWriter(user)) {
+        if (!question.get().isCorrectWriter(user)) {
             return PathUtil.UNAUTHORIZED;
         }
 
@@ -82,7 +82,7 @@ public class QuestionController {
         }
 
         User user = HttpSessionUtil.getUserFromSession(session);
-        if (question.get().isCorrectWriter(user)) {
+        if (!question.get().isCorrectWriter(user)) {
             return PathUtil.UNAUTHORIZED;
         }
         return update(question.get(), updateData, user);
@@ -113,7 +113,7 @@ public class QuestionController {
         if (question.isCorrectFormat(updateData)){
             question.update(updateData);
             questionRepository.save(question);
-            return "redirect:/questions/{id}";
+            return PathUtil.REDIRECT_QUESTION_DETAIL + question.getId();
         }
         return PathUtil.BAD_REQUEST;
     }

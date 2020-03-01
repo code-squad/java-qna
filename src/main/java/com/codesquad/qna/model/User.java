@@ -1,16 +1,20 @@
-package com.codesquad.qna.domain;
+package com.codesquad.qna.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.validation.constraints.NotEmpty;
+import java.util.Objects;
 
 @Entity
 public class User {
     @Id
     private String userId;
     @Column(nullable = false)
+    @NotEmpty
     private String password;
     @Column(nullable = false)
+    @NotEmpty
     private String name;
     private String email;
 
@@ -47,8 +51,16 @@ public class User {
     }
 
     public void update(User updateUser) {
-        this.name = updateUser.getName();
-        this.email = updateUser.getEmail();
+        this.name = updateUser.name;
+        this.email = updateUser.email;
+    }
+
+    public boolean matchPassword(User sessionedUser) {
+        return this.password.equals(sessionedUser.getPassword());
+    }
+
+    public boolean matchId(String userId) {
+        return this.userId.equals(userId);
     }
 
     @Override
@@ -59,5 +71,19 @@ public class User {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(userId, user.userId) &&
+                Objects.equals(password, user.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, password, name, email);
     }
 }

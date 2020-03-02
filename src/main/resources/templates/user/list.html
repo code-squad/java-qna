@@ -6,18 +6,18 @@
           <table class="table table-hover">
               <thead>
                 <tr>
-                    <th>ID</th> <th>Password</th> <th>Name</th> <th>Email</th><th></th>
+                    <th>#</th> <th>사용자 아이디</th> <th>이름</th> <th>이메일</th><th></th>
                 </tr>
               </thead>
               <tbody>
               {{#users}}
                 <tr>
-                    <th scope="row"><a href="/user/{{userId}}"/>{{userId}}</th>
-                    <td>{{password}}</td>
+                    <th scope="row"><a href="/user/{{userId}}"/>{{id}}</th>
+                    <td>{{userId}}</td>
                     <td>{{name}}</td>
                     <td>{{email}}</td>
                     <td>
-                        <a href="#" class="btn btn-success" role="button">수정</a>
+                        <a href="/user/{{id}}/form" class="btn btn-success" role="button">수정</a>
                     </td>
                 </tr>
               {{/users}}

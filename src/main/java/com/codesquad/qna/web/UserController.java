@@ -28,8 +28,6 @@ public class UserController {
 
     @PostMapping("/create")
     public String create(User user) {
-        users.add(user);
-        System.out.println("user = " + user);
         userRepository.save(user);
         return "redirect:/user/list";
     }
@@ -40,10 +38,17 @@ public class UserController {
         return "user/list";
     }
 
-    @GetMapping("/{id}")
-    public String read(@PathVariable String id, Model model) {
+    @GetMapping("/{id}/form")
+    public String updateForm(@PathVariable Long id, Model model) {
+        User user = userRepository.findById(id).orElse(null);
+        model.addAttribute("user", user);
+        return "/user/updateForm";
+    }
+
+    @GetMapping("/{userId}")
+    public String read(@PathVariable String userId, Model model) {
         for (User user : users) {
-            if(id.equals(user.getUserId())) {
+            if (userId.equals(user.getUserId())) {
                 model.addAttribute("user", user);
                 return "user/profile";
             }

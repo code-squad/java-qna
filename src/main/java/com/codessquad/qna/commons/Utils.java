@@ -10,7 +10,7 @@ public class Utils {
 
   public static User getSessionedUser(HttpSession session) {
     Optional<User> optionalUser = Optional.ofNullable((User) session.getAttribute("sessionedUser"));
-    User user = optionalUser.orElseThrow(() -> new UserException(CustomErrorCode.BAD_REQUEST));
+    User user = optionalUser.orElseThrow(() -> new UserException(CustomErrorCode.USER_NOT_LOGIN));
 
     return user;
   }

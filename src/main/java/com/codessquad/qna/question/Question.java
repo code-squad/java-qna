@@ -1,5 +1,6 @@
 package com.codessquad.qna.question;
 
+import com.codessquad.qna.user.User;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -33,6 +34,10 @@ public class Question {
     this.title = question.title;
     this.contents = question.contents;
     this.dateTime = question.dateTime;
+  }
+
+  public boolean validateUserId(User user) {
+    return (this.userId.equals(user.getUserId())) ? true : false;
   }
 
   public String getDateTime() {

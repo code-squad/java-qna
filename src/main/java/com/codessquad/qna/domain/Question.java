@@ -76,4 +76,10 @@ public class Question {
                 ", contents='" + contents + '\'' +
                 '}';
     }
+
+    public void update(String title, String contents) {
+        this.title = title;
+        this.contents = contents;
+        this.date = LocalDateTime.now();
+    }
 }

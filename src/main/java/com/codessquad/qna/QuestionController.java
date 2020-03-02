@@ -6,10 +6,7 @@ import com.codessquad.qna.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -43,12 +40,51 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}")
-    public String questionPage(@PathVariable Long id, Model model) {
+    public String detailPage(@PathVariable Long id, Model model) {
         model.addAttribute("question", findQuestion(questionRepository, id));
         return "question/show";
     }
 
-    private Object findQuestion(QuestionRepository questionRepository, Long id) {
+    @GetMapping("/{id}/{question.writer}/updateForm")
+    public String updateForm(@PathVariable Long id,
+                             @PathVariable("question.writer") String writer,
+                             HttpSession httpSession,
+                             Model model) {
+        User user = HttpSessionUtils.getUserFromSession(httpSession);
+
+        if (!HttpSessionUtils.isLoginUser(user)) {
+            return "redirect:/users/loginForm";
+        }
+
+        if (user.notMatchWriter(writer)) {
+            return "redirect:/users/loginForm";
+        }
+        model.addAttribute("question", findQuestion(questionRepository, id));
+        return "question/updateForm";
+    }
+
+    @PutMapping("{id}/{question.writer}/update")
+    public String update(@PathVariable Long id,
+                         @PathVariable("question.writer") String writer,
+                         String title, String contents,
+                         HttpSession httpSession) {
+        User user = HttpSessionUtils.getUserFromSession(httpSession);
+
+        if (!HttpSessionUtils.isLoginUser(user)) {
+            return "redirect:/users/loginForm";
+        }
+
+        if (user.notMatchWriter(writer)) {
+            return "redirect:/users/loginForm";
+        }
+
+        Question question = findQuestion(questionRepository, id);
+        question.update(title, contents);
+        return "redirect:/questions/{id}";
+    }
+
+
+    private Question findQuestion(QuestionRepository questionRepository, Long id) {
         return questionRepository.findById(id).orElseThrow(() ->
                 new IllegalStateException("There is no question."));
     }

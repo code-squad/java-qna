@@ -79,4 +79,8 @@ public class User {
     public boolean notMatchPassword(String password) {
         return !password.equals(this.password);
     }
+
+    public boolean notMatchWriter(String writer) {
+        return !writer.equals(name);
+    }
 }

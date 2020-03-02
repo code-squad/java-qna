@@ -17,10 +17,11 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-@RequestMapping(value = "/questions/{id}/answers")
-public class AnswerController {
+@RestController
+@RequestMapping(value = "/api/questions/{id}/answers")
+public class ApiAnswerController {
 
   @Autowired
   AnswerRepository answerRepository;
@@ -33,17 +34,16 @@ public class AnswerController {
 
 
   @PostMapping(value = "")
-  public String create(@PathVariable("id") Long questionsId, String contents,
+  public Answer create(@PathVariable("id") Long questionsId, String contents,
       HttpSession httpSession) {
     if (!HttpSessionUtils.isLoginUser(httpSession)) {
-      return "redirect:/user/login";
+      return null;
     }
 
     Question question = qnaRepository.getOne(questionsId);
     User writer = HttpSessionUtils.getUserFromSession(httpSession);
     Answer answer = new Answer(question, writer, contents);
-    answerRepository.save(answer);
-    return "redirect:/questions/{id}";
+    return answerRepository.save(answer);
   }
 
   @DeleteMapping(value = "/{id}")

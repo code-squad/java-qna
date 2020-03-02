@@ -51,6 +51,7 @@ public class Question extends BaseTimeEntity {
     this.contents = contents;
   }
 
+
   public boolean isSameWriter(User sessionUser) {
     return writer.matchId(sessionUser.getId());
   }
@@ -87,8 +88,8 @@ public class Question extends BaseTimeEntity {
     return getFormattedCreateTime();
   }
 
-  public int getAnswerList() {
-    return answerList.size();
+  public List<Answer> getAnswerList() {
+    return answerList;
   }
 
   private String getFormattedCreateTime() {

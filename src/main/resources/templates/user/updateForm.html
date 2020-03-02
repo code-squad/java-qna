@@ -7,9 +7,10 @@
 <div class="container" id="main">
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default content-main">
-            <form name="question" method="post" action="/users/{{userId}}/update">
+            <form name="question" method="post" action="/users/{{id}}/update">
                 <div class="form-group">
-                    <label>{{userId}} 회원 정보 수정</label>
+                    <label for="userId">사용자 아이디</label>
+                    <input type="text" class="form-control"  id="userId" name="userId" value="{{userId}}" readonly>
                 </div>
                 <div class="form-group">
                     <label for="password">새로운 비밀번호</label>
@@ -23,7 +24,7 @@
                     <label for="email">새로운 이메일</label>
                     <input type="email" class="form-control" id="email" name="email" placeholder="Email">
                 </div>
-                <button type="submit" class="btn btn-success clearfix pull-right">회원가입</button>
+                <button type="submit" class="btn btn-success clearfix pull-right">정보 수정</button>
                 <div class="clearfix"/>
             </form>
         </div>

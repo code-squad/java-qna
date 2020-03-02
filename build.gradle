@@ -28,7 +28,7 @@ dependencies {
 	}
 	runtimeOnly 'com.h2database:h2'
 	compile 'org.springframework.boot:spring-boot-starter-jdbc'
-	compile 'org.springframework.boot:spring-boot-starter-jpa'
+	compile 'org.springframework.boot:spring-boot-starter-data-jpa'
 }
 
 test {

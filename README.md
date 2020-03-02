@@ -28,3 +28,31 @@
 
 * Question : 질문 데이터 저장 클래스
     * writer, title, contents, time, id
+
+## Step2
+* H2 Database 연결
+    * application.properties, build.gradle 수정으로 손쉽게 연결 가능
+* UserController : 사용자 관리 기능 구현을 담당
+    * createUser() : static/user/form.html에서 사용자가 가입 요청(post 요청)을 처리
+    * showUserList() : 가입 유저를 출력
+    * showUserProfile() : userId가 맞는지 확인 후 가입 유저의 프로필을 보여줌
+    * modifyUserProfile() : 프로필 수정부분
+    * updateUserProfile() : 프로필 수정한것을 업데이트 하는 부분
+    * goForm() : 중복제거를 위해 static에 있던 form.html을 template에 옮겨서 연결
+    * goLoginForm() : 중복제거를 위해 static에 있던 login.html을 template에 옮겨서 연결
+
+* User : 사용자 데이터 저장 클래스
+    * id, userId, password, name, email
+
+* UserRepository : User 부분 데이터베이스 CRUD 사용을 위한 인터페이스
+
+* QuestionController : 질문 관리 기능 구현을 담당
+    * createQuestion : 질문 작성 요청(post 요청)을 처리
+    * showQuestionList : 질문 리스트 보여줌
+    * showQuestionDetail : 질문 상세 보기
+    * goForm() : 중복제거를 위해 static에 있던 form.html을 template에 옮겨서 연결
+
+* Question : 질문 데이터 저장 클래스
+    * id, writer, title, contents, time
+
+* QuestionRepository : Question 부분 데이터베이스 CRUD 사용을 위한 인터페이스

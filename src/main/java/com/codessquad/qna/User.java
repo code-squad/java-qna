@@ -1,11 +1,32 @@
 package com.codessquad.qna;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class User {
 
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(nullable = false, length = 20)
     private String userId;
+
     private String password;
     private String name;
     private String email;
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getUserId() {
         return userId;
@@ -42,10 +63,21 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "userId='" + userId + '\'' +
+                "id=" + id +
+                ", userId='" + userId + '\'' +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 '}';
+    }
+
+    public void update(User updateuser) {
+        this.password = updateuser.password;
+        this.name = updateuser.name;
+        this.email = updateuser.email;
+    }
+
+    public boolean isCheckPassword(User updateUser) {
+        return this.password.equals(updateUser.getPassword());
     }
 }

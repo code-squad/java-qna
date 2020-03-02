@@ -1,5 +1,6 @@
 package com.codesquad.qna.web;
 
+import com.codesquad.qna.domain.AnswerRepository;
 import com.codesquad.qna.domain.Question;
 import com.codesquad.qna.domain.QuestionRepostory;
 import com.codesquad.qna.domain.User;
@@ -16,6 +17,9 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
+    @Autowired
+    private AnswerRepository answerRepository;
+
     @Autowired
     private QuestionRepostory questionRepostory;
 
@@ -44,6 +48,7 @@ public class QuestionController {
     public String viewQuestion(@PathVariable long id, Model model) {
         try {
             model.addAttribute("currentQuestion", questionRepostory.findById(id).orElseThrow(() -> new NotFoundException("자료가 없어용")));
+            model.addAttribute("answers", answerRepository.findAllByQuestionId(id));
             return "/questions/show";
         } catch (NotFoundException e) {
             e.printStackTrace();

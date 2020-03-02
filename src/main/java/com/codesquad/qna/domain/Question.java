@@ -21,12 +21,16 @@ public class Question {
     @Column(nullable = false)
     private String title;
 
+    @Lob
     @NotEmpty
     @Column(nullable = false)
     private String contents;
 
     @Column(nullable = false)
     private LocalDateTime createdTime;
+
+
+    private Integer countOfAnswers = 0;
 
     public Question() {
         setCreatedTimeNow();
@@ -99,5 +103,13 @@ public class Question {
 
     public boolean matchUser(User sessionUser) {
         return sessionUser.getUserId().equals(writer.getUserId());
+    }
+
+    public Integer getCountOfAnswers() {
+        return countOfAnswers;
+    }
+
+    public void addAnswer() {
+        this.countOfAnswers++;
     }
 }

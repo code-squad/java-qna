@@ -4,9 +4,9 @@
         <div class="title">
           <h2>Q&amp;A</h2>
         </div>
-        {{#currentQuestion}}
+<!--        {{#currentQuestion}}-->
         <header class="qna-header">
-            <h2 class="qna-title">제목 : {{title}}</h2>
+            <h2 class="qna-title">제목 : {{currentQuestion.title}}</h2>
         </header>
         <div class="content-main">
             <article class="article">
@@ -15,15 +15,15 @@
                         <img src="/images/solarc.jpg" class="article-author-thumb" alt=""  width="20" height="20">
                     </div>
                     <div class="article-header-text">
-                        <a href="/users/{userId}" class="article-author-name">{{writer.userId}}</a>
+                        <a href="/users/{userId}" class="article-author-name">{{currentQuestion.writer.userId}}</a>
                         <a href="/questions/413" class="article-header-time" title="퍼머링크">
-                            {{formattedCreatedTime}}
+                            {{currentQuestion.formattedCreatedTime}}
                             <i class="icon-link"></i>
                         </a>
                     </div>
                 </div>
                 <div class="article-doc">
-                    <p>{{contents}}</p>
+                    <p>{{currentQuestion.contents}}</p>
                 </div>
                 <div class="article-util">
                     <ul class="article-util-list">
@@ -41,25 +41,27 @@
                         </li>
                     </ul>
                 </div>
+<!--                {{/currentQuestion}}-->
                 <div class="qna-comment">
                     <div class="qna-comment-solar">
-                        <p class="qna-comment-count"><strong>4</strong>개의 의견</p>
                         <div class="qna-comment-solar-articles">
+                        <p class="qna-comment-count"><strong>{{currentQuestion.countOfAnswers}}</strong>개의 의견</p>
 
-                            <article class="article" id="answer-1">
+                            {{#each answers}}
+                            <article class="article" id="answer-{{this.id}}">
                                 <div class="article-header">
                                     <div class="article-header-thumb">
                                         <img alt="" class="article-author-thumb" src="/images/pangsu.jpg">
                                     </div>
                                     <div class="article-header-text">
-                                        <a class="article-author-name" href="">코드스쿼드</a>
+                                        <a class="article-author-name" href="">{{this.writer.userId}}</a>
                                         <a class="article-header-time" href="" title="퍼머링크">
-                                            2020-02-27 13:07:48
+                                            {{this.formattedCreatedTime}}
                                         </a>
                                     </div>
                                 </div>
                                 <div class="article-doc comment-doc">
-                                    <p>댓글입니다</p>
+                                    <p>{{this.comment}}</p>
                                 </div>
                                 <div class="article-util">
                                     <ul class="article-util-list">
@@ -75,42 +77,12 @@
                                     </ul>
                                 </div>
                             </article>
-
-                            <article class="article" id="answer-2">
-                                <div class="article-header">
-                                    <div class="article-header-thumb">
-                                        <img alt="" class="article-author-thumb" src="/images/pangsu.jpg">
-                                    </div>
-                                    <div class="article-header-text">
-                                        <a class="article-author-name" href="">펭수</a>
-                                        <a class="article-header-time" href="" title="퍼머링크">
-                                            2020-02-27 13:07:48
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="article-doc comment-doc">
-                                    <p>아 그런가요?</p>
-                                </div>
-                                <div class="article-util">
-                                    <ul class="article-util-list">
-                                        <li>
-                                            <a class="link-modify-article" href="">수정</a>
-                                        </li>
-                                        <li>
-                                            <form action="" class="delete-answer-form" method="POST">
-                                                <input name="_method" type="hidden" value="DELETE">
-                                                <button class="delete-answer-button" type="submit">삭제</button>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </article>
-
+                            {{/each}}
                             <form class="submit-write" action="/questions/{{id}}/answers" method="POST">
                                 <div class="form-group" style="padding:14px;">
-                                    <textarea class="form-control" placeholder="Update your status" id="comments" name="comments"></textarea>
+                                    <textarea class="form-control" placeholder="Update your status" id="comment" name="comment"></textarea>
                                 </div>
-                                <button class="btn btn_answer pull-right" type="submit">답변하기</button>
+                                <input type="submit" class="btn btn_answer pull-right" value="답변하기" />
                                 <div class="clearfix">
                                 </div>
                             </form>
@@ -119,7 +91,7 @@
                     </div>
                 </div>
             </article>
-            {{/currentQuestion}}
+
         </div>
 
       </div>

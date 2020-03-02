@@ -1,6 +1,7 @@
 package com.codessquad.qna.user;
 
-import com.codessquad.qna.errors.ForbiddenException;
+import com.codessquad.qna.commons.CustomErrorCode;
+import com.codessquad.qna.errors.UserException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -46,12 +47,24 @@ public class UserController {
     return "/users/list";
   }
 
+  private User getUser(long id, CustomErrorCode customErrorCode) {
+    Optional<User> optionalUser = userRepository.findById(id);
+    User user = optionalUser.orElseThrow(() -> new UserException(customErrorCode));
+    return user;
+  }
+
+  private User getUser(String userId, CustomErrorCode customErrorCode) {
+    Optional<User> optionalUser = userRepository.findByUserId(userId);
+    User user = optionalUser.orElseThrow(() -> new UserException(customErrorCode));
+    return user;
+  }
+
   /**
    * list.html 에서 선택된 id 의 정보를 profile.html 에서 출력합니다.
    */
   @GetMapping("/{id}")
   public String profile(@PathVariable long id, Model model) {
-    model.addAttribute("user", userRepository.findById(id).orElseThrow(ForbiddenException::new));
+    model.addAttribute("user", getUser(id, CustomErrorCode.BAD_REQUEST));
 
     return "/users/profile";
   }
@@ -61,7 +74,8 @@ public class UserController {
    */
   @GetMapping("/{id}/form")
   public String updateForm(@PathVariable long id, Model model) {
-    model.addAttribute("user", userRepository.findById(id).orElseThrow(ForbiddenException::new));
+    User user = getUser(id, CustomErrorCode.BAD_REQUEST);
+    model.addAttribute("user", user);
 
     return "/users/update";
   }
@@ -72,19 +86,17 @@ public class UserController {
   @PutMapping("/{id}")
   public String update(@PathVariable long id, User newUser, Model model) {
     log.info("### update()");
-    User origin = userRepository.findById(id).orElseThrow(ForbiddenException::new);
+    User origin = getUser(id, CustomErrorCode.USER_NOT_EXIST);
 
     if (origin.validatePassword(newUser.getOldPassword())) {
-      log.info("### update() isMatched success");
       origin.update(newUser);
       userRepository.save(origin);
 
       return "redirect:/users/list";
     }
 
-    log.info("### update() isMatched failed");
-
     model.addAttribute("wrongPassword", true);
+
     return "/users/update";
   }
 
@@ -105,23 +117,18 @@ public class UserController {
   public String login(String userId, String password, HttpSession session, Model model) {
     log.info("### login()");
 
-    User user = Optional.ofNullable(userRepository.findByUserId(userId)).orElse(new User());
+    User user = getUser(userId, CustomErrorCode.USER_NOT_EXIST);
+
     if (user.validatePassword(password)) {
-      log.info("### login() isMatched() success");
       session.setAttribute("sessionedUser", user);
       return "redirect:/";
     }
 
-    log.info("### login() isMatched() fail");
-
-    model.addAttribute("userId", userId);
-    model.addAttribute("wrongPassword", true);
-
-    return "/users/login";
+    throw new UserException(CustomErrorCode.USER_NOT_MATCHED_PASSWORD);
   }
 
   @GetMapping("/logout")
-  public String logout(HttpSession session){
+  public String logout(HttpSession session) {
     session.removeAttribute("sessionedUser");
     return "redirect:/";
   }

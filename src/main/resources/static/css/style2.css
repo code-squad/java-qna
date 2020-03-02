@@ -237,16 +237,20 @@
 
 .form-group label {
     display: block;
-    width: 80%;
+    width: 95%;
     text-align: left;
-    margin: auto;
+    /*margin: auto;*/
     padding: 5px 2px;
     font-weight: 300;
 }
 
+.form-left {
+    text-align: left;
+}
+
 .form-control {
     border-color: #5989b6;
-    width: 100%;
+    width: 90%;
     height: 34px;
     padding: 6px 12px;
     font-size: 14px;

@@ -9,9 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Controller
 public class QuestionController {
 
@@ -37,7 +34,12 @@ public class QuestionController {
 
     @GetMapping("/questions/{id}")
     public String questionPage(@PathVariable Long id, Model model) {
-        model.addAttribute("question", questionRepository.findById(id).get());
+        model.addAttribute("question", findQuestion(questionRepository, id));
         return "question/show";
+    }
+
+    private Object findQuestion(QuestionRepository questionRepository, Long id) {
+        return questionRepository.findById(id).orElseThrow(() ->
+                new IllegalStateException("There is no question."));
     }
 }

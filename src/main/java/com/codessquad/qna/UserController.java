@@ -17,29 +17,28 @@ public class UserController {
     private UserRepository userRepository;
 
     @GetMapping("/loginForm")
-    public String login() {
+    public String loginForm() {
         return "/user/login";
     }
 
     @PostMapping("/login")
-    public String logging(String userId, String password, HttpSession httpSession) {
+    public String login(String userId, String password, HttpSession httpSession) {
         User user = userRepository.findByUserId(userId);
-        System.out.println("user : " + user);
 
-        if (user == null) {
+        if (!HttpSessionUtils.isLoginUser(user)) {
             return "redirect:/users/loginForm";
         }
-        if (!user.getPassword().equals(password)) {
+        if (user.notMatchPassword(password)) {
             return "redirect:/users/loginForm";
         }
 
-        httpSession.setAttribute("sessionedUser", user);
+        httpSession.setAttribute(HttpSessionUtils.USER_SESSION_ID, user);
         return "redirect:/";
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.removeAttribute("sessionedUser");
+        session.removeAttribute(HttpSessionUtils.USER_SESSION_ID);
         return "redirect:/";
     }
 
@@ -57,7 +56,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public String profile(@PathVariable Long id, Model model) {
-        model.addAttribute("user", userRepository.findById(id).get());
+        model.addAttribute("user", findUser(userRepository, id));
         return "user/profile";
     }
 
@@ -68,44 +67,52 @@ public class UserController {
 
     @GetMapping("/{id}/form")
     public String updateForm(@PathVariable Long id, Model model, HttpSession httpSession) {
-        User sessionedUser = (User) httpSession.getAttribute("sessionedUser");
-        if (sessionedUser == null) {
+        User sessionedUser = HttpSessionUtils.getUserFromSession(httpSession);
+        if (!HttpSessionUtils.isLoginUser(sessionedUser)) {
             return "redirect:/users/loginForm";
         }
 
-        if (!id.equals(sessionedUser.getId())) {
+        if (sessionedUser.notMatchId(id)) {
             throw new IllegalStateException("Yon can't update another user.");
         }
 
-        model.addAttribute("user", userRepository.findById(id).get());
+        model.addAttribute("user", findUser(userRepository, id));
         return "user/updateForm";
     }
 
     @PostMapping("/{id}/update")
-    public String updateUser(@PathVariable("id") Long id,
+    public String updateUser(@PathVariable Long id,
                              @RequestParam String password,
                              @RequestParam String newPassword,
                              @RequestParam String checkPassword,
                              @RequestParam String name,
                              @RequestParam String email,
                              HttpSession httpSession) {
-        User sessionedUser = (User) httpSession.getAttribute("sessionedUser");
-        if (sessionedUser == null) {
+
+        User sessionedUser = HttpSessionUtils.getUserFromSession(httpSession);
+        if (!HttpSessionUtils.isLoginUser(sessionedUser)) {
             return "redirect:/users/loginForm";
         }
 
-        if (!id.equals(sessionedUser.getId())) {
+        if (sessionedUser.notMatchId(id)) {
             throw new IllegalStateException("Yon can't update another user.");
         }
 
-        User user = userRepository.findById(id).get();
-        if (user.getPassword().equals(password)) {
-            if (newPassword.equals(checkPassword)) {
-                user.update(name, email, newPassword);
-                userRepository.save(user);
-                return "redirect:/users";
-            }
+        User user = findUser(userRepository, id);
+        if (user.notMatchPassword(password)) {
+            return "redirect:/users/{id}/form";
+        }
+
+        if (newPassword.equals(checkPassword)) {
+            user.update(name, email, newPassword);
+            userRepository.save(user);
+            return "redirect:/users";
         }
         return "redirect:/users/{id}/form";
+    }
+
+    private User findUser(UserRepository userRepository, Long id) {
+        return userRepository.findById(id).orElseThrow(() ->
+                new IllegalStateException("There is no user."));
     }
 }

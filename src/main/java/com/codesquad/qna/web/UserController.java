@@ -1,5 +1,6 @@
-package com.codessquad.qna;
+package com.codesquad.qna.web;
 
+import com.codesquad.qna.domain.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,7 +36,7 @@ public class UserController {
     @GetMapping("/{id}")
     public String read(@PathVariable String id, Model model) {
         for (User user : users) {
-            if(id.equals(user.getId())) {
+            if(id.equals(user.getUserId())) {
                 model.addAttribute("user", user);
                 return "user/profile";
             }

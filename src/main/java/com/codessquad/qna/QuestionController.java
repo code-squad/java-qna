@@ -83,6 +83,23 @@ public class QuestionController {
         return "redirect:/questions/{id}";
     }
 
+    @DeleteMapping("/{id}/{question.writer}/delete")
+    public String delete(@PathVariable Long id,
+                         @PathVariable("question.writer") String writer,
+                         HttpSession httpSession) {
+
+        User user = HttpSessionUtils.getUserFromSession(httpSession);
+        if (!HttpSessionUtils.isLoginUser(user)) {
+            return "redirect:/users/loginForm";
+        }
+
+        if (user.notMatchWriter(writer)) {
+            return "redirect:/users/loginForm";
+        }
+
+        questionRepository.delete(findQuestion(questionRepository, id));
+        return "redirect:/";
+    }
 
     private Question findQuestion(QuestionRepository questionRepository, Long id) {
         return questionRepository.findById(id).orElseThrow(() ->

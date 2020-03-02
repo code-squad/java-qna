@@ -2,11 +2,7 @@ package com.codessquad.qna.question;
 
 import lombok.Data;
 
-import javax.persistence.Id;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,20 +12,27 @@ import java.time.format.DateTimeFormatter;
 @NotNull
 public class Question {
 
-  private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm");
+  private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
   @Column(nullable = false, length = 20)
-  private String writer;
+  private String userId;
   private String title;
   private String contents;
   private LocalDateTime dateTime;
 
   public Question() {
     this.dateTime = LocalDateTime.now();
+  }
+
+  public void update(Question question) {
+    this.userId = question.userId;
+    this.title = question.title;
+    this.contents = question.contents;
+    this.dateTime = question.dateTime;
   }
 
   public String getDateTime() {

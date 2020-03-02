@@ -34,7 +34,7 @@ public class QuestionController {
         if (!HttpSessionUtils.isLoginUser(user)) {
             return "redirect:/users/loginForm";
         }
-        Question question = new Question(user.getName(), title, contents);
+        Question question = new Question(user, title, contents);
         questionRepository.save(question);
         return "redirect:/";
     }
@@ -45,9 +45,9 @@ public class QuestionController {
         return "question/show";
     }
 
-    @GetMapping("/{id}/{question.writer}/updateForm")
+    @GetMapping("/{id}/{question.writer.name}/updateForm")
     public String updateForm(@PathVariable Long id,
-                             @PathVariable("question.writer") String writer,
+                             @PathVariable("question.writer.name") String writer,
                              HttpSession httpSession,
                              Model model) {
         User user = HttpSessionUtils.getUserFromSession(httpSession);
@@ -63,9 +63,9 @@ public class QuestionController {
         return "question/updateForm";
     }
 
-    @PutMapping("{id}/{question.writer}/update")
+    @PutMapping("{id}/{question.writer.name}/update")
     public String update(@PathVariable Long id,
-                         @PathVariable("question.writer") String writer,
+                         @PathVariable("question.writer.name") String writer,
                          String title, String contents,
                          HttpSession httpSession) {
         User user = HttpSessionUtils.getUserFromSession(httpSession);
@@ -80,12 +80,13 @@ public class QuestionController {
 
         Question question = findQuestion(questionRepository, id);
         question.update(title, contents);
+        questionRepository.save(question);
         return "redirect:/questions/{id}";
     }
 
-    @DeleteMapping("/{id}/{question.writer}/delete")
+    @DeleteMapping("/{id}/{question.writer.name}/delete")
     public String delete(@PathVariable Long id,
-                         @PathVariable("question.writer") String writer,
+                         @PathVariable("question.writer.name") String writer,
                          HttpSession httpSession) {
 
         User user = HttpSessionUtils.getUserFromSession(httpSession);

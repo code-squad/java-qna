@@ -316,3 +316,37 @@
 - BLOB, CLOB가 있음.
 - BLOB for binary data, ex)image...
 - CLOB for text data
+
+
+
+## step5
+
+> 목표
+
+- AJAX 활용
+  - [ ] 답변 수정
+  - [ ] 답변 삭제
+  - [ ] 답변 수(포인트)
+- 리팩토링
+  - [ ] 도메인
+- Swagger
+  - [ ] 문서화
+  - [ ] 정리
+- 기타
+  - [ ] 도메인 클래스 `equals()`,` hashcode()` 정의하기
+  - [ ] 중복 가입에 대한 처리
+  - [ ] 배포 자동화.
+
+
+
+> 강의
+
+- `e.preventdefault()`
+  - 전송기능을 막았다. 전송안됨을 확인함.
+
+
+
+
+
+> 정리
+

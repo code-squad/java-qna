@@ -9,8 +9,17 @@ buildscript {
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 		//즉, spring-boot-gradle-plugin라는 스프링부트 그레이들 플러그인을 의존성으로 받겠다는 이야기입니다.
-	}
+
+plugins {
+	id 'org.springframework.boot' version '2.2.4.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'java'
+	id "com.heroku.sdk.heroku-gradle" version "1.0.4"
 }
+
+group = 'com.codessquad'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
 
 //앞서 선언한 플러그인 의존성을 어떻게 적용할 것인가?
 plugins {

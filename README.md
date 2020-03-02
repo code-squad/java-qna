@@ -122,3 +122,7 @@
    빈 문자열이 들어왔을 경우엔 비밀번호를 변경하지 않습니다.
 4. 게시물은 보통 descending 되어 표시되므로 조회시 내림차순 정렬을 작성 시간순으로 하도록 하였습니다.
 5. 게시물 삭제시 댓글도 삭제되도록 하였습니다. (이 때, deleted 상태만 변경되고 조회되지 않도록 하였습니다.)
+
+# STEP4 리뷰 적용
+
+1. CommonConstants를 분리하였습니다. (Error 페이지는 ErrorConstants, Format은 FormatConstants) 패키지를 constants로 변경하였습니다.

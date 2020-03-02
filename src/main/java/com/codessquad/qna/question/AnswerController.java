@@ -1,6 +1,7 @@
 package com.codessquad.qna.question;
 
-import com.codessquad.qna.common.CommonConstants;
+import com.codessquad.qna.constants.CommonConstants;
+import com.codessquad.qna.constants.ErrorConstants;
 import com.codessquad.qna.user.User;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class AnswerController {
             Answer answer = new Answer(loginUser, question, comments);
             answerRepository.save(answer);
         } catch (NotFoundException e) {
-            return CommonConstants.ERROR_QUESTION_NOT_FOUND;
+            return ErrorConstants.ERROR_QUESTION_NOT_FOUND;
         }
 
         return "redirect:/questions/" + questionId;
@@ -58,7 +59,7 @@ public class AnswerController {
             model.addAttribute("question", question);
             model.addAttribute("answer", answer);
         } catch (NotFoundException e) {
-            return CommonConstants.ERROR_QUESTION_NOT_FOUND;
+            return ErrorConstants.ERROR_QUESTION_NOT_FOUND;
         }
 
         return "questions/answer-modify-form";

@@ -1,6 +1,7 @@
 package com.codessquad.qna.question;
 
-import com.codessquad.qna.common.CommonConstants;
+import com.codessquad.qna.constants.CommonConstants;
+import com.codessquad.qna.constants.ErrorConstants;
 import com.codessquad.qna.user.User;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
@@ -58,7 +59,7 @@ public class QuestionController {
             model.addAttribute("isLoginUserEqualsWriter", question.isWrittenBy(loginUser));
             model.addAttribute("answers", answers);
         } catch (NotFoundException e) {
-            return CommonConstants.ERROR_QUESTION_NOT_FOUND;
+            return ErrorConstants.ERROR_QUESTION_NOT_FOUND;
         }
 
         return "questions/show";
@@ -77,7 +78,7 @@ public class QuestionController {
             }
             model.addAttribute("question", question);
         } catch (NotFoundException e) {
-            return CommonConstants.ERROR_QUESTION_NOT_FOUND;
+            return ErrorConstants.ERROR_QUESTION_NOT_FOUND;
         }
 
         return "questions/modify-form";
@@ -100,7 +101,7 @@ public class QuestionController {
             question.updateQuestionData(title, contents, LocalDateTime.now());
             questionRepository.save(question);
         } catch (NotFoundException e) {
-            return CommonConstants.ERROR_QUESTION_NOT_FOUND;
+            return ErrorConstants.ERROR_QUESTION_NOT_FOUND;
         }
         return "redirect:/questions/" + id;
     }
@@ -123,7 +124,7 @@ public class QuestionController {
                 return "redirect:/";
             }
         } catch (NotFoundException e) {
-            return CommonConstants.ERROR_QUESTION_NOT_FOUND;
+            return ErrorConstants.ERROR_QUESTION_NOT_FOUND;
         }
         return "redirect:/questions/" + id;
     }

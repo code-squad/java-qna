@@ -13,6 +13,27 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class CustomErrorController {
 
+  /**
+   * Feat : 특정되지 않은 예외 처리를 합니다.
+   * Desc :
+   * Return : /error
+   */
+  @ExceptionHandler(Exception.class)
+  public String defaultException(Exception e, HttpStatus httpStatus, Model model) {
+    log.info("### defaultException() ");
+
+    model.addAttribute("code", httpStatus.value());
+    model.addAttribute("msg", httpStatus.getReasonPhrase());
+    model.addAttribute("descMsg", e.getMessage());
+
+    return "/error";
+  }
+
+  /**
+   * Feat : ForbiddenException 예외 처리를 합니다.
+   * Desc :
+   * Return : /error
+   */
   @ExceptionHandler(ForbiddenException.class)
   public String forbiddenException(Exception e, Model model) {
     log.info("### forbiddenException() ");
@@ -24,6 +45,11 @@ public class CustomErrorController {
     return "/error";
   }
 
+  /**
+   * Feat : UserException 예외 처리를 합니다.
+   * Desc :
+   * Return : /error
+   */
   @ExceptionHandler(UserException.class)
   public String userException(Exception e, Model model) {
     log.info("### userException() ");
@@ -44,6 +70,11 @@ public class CustomErrorController {
     return "/users/login";
   }
 
+  /**
+   * Feat : QuestionException 예외 처리를 합니다.
+   * Desc :
+   * Return : /error
+   */
   @ExceptionHandler(QuestionException.class)
   public String questionException(Exception e, Model model) {
     log.info("### questionException() ");
@@ -53,7 +84,7 @@ public class CustomErrorController {
       model.addAttribute("descMsg", e.getMessage());
 
       return "/error";
-    }else if (e.getMessage().equals(CustomErrorCode.USER_NOT_MATCHED.getMsg())) {
+    } else if (e.getMessage().equals(CustomErrorCode.USER_NOT_MATCHED.getMsg())) {
       model.addAttribute("notMatchedUser", true);
 
       return "redirect:/";

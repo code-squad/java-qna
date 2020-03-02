@@ -14,7 +14,9 @@ public class CommonController {
   private QuestionRepository questionRepository;
 
   /**
-   * 모든 Question 을 가져와서 welcome 페이지에 보여줍니다.
+   * Feat : 모든 Question 을 가져옵니다.
+   * Desc : Get 처리를 위해 분리하였습니다.
+   * Return : /welcome
    */
   @GetMapping(value = {"/", ""})
   public String welcomeGet(Model model) {
@@ -23,6 +25,11 @@ public class CommonController {
     return "/welcome";
   }
 
+  /**
+   * Feat : 모든 Question 을 가져옵니다.
+   * Desc : Post 처리를 위해 분리하였습니다.
+   * Return : /welcome
+   */
   @PostMapping("/welcome")
   public String welcomePost(Model model) {
     model.addAttribute("questions", questionRepository.findAll());

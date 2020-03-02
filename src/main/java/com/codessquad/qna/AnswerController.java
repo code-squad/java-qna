@@ -16,7 +16,6 @@ public class AnswerController {
     @Autowired
     private QuestionRepository questionRepository;
 
-    // 답변 처리하는 컨트롤러, 처리 후 show로 redirect
     @PostMapping("/{question.id}/answers")
     public String answer(@PathVariable("question.id") Long questionId,
                          @RequestParam String contents,
@@ -26,9 +25,7 @@ public class AnswerController {
         if (!HttpSessionUtils.isLoginUser(sessionedUser)) {
             return "redirect:/users/loginForm";
         }
-        Question question = questionRepository.findById(questionId).orElseThrow(() ->
-                new IllegalStateException("There is no question."));
-
+        Question question = findQuestion(questionRepository, questionId);
         Answer answer = new Answer(question, contents, sessionedUser.getName());
         answerRepository.save(answer);
         return "redirect:/questions/{question.id}";

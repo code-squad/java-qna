@@ -27,4 +27,5 @@
 ## Answer 구현
 ### 어려움
 - 답변하기 버튼의 type을 button이 아니라 submit으로 해야 반응.
+- Answer의 getId를 작성안해서 오랜시간 view에서 answer의 id가 못 넘어오는 이유를 파악하지 못함. 사소한 문제지만 반복되지 않게 기록!! 
 

@@ -18,21 +18,21 @@
         </tr>
         </thead>
         <tbody>
-          {{#each users}}
-          <tr>
-            <th scope="row">{{id}}</th>
-            <td>{{this.userId}}</td>
-            <td><a href="/users/{{id}}">{{this.userName}}</a></td>
-            <td>{{this.userEmail}}</td>
-            <td><a class="btn btn-success" href="/users/{{id}}/form" role="button">수정</a></td>
-          </tr>
-          {{/each}}
+        {{#each users}}
+        <tr>
+          <th scope="row">{{id}}</th>
+          <td>{{this.userId}}</td>
+          <td><a href="/users/{{id}}">{{this.userName}}</a></td>
+          <td>{{this.userEmail}}</td>
+          <td><a class="btn btn-success" href="/users/{{id}}/form" role="button">수정</a></td>
+        </tr>
+        {{/each}}
         </tbody>
       </table>
     </div>
   </div>
 </div>
 
-{{> script_references}}
+{{> script-references}}
 </body>
 </html>

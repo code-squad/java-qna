@@ -1,11 +1,10 @@
 package com.codessquad.qna.question;
 
+import com.codessquad.qna.common.CommonConstants;
 import com.codessquad.qna.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-
-import static com.codessquad.qna.common.CommonUtility.DATE_TIME_FORMATTER;
 
 @Entity
 public class Answer {
@@ -17,12 +16,19 @@ public class Answer {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
     private User writer;
+
     @Column(nullable = false)
     private String comment;
+
     @Column(nullable = false)
     private LocalDateTime createdDateTime;
+
     @Column(nullable = false)
     private LocalDateTime updatedDateTime;
+
+    @Column(nullable = false)
+    private boolean isDeleted;
+
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
     private Question question;
@@ -35,6 +41,7 @@ public class Answer {
         this.comment = comment;
         this.createdDateTime = LocalDateTime.now();
         this.updatedDateTime = LocalDateTime.now();
+        this.isDeleted = false;
     }
 
     public long getId() {
@@ -70,7 +77,7 @@ public class Answer {
     }
 
     public String getFormattedCreatedDateTime() {
-        return createdDateTime.format(DATE_TIME_FORMATTER);
+        return createdDateTime.format(CommonConstants.POST_DATA_DATE_TIME_FORMATTER);
     }
 
     public Question getQuestion() {
@@ -90,6 +97,19 @@ public class Answer {
     }
 
     public String getFormattedUpdatedDateTime() {
-        return updatedDateTime.format(DATE_TIME_FORMATTER);
+        return updatedDateTime.format(CommonConstants.POST_DATA_DATE_TIME_FORMATTER);
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public Answer delete() {
+        this.isDeleted = true;
+        return this;
     }
 }

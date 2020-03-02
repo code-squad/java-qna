@@ -1,8 +1,9 @@
 package com.codessquad.qna.user;
 
-import com.codessquad.qna.common.CommonUtility;
+import com.codessquad.qna.common.CommonConstants;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.ui.Model;
@@ -15,14 +16,12 @@ import javax.validation.ConstraintViolationException;
 @Controller
 @RequestMapping("/users")
 public class UserController {
+
     @Autowired
     private UserRepository userRepository;
 
     @GetMapping("/form")
-    public String goUserForm(Model model) {
-        model.addAttribute("actionUrl", "/users");
-        model.addAttribute("httpMethod", "POST");
-        model.addAttribute("buttonName", "회원가입");
+    public String goUserForm() {
         return "users/form";
     }
 
@@ -30,7 +29,7 @@ public class UserController {
     public String createUser(User user) {
         try {
             userRepository.save(user);
-        } catch (ConstraintViolationException e) {
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             return "redirect:/users/form";
         }
         return "redirect:/users";
@@ -48,7 +47,7 @@ public class UserController {
         try {
             modelAndView.addObject("user", getUserIfExist(id));
         } catch (NotFoundException e) {
-            return new ModelAndView(CommonUtility.ERROR_USER_NOT_FOUND);
+            return new ModelAndView(CommonConstants.ERROR_USER_NOT_FOUND);
         }
         return modelAndView;
     }
@@ -58,52 +57,39 @@ public class UserController {
     public String showUserInfoModifyForm(@PathVariable long id, Model model, HttpSession session) {
         try {
             User user = getUserIfExist(id);
-            if (!getLoginUserAndCheckEqualsRequestedUser(session, user)) {
-                return CommonUtility.ERROR_CANNOT_EDIT_OTHER_USER_INFO;
+            if (isLoginUserNotEqualsRequestedUser(session, user)) {
+                return CommonConstants.ERROR_CANNOT_EDIT_OTHER_USER_INFO;
             }
             model.addAttribute("user", user);
         } catch (NotFoundException e) {
-            return CommonUtility.ERROR_USER_NOT_FOUND;
+            return CommonConstants.ERROR_USER_NOT_FOUND;
         }
         model.addAttribute("actionUrl", "/users/" + id);
-        model.addAttribute("httpMethod", "PUT");
-        model.addAttribute("buttonName", "수정");
-        return "/users/form";
+        return "/users/modify-form";
     }
 
     @PutMapping("/{id}")
     public String updateUserInfo(@PathVariable long id,
-                                 @RequestParam String userPassword,
-                                 @RequestParam String userName,
-                                 @RequestParam String userEmail,
+                                 User updateUser,
+                                 @RequestParam String newPassword,
                                  HttpSession session) {
         try {
             User user = getUserIfExist(id);
-            if (!getLoginUserAndCheckEqualsRequestedUser(session, user)) {
-                return CommonUtility.ERROR_CANNOT_EDIT_OTHER_USER_INFO;
+            if (isLoginUserNotEqualsRequestedUser(session, user)) {
+                return CommonConstants.ERROR_CANNOT_EDIT_OTHER_USER_INFO;
             }
-            updateUserNameAndEmail(user, userName, userPassword, userEmail);
-            session.setAttribute(CommonUtility.SESSION_LOGIN_USER, user);
+            if (user.isUserPasswordNotEquals(updateUser.getUserPassword())) {
+                return "redirect:/users/" + id + "/form";
+            }
+            user.update(updateUser, newPassword);
+            session.setAttribute(CommonConstants.SESSION_LOGIN_USER, userRepository.save(user));
         } catch (NotFoundException e) {
-            return CommonUtility.ERROR_USER_NOT_FOUND;
+            return CommonConstants.ERROR_USER_NOT_FOUND;
         } catch (TransactionSystemException e) {
             return "redirect:/users/" + id + "/form";
         }
 
         return "redirect:/users";
-    }
-
-    private boolean getLoginUserAndCheckEqualsRequestedUser(HttpSession session, User user) {
-        Object userAttribute = session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
-        return checkUserEqualsLoginUser(user, userAttribute);
-    }
-
-    private boolean checkUserEqualsLoginUser(User user, Object userAttribute) {
-        if (userAttribute == null) {
-            return false;
-        }
-        User loginUser = (User) userAttribute;
-        return loginUser.equals(user);
     }
 
     @GetMapping("/login")
@@ -112,16 +98,14 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String loginUser(@RequestParam String userId,
-                            @RequestParam String userPassword,
-                            HttpSession session) {
+    public String loginUser(@RequestParam String userId, @RequestParam String userPassword, HttpSession session) {
         User user = userRepository.findByUserId(userId);
 
         // 사용자가 없거나, 비밀번호 일치하지 않는 경우
-        if (user == null || !user.isEqualsPassword(userPassword)) {
+        if (user == null || user.isUserPasswordNotEquals(userPassword)) {
             return "users/login_failed";
         }
-        session.setAttribute(CommonUtility.SESSION_LOGIN_USER, user);
+        session.setAttribute(CommonConstants.SESSION_LOGIN_USER, user);
         return "redirect:/";
     }
 
@@ -131,19 +115,12 @@ public class UserController {
         return "redirect:/";
     }
 
-    private User getUserIfExist(long id) throws NotFoundException {
-        return userRepository.findById(id)
-                             .orElseThrow(() -> new NotFoundException("해당 사용자는 존재하지 않는 사용자입니다."));
+    private boolean isLoginUserNotEqualsRequestedUser(HttpSession session, User user) {
+        return !user.equals(session.getAttribute(CommonConstants.SESSION_LOGIN_USER));
     }
 
-    private void updateUserNameAndEmail(User user,
-                                        String userName,
-                                        String userPassword,
-                                        String userEmail) {
-        if (user.isEqualsPassword(userPassword)) {
-            user.updateNameAndEmail(userName, userEmail);
-            userRepository.save(user);
-        }
+    private User getUserIfExist(long id) throws NotFoundException {
+        return userRepository.findById(id).orElseThrow(() -> new NotFoundException("해당 사용자는 존재하지 않는 사용자입니다."));
     }
 
 }

@@ -2,8 +2,7 @@
 <Configuration>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout
-                    pattern="%style{%d{yyyy-MM-dd hh:mm:ss:SSS}} %highlight{%-5level }[%style{%t}{bright,blue}] %style{%C{1.}}{bright,yellow}: %msg%n%throwable" />
+            <PatternLayout pattern="[%style{%d{yyyy-MM-dd HH:mm:ss:SSS}}] %highlight{%-5level }[%style{%t}{bright,blue}] %style{%C{1.}}{bright,yellow}: %msg%n%throwable" />
         </Console>
         
         <!-- 로그파일 만들어주는거 지금은 필요없음... -->

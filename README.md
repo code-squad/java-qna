@@ -100,3 +100,25 @@
    [참고](https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto-configure-log4j-for-logging)
 2. log4j2 설정파일을 추가하였습니다.
    [참고](https://www.baeldung.com/spring-boot-logging)
+
+# STEP3 리뷰 사항 적용
+
+1. 전역 상수 클래스의 네이밍의 변경(Util성 클래스는 메소드를 포함하고, Constants는 포함하지 않음).
+2. DATE_TIME_FORMATTER의 명칭 변경 => POST_DATA를 앞에 붙여주어 게시물 데이터에만 사용하는 형식임을 보여주고자 하였습니다.
+3. URI에 underscore 보다 hyphen이 더 검색 결과에 좋다는 걸 알고 있었는데, 까먹어서 아예 template 파일의 Naming Convention을 kebab case로 변경하였습니다.
+4. Annotation이 붙어서 읽기 힘들어지는 필드들을 분리하였습니다.
+5. 클래스의 경우 맨 윗줄을 항상 띄워주도록 나름의 컨벤션을 정의하였습니다.
+6. UserAttribute를 바로 User로 형변환 해서 받도록 하였습니다.
+7. User에 유니크 키를 지정해주고, 유니크 키 중 하나인 email로 유저를 비교하도록 하였습니다.
+8. 요청의 메소드를 프론트에서 결정할 수 있도록 로직을 변경하고, 템플릿을 추가해서 이후 비밀번호 변경도 가능하게 하고자 하였습니다.
+9. 항상 부정연산자를 사용하는 메소드들을 부정연산자를 포함하여 리턴하도록 수정하였습니다.
+10. private 메소드를 클래스 하단으로 이동하였습니다.
+
+# STEP4
+
+1. OneToMany Mapping으로 question과 answer의 연관관계를 설정해주었습니다.
+2. Question을 Delete할 때, 삭제 조건을 줄 수 있도록 하였습니다. 그리고 하위 Answer들도 삭제되도록 하였습니다.
+3. 비밀번호 변경기능을 추가하였습니다. update시에 User 객체를 직접 전달받아 처리할 수 있도록 하였습니다.
+   빈 문자열이 들어왔을 경우엔 비밀번호를 변경하지 않습니다.
+4. 게시물은 보통 descending 되어 표시되므로 조회시 내림차순 정렬을 작성 시간순으로 하도록 하였습니다.
+5. 게시물 삭제시 댓글도 삭제되도록 하였습니다. (이 때, deleted 상태만 변경되고 조회되지 않도록 하였습니다.)

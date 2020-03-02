@@ -1,6 +1,6 @@
 package com.codessquad.qna.question;
 
-import com.codessquad.qna.common.CommonUtility;
+import com.codessquad.qna.common.CommonConstants;
 import com.codessquad.qna.user.User;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,47 +12,45 @@ import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 
 @Controller
+@RequestMapping("/questions/{questionId}/answers")
 public class AnswerController {
+
     @Autowired
     private QuestionRepository questionRepository;
+
     @Autowired
     private AnswerRepository answerRepository;
 
-    @PostMapping("/questions/{questionId}/answers")
-    public String createAnswer(@PathVariable Long questionId,
-                               @RequestParam String comments,
-                               HttpSession session) {
-        Object loginUserAttribute = session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
-        if (loginUserAttribute == null) {
-            return CommonUtility.REDIRECT_LOGIN_PAGE;
-        }
-
+    @PostMapping("")
+    public String createAnswer(@PathVariable Long questionId, @RequestParam String comments, HttpSession session) {
         try {
-            User loginUser = (User) loginUserAttribute;
+            User loginUser = (User) session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
+            if (loginUser == null) {
+                return CommonConstants.REDIRECT_LOGIN_PAGE;
+            }
+
             Question question = questionRepository.findById(questionId).orElseThrow(() -> new NotFoundException("못찾음"));
             Answer answer = new Answer(loginUser, question, comments);
             answerRepository.save(answer);
         } catch (NotFoundException e) {
-            return CommonUtility.ERROR_QUESTION_NOT_FOUND;
+            return CommonConstants.ERROR_QUESTION_NOT_FOUND;
         }
 
         return "redirect:/questions/" + questionId;
     }
 
-    @GetMapping("/questions/{questionId}/answers/{answerId}/form")
+    @GetMapping("/{answerId}/form")
     public String goUpdateAnswerForm(@PathVariable Long questionId,
                                      @PathVariable Long answerId,
                                      HttpSession session,
                                      Model model) {
-        Object loginUserAttribute = session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
-        if (loginUserAttribute == null) {
-            return CommonUtility.REDIRECT_LOGIN_PAGE;
-        }
-
         try {
-            User loginUser = (User) loginUserAttribute;
-            Question question = questionRepository.findById(questionId)
-                                                  .orElseThrow(() -> new NotFoundException("못찾음"));
+            User loginUser = (User) session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
+            if (loginUser == null) {
+                return CommonConstants.REDIRECT_LOGIN_PAGE;
+            }
+
+            Question question = questionRepository.findById(questionId).orElseThrow(() -> new NotFoundException("못찾음"));
             Answer answer = answerRepository.findByQuestionIdAndId(questionId, answerId);
             if (!loginUser.equals(answer.getWriter())) {
                 return "redirect:/questions/" + questionId;
@@ -60,23 +58,22 @@ public class AnswerController {
             model.addAttribute("question", question);
             model.addAttribute("answer", answer);
         } catch (NotFoundException e) {
-            return CommonUtility.ERROR_QUESTION_NOT_FOUND;
+            return CommonConstants.ERROR_QUESTION_NOT_FOUND;
         }
 
-        return "questions/answer_modify_form";
+        return "questions/answer-modify-form";
     }
 
-    @PutMapping("/questions/{questionId}/answers/{answerId}")
+    @PutMapping("/{answerId}")
     public String updateAnswer(@PathVariable Long questionId,
                                @PathVariable Long answerId,
                                @RequestParam String comments,
                                HttpSession session) {
-        Object loginUserAttribute = session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
-        if (loginUserAttribute == null) {
-            return CommonUtility.REDIRECT_LOGIN_PAGE;
+        User loginUser = (User) session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
+        if (loginUser == null) {
+            return CommonConstants.REDIRECT_LOGIN_PAGE;
         }
 
-        User loginUser = (User) loginUserAttribute;
         Answer answer = answerRepository.findByQuestionIdAndId(questionId, answerId);
         if (!loginUser.equals(answer.getWriter())) {
             return "redirect:/questions/" + questionId;
@@ -88,21 +85,18 @@ public class AnswerController {
         return "redirect:/questions/" + questionId;
     }
 
-    @DeleteMapping("/questions/{questionId}/answers/{answerId}")
-    public String deleteAnswer(@PathVariable Long questionId,
-                               @PathVariable Long answerId,
-                               HttpSession session) {
-        Object loginUserAttribute = session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
-        if (loginUserAttribute == null) {
-            return CommonUtility.REDIRECT_LOGIN_PAGE;
+    @DeleteMapping("/{answerId}")
+    public String deleteAnswer(@PathVariable Long questionId, @PathVariable Long answerId, HttpSession session) {
+        User loginUser = (User) session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
+        if (loginUser == null) {
+            return CommonConstants.REDIRECT_LOGIN_PAGE;
         }
 
-        User loginUser = (User) loginUserAttribute;
         Answer answer = answerRepository.findByQuestionIdAndId(questionId, answerId);
         if (!loginUser.equals(answer.getWriter())) {
             return "redirect:/questions/" + questionId;
         }
-        answerRepository.delete(answer);
+        answerRepository.save(answer.delete());
         return "redirect:/questions/" + questionId;
     }
 

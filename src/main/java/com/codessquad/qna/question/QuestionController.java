@@ -1,6 +1,6 @@
 package com.codessquad.qna.question;
 
-import com.codessquad.qna.common.CommonUtility;
+import com.codessquad.qna.common.CommonConstants;
 import com.codessquad.qna.user.User;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
@@ -11,20 +11,24 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
 public class QuestionController {
+
     private static Logger log = LoggerFactory.getLogger(QuestionController.class);
+
     @Autowired
     private QuestionRepository questionRepository;
+
     @Autowired
     private AnswerRepository answerRepository;
 
     @GetMapping("/")
     public String goIndexPage(Model model) {
-        model.addAttribute("questions", questionRepository.findAll());
+        model.addAttribute("questions", questionRepository.findAllByIsDeletedFalseOrderByCreatedDateTimeDesc());
         return "main";
     }
 
@@ -34,12 +38,10 @@ public class QuestionController {
     }
 
     @PostMapping("/questions")
-    public String createQuestion(HttpSession session,
-                                 @RequestParam String title,
-                                 @RequestParam String contents) {
+    public String createQuestion(HttpSession session, @RequestParam String title, @RequestParam String contents) {
         User loginUser = getLoginUser(session);
         if (loginUser == null) {
-            return CommonUtility.REDIRECT_LOGIN_PAGE;
+            return CommonConstants.REDIRECT_LOGIN_PAGE;
         }
         Question question = new Question(loginUser, title, contents);
         questionRepository.save(question);
@@ -51,13 +53,12 @@ public class QuestionController {
         try {
             User loginUser = getLoginUser(session);
             Question question = getQuestionIfExist(id);
-            List<Answer> answers = answerRepository.findByQuestionId(id);
+            List<Answer> answers = answerRepository.findByQuestionIdAndIsDeletedFalse(id);
             model.addAttribute("question", question);
-            model.addAttribute("isLoginUserEqualsWriter",
-                    question.isWriterEqualsLoginUser(loginUser));
+            model.addAttribute("isLoginUserEqualsWriter", question.isWrittenBy(loginUser));
             model.addAttribute("answers", answers);
         } catch (NotFoundException e) {
-            return CommonUtility.ERROR_QUESTION_NOT_FOUND;
+            return CommonConstants.ERROR_QUESTION_NOT_FOUND;
         }
 
         return "questions/show";
@@ -68,18 +69,18 @@ public class QuestionController {
         try {
             User loginUser = getLoginUser(session);
             if (loginUser == null) {
-                return CommonUtility.REDIRECT_LOGIN_PAGE;
+                return CommonConstants.REDIRECT_LOGIN_PAGE;
             }
             Question question = getQuestionIfExist(id);
-            if (!question.isWriterEqualsLoginUser(loginUser)) {
+            if (!question.isWrittenBy(loginUser)) {
                 return "redirect:/questions/" + id;
             }
             model.addAttribute("question", question);
         } catch (NotFoundException e) {
-            return CommonUtility.ERROR_QUESTION_NOT_FOUND;
+            return CommonConstants.ERROR_QUESTION_NOT_FOUND;
         }
 
-        return "questions/modify_form";
+        return "questions/modify-form";
     }
 
     @PutMapping("/questions/{id}")
@@ -90,45 +91,49 @@ public class QuestionController {
         try {
             User loginUser = getLoginUser(session);
             if (loginUser == null) {
-                return CommonUtility.REDIRECT_LOGIN_PAGE;
+                return CommonConstants.REDIRECT_LOGIN_PAGE;
             }
             Question question = getQuestionIfExist(id);
-            if (!question.isWriterEqualsLoginUser(loginUser)) {
+            if (!question.isWrittenBy(loginUser)) {
                 return "redirect:/questions/" + id;
             }
             question.updateQuestionData(title, contents, LocalDateTime.now());
             questionRepository.save(question);
         } catch (NotFoundException e) {
-            return CommonUtility.ERROR_QUESTION_NOT_FOUND;
+            return CommonConstants.ERROR_QUESTION_NOT_FOUND;
         }
         return "redirect:/questions/" + id;
     }
 
     @DeleteMapping("/questions/{id}")
+    @Transactional
     public String deleteQuestion(@PathVariable long id, HttpSession session) {
         try {
             User loginUser = getLoginUser(session);
             if (loginUser == null) {
-                return CommonUtility.REDIRECT_LOGIN_PAGE;
+                return CommonConstants.REDIRECT_LOGIN_PAGE;
             }
             Question question = getQuestionIfExist(id);
-            if (!question.isWriterEqualsLoginUser(loginUser)) {
+            if (!question.isWrittenBy(loginUser)) {
                 return "redirect:/questions/" + id;
             }
-            questionRepository.delete(question);
+            if (question.isDeletable()) {
+                answerRepository.deleteAnswersInQuestion(question);
+                questionRepository.save(question.delete());
+                return "redirect:/";
+            }
         } catch (NotFoundException e) {
-            return CommonUtility.ERROR_QUESTION_NOT_FOUND;
+            return CommonConstants.ERROR_QUESTION_NOT_FOUND;
         }
-        return "redirect:/";
+        return "redirect:/questions/" + id;
     }
 
     private User getLoginUser(HttpSession session) {
-        return (User) session.getAttribute(CommonUtility.SESSION_LOGIN_USER);
+        return (User) session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
     }
 
     private Question getQuestionIfExist(long id) throws NotFoundException {
-        return questionRepository.findById(id)
-                                 .orElseThrow(() -> new NotFoundException("해당 질문글을 찾을 수 없습니다."));
+        return questionRepository.findById(id).orElseThrow(() -> new NotFoundException("해당 질문글을 찾을 수 없습니다."));
     }
 
 }

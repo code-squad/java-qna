@@ -7,18 +7,24 @@ import java.util.Objects;
 
 @Entity
 public class User implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, unique = true)
     @NotEmpty
     private String userId;
+
     @NotEmpty
     private String userPassword;
+
     @NotEmpty
+    @Column(unique = true)
     private String userName;
+
     @NotEmpty
+    @Column(unique = true)
     private String userEmail;
 
     public User() {}
@@ -70,27 +76,28 @@ public class User implements Serializable {
         this.userEmail = userEmail;
     }
 
-    public boolean isEqualsPassword(String password) {
-        return this.userPassword.equals(password);
+    public boolean isUserPasswordNotEquals(String password) {
+        return !this.userPassword.equals(password);
     }
 
-    public void updateNameAndEmail(String userName, String userEmail) {
-        this.userName = userName;
-        this.userEmail = userEmail;
+    public void update(User updateUser, String newPassword) {
+        if (!newPassword.equals("")) {
+            this.userPassword = newPassword;
+        }
+        this.userName = updateUser.userName;
+        this.userEmail = updateUser.userEmail;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
+        if (this == o) { return true; }
+        if (!(o instanceof User)) { return false; }
         User user = (User) o;
-        return getId().equals(user.getId()) && getUserId().equals(user.getUserId()) && getUserPassword()
-                .equals(user.getUserPassword()) && getUserName().equals(user.getUserName()) && getUserEmail()
-                .equals(user.getUserEmail());
+        return getUserEmail().equals(user.userEmail);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getUserId(), getUserPassword(), getUserName(), getUserEmail());
+        return Objects.hash(userEmail);
     }
 }

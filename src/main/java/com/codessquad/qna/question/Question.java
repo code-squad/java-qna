@@ -1,14 +1,15 @@
 package com.codessquad.qna.question;
 
-import com.codessquad.qna.common.CommonUtility;
+import com.codessquad.qna.common.CommonConstants;
 import com.codessquad.qna.user.User;
-import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 @Entity
 public class Question {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -16,15 +17,24 @@ public class Question {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     private User writer;
+
     @Column(nullable = false)
     private String title;
+
     @Column(nullable = false)
     private String contents;
+
     @Column(nullable = false)
     private LocalDateTime createdDateTime;
+
+    @Column(nullable = false)
     private LocalDateTime updatedDateTime;
-    @Formula("(select count(*) from answer ans where ans.question_id = id)")
-    private int replyCount;
+
+    @Column(nullable = false)
+    private boolean isDeleted;
+
+    @OneToMany(mappedBy = "question")
+    private Collection<Answer> answers;
 
     public Question() {}
 
@@ -35,6 +45,7 @@ public class Question {
         this.contents = contents;
         this.createdDateTime = now;
         this.updatedDateTime = now;
+        this.isDeleted = false;
     }
 
     public long getId() {
@@ -78,7 +89,7 @@ public class Question {
     }
 
     public String getFormattedCreatedDateTime() {
-        return createdDateTime.format(CommonUtility.DATE_TIME_FORMATTER);
+        return createdDateTime.format(CommonConstants.POST_DATA_DATE_TIME_FORMATTER);
     }
 
     public LocalDateTime getUpdatedDateTime() {
@@ -90,11 +101,31 @@ public class Question {
     }
 
     public String getFormattedUpdatedDateTime() {
-        return updatedDateTime.format(CommonUtility.DATE_TIME_FORMATTER);
+        return updatedDateTime.format(CommonConstants.POST_DATA_DATE_TIME_FORMATTER);
     }
 
-    public int getReplyCount() {
-        return replyCount;
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public Collection<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(Collection<Answer> answers) {
+        this.answers = answers;
+    }
+
+    public int getAnswerCount() {
+        return answers.size();
+    }
+
+    public long getAnswerCountExceptDeleted() {
+        return answers.stream().filter(answer -> !answer.isDeleted()).count();
     }
 
     public void updateQuestionData(String title, String contents, LocalDateTime updatedDateTime) {
@@ -103,8 +134,21 @@ public class Question {
         this.updatedDateTime = updatedDateTime;
     }
 
-    public boolean isWriterEqualsLoginUser(User loginUser) {
-        if (loginUser == null) return false;
+    public boolean isWrittenBy(User loginUser) {
+        if (loginUser == null) {
+            return false;
+        }
         return this.writer.equals(loginUser);
+    }
+
+    public boolean isDeletable() {
+        // 게시물 작성자와 답변 작성자가 일치
+        boolean isSameWriter = answers.stream().allMatch(a -> this.writer.equals(a.getWriter()));
+        return answers.isEmpty() || isSameWriter;
+    }
+
+    public Question delete() {
+        this.isDeleted = true;
+        return this;
     }
 }

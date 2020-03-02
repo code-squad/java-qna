@@ -109,7 +109,11 @@ public class Question {
         return countOfAnswers;
     }
 
-    public void addAnswer() {
-        this.countOfAnswers++;
+    public void increaseAnswersCount() {
+        countOfAnswers++;
+    }
+
+    public void reduceAnswersCount() {
+        countOfAnswers--;
     }
 }

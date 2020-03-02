@@ -36,6 +36,10 @@ public class Answer {
         this.createdTime = LocalDateTime.now();
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public User getWriter() {
         return writer;
     }

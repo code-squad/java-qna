@@ -1,6 +1,7 @@
 package com.codesquad.qna.domain;
 
 import javax.persistence.*;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -72,42 +73,6 @@ public class Answer {
         this.createdTime = createdTime;
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Answer other = (Answer) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "Answer{" +
-                "id=" + id +
-                ", writer=" + writer +
-                ", comment='" + comment + '\'' +
-                ", createdTime=" + createdTime +
-                ", question=" + question +
-                '}';
-    }
-
     public String getFormattedCreatedTime() {
         if (createdTime == null) {
             return "";
@@ -116,4 +81,7 @@ public class Answer {
         return createdTime.format(DateTimeFormatter.ofPattern(DATE_FORMAT));
     }
 
+    public boolean matchUser(User sessionUser) {
+        return sessionUser.getUserId().equals(getWriter().getUserId());
+    }
 }

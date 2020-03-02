@@ -52,7 +52,7 @@ public class AnswerController {
             Question currentQuestion = questionRepostory.findById(questionId).orElseThrow(() -> new NotFoundException("그런 게시글 없어요"));
             Answer currentAnswer = answerRepository.findById(answerId).orElseThrow(() -> new NotFoundException("그런 댓글 없어요"));
 
-            if (!sessionUser.getUserId().equals(currentAnswer.getWriter().getUserId())) {
+            if (!currentAnswer.matchUser(sessionUser)) {
                 throw new IllegalStateException("본인 댓글만 삭제할 수 있어요");
             }
 

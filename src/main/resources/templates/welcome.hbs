@@ -5,6 +5,9 @@
 {{> include/navigation}}
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
+        {{#notMatchedUser}}
+            <div class="alert alert-danger" role="alert">권한이 없는 사용자 입니다.</div>
+        {{/notMatchedUser}}
         <div class="panel panel-default qna-list">
             <ul class="list">
                 {{#questions}}
@@ -17,7 +20,7 @@
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
                                 <span class="time">{{dateTime}}</span>
-                                <a class="author">{{writer}}</a>
+                                <a class="author">{{userId}}</a>
                             </div>
                             <div class="reply" title="댓글">
                                 <i class="icon-reply"></i>

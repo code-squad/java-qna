@@ -23,34 +23,31 @@ public class QuestionController {
   private QuestionRepository questionRepository;
 
   /**
-   * Question 작성을 위한 form 으로 이동합니다.
+   * Feat : Question 작성을 위한 hbs 로 이동합니다.
+   * Desc : Utils.getSessionedUser() 를 통해 login 여부를 검증합니다.
+   * Return : /questions/form
    */
   @GetMapping("/form")
   public String form(Model model, HttpSession session) {
     log.info("### sessionedUser : " + session.getAttribute("sessionedUser"));
-
-    if (session.getAttribute("sessionedUser") == null) {
-      throw new UserException(CustomErrorCode.USER_NOT_LOGIN);
-    }
+    Utils.getSessionedUser(session);
 
     return "/questions/form";
   }
 
   /**
-   * Question 수정을 위한 form 으로 이동합니다.
+   * Feat : Question 수정을 위한 hbs 로 이동합니다.
+   * Desc : Utils.getSessionedUser() 를 통해 login 여부를 검증합니다.
+   * Return : /questions/update
    */
   @GetMapping("/{id}/form")
   public String updateForm(@PathVariable long id, Model model, HttpSession session) {
     log.info("### sessionedUser : " + session.getAttribute("sessionedUser"));
 
-    if (session.getAttribute("sessionedUser") == null) {
-      throw new UserException(CustomErrorCode.USER_NOT_LOGIN);
-    }
-
     User sessionedUser = Utils.getSessionedUser(session);
     Question question = getQuestion(id, CustomErrorCode.QUESTION_NOT_EXIST);
 
-    if (sessionedUser.getUserId().equals(question.getUserId())) {
+    if (question.validateUserId(sessionedUser)) {
       model.addAttribute("question", question);
       return "/questions/update";
     }

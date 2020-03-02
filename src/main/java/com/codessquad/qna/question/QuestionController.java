@@ -41,7 +41,7 @@ public class QuestionController {
    * Return : /questions/update
    */
   @GetMapping("/{id}/form")
-  public String updateForm(@PathVariable long id, Model model, HttpSession session) {
+  public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
     log.info("### sessionedUser : " + session.getAttribute("sessionedUser"));
 
     User sessionedUser = Utils.getSessionedUser(session);
@@ -74,7 +74,7 @@ public class QuestionController {
    * Return : /questions/show
    */
   @GetMapping("/{id}")
-  public String show(@PathVariable long id, Model model) {
+  public String show(@PathVariable Long id, Model model) {
     log.info("### show()");
     Question question = getQuestion(id, CustomErrorCode.BAD_REQUEST);
     model.addAttribute("question", question);
@@ -83,7 +83,7 @@ public class QuestionController {
   }
 
   @PutMapping("/{id}")
-  public String update(@PathVariable long id, Question question, Model model) {
+  public String update(@PathVariable Long id, Question question, Model model) {
     log.info("### update()");
     Question origin = getQuestion(id, CustomErrorCode.QUESTION_NOT_EXIST);
     origin.update(question);
@@ -93,7 +93,7 @@ public class QuestionController {
   }
 
   @DeleteMapping("/{id}")
-  public String delete(@PathVariable long id, Model model, HttpSession session) {
+  public String delete(@PathVariable Long id, Model model, HttpSession session) {
     log.info("### delete()");
 
     User sessionedUser = Utils.getSessionedUser(session);
@@ -107,7 +107,7 @@ public class QuestionController {
     throw new QuestionException(CustomErrorCode.USER_NOT_MATCHED);
   }
 
-  private Question getQuestion(long id, CustomErrorCode customErrorCode) {
+  private Question getQuestion(Long id, CustomErrorCode customErrorCode) {
     Optional<Question> optionalUser = questionRepository.findById(id);
     Question question = optionalUser.orElseThrow(() -> new QuestionException(customErrorCode));
 

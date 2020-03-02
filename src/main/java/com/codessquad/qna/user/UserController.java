@@ -47,7 +47,7 @@ public class UserController {
     return "/users/list";
   }
 
-  private User getUser(long id, CustomErrorCode customErrorCode) {
+  private User getUser(Long id, CustomErrorCode customErrorCode) {
     Optional<User> optionalUser = userRepository.findById(id);
     User user = optionalUser.orElseThrow(() -> new UserException(customErrorCode));
     return user;
@@ -63,7 +63,7 @@ public class UserController {
    * list.html 에서 선택된 id 의 정보를 profile.html 에서 출력합니다.
    */
   @GetMapping("/{id}")
-  public String profile(@PathVariable long id, Model model) {
+  public String profile(@PathVariable Long id, Model model) {
     model.addAttribute("user", getUser(id, CustomErrorCode.BAD_REQUEST));
 
     return "/users/profile";
@@ -73,7 +73,7 @@ public class UserController {
    * 선택된 id 의 정보를 update.html 로 전달해줍니다.
    */
   @GetMapping("/{id}/form")
-  public String updateForm(@PathVariable long id, Model model) {
+  public String updateForm(@PathVariable Long id, Model model) {
     User user = getUser(id, CustomErrorCode.BAD_REQUEST);
     model.addAttribute("user", user);
 
@@ -84,7 +84,7 @@ public class UserController {
    * password 가 같은 경우 수정된 정보를 update 해줍니다.
    */
   @PutMapping("/{id}")
-  public String update(@PathVariable long id, User newUser, Model model) {
+  public String update(@PathVariable Long id, User newUser, Model model) {
     log.info("### update()");
     User origin = getUser(id, CustomErrorCode.USER_NOT_EXIST);
 

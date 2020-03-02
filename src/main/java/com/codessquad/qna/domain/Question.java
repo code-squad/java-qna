@@ -1,5 +1,7 @@
 package com.codessquad.qna.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.persistence.Column;
@@ -34,7 +36,9 @@ public class Question extends BaseTimeEntity {
   private String contents;
 
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "question")
-  @OrderBy(value = "id ASC ")
+  @OrderBy(value = "id ASC")
+  @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+  @JsonIgnore
   private List<Answer> answerList;
 
   public Question() {
@@ -51,7 +55,6 @@ public class Question extends BaseTimeEntity {
     this.contents = contents;
   }
 
-
   public boolean isSameWriter(User sessionUser) {
     return writer.matchId(sessionUser.getId());
   }
@@ -66,6 +69,15 @@ public class Question extends BaseTimeEntity {
 
   public void setWriter(User writer) {
     this.writer = writer;
+  }
+
+  public List<Answer> getAnswerList() {
+    return answerList;
+  }
+
+  public Question setAnswerList(List<Answer> answerList) {
+    this.answerList = answerList;
+    return this;
   }
 
   public String getTitle() {
@@ -86,10 +98,6 @@ public class Question extends BaseTimeEntity {
 
   public String getCreatedTime() {
     return getFormattedCreateTime();
-  }
-
-  public List<Answer> getAnswerList() {
-    return answerList;
   }
 
   private String getFormattedCreateTime() {

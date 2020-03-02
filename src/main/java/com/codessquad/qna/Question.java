@@ -1,20 +1,18 @@
 package com.codessquad.qna;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 public class Question {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String writer;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    private User writer;
 
     @Column(nullable = false)
     private String title;
@@ -23,10 +21,10 @@ public class Question {
     private String contents;
 
     @Column(nullable = false)
-    private LocalDateTime created;
+    private LocalDateTime createdAt;
 
     public Question() {
-        this.setCreated();
+        markCreatedTime();
     }
 
     public Long getId() {
@@ -34,14 +32,14 @@ public class Question {
     }
 
     public LocalDateTime getCreated() {
-        return created;
+        return createdAt;
     }
 
-    public String getWriter() {
+    public User getWriter() {
         return writer;
     }
 
-    public void setWriter(String writer) {
+    public void setWriter(User writer) {
         this.writer = writer;
     }
 
@@ -61,8 +59,13 @@ public class Question {
         this.contents = contents;
     }
 
-    public void setCreated() {
-        this.created = LocalDateTime.now();
+    private void markCreatedTime() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public void update(Question question) {
+        this.contents = question.contents;
+        this.title = question.title;
     }
 
     @Override
@@ -71,7 +74,7 @@ public class Question {
                 "writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
-                ", created='" + created + '\'' +
+                ", createdAt='" + createdAt + '\'' +
                 ", id=" + id +
                 '}';
     }

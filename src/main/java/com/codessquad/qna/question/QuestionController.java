@@ -70,7 +70,7 @@ public class QuestionController {
 
   /**
    * Feat : Question 상세 내용을 보여주는 .hbs 로 이동합니다.
-   * Desc : getQuestion() 을 통해 Question 여부를 검증합니다.
+   * Desc : getQuestion() 을 통해 Question 존재 여부를 검증합니다.
    * Return : /questions/show
    */
   @GetMapping("/{id}")
@@ -82,6 +82,11 @@ public class QuestionController {
     return "/questions/show";
   }
 
+  /**
+   * Feat : Question 을 update 해줍니다.
+   * Desc : getQuestion() 을 통해 Question 존재 여부를 검증합니다.
+   * Return : /questions/show
+   */
   @PutMapping("/{id}")
   public String update(@PathVariable Long id, Question question, Model model) {
     log.info("### update()");
@@ -92,6 +97,11 @@ public class QuestionController {
     return "/questions/show";
   }
 
+  /**
+   * Feat : Question 을 delete 합니다.
+   * Desc : getQuestion() 을 통해 Question 존재 여부를 검증합니다.
+   * Return : /questions/show
+   */
   @DeleteMapping("/{id}")
   public String delete(@PathVariable Long id, Model model, HttpSession session) {
     log.info("### delete()");
@@ -99,7 +109,7 @@ public class QuestionController {
     User sessionedUser = Utils.getSessionedUser(session);
     Question question = getQuestion(id, CustomErrorCode.QUESTION_NOT_EXIST);
 
-    if (sessionedUser.getUserId().equals(question.getUserId())) {
+    if (question.validateUserId(sessionedUser)) {
       questionRepository.delete(question);
       return "redirect:/";
     }
@@ -107,6 +117,11 @@ public class QuestionController {
     throw new QuestionException(CustomErrorCode.USER_NOT_MATCHED);
   }
 
+  /**
+   * Feat : Question 을 가져옵니다.
+   * Desc : question 이 존재하지 않는다면 customErrorCode 에 따라 처리합니다.
+   * Return : id 에 매칭된 question.
+   */
   private Question getQuestion(Long id, CustomErrorCode customErrorCode) {
     Optional<Question> optionalUser = questionRepository.findById(id);
     Question question = optionalUser.orElseThrow(() -> new QuestionException(customErrorCode));

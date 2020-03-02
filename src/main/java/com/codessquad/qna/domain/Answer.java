@@ -65,4 +65,9 @@ public class Answer {
     public void setQuestion(Question question) {
         this.question = question;
     }
+
+    public void update(String contents) {
+        this.contents = contents;
+        this.date = LocalDateTime.now();
+    }
 }

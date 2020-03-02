@@ -28,8 +28,3 @@
 ### 어려움
 - 답변하기 버튼의 type을 button이 아니라 submit으로 해야 반응.
 
-- 답변하기 클릭하면 입력된 정보를 처리하는 컨트롤러에서 contents와 writer와 question을 answer에 넣는다.  그 뒤 answerRepository에 save한다. 
-- show에서 questionId에 해당하는 answers를 찾고 있다면 보여주고 없다면 기본 show를 보여준다. 
-- 수정 버튼 누르면 로그인 여부와 글쓴이인지 검사하고 updateForm으로 이동.
-- 수정할 답변 입력 후 '수정하기' 버튼 누르면 입력된 contents로 answer를 update하고 answerRepository에 저장한다.
-- 삭제 버튼 누르면 로그인 여부와 글쓴이인지 검사하고 일치하면 삭제.   

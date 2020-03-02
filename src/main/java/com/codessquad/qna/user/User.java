@@ -40,10 +40,6 @@ public class User implements Serializable {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getUserId() {
         return userId;
     }
@@ -93,7 +89,7 @@ public class User implements Serializable {
         if (this == o) { return true; }
         if (!(o instanceof User)) { return false; }
         User user = (User) o;
-        return getUserEmail().equals(user.userEmail);
+        return this.userEmail.equals(user.userEmail);
     }
 
     @Override

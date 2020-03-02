@@ -52,10 +52,6 @@ public class Question {
         return id;
     }
 
-    public void setId(long index) {
-        this.id = index;
-    }
-
     public User getWriter() {
         return writer;
     }
@@ -106,10 +102,6 @@ public class Question {
 
     public boolean isDeleted() {
         return isDeleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
     }
 
     public Collection<Answer> getAnswers() {

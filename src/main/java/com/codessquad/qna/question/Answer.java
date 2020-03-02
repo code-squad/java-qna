@@ -48,10 +48,6 @@ public class Answer {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public User getWriter() {
         return writer;
     }
@@ -102,10 +98,6 @@ public class Answer {
 
     public boolean isDeleted() {
         return isDeleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
     }
 
     public Answer delete() {

@@ -126,3 +126,4 @@
 # STEP4 리뷰 적용
 
 1. CommonConstants를 분리하였습니다. (Error 페이지는 ErrorConstants, Format은 FormatConstants) 패키지를 constants로 변경하였습니다.
+2. 불필요한 setter를 제거하였습니다. 그리고 자기 자신의 userEmail을 가져오는 부분을 `getUserEmail()` 에서 `this.userEmail`로 변경하였습니다.

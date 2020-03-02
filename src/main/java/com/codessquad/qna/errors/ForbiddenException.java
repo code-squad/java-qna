@@ -1,10 +1,15 @@
 package com.codessquad.qna.errors;
 
+import com.codessquad.qna.commons.CustomErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(value = HttpStatus.FORBIDDEN)
+@ResponseStatus(HttpStatus.FORBIDDEN)
 public class ForbiddenException extends RuntimeException {
+
+  public ForbiddenException(CustomErrorCode customErrorCode) {
+    super(customErrorCode.getMsg());
+  }
 }
 
 

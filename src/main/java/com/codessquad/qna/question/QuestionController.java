@@ -3,7 +3,6 @@ package com.codessquad.qna.question;
 import com.codessquad.qna.commons.CustomErrorCode;
 import com.codessquad.qna.commons.Utils;
 import com.codessquad.qna.errors.QuestionException;
-import com.codessquad.qna.errors.UserException;
 import com.codessquad.qna.user.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,7 +118,7 @@ public class QuestionController {
 
   /**
    * Feat : Question 을 가져옵니다.
-   * Desc : question 이 존재하지 않는다면 customErrorCode 에 따라 처리합니다.
+   * Desc : question 이 존재하지 않으면 customErrorCode 에 따라 처리합니다.
    * Return : id 에 매칭된 question.
    */
   private Question getQuestion(Long id, CustomErrorCode customErrorCode) {

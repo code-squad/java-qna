@@ -20,7 +20,9 @@ public class UserController {
   private UserRepository userRepository;
 
   /**
-   * User 생성을 위한 form.html 로 이동합니다.
+   * Feat : User 생성을 위한 hbs 로 이동합니다.
+   * Desc :
+   * Return : /users/form
    */
   @GetMapping("/form")
   public String form(Model model) {
@@ -28,7 +30,9 @@ public class UserController {
   }
 
   /**
-   * from.html 에서 호출하며 User 를 추가합니다.
+   * Feat : User 를 생성합니다.
+   * Desc :
+   * Return : redirect:/users/list
    */
   @PostMapping("")
   public String create(User user) {
@@ -38,7 +42,9 @@ public class UserController {
   }
 
   /**
-   * User 의 list 를 보여주는 list.html 로 이동합니다.
+   * Feat : User list 를 가져옵니다.
+   * Desc :
+   * Return : /users/list
    */
   @GetMapping("/list")
   public String list(Model model) {
@@ -47,12 +53,22 @@ public class UserController {
     return "/users/list";
   }
 
+  /**
+   * Feat : id 를 키 값으로 User 를 가져옵니다.
+   * Desc : user가 존재하지 않으면 customErrorCode 에 따라 처리합니다.
+   * Return : id 에 매칭된 User.
+   */
   private User getUser(Long id, CustomErrorCode customErrorCode) {
     Optional<User> optionalUser = userRepository.findById(id);
     User user = optionalUser.orElseThrow(() -> new UserException(customErrorCode));
     return user;
   }
 
+  /**
+   * Feat : userId 를 키 값으로 User 를 가져옵니다.
+   * Desc : user가 존재하지 않으면 customErrorCode 에 따라 처리합니다.
+   * Return : id 에 매칭된 User.
+   */
   private User getUser(String userId, CustomErrorCode customErrorCode) {
     Optional<User> optionalUser = userRepository.findByUserId(userId);
     User user = optionalUser.orElseThrow(() -> new UserException(customErrorCode));
@@ -60,17 +76,22 @@ public class UserController {
   }
 
   /**
-   * list.html 에서 선택된 id 의 정보를 profile.html 에서 출력합니다.
+   * Feat : User 의 상세 정보를 가져옵니다.
+   * Desc : user가 존재하지 않으면 customErrorCode 에 따라 처리합니다.
+   * Return : /users/profile
    */
   @GetMapping("/{id}")
   public String profile(@PathVariable Long id, Model model) {
-    model.addAttribute("user", getUser(id, CustomErrorCode.BAD_REQUEST));
+    User user = getUser(id, CustomErrorCode.BAD_REQUEST);
+    model.addAttribute("user", user);
 
     return "/users/profile";
   }
 
   /**
-   * 선택된 id 의 정보를 update.html 로 전달해줍니다.
+   * Feat : update 를 위한 User 상세 정보를 가져옵니다.
+   * Desc : user가 존재하지 않으면 customErrorCode 에 따라 처리합니다.
+   * Return : /users/update
    */
   @GetMapping("/{id}/form")
   public String updateForm(@PathVariable Long id, Model model) {
@@ -81,7 +102,9 @@ public class UserController {
   }
 
   /**
-   * password 가 같은 경우 수정된 정보를 update 해줍니다.
+   * Feat : User 정보를 update 해줍니다.
+   * Desc : password 가 같지 않은 경우 error 처리합니다.
+   * Return : redirect:/users/list
    */
   @PutMapping("/{id}")
   public String update(@PathVariable Long id, User newUser, Model model) {
@@ -101,8 +124,11 @@ public class UserController {
   }
 
   /**
-   * Login.html 로 이동합니다.
+   * Feat : login.hbs 로 이동합니다.
+   * Desc :
+   * Return : /users/login
    */
+
   @GetMapping("/loginForm")
   public String loginForm(Model model) {
     log.info("### loginForm()");
@@ -110,8 +136,9 @@ public class UserController {
   }
 
   /**
-   * login 성공 : 시작 페이지로 이동합니다.
-   * login 실패 : 입력된 정보를 가지고 login.html 로 이동합니다.
+   * Feat : login 이 성공하는 경우 sessionedUser 를 등록해줍니다.
+   * Desc : password 가 틀린 경우 다시 login hbs 로 이동합니다.
+   * Return : redirect:/
    */
   @PostMapping("/login")
   public String login(String userId, String password, HttpSession session, Model model) {
@@ -127,6 +154,11 @@ public class UserController {
     throw new UserException(CustomErrorCode.USER_NOT_MATCHED_PASSWORD);
   }
 
+  /**
+   * Feat : logout 이 성공하는 경우 sessionedUser 를 지워줍니다.
+   * Desc :
+   * Return : redirect:/
+   */
   @GetMapping("/logout")
   public String logout(HttpSession session) {
     session.removeAttribute("sessionedUser");

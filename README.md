@@ -1,42 +1,35 @@
 # Step3 
 
-## Step3 구현 전 리팩토링
-- Question의 Date타입을 String에서 LocalDateTime으로 변경. 처음에 타입만 변경했는데 build가 안되서 setter, getter를 지정해주니 해결. 
-
-## 자가 피드백 
+## Step3 진행하며 배운 것 
 - 자바지기 영상보니 모르면 검색하는 게 일상. 두려워하지 않고 검색한다. 
-- Bad Request일 경우 mapping URL이 "/users/login"처럼 /users를 붙였는 지 확인.
+- Bad Request일 경우 mapping URL에 @RequestMapping에 해당하는 url이 있나 확인 ex)/users/{{id}}
+- 사용자일 땐 몰랐던 기능들이 로그인 하나로 복잡해질 수 있음을 깨달음. 
+- getter, setter로 객체의 속성에 직접 접근하지 말고 메세지를 보내서 자율성을 높이는 중요성을 깨달음. 과거 호눅스가 getter가 적으면 좋다는 피드백을 했는데 이해가 된다. 
+- @ManyToOne은 Many에 해당하는 객체에 매핑을 한다.
 
-## 전체적 어려움 
-- 코드 수정하면 자동으로 웹페이지에 적용이 되야 하는데 안된다. 매번 서버를 재시작해야 한다. 
+## 해결 못한 것 
+- auto reload 기능 : 코드 변경하면 서버 재시작하지 않고 바로 반영하게 하고 싶은데 검색대로 했는데 기능 동작안함. 
 
 ## 로그인 기능 구현
-- 메인에서 로그인 버튼 누르면 /users/login으로 이동, 관리하는 login Controller 생성
-- 로그인 창에서 전달된 아이디, 패스워드를 처리하는 Controller 생성, 
-    - userId로 DB에서 데이터를 가져온다. UserRepository에 findByUserId() 생성
-    - 만약, user==null이거나 패스워드가 틀리면 다시 로그인 페이지 로드 return "/login"
-    - 아이디, 비밀번호 인증 성공 시 HttpSesstion에 user 저장하고 return "/"; 
-- 로그인 로직 처리 후 메인 페이지로 이동.
+### 어려운 점 
+- 보안을 위해 로그인한 사용자인지 매번 확인하는 로직이 처음엔 복잡했다. 
 
-## 로그인 상태에 따른 메뉴 처리 및 로그아웃 기능 구현
-- import.sql 파일을 통해 회원 데이터 하나 초기화. 위치는 resources 패키지 아래에. 
-- 로그아웃 상태면 로그인, 회원가입 메뉴만, 로그인 상태면 로그아웃, 개인정보수정 메뉴만 나오게 하기
-    - mushtach 문법 중 if - else와 비슷한 문법 사용. {{^user}} , {{#user}} .. 
-    - httpSession 정보를 mushtach한테 전달할 수 있게 properties를 수정해야 한다.
-- 로그아웃 시 session에 저장된 user 제거한다. 제거하면 muschtach는 세션에서 user가 안 넘어오니 로그인, 회원가입 메뉴만 남긴다.
-
-## 로그인 시 개인정보 수정 기능 구현 
-- 개인정보 수정 버튼 누르면 /users/{{id}}/form으로 이동. session된 user의 id를 Controller에 넘기기. 세션과 모델에 담긴 데이터의 이름을 다르게 해야 에러가 없다.
-- 개인정보수정 url을 누구나 접근하고 수정할 수 있는 상황이니 로그인한 상태에만 수정할 수 있도록 기능을 추가. sesstion에서 넘어오는 데이터값은 Object이다.
-- 로그인 상태면 다른 사용자의 개인정보수정을 막는 기능 필요
-   
 ## 중복제거 및 리팩토링 
-- Utils를 만들어서 하드코딩된 상수이름을 지정한다. 
-- user의 getPassword()메서드로 값을 가져오지 말고 user에게 메세지를 보내는 방식으로 구현하는 것이 객체 지향 프로그래밍이다. 
-- getter, setter는 객체의 데이터에 직접 접근하는 행위이다. 이보다 객체에게 메세지를 보내는 방식으로 책임을 수행하는 것이 중요하다. getter를 없애는 것이 좋겠다는 피드백을 이제야 이해하고 있다.  
-- 실행 쿼리를 볼 수 있는 속성 설정. 
+- user의 속성을 getter로 가져오지 않고 메세지를 보내서 자율적으로 구현하는 것이 객체 지향 프로그래밍이라는 걸 다시 느낌 ex) user.notMatchPassword(password)   
+### 어려운 점
+- 반복되는 로그인된 유저 확인 로직을 메서드로 분리하고 싶었는데 하지 못함. 다른 클래스에서 redirect하면 실행이 안됐다. 더 공부가 필요하다.
 
 ## 질문 기능 구현
 ### 어려움 
-- 
+- 질문 수정 및 삭제 시 작성한 사용자만 가능한 코드를 작성이 어려웠다. 
+- Writer 1명 당 question은 여러개를 작성할 수 있다는 건 당연한 건데 Join으로 매핑된다는 점을 이해하는 데 시간이 걸림.
 
+## Answer 구현
+### 어려움
+- 답변하기 버튼의 type을 button이 아니라 submit으로 해야 반응.
+
+- 답변하기 클릭하면 입력된 정보를 처리하는 컨트롤러에서 contents와 writer와 question을 answer에 넣는다.  그 뒤 answerRepository에 save한다. 
+- show에서 questionId에 해당하는 answers를 찾고 있다면 보여주고 없다면 기본 show를 보여준다. 
+- 수정 버튼 누르면 로그인 여부와 글쓴이인지 검사하고 updateForm으로 이동.
+- 수정할 답변 입력 후 '수정하기' 버튼 누르면 입력된 contents로 answer를 update하고 answerRepository에 저장한다.
+- 삭제 버튼 누르면 로그인 여부와 글쓴이인지 검사하고 일치하면 삭제.   

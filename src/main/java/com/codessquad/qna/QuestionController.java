@@ -1,14 +1,13 @@
 package com.codessquad.qna;
 
-import com.codessquad.qna.domain.Question;
-import com.codessquad.qna.domain.QuestionRepository;
-import com.codessquad.qna.domain.User;
+import com.codessquad.qna.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 @RequestMapping("/questions")
@@ -16,6 +15,8 @@ public class QuestionController {
 
     @Autowired
     private QuestionRepository questionRepository;
+    @Autowired
+    private AnswerRepository answerRepository;
 
     @GetMapping("/form")
     public String form(HttpSession httpSession) {
@@ -40,8 +41,13 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}")
-    public String detailPage(@PathVariable Long id, Model model) {
-        model.addAttribute("question", findQuestion(questionRepository, id));
+    public String detailPage(@PathVariable("id") Long questionId, Model model) {
+        model.addAttribute("question", findQuestion(questionRepository, questionId));
+        List<Answer> answers = answerRepository.findByQuestionId(questionId);
+        if (answers == null) {
+            return "question/show";
+        }
+        model.addAttribute("answers", answers);
         return "question/show";
     }
 

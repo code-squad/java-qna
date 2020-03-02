@@ -56,26 +56,28 @@ public class QuestionController {
   }
 
   /**
-   * Question 추가 후 welcome 페이지로 이동합니다.
+   * Feat : Question 을 작성합니다.
+   * Desc : Utils.getSessionedUser() 를 통해 login 여부를 검증합니다.
+   * Return : redirect:/
    */
   @PostMapping("")
   public String create(Question question, HttpSession session) {
-    if (session.getAttribute("sessionedUser") == null) {
-      throw new UserException(CustomErrorCode.BAD_REQUEST);
-    }
-
+    Utils.getSessionedUser(session);
     questionRepository.save(question);
 
     return "redirect:/";
   }
 
   /**
-   * Question 의 상세 내용을 보여주는 show 페이지로 이동합니다.
+   * Feat : Question 상세 내용을 보여주는 .hbs 로 이동합니다.
+   * Desc : getQuestion() 을 통해 Question 여부를 검증합니다.
+   * Return : /questions/show
    */
   @GetMapping("/{id}")
   public String show(@PathVariable long id, Model model) {
     log.info("### show()");
-    model.addAttribute("question", getQuestion(id, CustomErrorCode.BAD_REQUEST));
+    Question question = getQuestion(id, CustomErrorCode.BAD_REQUEST);
+    model.addAttribute("question", question);
 
     return "/questions/show";
   }

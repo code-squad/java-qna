@@ -49,7 +49,7 @@ public class Answer {
     }
 
     public String getCreateDateTimeToString() {
-        return DateTimeFormatUtils.localDateTimeToString(this.createDateTime);
+        return DateTimeFormatUtils.getFormattedLocalDateTime(this.createDateTime);
     }
 
     public boolean matchWriter(User user) {

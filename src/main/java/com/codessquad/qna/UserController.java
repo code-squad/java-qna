@@ -35,14 +35,26 @@ public class UserController {
         return "form";
     }
 
-    ///수정버튼 눌렀 때
+
+
+    ///수정버튼 눌렀을 때
     @GetMapping("/{givenNumber}/form")
     public String editInfo(@PathVariable Long givenNumber, Model model) {
-        
 
-        model.addAttribute("user", userRepository.findById(givenNumber));
+        model.addAttribute("user", userRepository.findById(givenNumber).get());
         System.out.println(userRepository.findById(givenNumber));
         return "updateForm";
+    }
+
+    @PostMapping("/{givenNumber}")
+    public String updateInfo(@PathVariable Long givenNumber, User newUser) {
+        User user = userRepository.findById(givenNumber).get();
+        System.out.println("Before edited : " + user);
+
+        user.update(newUser);
+        userRepository.save(user);
+        System.out.println("Edited info : " + user);
+        return "redirect:/users";
     }
 
 

@@ -90,6 +90,9 @@ JpaRepository를 extends 하고 어떤 클래스에 관한 레파지토리인지
 6. @RequestMapping
    - 기본으로 있다고 침. e.g.  @RequestMapping("/users") 이면 @GetMapping("/list) 일 때
    사실은 users/list 인 것임.
+   
+7. @PathVariable
+   - url로 데이터를 넘겨줄 때 
 
 Repository
 --
@@ -110,3 +113,5 @@ repositoryname.findById(id);
 해결해야하는 사항
 -
 - 회원 정보 수정 버튼 눌렀을 때 value 값이 전달이 되지 않아서 모두 빈 칸이다.
+   -> 해결  model.addAttribute("user", userRepository.findById(givenNumber).get());
+   끝에 get() 을 꼭 해주어야 데이터를 모델에 넘겨줄 수 있음. 아니면 Object가 넘어가는듯 함.

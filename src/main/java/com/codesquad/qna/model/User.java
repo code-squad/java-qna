@@ -10,12 +10,15 @@ import java.util.Objects;
 public class User {
     @Id
     private String userId;
+
     @Column(nullable = false)
     @NotEmpty
     private String password;
+
     @Column(nullable = false)
     @NotEmpty
     private String name;
+
     private String email;
 
     public void setUserId(String userId) {

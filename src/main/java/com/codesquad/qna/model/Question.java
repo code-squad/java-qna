@@ -9,12 +9,16 @@ public class Question {
     @Id
     @GeneratedValue
     private Long id;
+
     @ManyToOne
     private User writer;
+
     @Column(nullable = false)
     @NotEmpty
     private String title;
+
     private String contents;
+
     @Column(nullable = false)
     private LocalDateTime createdDateTime;
 

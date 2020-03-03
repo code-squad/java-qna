@@ -7,13 +7,13 @@ public class HttpSessionUtils {
 
     public static final String USER_SESSION_KEY = "sessionedUser";
 
-    public static boolean isNotLogined(HttpSession session) {
+    public static boolean isNotLoggedIn(HttpSession session) {
         Object tempUser = session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
         return tempUser == null;
     }
 
     public static User getUserFromSession(HttpSession session) {
-        if (isNotLogined(session))
+        if (isNotLoggedIn(session))
             return null;
         return (User)session.getAttribute(USER_SESSION_KEY);
     }

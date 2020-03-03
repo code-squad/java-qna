@@ -41,7 +41,7 @@ public class UserController {
 
     @GetMapping("/{userId}/form")
     public String updateForm(@PathVariable String userId, Model model, HttpSession session) {
-        if (HttpSessionUtils.isNotLogined(session))
+        if (HttpSessionUtils.isNotLoggedIn(session))
             return "redirect:/user/login";
 
         User user = getMatchedUser(userId, session);
@@ -51,7 +51,7 @@ public class UserController {
 
     @PutMapping("/{userId}/update")
     public String update(@PathVariable String userId, User updateUser, HttpSession session) {
-        if (HttpSessionUtils.isNotLogined(session))
+        if (HttpSessionUtils.isNotLoggedIn(session))
             return "redirect:/user/login";
 
         User originUser = getMatchedUser(userId, session);
@@ -88,13 +88,13 @@ public class UserController {
     private User findUser(String userId, boolean isNullable) {
         log.info("findUser: {}", userId);
         Optional<User> user = userRepository.findById(userId);
-        return isNullable ? user.orElse(null) : user.orElseThrow(()->new IllegalArgumentException(Error.ILLEGAL_ARGUMENT.getMessage()));
+        return isNullable ? user.orElse(null) : user.orElseThrow(()->new IllegalArgumentException(ErrorMessage.ILLEGAL_ARGUMENT.getMessage()));
     }
 
     private User getMatchedUser(String userId, HttpSession session) {
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
         if (!sessionedUser.matchId(userId))
-            throw new IllegalStateException(Error.ILLEGAL_STATE.getMessage());
+            throw new IllegalStateException(ErrorMessage.ILLEGAL_STATE.getMessage());
 
         return findUser(userId, false);
     }

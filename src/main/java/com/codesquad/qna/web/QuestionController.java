@@ -25,7 +25,7 @@ public class QuestionController {
 
     @GetMapping("/form")
     public String createForm(HttpSession session) {
-        if (HttpSessionUtils.isNotLogined(session))
+        if (HttpSessionUtils.isNotLoggedIn(session))
             return "redirect:/user/login";
 
         return "qna/form";
@@ -33,7 +33,7 @@ public class QuestionController {
 
     @PostMapping("")
     public String create(String title, String contents, HttpSession session) {
-        if (HttpSessionUtils.isNotLogined(session))
+        if (HttpSessionUtils.isNotLoggedIn(session))
             return "redirect:/user/login";
 
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
@@ -54,7 +54,7 @@ public class QuestionController {
 
     @GetMapping("/{id}/form")
     public String updateForm(@PathVariable Long id, HttpSession session, Model model) {
-        if (HttpSessionUtils.isNotLogined(session))
+        if (HttpSessionUtils.isNotLoggedIn(session))
             return "redirect:/user/login";
 
         Question updateQuestion = getMatchedQuestion(id, session);
@@ -64,7 +64,7 @@ public class QuestionController {
 
     @PutMapping("/{id}/update")
     public String update(@PathVariable Long id, String title, String contents, HttpSession session) {
-        if (HttpSessionUtils.isNotLogined(session))
+        if (HttpSessionUtils.isNotLoggedIn(session))
             return "redirect:/user/login";
 
         Question updateQuestion = getMatchedQuestion(id, session);
@@ -75,7 +75,7 @@ public class QuestionController {
 
     @DeleteMapping("/{id}/delete")
     public String delete(@PathVariable Long id, HttpSession session) {
-        if (HttpSessionUtils.isNotLogined(session))
+        if (HttpSessionUtils.isNotLoggedIn(session))
             return "redirect:/user/login";
 
         Question deleteQuestion = getMatchedQuestion(id, session);
@@ -85,7 +85,7 @@ public class QuestionController {
     }
 
     private Question findQuestion(Long id) {
-        return questionRepository.findById(id).orElseThrow(()->new IllegalArgumentException(Error.ILLEGAL_ARGUMENT.getMessage()));
+        return questionRepository.findById(id).orElseThrow(()->new IllegalArgumentException(ErrorMessage.ILLEGAL_ARGUMENT.getMessage()));
     }
 
     private Question getMatchedQuestion(Long questionId, HttpSession session) {
@@ -93,7 +93,7 @@ public class QuestionController {
         Question matchedQuestion = findQuestion(questionId);
         log.info("matchedQuestion : {}, sessionedUser : {}", matchedQuestion, sessionedUser);
         if (!matchedQuestion.matchWriter(sessionedUser))
-            throw new IllegalStateException(Error.ILLEGAL_STATE.getMessage());
+            throw new IllegalStateException(ErrorMessage.ILLEGAL_STATE.getMessage());
 
         return matchedQuestion;
     }

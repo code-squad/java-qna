@@ -22,7 +22,7 @@ public class AnswerController {
 
     @PostMapping("/questions/{questionId}/answers/")
     public String create(@PathVariable Long questionId, String contents, HttpSession session) {
-        if (HttpSessionUtils.isNotLogined(session))
+        if (HttpSessionUtils.isNotLoggedIn(session))
             return "redirect:/user/login";
 
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
@@ -34,23 +34,23 @@ public class AnswerController {
 
     @DeleteMapping("/questions/{questionId}/answers/{answerId}")
     public String delete(@PathVariable Long questionId, @PathVariable Long answerId, HttpSession session) {
-        if (HttpSessionUtils.isNotLogined(session))
+        if (HttpSessionUtils.isNotLoggedIn(session))
             return "redirect:/user/login";
 
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
         Answer answer = findAnswer(answerId);
         if (!answer.matchWriter(sessionedUser))
-            throw new IllegalStateException(Error.ILLEGAL_STATE.getMessage());
+            throw new IllegalStateException(ErrorMessage.ILLEGAL_STATE.getMessage());
 
         answerRepository.delete(answer);
         return String.format("redirect:/questions/%d", questionId);
     }
 
     private Question findQuestion(Long questionId) {
-        return questionRepository.findById(questionId).orElseThrow(()->new IllegalArgumentException(Error.ILLEGAL_ARGUMENT.getMessage()));
+        return questionRepository.findById(questionId).orElseThrow(()->new IllegalArgumentException(ErrorMessage.ILLEGAL_ARGUMENT.getMessage()));
     }
 
     private Answer findAnswer(Long answerId) {
-        return answerRepository.findById(answerId).orElseThrow(()->new IllegalArgumentException(Error.ILLEGAL_ARGUMENT.getMessage()));
+        return answerRepository.findById(answerId).orElseThrow(()->new IllegalArgumentException(ErrorMessage.ILLEGAL_ARGUMENT.getMessage()));
     }
 }

@@ -9,18 +9,21 @@ public class Answer {
     @Id
     @GeneratedValue
     private Long id;
+
     @ManyToOne
     private Question question;
+
     @ManyToOne
     private User user;
+
     @Column(nullable = false)
     @NotEmpty
     private String contents;
+
     @Column(nullable = false)
     private LocalDateTime createDateTime;
 
-    public Answer() {
-    }
+    public Answer() {}
 
     public Answer(Question question, User user, @NotEmpty String contents) {
         this.question = question;

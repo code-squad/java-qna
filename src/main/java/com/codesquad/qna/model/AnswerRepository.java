@@ -9,7 +9,9 @@ import javax.transaction.Transactional;
 
 public interface AnswerRepository extends CrudRepository<Answer, Long> {
     Iterable<Answer> findByQuestionId(Long questionId);
+
     long countByQuestionId(Long questionId);
+
     @Transactional
     @Modifying
     @Query("delete from Answer a where a.question.id in :id")

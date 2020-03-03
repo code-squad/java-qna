@@ -8,7 +8,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +18,6 @@ import java.util.List;
 @Controller
 @RequestMapping("/user")
 public class UserController {
-    private List<User> users = new ArrayList<>();
 
     @Autowired
     private UserRepository userRepository;
@@ -43,6 +44,14 @@ public class UserController {
         User user = userRepository.findById(id).orElse(null);
         model.addAttribute("user", user);
         return "/user/updateForm";
+    }
+
+    @PostMapping("/{id}/update")
+    public String updateUser(@PathVariable Long id, User newUser) {
+        User user = userRepository.findById(id).orElseThrow(null);
+        user.update(newUser);
+        userRepository.save(user);
+        return "redirect:/user/list";
     }
 
     @GetMapping("/{userId}")

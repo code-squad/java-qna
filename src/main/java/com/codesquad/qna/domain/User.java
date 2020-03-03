@@ -59,6 +59,12 @@ public class User {
         this.id = id;
     }
 
+    public void update(User updateUser) {
+        this.password = updateUser.password;
+        this.name = updateUser.name;
+        this.email = updateUser.email;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -69,4 +75,6 @@ public class User {
                 ", email='" + email + '\'' +
                 '}';
     }
+
+
 }

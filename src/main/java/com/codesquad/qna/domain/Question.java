@@ -1,23 +1,32 @@
 package com.codesquad.qna.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+@Entity
 public class Question {
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
 
-    private int id;
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(nullable = false)
     private String writer;
     private String title;
     private String contents;
 
-    private LocalDateTime currentTime;
+    private LocalDateTime createdDateTime;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -45,11 +54,11 @@ public class Question {
         this.contents = contents;
     }
 
-    public void setCurrentTime(LocalDateTime currentTime) {
-        this.currentTime = currentTime;
+    public void setCreatedDateTime(LocalDateTime createdDateTime) {
+        this.createdDateTime = createdDateTime;
     }
 
-    public String getFormattedTime() {
-        return currentTime.format(DateTimeFormatter.ofPattern(DATE_FORMAT));
+    public String getFormattedCreatedTime() {
+        return createdDateTime.format(DateTimeFormatter.ofPattern(DATE_FORMAT));
     }
 }

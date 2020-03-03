@@ -2,32 +2,24 @@ package com.codessquad.qna.controller;
 
 import com.codessquad.qna.repository.Question;
 import com.codessquad.qna.repository.QuestionRepository;
+import com.codessquad.qna.repository.Result;
 import com.codessquad.qna.repository.User;
 import com.codessquad.qna.util.HttpSessionUtil;
 import com.codessquad.qna.util.PathUtil;
+import org.graalvm.compiler.nodes.calc.IntegerDivRemNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
+import javax.swing.text.html.Option;
 import java.util.Optional;
-
 
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
-
-    @GetMapping("/{id}")
-    public Object showQuestion(@PathVariable Long id, Model model) {
-        Optional<Question> question = questionRepository.findById(id);
-        if (question.isPresent()) {
-            model.addAttribute("question", question.get());
-            return PathUtil.QUESTION_DETAIL_TEMPLATE;
-        }
-        return PathUtil.NOT_FOUND;
-    }
 
     @GetMapping("/form")
     public String showForm(HttpSession session) {
@@ -37,21 +29,23 @@ public class QuestionController {
         return PathUtil.QUESTION_FORM_TEMPLATE;
     }
 
-    @GetMapping("{id}/editForm")
-    public Object showEditPage(@PathVariable Long id, Model model, HttpSession session) {
-        if (!HttpSessionUtil.isAuthorizedUser(session)) {
-            return PathUtil.UNAUTHORIZED;
-        }
+    @GetMapping("/{id}")
+    public Object showQuestion(@PathVariable Long id, Model model) {
         Optional<Question> question = questionRepository.findById(id);
         if (!question.isPresent()) {
             return PathUtil.NOT_FOUND;
         }
+        model.addAttribute("question", question.get());
+        return PathUtil.QUESTION_DETAIL_TEMPLATE;
+    }
 
-        User user = HttpSessionUtil.getUserFromSession(session);
-        if (!question.get().isCorrectWriter(user)) {
-            return PathUtil.UNAUTHORIZED;
+    @GetMapping("{id}/editForm")
+    public Object showEditPage(@PathVariable Long id, Model model, HttpSession session) {
+        Optional<Question> question = questionRepository.findById(id);
+        Result result = valid(session, question);
+        if (!result.isValid()) {
+            return result.getResult();
         }
-
         model.addAttribute("question", question.get());
         return PathUtil.QUESTION_EDIT_TEMPLATE;
     }
@@ -72,40 +66,40 @@ public class QuestionController {
 
     @PutMapping("/{id}")
     public Object updateQuestion(@PathVariable Long id, Question updateData, HttpSession session) {
-        if (!HttpSessionUtil.isAuthorizedUser(session)) {
-            return PathUtil.UNAUTHORIZED;
-        }
-
         Optional<Question> question = questionRepository.findById(id);
-        if (!question.isPresent()) {
-            return PathUtil.NOT_FOUND;
-        }
-
         User user = HttpSessionUtil.getUserFromSession(session);
-        if (!question.get().isCorrectWriter(user)) {
-            return PathUtil.UNAUTHORIZED;
+        Result result = valid(session, question);
+        if (!result.isValid()) {
+            return result.getResult();
         }
         return update(question.get(), updateData, user);
     }
 
     @DeleteMapping("/{id}")
     public Object deleteQuestion(@PathVariable Long id, HttpSession session) {
-        if (!HttpSessionUtil.isAuthorizedUser(session)) {
-            return PathUtil.UNAUTHORIZED;
+        Optional<Question> question = questionRepository.findById(id);
+        Result result = valid(session, question);
+        if (!result.isValid()) {
+            return result.getResult();
+        }
+        questionRepository.deleteById(id);
+        return PathUtil.HOME;
+    }
+
+    private Result valid(HttpSession session, Optional<Question> question) {
+        if (!question.isPresent()) {
+            return Result.fail(PathUtil.NOT_FOUND);
         }
 
-        Optional<Question> question = questionRepository.findById(id);
-        if (!question.isPresent()) {
-            return PathUtil.NOT_FOUND;
+        if (!HttpSessionUtil.isAuthorizedUser(session)) {
+            return Result.fail(PathUtil.UNAUTHORIZED);
         }
 
         User user = HttpSessionUtil.getUserFromSession(session);
         if (!question.get().isCorrectWriter(user)) {
-            return PathUtil.UNAUTHORIZED;
+            return Result.fail(PathUtil.UNAUTHORIZED);
         }
-
-        questionRepository.deleteById(id);
-        return PathUtil.HOME;
+        return Result.ok();
     }
 
     private Object update(Question question, Question updateData, User user) {

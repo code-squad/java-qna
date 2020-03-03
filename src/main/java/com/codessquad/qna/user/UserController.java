@@ -110,7 +110,7 @@ public class UserController {
 
         // 사용자가 없거나, 비밀번호 일치하지 않는 경우
         if (user == null || user.isUserPasswordNotEquals(userPassword)) {
-            return "users/login_failed";
+            return "users/login-failed";
         }
         session.setAttribute(CommonConstants.SESSION_LOGIN_USER, user);
         return "redirect:/";

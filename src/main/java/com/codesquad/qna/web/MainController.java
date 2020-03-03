@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class MainController {
     @GetMapping("/")
     public String main(Model model) {
-        model.addAttribute("questions", QuestionController.questions);
+        model.addAttribute("questions", QuestionController.questionRepository.findAll());
         return "main";
     }
 }

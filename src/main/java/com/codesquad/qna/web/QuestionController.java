@@ -11,13 +11,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.LocalDateTime;
-
 @Controller
 @RequestMapping("/question")
 public class QuestionController {
 
     @Autowired
-    private QuestionRepository questionRepository;
+    public static QuestionRepository questionRepository;
 
     @GetMapping("/form")
     public String createForm() {

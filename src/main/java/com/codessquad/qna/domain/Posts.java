@@ -1,18 +1,12 @@
 package com.codessquad.qna.domain;
 
-import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@Getter
 @Entity
-@NoArgsConstructor //왜 이걸 붙여야 하는 지도 생각해보자.
 public class Posts extends BaseTimeEntity {
 
   @Id
@@ -25,11 +19,17 @@ public class Posts extends BaseTimeEntity {
   private String title;
   private String content;
 
-  @Builder
   public Posts(String author, String title, String content) {
     this.author = author;
     this.title = title;
     this.content = content;
+  }
+
+  public Posts() {
+  }
+
+  public static PostsBuilder builder() {
+    return new PostsBuilder();
   }
 
   public void update(String title, String content) {
@@ -45,5 +45,55 @@ public class Posts extends BaseTimeEntity {
         ", title='" + title + '\'' +
         ", content='" + content + '\'' +
         '}';
+  }
+
+  public Long getId() {
+    return this.Id;
+  }
+
+  public String getAuthor() {
+    return this.author;
+  }
+
+  public String getTitle() {
+    return this.title;
+  }
+
+  public String getContent() {
+    return this.content;
+  }
+
+  public static class PostsBuilder {
+
+    private String author;
+    private String title;
+    private String content;
+
+    PostsBuilder() {
+    }
+
+    public Posts.PostsBuilder author(String author) { //Posts 클래스 내부의 PostsBuilder 라는 의미
+      this.author = author;
+      return this;
+    }
+
+    public Posts.PostsBuilder title(String title) {
+      this.title = title;
+      return this;
+    }
+
+    public Posts.PostsBuilder content(String content) {
+      this.content = content;
+      return this;
+    }
+
+    public Posts build() {
+      return new Posts(author, title, content);
+    }
+
+    public String toString() {
+      return "Posts.PostsBuilder(author=" + this.author + ", title=" + this.title + ", content="
+          + this.content + ")";
+    }
   }
 }

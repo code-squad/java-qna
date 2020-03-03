@@ -5,11 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor
 public class Users {
 
   @Id
@@ -23,12 +20,18 @@ public class Users {
   private String name;
   private String email;
 
-  @Builder
   public Users(String userId, String password, String name, String email) {
     this.userId = userId;
     this.password = password;
     this.name = name;
     this.email = email;
+  }
+
+  public Users() {
+  }
+
+  public static UsersBuilder builder() {
+    return new UsersBuilder();
   }
 
   public void update(String userId, String name, String password, String email) {
@@ -81,5 +84,45 @@ public class Users {
 
   public String getEmail() {
     return this.email;
+  }
+
+  public static class UsersBuilder {
+
+    private String userId;
+    private String password;
+    private String name;
+    private String email;
+
+    UsersBuilder() {
+    }
+
+    public Users.UsersBuilder userId(String userId) {
+      this.userId = userId;
+      return this;
+    }
+
+    public Users.UsersBuilder password(String password) {
+      this.password = password;
+      return this;
+    }
+
+    public Users.UsersBuilder name(String name) {
+      this.name = name;
+      return this;
+    }
+
+    public Users.UsersBuilder email(String email) {
+      this.email = email;
+      return this;
+    }
+
+    public Users build() {
+      return new Users(userId, password, name, email);
+    }
+
+    public String toString() {
+      return "Users.UsersBuilder(userId=" + this.userId + ", password=" + this.password + ", name="
+          + this.name + ", email=" + this.email + ")";
+    }
   }
 }

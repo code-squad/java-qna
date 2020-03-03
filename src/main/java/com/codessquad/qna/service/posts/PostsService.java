@@ -8,15 +8,17 @@ import com.codessquad.qna.web.dto.PostsSaveRequestDto;
 import com.codessquad.qna.web.dto.PostsUpdateRequestDto;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@RequiredArgsConstructor
 @Service
 public class PostsService {
 
   private final PostsRepository postsRepository;
+
+  public PostsService(PostsRepository postsRepository) {
+    this.postsRepository = postsRepository;
+  }
 
   @Transactional(readOnly = true)
   public List<PostsListResponseDto> findAllDesc() {

@@ -8,14 +8,16 @@ import com.codessquad.qna.web.dto.UsersResponseDto;
 import com.codessquad.qna.web.dto.UsersUpdateRequestDto;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@RequiredArgsConstructor
 @Service
 public class UsersService {
   private final UsersRepository usersRepository;
+
+  public UsersService(UsersRepository usersRepository) {
+    this.usersRepository = usersRepository;
+  }
 
   public List<UsersListResponseDto> findAllDesc() {
     return usersRepository.findAllDesc().stream()

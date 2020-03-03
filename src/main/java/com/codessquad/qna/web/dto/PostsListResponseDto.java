@@ -2,9 +2,7 @@ package com.codessquad.qna.web.dto;
 
 import com.codessquad.qna.domain.Posts;
 import java.time.LocalDateTime;
-import lombok.Getter;
 
-@Getter
 public class PostsListResponseDto {
   private Long Id;
   private String title;
@@ -16,5 +14,21 @@ public class PostsListResponseDto {
     this.title = entity.getTitle();
     this.author = entity.getAuthor();
     this.modifiedDate= entity.getModifiedDate();
+  }
+
+  public Long getId() {
+    return this.Id;
+  }
+
+  public String getTitle() {
+    return this.title;
+  }
+
+  public String getAuthor() {
+    return this.author;
+  }
+
+  public LocalDateTime getModifiedDate() {
+    return this.modifiedDate;
   }
 }

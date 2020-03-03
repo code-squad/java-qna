@@ -8,20 +8,25 @@ import com.codessquad.qna.web.HttpSessionUtils;
 import com.codessquad.qna.web.dto.PostsResponseDto;
 import com.codessquad.qna.web.dto.UsersResponseDto;
 import javax.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-@RequiredArgsConstructor
 @Controller
 public class IndexController {
 
   private final PostsService postsService;
   private final UsersService usersService;
   private final UsersRepository usersRepository;
+
+  public IndexController(PostsService postsService, UsersService usersService,
+      UsersRepository usersRepository) {
+    this.postsService = postsService;
+    this.usersService = usersService;
+    this.usersRepository = usersRepository;
+  }
 
   @GetMapping("/")
   public String index(Model model) {

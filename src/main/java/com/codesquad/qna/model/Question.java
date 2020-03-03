@@ -45,7 +45,7 @@ public class Question {
     }
 
     public String getContents() {
-        return contents.replace("\r\n", "<br>");
+        return HtmlDocumentUtils.getEntertoBrTag(this.contents);
     }
 
     public String getCreatedDateTimetoString() {

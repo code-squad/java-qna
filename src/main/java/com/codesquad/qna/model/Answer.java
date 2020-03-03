@@ -45,7 +45,7 @@ public class Answer {
     }
 
     public String getContents() {
-        return contents;
+        return HtmlDocumentUtils.getEntertoBrTag(this.contents);
     }
 
     public String getCreateDateTimeToString() {

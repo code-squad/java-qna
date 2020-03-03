@@ -1,9 +1,6 @@
 package com.codessquad.qna.controller;
 
-import com.codessquad.qna.repository.Question;
-import com.codessquad.qna.repository.QuestionRepository;
-import com.codessquad.qna.repository.Result;
-import com.codessquad.qna.repository.User;
+import com.codessquad.qna.repository.*;
 import com.codessquad.qna.util.HttpSessionUtil;
 import com.codessquad.qna.util.PathUtil;
 import org.graalvm.compiler.nodes.calc.IntegerDivRemNode;
@@ -13,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import javax.swing.text.html.Option;
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Controller
@@ -20,6 +18,8 @@ import java.util.Optional;
 public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
+    @Autowired
+    private AnswerRepository answerRepository;
 
     @GetMapping("/form")
     public String showForm(HttpSession session) {
@@ -75,6 +75,7 @@ public class QuestionController {
         return update(question.get(), updateData, user);
     }
 
+    @Transactional
     @DeleteMapping("/{id}")
     public Object deleteQuestion(@PathVariable Long id, HttpSession session) {
         Optional<Question> question = questionRepository.findById(id);
@@ -82,6 +83,7 @@ public class QuestionController {
         if (!result.isValid()) {
             return result.getResult();
         }
+        answerRepository.deleteByQuestion(question.get());
         questionRepository.deleteById(id);
         return PathUtil.HOME;
     }

@@ -20,11 +20,11 @@ public class QuestionController {
 
     @PostMapping("/questions/{questionId}/answers")
     public String createAnswer(@PathVariable("questionId") Long questionId, HttpSession session, Answer answer) {
-        Optional<Question> optionalQuestion = questionRepository.findById(questionId);
         if (!HttpSessionUtils.isUserLogin(session)) {
             return "redirect:/login";
         }
 
+        Optional<Question> optionalQuestion = questionRepository.findById(questionId);
         optionalQuestion.ifPresent(question -> {
             answer.setQuestion(question);
             answer.setWriter(HttpSessionUtils.getUserFromSession(session));
@@ -36,11 +36,11 @@ public class QuestionController {
 
     @DeleteMapping("questions/{questionId}/answers/{id}")
     public String deleteAnswer(@PathVariable("questionId") Long questionId, @PathVariable("id") Long id, HttpSession session) {
-        Optional<Answer> optionalAnswer = answerRepository.findById(id);
         if (!HttpSessionUtils.isUserLogin(session)) {
             return "redirect:/login";
         }
 
+        Optional<Answer> optionalAnswer = answerRepository.findById(id);
         optionalAnswer.ifPresent(answer -> {
             if (HttpSessionUtils.getUserFromSession(session).matchId(optionalAnswer.get().getWriter().getId())) {
                 answerRepository.deleteById(id);
@@ -52,11 +52,11 @@ public class QuestionController {
 
     @PutMapping("/questions/{questionId}/answers/{id}")
     public String updateAnswer(@PathVariable("questionId") Long questionId, @PathVariable("id") Long id, HttpSession session, Answer updatedAnswer) {
-        Optional<Answer> optionalAnswer = answerRepository.findById(id);
         if (!HttpSessionUtils.isUserLogin(session)) {
             return "redirect:/login";
         }
 
+        Optional<Answer> optionalAnswer = answerRepository.findById(id);
         optionalAnswer.ifPresent(answer -> {
             if (HttpSessionUtils.getUserFromSession(session).matchId(optionalAnswer.get().getWriter().getId())) {
                 answer.update(updatedAnswer);
@@ -72,6 +72,7 @@ public class QuestionController {
         if (!HttpSessionUtils.isUserLogin(session)) {
             return "redirect:/login";
         }
+
         User loginedUser = HttpSessionUtils.getUserFromSession(session);
         question.setWriter(loginedUser);
         questionRepository.save(question);

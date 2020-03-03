@@ -19,10 +19,11 @@ Spring mvc 란?
     - 클라이언트 url 로 서버에 요청을 하면, 해당 url 을 매핑하고 있는 메소드 해당 요청을 처리하고 응답해준다.
     
    
-  GetMapping
+  GetMapping과 PostMapping 의 차이
+  -
   - 특정 파일을 호출할 때 Get 방식을 사용한다.
   
- WelcomeController 구현 사항 
+ WelcomeController 구현하며 배운 것
  -
  - 주소창을 통해 유저로부터 데이터를 받을 수 있다.
    e.g. localhost:8080/firstpage?menu=chicken
@@ -45,3 +46,5 @@ Spring mvc 란?
     이럴때 인자로 User user 만 넘겨주면 간단히 해결 가능
     (정보 읽기 위해서 toString 메소드도 사용해함)
     **그리고 html페이지에서 그 정보를 불러오기위해서는 getter 메소드를 만들어야함.
+    
+    

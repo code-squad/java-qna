@@ -87,7 +87,17 @@ JpaRepository를 extends 하고 어떤 클래스에 관한 레파지토리인지
    
 5. @Autowired
 
+6. @RequestMapping
+   - 기본으로 있다고 침. e.g.  @RequestMapping("/users") 이면 @GetMapping("/list) 일 때
+   사실은 users/list 인 것임.
+
 Repository
 --
 - repositoryname.findAll()  하면 레파지토리안의 모든 정보 가져옴.
 - repositoryname.save(save하고싶은정보) 하면 레파지토리에 저장됨.
+
+
+중복되는 html 생략하기
+-
+- html은 정적이라서 생략할 수 없지 mustache와 같은 템플릿 엔진을 활용하면 중복을 줄일 수 있음.
+- header 와 footer 로 나누어주면 편함. e.g. {{> include/header }}, {{> include/footer}} 

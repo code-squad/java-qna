@@ -15,7 +15,7 @@ public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
 
-    @PostMapping("/question")
+    @PostMapping("/questions")
     public String createQuestion(Question question) {
         LocalDateTime nowTime = LocalDateTime.now();
         question.setTime(nowTime);
@@ -31,12 +31,13 @@ public class QuestionController {
         return "qna/list";
     }
 
-    @GetMapping("/question/form")
+    @GetMapping("/questions/form")
     public String goForm() {
+
         return "qna/form";
     }
 
-    @GetMapping("/question/{id}")
+    @GetMapping("/questions/{id}")
     public String showQuestionDetail(@PathVariable Long id, Model model) {
         model.addAttribute("question", questionRepository.findById(id).get());
 

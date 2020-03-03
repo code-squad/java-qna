@@ -17,13 +17,10 @@ public class Question {
     @Column(nullable = false)
     private String title;
     private String contents;
-    private String writtenTime;
+    private LocalDateTime writtenTime;
 
     public Question() {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime localDateTime = LocalDateTime.now();
-        writtenTime = localDateTime.format(dateTimeFormatter);
-        System.out.println(writtenTime);
+        writtenTime = LocalDateTime.now();
     }
 
     public String getWriter() {
@@ -51,7 +48,9 @@ public class Question {
     }
 
     public String getWrittenTime() {
-        return writtenTime;
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String writtenTimeToString = writtenTime.format(dateTimeFormatter);
+        return writtenTimeToString;
     }
 
     public Long getQuestionIndex() {

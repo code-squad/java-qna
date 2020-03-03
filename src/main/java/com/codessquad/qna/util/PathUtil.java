@@ -15,6 +15,8 @@ public class PathUtil {
     public static final String QUESTION_DETAIL_TEMPLATE = "qna/show";
     public static final String QUESTION_EDIT_TEMPLATE = "qna/edit";
     public static final String REDIRECT_QUESTION_DETAIL = REDIRECT + "/questions/";
+    //answer
+    public static final String ANSWER_EDIT_TEMPLATE = "answer/edit";
     //error
     public static final String NOT_FOUND = REDIRECT + "/error/notFond";
     public static final String BAD_REQUEST = REDIRECT + "/error/badRequest";

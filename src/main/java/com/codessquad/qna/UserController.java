@@ -13,12 +13,16 @@ public class UserController {
     private List<User> users = new ArrayList<>();
 
 
-    @GetMapping("/user/create")
-    public String createUser(User user, Model model) {
+    @PostMapping("/user/create")
+    public String createUser(User user) {
         System.out.println( user);
         users.add(user);
+        return "redirect:/list";
+    }
+
+    @GetMapping("/list")
+    public String showList(Model model) {
         model.addAttribute("users", users);
-        System.out.println();
         return "userList";
     }
 

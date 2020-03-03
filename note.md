@@ -58,20 +58,36 @@ Spring mvc 란?
  
  - application.properties 에 아래 사항 추가
     + spring.datasource.url=jdbc:h2:~/ask-jenny;DB_CLOSE_ON_EXIT=FALSE (url을 자유롭게 지정)
+        + home  밑에 지정한 주소의 이름으로 데이터베이스 파일이 생성된다 e.g. ask-jenny.mv (터미널에서 cd ~ 하면 홈으로 이동)
     + spring.h2.console.enabled=true
     + spring.h2.console.path=/h2-console
+    
+    
+데이터베이스에 데이트를 추가하거나 조회하려면 interface가 필요함. 주로 Repository 나 dao 라는 접미사를 사용함.
+e.g. UserRepository<User, Long>
+JpaRepository를 extends 하고 어떤 클래스에 관한 레파지토리인지, 그리고 그 클래스의 primary key 의 타입이 무엇인지
+명시해주어야함. 
+이렇게만 구현해주어도 데이터 삽입 및 조회가 가능함.
+
 
 기타 애노테이션 정리
 -
 1. @Entity
-- 데이터베이스와 연결하기 위해 사용 e.g. 
-- DB 각각의 데이터들을 고유하게 식별하기 위해 primary key 라는 것이 존재. primary key를 지정야함. 
+   - 데이터베이스와 연결하기 위해 사용 e.g. 
+   - DB 각각의 데이터들을 고유하게 식별하기 위해 primary key 라는 것이 존재. primary key를 지정야함. 
 
 2. @Id
--  primary key를 지정하는 애노테이션
+   - primary key를 지정하는 애노테이션해
 
-2. @GeneratedValue
-- 하나의 데이터가 추가될때마다 자동으로 1씩 증가하게 하는 애노테이션 : @GeneratedValue
+3. @GeneratedValue
+   - 하나의 데이터가 추가될때마다 자동으로 1씩 증가하게 하는 애노테이션 : @GeneratedValue
 
-@Column(nullable = false)
-- null값이 들어갈 수 없게 지정하는 애노테이션
+4. @Column(nullable = false)
+   - null값이 들어갈 수 없게 지정하는 애노테이션
+   
+5. @Autowired
+
+Repository
+--
+- repositoryname.findAll()  하면 레파지토리안의 모든 정보 가져옴.
+- repositoryname.save(save하고싶은정보) 하면 레파지토리에 저장됨.

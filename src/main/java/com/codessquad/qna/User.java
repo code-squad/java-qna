@@ -9,13 +9,17 @@ import javax.persistence.Id;
 public class User {
     @Id
     @GeneratedValue
-    private Long id;
+    private Long givenNumber;
 
     @Column(nullable = false, length = 15)
     private String userId;
     private String password;
     private String name;
     private String email;
+
+    public Long getGivenNumber() {
+        return givenNumber;
+    }
 
     public void setUserId(String userId) {
         this.userId = userId;

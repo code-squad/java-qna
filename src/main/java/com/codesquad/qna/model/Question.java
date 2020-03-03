@@ -45,11 +45,11 @@ public class Question {
     }
 
     public String getContents() {
-        return contents;
+        return contents.replace("\r\n", "<br>");
     }
 
     public String getCreatedDateTimetoString() {
-        return DateTimeFormatUtils.localDateTimeToString(this.createdDateTime);
+        return DateTimeFormatUtils.getFormattedLocalDateTime(this.createdDateTime);
     }
 
     public boolean matchWriter(User sessionedUser) {

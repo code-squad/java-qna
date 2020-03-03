@@ -47,4 +47,31 @@ Spring mvc 란?
     (정보 읽기 위해서 toString 메소드도 사용해함)
     **그리고 html페이지에서 그 정보를 불러오기위해서는 getter 메소드를 만들어야함.
     
-    
+ 
+ 
+ h2 database 와 jpa 추가
+ -
+ - https://mvnrepository.com/ 에서 h2 와 jpa 검색
+    + build.gradle 파일 compile group: 'com.h2database', name: 'h2', version: '1.4.197'에 추가
+    + compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.2.4.RELEASE'
+ 도 추가.
+ 
+ - application.properties 에 아래 사항 추가
+    + spring.datasource.url=jdbc:h2:~/ask-jenny;DB_CLOSE_ON_EXIT=FALSE (url을 자유롭게 지정)
+    + spring.h2.console.enabled=true
+    + spring.h2.console.path=/h2-console
+
+기타 애노테이션 정리
+-
+1. @Entity
+- 데이터베이스와 연결하기 위해 사용 e.g. 
+- DB 각각의 데이터들을 고유하게 식별하기 위해 primary key 라는 것이 존재. primary key를 지정야함. 
+
+2. @Id
+-  primary key를 지정하는 애노테이션
+
+2. @GeneratedValue
+- 하나의 데이터가 추가될때마다 자동으로 1씩 증가하게 하는 애노테이션 : @GeneratedValue
+
+@Column(nullable = false)
+- null값이 들어갈 수 없게 지정하는 애노테이션

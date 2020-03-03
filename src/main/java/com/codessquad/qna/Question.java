@@ -1,21 +1,29 @@
 package com.codessquad.qna;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
+@Entity
 public class Question {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long questionIndex;
+
+    @Column(nullable = false, length = 20)
     private String writer;
+
+    @Column(nullable = false)
     private String title;
     private String contents;
     private String writtenTime;
-    private int questionIndex = 0;
 
     public Question() {
-        Date today = new Date();
-        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat time = new SimpleDateFormat("HH:mm");
-
-        writtenTime = date.format(today) + " " + time.format(today);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime localDateTime = LocalDateTime.now();
+        writtenTime = localDateTime.format(dateTimeFormatter);
+        System.out.println(writtenTime);
     }
 
     public String getWriter() {
@@ -46,11 +54,11 @@ public class Question {
         return writtenTime;
     }
 
-    public int getQuestionIndex() {
+    public Long getQuestionIndex() {
         return questionIndex;
     }
 
-    public void setQuestionIndex(int questionIndex) {
+    public void setQuestionIndex(Long questionIndex) {
         this.questionIndex += questionIndex;
     }
 

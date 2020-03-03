@@ -1,17 +1,17 @@
 package com.codessquad.qna;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class QuestionController {
-    private List<Question> questions = new ArrayList<>();
+    @Autowired
+    private QuestionRepository questionRepository;
 
     @RequestMapping(value = "/qna/form", method = {RequestMethod.GET})
     public String createQuestion() {
@@ -20,28 +20,20 @@ public class QuestionController {
 
     @RequestMapping(value = "/qna/form", method = {RequestMethod.POST})
     public String makeQuestion(Question question, Model model) {
-        int questionsSize = questions.size() + 1;
-        question.setQuestionIndex(questionsSize);
-        questions.add(question);
+        questionRepository.save(question);
         return "redirect:/";
     }
 
     @RequestMapping(value = {"/", "/index"}, method = {RequestMethod.GET})
     public String showQuestionList(Model model) {
-        model.addAttribute("questions", questions);
+        model.addAttribute("questions", questionRepository.findAll());
         return "/index";
     }
 
     @RequestMapping(value = "/questions/{questionIndex}", method = RequestMethod.GET)
-    public String questionShowDetail(@PathVariable int questionIndex, Model model) {
-        for (Question question : questions) {
-            if (question.getQuestionIndex() == questionIndex) {
-                model.addAttribute("title", question.getTitle());
-                model.addAttribute("writer", question.getWriter());
-                model.addAttribute("writtenTime", question.getWrittenTime());
-                model.addAttribute("contents", question.getContents());
-            }
-        }
-        return "/qna/show";
+    public ModelAndView questionShowDetail(@PathVariable Long questionIndex) {
+        ModelAndView modelAndView = new ModelAndView("/qna/show");
+        modelAndView.addObject("question", questionRepository.getOne(questionIndex));
+        return modelAndView;
     }
 }

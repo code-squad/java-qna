@@ -19,10 +19,11 @@
                 <tbody>
                 {{#users}}
                 <tr>
-                    <th scope="row">{{@index}}</th>
-                    <td onclick="location.href='/users/{{userId}}'">{{userId}}</td>
+                    <th scope="row">{{id}}</th>
+                    <td><a onclick="location.href='/users/{{id}}/profile'">{{userId}}</a></td>
                     <td>{{name}}</td>
                     <td>{{email}}</td>
+                    <th><a href="/users/changeUserInfo/{{id}}" class="btn btn-success" role="button">수정</a></th>
                 </tr>
                 {{/users}}
                 </tbody>

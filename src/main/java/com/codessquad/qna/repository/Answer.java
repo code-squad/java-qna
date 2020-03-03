@@ -25,6 +25,7 @@ public class Answer {
     private User writer;
 
     @Setter
+    @Lob
     @Column(nullable = false)
     private String contents;
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -51,7 +52,6 @@ public class Answer {
     }
 
     public boolean isCorrectWriter(User user) {
-        System.out.println();
         return this.writer.getId().compareTo(user.getId()) == 0;
     }
 }

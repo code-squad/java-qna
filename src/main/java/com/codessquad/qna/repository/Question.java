@@ -20,12 +20,13 @@ public class Question {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     private User writer;
 
-    @Column(nullable = false)
     @Setter
+    @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
     @Setter
+    @Lob
+    @Column(nullable = false)
     private String contents;
     private LocalDate createdAt = LocalDate.now();
 

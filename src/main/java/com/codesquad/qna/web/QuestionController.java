@@ -45,8 +45,8 @@ public class QuestionController {
 
     @GetMapping("/{id}")
     public String show(@PathVariable Long id, Model model) {
-        Question focusQuestion = findQuestion(id);
-        model.addAttribute("question", focusQuestion);
+        Question question = findQuestion(id);
+        model.addAttribute("question", question);
         model.addAttribute("answers", answerRepository.findByQuestionId(id));
         model.addAttribute("countOfAnswers", answerRepository.countByQuestionId(id));
         return "qna/show";
@@ -62,7 +62,7 @@ public class QuestionController {
         return "qna/updateForm";
     }
 
-    @PutMapping("/{id}/update")
+    @PutMapping("/{id}")
     public String update(@PathVariable Long id, String title, String contents, HttpSession session) {
         if (HttpSessionUtils.isNotLoggedIn(session))
             return "redirect:/user/login";
@@ -73,7 +73,7 @@ public class QuestionController {
         return String.format("redirect:/questions/%d", id);
     }
 
-    @DeleteMapping("/{id}/delete")
+    @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id, HttpSession session) {
         if (HttpSessionUtils.isNotLoggedIn(session))
             return "redirect:/user/login";

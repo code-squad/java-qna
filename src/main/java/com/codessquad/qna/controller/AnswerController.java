@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -30,26 +29,15 @@ public class AnswerController {
 
     @GetMapping("/{answerId}/editForm")
     public String showEditForm(@PathVariable("questionId") Long questionId, @PathVariable("answerId") Long answerId, HttpSession session, Model model) {
-        if (!HttpSessionUtil.isAuthorizedUser(session)) {
-            return PathUtil.UNAUTHORIZED;
-        }
         Optional<Question> question = questionRepository.findById(questionId);
-        if (!question.isPresent()) {
-            return PathUtil.NOT_FOUND;
-        }
-
         Optional<Answer> answer = answerRepository.findById(answerId);
-        if (!answer.isPresent()) {
-            return PathUtil.NOT_FOUND;
-        }
-
-        User user = HttpSessionUtil.getUserFromSession(session);
-        if (!answer.get().isCorrectWriter(user)) {
-            return PathUtil.UNAUTHORIZED;
+        Result result = valid(session, question, answer);
+        if (!result.isValid()) {
+            return result.getResult();
         }
         model.addAttribute("answer", answer.get());
         model.addAttribute("question", question.get());
-        return "answer/edit";
+        return PathUtil.ANSWER_EDIT_TEMPLATE;
     }
 
     @PostMapping
@@ -75,22 +63,12 @@ public class AnswerController {
 
     @DeleteMapping("/{answerId}")
     public String deleteAnswer(@PathVariable("questionId") Long questionId, @PathVariable("answerId") Long answerId, HttpSession session) {
-        if (!HttpSessionUtil.isAuthorizedUser(session)) {
-            return PathUtil.UNAUTHORIZED;
-        }
         Optional<Question> question = questionRepository.findById(questionId);
-        if (!question.isPresent()) {
-            return PathUtil.NOT_FOUND;
-        }
-
         Optional<Answer> answer = answerRepository.findById(answerId);
-        if (!answer.isPresent()) {
-            return PathUtil.NOT_FOUND;
-        }
+        Result result = valid(session, question, answer);
 
-        User user = HttpSessionUtil.getUserFromSession(session);
-        if (!answer.get().isCorrectWriter(user)) {
-            return PathUtil.UNAUTHORIZED;
+        if (!result.isValid()) {
+            return result.getResult();
         }
         answerRepository.delete(answer.get());
         return PathUtil.REDIRECT_QUESTION_DETAIL + questionId;
@@ -98,17 +76,12 @@ public class AnswerController {
 
     @PutMapping("/{answerId}")
     public String updateAnswer(@PathVariable("questionId") Long questionId, @PathVariable("answerId") Long answerId, String contents ,HttpSession session) {
-        if (!HttpSessionUtil.isAuthorizedUser(session)) {
-            return PathUtil.UNAUTHORIZED;
-        }
         Optional<Question> question = questionRepository.findById(questionId);
-        if (!question.isPresent()) {
-            return PathUtil.NOT_FOUND;
-        }
-
         Optional<Answer> answer = answerRepository.findById(answerId);
-        if (!answer.isPresent()) {
-            return PathUtil.NOT_FOUND;
+        Result result = valid(session, question, answer);
+
+        if (!result.isValid()) {
+            return result.getResult();
         }
 
         User user = HttpSessionUtil.getUserFromSession(session);
@@ -119,5 +92,25 @@ public class AnswerController {
         answer.get().update(updateData);
         answerRepository.save(answer.get());
         return PathUtil.REDIRECT_QUESTION_DETAIL + questionId;
+    }
+
+    private Result valid(HttpSession session, Optional<Question> question, Optional<Answer> answer) {
+        if (!HttpSessionUtil.isAuthorizedUser(session)) {
+            return Result.fail(PathUtil.UNAUTHORIZED);
+        }
+
+        if (!question.isPresent()) {
+            return Result.fail(PathUtil.NOT_FOUND);
+        }
+
+        if (!answer.isPresent()) {
+            return Result.fail(PathUtil.NOT_FOUND);
+        }
+
+        User user = HttpSessionUtil.getUserFromSession(session);
+        if (!answer.get().isCorrectWriter(user)) {
+            return Result.fail(PathUtil.UNAUTHORIZED);
+        }
+        return Result.ok();
     }
 }

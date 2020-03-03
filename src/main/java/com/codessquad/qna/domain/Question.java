@@ -2,6 +2,7 @@ package com.codessquad.qna.domain;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Question {
@@ -73,7 +74,7 @@ public class Question {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", date=" + createdDate +
-                ", writer='" + writer.getName() + '\'' +
+                ", writer='" + writer + '\'' +
                 ", contents='" + contents + '\'' +
                 '}';
     }
@@ -82,5 +83,12 @@ public class Question {
         this.title = title;
         this.contents = contents;
         this.createdDate = LocalDateTime.now();
+    }
+
+    public String getFormattedCreatedDate() {
+        if (createdDate == null) {
+            return "";
+        }
+        return createdDate.format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:ss"));
     }
 }

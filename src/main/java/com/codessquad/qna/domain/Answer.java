@@ -2,6 +2,7 @@ package com.codessquad.qna.domain;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Answer {
@@ -13,7 +14,7 @@ public class Answer {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
     private User writer;
     private String contents;
-    private LocalDateTime CreatedDate;
+    private LocalDateTime createdDate;
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_question"))
     private Question question;
@@ -25,7 +26,7 @@ public class Answer {
         this.contents = contents;
         this.writer = writer;
         this.question = question;
-        this.CreatedDate = LocalDateTime.now();
+        this.createdDate = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -53,11 +54,11 @@ public class Answer {
     }
 
     public LocalDateTime getCreatedDate() {
-        return CreatedDate;
+        return createdDate;
     }
 
     public void setCreatedDate(LocalDateTime date) {
-        this.CreatedDate = date;
+        this.createdDate = date;
     }
 
     public Question getQuestion() {
@@ -70,6 +71,13 @@ public class Answer {
 
     public void update(String contents) {
         this.contents = contents;
-        this.CreatedDate = LocalDateTime.now();
+        this.createdDate = LocalDateTime.now();
+    }
+
+    public String gerFormattedCreatedDate() {
+        if (createdDate == null) {
+            return "";
+        }
+        return createdDate.format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:ss"));
     }
 }

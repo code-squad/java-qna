@@ -68,19 +68,4 @@ public class AnswerController {
         return "redirect:/questions/" + questionId;
     }
 
-    @DeleteMapping("/{answerId}")
-    public String deleteAnswer(@PathVariable Long questionId, @PathVariable Long answerId, HttpSession session) {
-        User loginUser = (User) session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
-        if (loginUser == null) {
-            return CommonConstants.REDIRECT_LOGIN_PAGE;
-        }
-
-        Answer answer = answerRepository.findByQuestionIdAndId(questionId, answerId);
-        if (!loginUser.equals(answer.getWriter())) {
-            return "redirect:/questions/" + questionId;
-        }
-        answerRepository.save(answer.delete());
-        return "redirect:/questions/" + questionId;
-    }
-
 }

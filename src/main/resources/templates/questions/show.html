@@ -73,7 +73,7 @@
                       <a class="link-modify-article" href="/questions/{{question.id}}/answers/{{this.id}}/form">수정</a>
                     </li>
                     <li>
-                      <form action="/questions/{{question.id}}/answers/{{this.id}}" class="delete-answer-form" method="POST">
+                      <form action="/api/questions/{{question.id}}/answers/{{this.id}}" class="delete-answer-form" method="POST">
                         <input name="_method" type="hidden" value="DELETE">
                         <button class="delete-answer-button" type="submit">삭제</button>
                       </form>
@@ -116,10 +116,10 @@
     <div class="article-util">
       <ul class="article-util-list">
         <li>
-          <a class="link-modify-article" href="/api/qna/updateAnswer/{6}">수정</a>
+          <a class="link-modify-article" href="/api/qna/updateAnswer/{0}">수정</a>
         </li>
         <li>
-          <form class="delete-answer-form" action="/api/questions/{6}/answers/{4}" method="POST">
+          <form class="delete-answer-form" action="/api/questions/{6}/answers/{0}" method="POST">
             <input name="_method" type="hidden" value="DELETE">
             <button class="delete-answer-button" type="submit">삭제</button>
           </form>
@@ -130,39 +130,6 @@
 </script>
 
 {{> script-references}}
-<script type="text/javascript">
-  const addAnswer = function (e) {
-    e.preventDefault(); // submit이 자동으로 동작하는 것을 막는다.
-
-    const queryString = $('.submit-write').serialize(); // form data를 자동으로 묶어준다.
-    const url = $(".submit-write").attr("action");
-
-    $.ajax({
-      type: 'post',
-      url: url,
-      data: queryString,
-      dataType: 'json',
-      error: function () {
-        console.error('failure');
-      },
-      success: function (data, status) {
-        $('#answer-count').html(data.question.answerCountExceptDeleted);
-        const answerTemplate = $('#answerTemplate').html();
-        const template = answerTemplate.format(
-            data.id,
-            data.comment,
-            data.formattedUpdatedDateTime,
-            data.writer.id,
-            data.writer.userId,
-            data.writer.userProfileImage,
-            data.question.id);
-        $('.qna-comment-slipp-articles').append(template);
-        $('textarea[name=comment]').val("");
-      },
-    });
-  };
-
-  $('.submit-write button[type=submit]').click(addAnswer);
-</script>
+<script src="/js/questionScript.js"></script>
 </body>
 </html>

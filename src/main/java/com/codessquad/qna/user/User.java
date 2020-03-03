@@ -92,7 +92,7 @@ public class User implements Serializable {
     }
 
     public void update(User updateUser, String newPassword) {
-        if (!newPassword.equals("")) {
+        if (!"".equals(newPassword)) {
             this.userPassword = newPassword;
         }
         this.userName = updateUser.userName;

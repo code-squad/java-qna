@@ -3,10 +3,7 @@ package com.codessquad.qna.question;
 import com.codessquad.qna.constants.CommonConstants;
 import com.codessquad.qna.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -30,5 +27,19 @@ public class ApiAnswerController {
         Question question = questionRepository.findById(questionId).orElse(null);
         Answer answer = new Answer(loginUser, question, comment);
         return answerRepository.save(answer);
+    }
+
+    @DeleteMapping("/{answerId}")
+    public Result deleteAnswer(@PathVariable Long questionId, @PathVariable Long answerId, HttpSession session) {
+        User loginUser = (User) session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
+        if (loginUser == null) {
+            return Result.failed("로그인이 되어있지 않습니다.");
+        }
+
+        Answer answer = answerRepository.findByQuestionIdAndId(questionId, answerId);
+        if (!loginUser.equals(answer.getWriter())) {
+            return Result.failed("해당 댓글의 작성자가 아닙니다.");
+        }
+        return Result.ok(answerRepository.save(answer.delete()));
     }
 }

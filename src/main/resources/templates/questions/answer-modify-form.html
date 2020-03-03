@@ -9,7 +9,7 @@
     <form action="/questions/{{question.id}}/answers/{{answer.id}}" class="submit-write" method="POST">
       <input name="_method" type="hidden" value="PUT"/>
       <div class="form-group" style="padding:14px;">
-        <textarea class="form-control" id="comments" name="comments" placeholder="Update your status">{{answer.comment}}</textarea>
+        <textarea class="form-control" id="comment" name="comment" placeholder="Update your status">{{answer.comment}}</textarea>
       </div>
       <button class="btn btn-success pull-right" type="submit">수정하기</button>
       <div class="clearfix"/>

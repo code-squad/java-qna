@@ -22,24 +22,6 @@ public class AnswerController {
     @Autowired
     private AnswerRepository answerRepository;
 
-    @PostMapping("")
-    public String createAnswer(@PathVariable Long questionId, @RequestParam String comments, HttpSession session) {
-        try {
-            User loginUser = (User) session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
-            if (loginUser == null) {
-                return CommonConstants.REDIRECT_LOGIN_PAGE;
-            }
-
-            Question question = questionRepository.findById(questionId).orElseThrow(() -> new NotFoundException("못찾음"));
-            Answer answer = new Answer(loginUser, question, comments);
-            answerRepository.save(answer);
-        } catch (NotFoundException e) {
-            return ErrorConstants.ERROR_QUESTION_NOT_FOUND;
-        }
-
-        return "redirect:/questions/" + questionId;
-    }
-
     @GetMapping("/{answerId}/form")
     public String goUpdateAnswerForm(@PathVariable Long questionId,
                                      @PathVariable Long answerId,
@@ -68,7 +50,7 @@ public class AnswerController {
     @PutMapping("/{answerId}")
     public String updateAnswer(@PathVariable Long questionId,
                                @PathVariable Long answerId,
-                               @RequestParam String comments,
+                               @RequestParam String comment,
                                HttpSession session) {
         User loginUser = (User) session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
         if (loginUser == null) {
@@ -79,7 +61,7 @@ public class AnswerController {
         if (!loginUser.equals(answer.getWriter())) {
             return "redirect:/questions/" + questionId;
         }
-        answer.setComment(comments);
+        answer.setComment(comment);
         answer.setUpdatedDateTime(LocalDateTime.now());
         answerRepository.save(answer);
 

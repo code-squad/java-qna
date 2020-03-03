@@ -2,6 +2,7 @@ package com.codessquad.qna.question;
 
 import com.codessquad.qna.constants.FormatConstants;
 import com.codessquad.qna.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -33,6 +34,7 @@ public class Question {
     @Column(nullable = false)
     private boolean isDeleted;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "question")
     private Collection<Answer> answers;
 

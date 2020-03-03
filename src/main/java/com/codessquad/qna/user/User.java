@@ -27,13 +27,20 @@ public class User implements Serializable {
     @Column(unique = true)
     private String userEmail;
 
+    private String userProfileImage;
+
     public User() {}
 
     public User(String userId, String userPassword, String userName, String userEmail) {
+        this(userId, userPassword, userName, userEmail, "../images/80-text.png");
+    }
+
+    public User(String userId, String userPassword, String userName, String userEmail, String userProfileImage) {
         this.userId = userId;
         this.userPassword = userPassword;
         this.userName = userName;
         this.userEmail = userEmail;
+        this.userProfileImage = userProfileImage;
     }
 
     public Long getId() {
@@ -72,6 +79,14 @@ public class User implements Serializable {
         this.userEmail = userEmail;
     }
 
+    public String getUserProfileImage() {
+        return userProfileImage;
+    }
+
+    public void setUserProfileImage(String userProfileImage) {
+        this.userProfileImage = userProfileImage;
+    }
+
     public boolean isUserPasswordNotEquals(String password) {
         return !this.userPassword.equals(password);
     }
@@ -82,6 +97,7 @@ public class User implements Serializable {
         }
         this.userName = updateUser.userName;
         this.userEmail = updateUser.userEmail;
+        this.userProfileImage = updateUser.userProfileImage;
     }
 
     @Override

@@ -127,3 +127,7 @@
 
 1. CommonConstants를 분리하였습니다. (Error 페이지는 ErrorConstants, Format은 FormatConstants) 패키지를 constants로 변경하였습니다.
 2. 불필요한 setter를 제거하였습니다. 그리고 자기 자신의 userEmail을 가져오는 부분을 `getUserEmail()` 에서 `this.userEmail`로 변경하였습니다.
+
+# STEP5 진행 전 개인적으로 해보고 싶었던 것 적용
+
+1. 이미지 업로드 기능. (File I/O가 원하는 대로 잘 되지 않아서, 이미지 링크로 만족하기로 하였습니다.) => 나중에 AWS S3을 사용해볼까 생각하고 있습니다.

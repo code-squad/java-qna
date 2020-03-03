@@ -11,13 +11,13 @@
       <div class="panel-body">
         <div class="well well-sm">
           <div class="media">
-            <a class="thumbnail pull-left" href="#">
-              <img class="media-object" src="../images/80-text.png">
+            <a class="thumbnail pull-left" href="/users/{{user.id}}">
+              <img alt="프로필 이미지" class="media-object" src="{{user.userProfileImage}}" style="width: 80px; height: 80px;">
             </a>
             <div class="media-body">
               <h4 class="media-heading">{{user.userName}}</h4>
               <p>
-                <a class="btn btn-xs btn-default" href="#"><span class="glyphicon glyphicon-envelope"></span>&nbsp;{{user.userEmail}}</a>
+                <a class="btn btn-xs btn-default" href="mailto:{{user.userEmail}}"><span class="glyphicon glyphicon-envelope"></span>&nbsp;{{user.userEmail}}</a>
               </p>
             </div>
           </div>

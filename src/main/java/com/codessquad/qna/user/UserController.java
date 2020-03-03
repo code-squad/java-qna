@@ -28,6 +28,12 @@ public class UserController {
 
     @PostMapping("")
     public String createUser(User user) {
+        if (user == null) {
+            return "redirect:/users/form";
+        }
+        if (user.getUserProfileImage().equals("")) {
+            user.setUserProfileImage("../images/80-text.png");
+        }
         try {
             userRepository.save(user);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {

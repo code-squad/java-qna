@@ -28,3 +28,12 @@ Spring mvc 란?
  - 이렇게 받아온 데이터 값을 모델로 추가해 준다. model.addAttribute("menu", menu)
  - 그러면 view 를 담당하는 firstPage.html 에 그 데이터 값을 전달할 수 있다.
  - {{menu}} 라고 작성할 때 chicken 이 출력 됨.
+ 
+ 
+ url 이 추가되면 상응하는 controller가 있어야함.
+ html 에서 작업할 때 input 태그에 name 이라는 값으로 데이터를 설정해야만 입력받 데이터를 전달해 줄 수 
+ 그런데 사용자가 입력하는 데이터가 id, name, email, password 로 적지 않다.
+ 경우에 따라 입력받는 데이터가 더 많아질 수도 있는데,
+ 이럴 때는 모든 데이터를 인자로 넘겨주 메소드의 길이가 너무 길어지니 새로운 클래스를 하나 만들어서 인자의 개수를 줄이는 것이 좋다.
+ e.g. User 클래스를 만들어서 field 값을 id, password, name, email 을 설정하고 setter 메소드를 쓰면 됨.
+ 이럴때 인자로 User user 만 넘겨주면 간단히 해결 가능(정보 읽기 위해서 toString 메소드도 사용해함)

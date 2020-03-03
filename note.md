@@ -101,3 +101,12 @@ Repository
 -
 - html은 정적이라서 생략할 수 없지 mustache와 같은 템플릿 엔진을 활용하면 중복을 줄일 수 있음.
 - header 와 footer 로 나누어주면 편함. e.g. {{> include/header }}, {{> include/footer}} 
+
+
+repositoryname.findById(id);
+
+
+
+해결해야하는 사항
+-
+- 회원 정보 수정 버튼 눌렀을 때 value 값이 전달이 되지 않아서 모두 빈 칸이다.

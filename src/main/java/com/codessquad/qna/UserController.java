@@ -4,11 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @RequestMapping("/users")
@@ -28,6 +27,24 @@ public class UserController {
         model.addAttribute("users", userRepository.findAll());
         return "userList";
     }
+
+
+    ///회원가입 눌렀을 때
+    @GetMapping("/form")
+    public String createAccount() {
+        return "form";
+    }
+
+    ///수정버튼 눌렀 때
+    @GetMapping("/{givenNumber}/form")
+    public String editInfo(@PathVariable Long givenNumber, Model model) {
+        
+
+        model.addAttribute("user", userRepository.findById(givenNumber));
+        System.out.println(userRepository.findById(givenNumber));
+        return "updateForm";
+    }
+
 
 
 

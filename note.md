@@ -134,3 +134,15 @@ userId와 password만 아니까 userId 로 유저 정보를 조회하는 방법�
 이럴 때는 간단하게 조회하려는 레파지토리에서 findBy찾는기준 메소드를 만들어 주면 된다.(이름만 정의해놓으면 스프링부트가 알아서 만들어주는듯) 
 e.g. User findByUserId(String userId) , findBy하고 뒤에 찾는 기준 값으 대문자로 오면 되는듯 하다.
 '
+
+
+미리 db에 정보 입력해놓기
+-
+- 매번 회원가입하고 로그인 해보기가 귀찮으므로 미리 정보를 입력해두자.
+- resources 디렉토리 아래에 data.sql 파일을 만들고 
+INSERT INTO USER (user_id, password, name, email) VALUES 
+('huji', '3156', 'Jenny', 'huji3156@gmail.com');
+를 입력하면 된다.(no data sources are cofigured.. 같은 메세지는 무시해도 상관없는 듯 하다)
+- 이 때 만약 Null not allowed for column~~ 에러 메세지가 뜬다면 이는 @GeneratedValue 애노테이션에
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+을 추가해주면 해결된다.

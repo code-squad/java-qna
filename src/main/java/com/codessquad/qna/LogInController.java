@@ -22,7 +22,7 @@ public class LogInController {
     @PostMapping("/user/login")
     public String login(String userId, String password, HttpSession session) {
         User user = userRepository.findByUserId(userId);
-        
+
         if (user == null) {
             System.out.println("no user exist");
             return "redirect:/user/loginForm";

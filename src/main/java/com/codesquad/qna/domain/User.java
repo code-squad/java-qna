@@ -14,7 +14,6 @@ public class User {
 
     @Column(nullable = false, length = 20)
     private String userId;
-
     private String password;
     private String name;
     private String email;
@@ -65,6 +64,14 @@ public class User {
         this.email = updateUser.email;
     }
 
+    public boolean isEqualsUserId(String userId) {
+        return this.userId.equals(userId);
+    }
+
+    public boolean isEqualsPassword(User updateUser) {
+        return this.password.equals(updateUser.password);
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -75,6 +82,4 @@ public class User {
                 ", email='" + email + '\'' +
                 '}';
     }
-
-
 }

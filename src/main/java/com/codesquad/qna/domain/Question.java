@@ -21,17 +21,6 @@ public class Question {
     private String contents;
     private LocalDateTime createdDateTime;
 
-    @Override
-    public String toString() {
-        return "Question{" +
-                "id=" + id +
-                ", writer='" + writer + '\'' +
-                ", title='" + title + '\'' +
-                ", contents='" + contents + '\'' +
-                ", createdDateTime=" + createdDateTime +
-                '}';
-    }
-
     public Long getId() {
         return id;
     }
@@ -72,5 +61,14 @@ public class Question {
         this.createdDateTime = createdDateTime;
     }
 
-
+    @Override
+    public String toString() {
+        return "Question{" +
+                "id=" + id +
+                ", writer='" + writer + '\'' +
+                ", title='" + title + '\'' +
+                ", contents='" + contents + '\'' +
+                ", createdDateTime=" + createdDateTime +
+                '}';
+    }
 }

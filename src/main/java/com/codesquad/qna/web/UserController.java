@@ -25,6 +25,9 @@ public class UserController {
 
     @PostMapping("/create")
     public String create(User user) {
+        if (user == null) {
+            throw new NullPointerException();
+        }
         userRepository.save(user);
         return "redirect:/users/list";
     }
@@ -36,18 +39,30 @@ public class UserController {
     }
 
     @GetMapping("/{id}/form")
-    public String updateForm(@PathVariable Long id, Model model) throws NotFoundError {
+    public String checkPasswordForm(@PathVariable Long id, Model model) throws NotFoundError {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundError(NotFoundError.NOT_FOUND_MESSAGE));
-
         model.addAttribute("user", user);
+        return "/user/checkForm";
+    }
+
+    @PostMapping("/{id}/checkPassword")
+    public String checkPassword(@PathVariable Long id, User updateUser) throws NotFoundError {
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundError(NotFoundError.NOT_FOUND_MESSAGE));
+        if (user.isEqualsPassword(updateUser)) {
+            return "redirect:/{id}/update";
+        }
+        return "redirect:/users/list";
+    }
+
+    @GetMapping("/{id}/update")
+    public String updateForm() {
         return "/user/updateForm";
     }
 
     @PostMapping("/{id}/update")
-    public String updateUser(@PathVariable Long id, User newUser) throws NotFoundError {
+    public String updateUser(@PathVariable Long id, User updateUser) throws NotFoundError {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundError(NotFoundError.NOT_FOUND_MESSAGE));
-
-        user.update(newUser);
+        user.update(updateUser);
         userRepository.save(user);
         return "redirect:/users/list";
     }
@@ -56,7 +71,7 @@ public class UserController {
     public String read(@PathVariable String userId, Model model) throws NotFoundError {
         User user = userRepository.findAll()
                 .stream()
-                .filter(u -> u.getUserId().equals(userId))
+                .filter(u -> u.isEqualsUserId(userId))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundError(NotFoundError.NOT_FOUND_MESSAGE));
 

@@ -27,10 +27,9 @@ public class QuestionController {
 
     @PostMapping("/create")
     public String create(Question question, Model model) {
-        if (question.toString().contains(null)) {
+        if (question == null) {
             throw new NullPointerException();
         }
-        System.out.println(question);
         question.setCreatedDateTime(LocalDateTime.now());
         questionRepository.save(question);
         return "redirect:/questions/list";

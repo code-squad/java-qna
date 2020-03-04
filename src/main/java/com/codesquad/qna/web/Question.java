@@ -8,6 +8,7 @@ public class Question {
     private String title;
     private String contents;
     private String date;
+    private long id;
 
     public Question() {
         setDate();
@@ -32,6 +33,10 @@ public class Question {
         this.date = dateFormat.format(date);
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public String getWriter() {
         return writer;
     }
@@ -48,8 +53,16 @@ public class Question {
         return date;
     }
 
+    public long getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
-        return "Writer : " + writer + "\n" + "Title : " + title + "\n" + "Contents : " + contents + "\n" + "Date : " + date;
+        return "Writer : " + writer + "\n" +
+                "Title : " + title + "\n" +
+                "Contents : " + contents + "\n" +
+                "Date : " + date + "\n" +
+                "Id : " + id;
     }
 }

@@ -64,19 +64,19 @@
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
-                {{#loginUser}}
+                {{#loggedInUser}}
                 <li class=""><a href=""> Welcome {{name}} ! </a></li>
-                {{/loginUser}}
+                {{/loggedInUser}}
 
                 <li class="active"><a href="/posts">Posts</a></li>
-                {{^loginUser}}
+                {{^loggedInUser}}
                 <li><a href="/user/loginForm" role="button">로그인</a></li>
                 <li><a href="/users/form" role="button">회원가입</a></li>
-                {{/loginUser}}
-                {{#loginUser}}
+                {{/loggedInUser}}
+                {{#loggedInUser}}
                 <li><a href="/user/logout" role="button">로그아웃</a></li>
                 <li><a href="/users/{{givenNumber}}/form" role="button">개인정보수정</a></li>
-                {{/loginUser}}
+                {{/loggedInUser}}
 
             </ul>
         </div>

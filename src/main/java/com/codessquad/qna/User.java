@@ -18,6 +18,13 @@ public class User {
         return givenNumber;
     }
 
+    public boolean matchGivenNumber(Long newGivenNumber) {
+        if (newGivenNumber == null) {
+            return false;
+        }
+        return newGivenNumber.equals(givenNumber);
+    }
+
     public void setUserId(String userId) {
         this.userId = userId;
     }
@@ -64,5 +71,20 @@ public class User {
         this.name =newUser.name;
         this.password = newUser.password;
         this.email = newUser.email;
+    }
+
+
+    public boolean matchPassword(String newPassword) {
+        if (newPassword == null) {
+            return false;
+        }
+        return newPassword.equals(password);
+    }
+
+    public boolean matchId(String newUserId) {
+        if(newUserId == null) {
+            return false;
+        }
+        return newUserId.equals(userId);
     }
 }

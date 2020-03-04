@@ -42,14 +42,14 @@ public class UserController {
     ///수정버튼 눌렀을 때
     @GetMapping("/{givenNumber}/form")
     public String editInfo(@PathVariable Long givenNumber, Model model, HttpSession session) {
-        Object tempUser = session.getAttribute("loginUser");
-        if (tempUser == null) {
+
+        if (HttpSessionUtil.isLoginUser(session)) {
             System.out.println("Sign in first to edit your info");
             return "redirect:/";
         }
 
-        User sessionedUser = (User)tempUser;
-        if (!givenNumber.equals(sessionedUser.getGivenNumber())) {
+        User sessionedUser = HttpSessionUtil.getUserFromSession(session);
+        if (! sessionedUser.matchGivenNumber(givenNumber)) {
             throw new IllegalStateException("Access denied");
         }
 
@@ -68,6 +68,7 @@ public class UserController {
         System.out.println("Edited info : " + user);
         return "redirect:/users";
     }
+
 
 
 

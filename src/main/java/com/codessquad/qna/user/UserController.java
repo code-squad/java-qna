@@ -2,6 +2,7 @@ package com.codessquad.qna.user;
 
 import com.codessquad.qna.constants.CommonConstants;
 import com.codessquad.qna.constants.ErrorConstants;
+import com.codessquad.qna.utils.HttpSessionUtils;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -64,7 +65,8 @@ public class UserController {
     public String showUserInfoModifyForm(@PathVariable long id, Model model, HttpSession session) {
         try {
             User user = getUserIfExist(id);
-            if (isLoginUserNotEqualsRequestedUser(session, user)) {
+            User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
+            if (!user.equals(loginUser)) {
                 return ErrorConstants.ERROR_CANNOT_EDIT_OTHER_USER_INFO;
             }
             model.addAttribute("user", user);
@@ -82,10 +84,11 @@ public class UserController {
                                  HttpSession session) {
         try {
             User user = getUserIfExist(id);
-            if (isLoginUserNotEqualsRequestedUser(session, user)) {
+            User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
+            if (!user.equals(loginUser)) {
                 return ErrorConstants.ERROR_CANNOT_EDIT_OTHER_USER_INFO;
             }
-            if (user.isUserPasswordNotEquals(updateUser.getUserPassword())) {
+            if (user.isUserPasswordNotEquals(updateUser)) {
                 return "redirect:/users/" + id + "/form";
             }
             user.update(updateUser, newPassword);
@@ -106,10 +109,12 @@ public class UserController {
 
     @PostMapping("/login")
     public String loginUser(@RequestParam String userId, @RequestParam String userPassword, HttpSession session) {
-        User user = userRepository.findByUserId(userId);
+        User user = userRepository.findByUserId(userId).orElse(null);
+        User tempUser = new User();
+        tempUser.setUserPassword(userPassword);
 
         // 사용자가 없거나, 비밀번호 일치하지 않는 경우
-        if (user == null || user.isUserPasswordNotEquals(userPassword)) {
+        if (user == null || user.isUserPasswordNotEquals(tempUser)) {
             return "users/login-failed";
         }
         session.setAttribute(CommonConstants.SESSION_LOGIN_USER, user);
@@ -118,12 +123,8 @@ public class UserController {
 
     @GetMapping("/logout")
     public String logoutUser(HttpSession session) {
-        session.invalidate();
+        HttpSessionUtils.sessionLogout(session);
         return "redirect:/";
-    }
-
-    private boolean isLoginUserNotEqualsRequestedUser(HttpSession session, User user) {
-        return !user.equals(session.getAttribute(CommonConstants.SESSION_LOGIN_USER));
     }
 
     private User getUserIfExist(long id) throws NotFoundException {

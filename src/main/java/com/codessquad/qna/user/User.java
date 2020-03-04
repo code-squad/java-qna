@@ -87,8 +87,8 @@ public class User implements Serializable {
         this.userProfileImage = userProfileImage;
     }
 
-    public boolean isUserPasswordNotEquals(String password) {
-        return !this.userPassword.equals(password);
+    public boolean isUserPasswordNotEquals(User updateUser) {
+        return !this.userPassword.equals(updateUser.userPassword);
     }
 
     public void update(User updateUser, String newPassword) {

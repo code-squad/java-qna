@@ -2,8 +2,8 @@ package com.codessquad.qna.user;
 
 import com.codessquad.qna.constants.CommonConstants;
 import com.codessquad.qna.constants.ErrorConstants;
+import com.codessquad.qna.error.exception.UserNotFoundException;
 import com.codessquad.qna.utils.HttpSessionUtils;
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
@@ -52,27 +52,19 @@ public class UserController {
     @GetMapping("/{id}")
     public ModelAndView showUserProfile(@PathVariable long id) {
         ModelAndView modelAndView = new ModelAndView("users/profile");
-        try {
-            modelAndView.addObject("user", getUserIfExist(id));
-        } catch (NotFoundException e) {
-            return new ModelAndView(ErrorConstants.ERROR_USER_NOT_FOUND);
-        }
+        modelAndView.addObject("user", getUserIfExist(id));
         return modelAndView;
     }
 
 
     @GetMapping("/{id}/form")
     public String showUserInfoModifyForm(@PathVariable long id, Model model, HttpSession session) {
-        try {
-            User user = getUserIfExist(id);
-            User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
-            if (!user.equals(loginUser)) {
-                return ErrorConstants.ERROR_CANNOT_EDIT_OTHER_USER_INFO;
-            }
-            model.addAttribute("user", user);
-        } catch (NotFoundException e) {
-            return ErrorConstants.ERROR_USER_NOT_FOUND;
+        User user = getUserIfExist(id);
+        User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
+        if (!user.equals(loginUser)) {
+            return ErrorConstants.ERROR_CANNOT_EDIT_OTHER_USER_INFO;
         }
+        model.addAttribute("user", user);
         model.addAttribute("actionUrl", "/users/" + id);
         return "/users/modify-form";
     }
@@ -93,8 +85,6 @@ public class UserController {
             }
             user.update(updateUser, newPassword);
             session.setAttribute(CommonConstants.SESSION_LOGIN_USER, userRepository.save(user));
-        } catch (NotFoundException e) {
-            return ErrorConstants.ERROR_USER_NOT_FOUND;
         } catch (TransactionSystemException e) {
             return "redirect:/users/" + id + "/form";
         }
@@ -127,8 +117,8 @@ public class UserController {
         return "redirect:/";
     }
 
-    private User getUserIfExist(long id) throws NotFoundException {
-        return userRepository.findById(id).orElseThrow(() -> new NotFoundException("해당 사용자는 존재하지 않는 사용자입니다."));
+    private User getUserIfExist(long id) {
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("해당 사용자는 존재하지 않는 사용자입니다."));
     }
 
 }

@@ -25,6 +25,7 @@ public class AnswerController {
         if (!HttpSessionUtils.isLoginUser(sessionedUser)) {
             return "redirect:/users/loginForm";
         }
+
         Question question = findQuestion(questionRepository, questionId);
         Answer answer = new Answer(question, contents, sessionedUser.getName());
         answerRepository.save(answer);
@@ -42,9 +43,11 @@ public class AnswerController {
         if (!HttpSessionUtils.isLoginUser(sessionedUser)) {
             return "redirect:/users/loginForm";
         }
+
         if (sessionedUser.notMatchWriter(writer)) {
             return "redirect:/users/loginForm";
         }
+
         model.addAttribute("question", findQuestion(questionRepository, questionId));
         model.addAttribute("answers", answerRepository.findByQuestionId(questionId));
         model.addAttribute("answer", findAnswer(answerRepository, answerId));
@@ -56,9 +59,11 @@ public class AnswerController {
                          String contents,
                          HttpSession httpSession) {
         User user = HttpSessionUtils.getUserFromSession(httpSession);
+
         if (!HttpSessionUtils.isLoginUser(user)) {
             return "redirect:/users/loginForm";
         }
+
         Answer answer = findAnswer(answerRepository, answerId);
         answer.update(contents);
         answerRepository.save(answer);
@@ -70,12 +75,15 @@ public class AnswerController {
                          @PathVariable String writer,
                          HttpSession httpSession) {
         User sessionedUser = HttpSessionUtils.getUserFromSession(httpSession);
+
         if (!HttpSessionUtils.isLoginUser(sessionedUser)) {
             return "redirect:/users/loginForm";
         }
+
         if (sessionedUser.notMatchWriter(writer)) {
             return "redirect:/users/loginForm";
         }
+
         answerRepository.delete(findAnswer(answerRepository, answerId));
         return "redirect:/questions/{question.id}";
     }

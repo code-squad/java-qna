@@ -12,7 +12,6 @@ import java.util.List;
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
-
     @Autowired
     private QuestionRepository questionRepository;
     @Autowired
@@ -44,6 +43,7 @@ public class QuestionController {
     public String detailPage(@PathVariable("id") Long questionId, Model model) {
         model.addAttribute("question", findQuestion(questionRepository, questionId));
         List<Answer> answers = answerRepository.findByQuestionId(questionId);
+
         if (answers == null) {
             return "question/show";
         }
@@ -65,6 +65,7 @@ public class QuestionController {
         if (user.notMatchWriter(writer)) {
             return "redirect:/users/loginForm";
         }
+
         model.addAttribute("question", findQuestion(questionRepository, id));
         return "question/updateForm";
     }
@@ -96,6 +97,7 @@ public class QuestionController {
                          HttpSession httpSession) {
 
         User user = HttpSessionUtils.getUserFromSession(httpSession);
+
         if (!HttpSessionUtils.isLoginUser(user)) {
             return "redirect:/users/loginForm";
         }

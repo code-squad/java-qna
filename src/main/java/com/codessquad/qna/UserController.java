@@ -12,7 +12,6 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/users")
 public class UserController {
-
     @Autowired
     private UserRepository userRepository;
 
@@ -28,6 +27,7 @@ public class UserController {
         if (!HttpSessionUtils.isLoginUser(user)) {
             return "redirect:/users/loginForm";
         }
+
         if (user.notMatchPassword(password)) {
             return "redirect:/users/loginForm";
         }
@@ -68,6 +68,7 @@ public class UserController {
     @GetMapping("/{id}/form")
     public String updateForm(@PathVariable Long id, Model model, HttpSession httpSession) {
         User sessionedUser = HttpSessionUtils.getUserFromSession(httpSession);
+
         if (!HttpSessionUtils.isLoginUser(sessionedUser)) {
             return "redirect:/users/loginForm";
         }
@@ -90,6 +91,7 @@ public class UserController {
                              HttpSession httpSession) {
 
         User sessionedUser = HttpSessionUtils.getUserFromSession(httpSession);
+
         if (!HttpSessionUtils.isLoginUser(sessionedUser)) {
             return "redirect:/users/loginForm";
         }
@@ -99,6 +101,7 @@ public class UserController {
         }
 
         User user = findUser(userRepository, id);
+
         if (user.notMatchPassword(password)) {
             return "redirect:/users/{id}/form";
         }

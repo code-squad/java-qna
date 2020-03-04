@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 
 @Entity
 public class Question {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

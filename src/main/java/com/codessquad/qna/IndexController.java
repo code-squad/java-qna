@@ -64,7 +64,7 @@ public class IndexController {
 
   @GetMapping("/logout")
   public String usersLogout(HttpSession httpSession) {
-    httpSession.removeAttribute("user");
+    httpSession.removeAttribute("sessionUser");
     System.out.println("logout succeed");
     return "redirect:/";
   }
@@ -82,7 +82,7 @@ public class IndexController {
     }
     Users sessionUser = (Users) httpSession.getAttribute("sessionUser");
     if (!sessionUser.getId().equals(Id)) {
-      throw new IllegalStateException("invalid user info");
+      return "users-update-invalid-access";
     }
     UsersResponseDto responseDto = usersService.findById(Id);
     model.addAttribute("user", responseDto);

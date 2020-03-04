@@ -1,7 +1,9 @@
 $(".answer-write button[type=submit]").click(addAnswer);
-$(".update-answer-form button[type=submit]").click(updateAnswer);
+//$(".update-answer-form button[type=submit]").click(updateAnswer);
 $(".qna-comment-slipp-articles").on("click", "a.link-delete-article",
     deleteAnswer);
+
+$(".link-modify-article").click(updateAnswer);
 
 function onError() {
   console.log("error")
@@ -45,13 +47,13 @@ function addAnswer(e) {
 
 function updateAnswer(e) {
   e.preventDefault();
-  var url = $(this).attr("action");
-  console.log(url);
+  var updateBtn = $(this);
+  console.log(updateBtn);
 }
 
 function deleteAnswer(e) {
   e.preventDefault();
-  var deleteBtn = $(this)
+  var deleteBtn = $(this);
   // console.log(deleteBtn);
   var url = deleteBtn.attr("href");
   // console.log(url);

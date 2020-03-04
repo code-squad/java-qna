@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/users")
 public class UserController {
+    private static final String USER_LIST = "redirect:/users/list";
 
     @Autowired
     private UserRepository userRepository;
@@ -29,7 +30,7 @@ public class UserController {
             throw new NullPointerException();
         }
         userRepository.save(user);
-        return "redirect:/users/list";
+        return USER_LIST;
     }
 
     @GetMapping("/list")
@@ -42,21 +43,17 @@ public class UserController {
     public String checkPasswordForm(@PathVariable Long id, Model model) throws NotFoundError {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundError(NotFoundError.NOT_FOUND_MESSAGE));
         model.addAttribute("user", user);
-        return "/user/checkForm";
+        return "user/checkForm";
     }
 
     @PostMapping("/{id}/checkPassword")
-    public String checkPassword(@PathVariable Long id, User updateUser) throws NotFoundError {
+    public String checkPassword(@PathVariable Long id, User updateUser, Model model) throws NotFoundError {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundError(NotFoundError.NOT_FOUND_MESSAGE));
         if (user.isEqualsPassword(updateUser)) {
-            return "redirect:/{id}/update";
+            model.addAttribute("user", user);
+            return "user/updateForm";
         }
-        return "redirect:/users/list";
-    }
-
-    @GetMapping("/{id}/update")
-    public String updateForm() {
-        return "/user/updateForm";
+        return USER_LIST;
     }
 
     @PostMapping("/{id}/update")
@@ -64,7 +61,7 @@ public class UserController {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundError(NotFoundError.NOT_FOUND_MESSAGE));
         user.update(updateUser);
         userRepository.save(user);
-        return "redirect:/users/list";
+        return USER_LIST;
     }
 
     @GetMapping("/{userId}")

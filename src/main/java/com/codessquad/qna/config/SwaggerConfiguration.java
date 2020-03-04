@@ -21,7 +21,6 @@ public class SwaggerConfiguration {
         .apis(RequestHandlerSelectors.basePackage("com.codessquad.qna.controller"))
         .paths(PathSelectors.ant("/api/**"))
         .build();
-//        .useDefaultResponseMessages(false);
   }
 
   private ApiInfo swaggerInfo() {

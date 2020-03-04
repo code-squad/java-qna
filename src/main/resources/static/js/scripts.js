@@ -1,8 +1,6 @@
 $(".answer-write button[type=submit]").click(addAnswer);
-//$(".update-answer-form button[type=submit]").click(updateAnswer);
 $(".qna-comment-slipp-articles").on("click", "a.link-delete-article",
     deleteAnswer);
-
 $(".link-modify-article").click(updateAnswer);
 
 function onError() {
@@ -11,9 +9,9 @@ function onError() {
 
 function addAnswer(e) {
   e.preventDefault();
-  var queryString = $(".answer-write").serialize();
+  let queryString = $(".answer-write").serialize();
 
-  var url = $(".answer-write").attr("action");
+  let url = $(".answer-write").attr("action");
 
   $.ajax({
     type: 'post',
@@ -22,12 +20,11 @@ function addAnswer(e) {
     dataType: 'json',
     error: onError,
     success: function (data) {
-      // console.log(data)
       if (data.valid) {
-        var answerTemplate = $("#answerTemplate").html();
-        var answer = data.answer;
-        var question = data.question;
-        var template = answerTemplate.format(
+        let answerTemplate = $("#answerTemplate").html();
+        let answer = data.answer;
+        let question = data.question;
+        let template = answerTemplate.format(
             answer.writer,
             answer.createdTime,
             answer.contents,
@@ -36,7 +33,6 @@ function addAnswer(e) {
         $(".qna-comment-slipp-articles").prepend(template);
         $(".qna-comment-count strong").html(question.countOfAnswer);
         $("textarea[name=contents]").val("");
-        // console.log("success")
       } else {
         alert(data.errorMessage);
       }
@@ -47,7 +43,7 @@ function addAnswer(e) {
 
 function updateAnswer(e) {
   e.preventDefault();
-  var updateBtn = $(this);
+  let updateBtn = $(this);
   console.log(updateBtn);
 }
 
@@ -77,7 +73,7 @@ function deleteAnswer(e) {
 }
 
 String.prototype.format = function () {
-  var args = arguments;
+  let args = arguments;
   return this.replace(/{(\d+)}/g, function (match, number) {
     return typeof args[number] != 'undefined'
         ? args[number]

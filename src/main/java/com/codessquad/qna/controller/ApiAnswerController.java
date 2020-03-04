@@ -32,16 +32,17 @@ public class ApiAnswerController {
   UserRepository userRepository;
 
   @PostMapping(value = "")
-  public Answer create(@PathVariable("id") Long questionsId, String contents,
+  public Result create(@PathVariable("id") Long questionsId, String contents,
       HttpSession httpSession) {
     if (!HttpSessionUtils.isLoginUser(httpSession)) {
-      return null;
+      return Result.fail("로그인이 필요합니다");
     }
 
     Question question = qnaRepository.getOne(questionsId);
     User writer = HttpSessionUtils.getUserFromSession(httpSession);
     Answer answer = new Answer(question, writer, contents);
-    return answerRepository.save(answer);
+    answerRepository.save(answer);
+    return Result.ok(answer);
   }
 
   @PutMapping(value = "/{id}")

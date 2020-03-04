@@ -19,18 +19,24 @@ function addAnswer(e) {
       console.log(xhr)
     },
     success: function (data) {
-      var answerTemplate = $("#answerTemplate").html();
-      // console.log(data.question.id)
-      var template = answerTemplate.format(
-          data.writer,
-          data.createdTime,
-          data.contents,
-          data.question.id,
-          data.id);
-      $(".qna-comment-slipp-articles").prepend(template);
+      console.log(data)
+      if (data.valid) {
+        var answerTemplate = $("#answerTemplate").html();
+        var answer = data.answer;
+        var template = answerTemplate.format(
+            answer.writer,
+            answer.createdTime,
+            answer.contents,
+            answer.question.id,
+            answer.id);
+        $(".qna-comment-slipp-articles").prepend(template);
 
-      $("textarea[name=contents]").val("");
-      // console.log("success")
+        $("textarea[name=contents]").val("");
+        // console.log("success")
+      } else {
+        alert(data.errorMessage);
+      }
+
     }
   });
 }
@@ -59,6 +65,8 @@ function deleteAnswer(e) {
       console.log(data);
       if (data.valid) {
         deleteBtn.closest("article").remove();
+      } else {
+        alert(data.errorMessage);
       }
     }
   })

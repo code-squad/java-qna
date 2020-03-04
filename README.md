@@ -324,18 +324,16 @@
 > 목표
 
 - AJAX 활용
-  - [ ] 답변 수정
-  - [ ] 답변 삭제
-  - [ ] 답변 수(포인트)
+  - [x] 답변 수정
+  - [x] 답변 삭제
+  - [x] 답변 수(포인트)
 - 리팩토링
-  - [ ] 도메인
+  - [x] 도메인
 - Swagger
-  - [ ] 문서화
-  - [ ] 정리
+  - [x] 문서화
+  - [x] 정리
 - 기타
-  - [ ] 도메인 클래스 `equals()`,` hashcode()` 정의하기
-  - [ ] 중복 가입에 대한 처리
-  - [ ] 배포 자동화.
+  - [x] 도메인 클래스 `equals()`,` hashcode()` 정의하기
 
 
 
@@ -343,6 +341,11 @@
 
 - `e.preventdefault()`
   - 전송기능을 막았다. 전송안됨을 확인함.
+- 데이터 베이스에 쿼리를 날리면 날릴 수록 성능상 좋지 않음.
+- 추상 클래스에도 public 으로 선언하지 않은 것은 template에서 접근할 수 없음.
+- http://localhost:8080/swagger-ui.html
+  - 스웨거 주소
+- JavaScript 문법이 이해가 되는듯 싶으면서도, 잘 모르겠음.
 
 
 
@@ -350,3 +353,46 @@
 
 > 정리
 
+- https://stackoverflow.com/questions/15261456/how-do-i-disable-fail-on-empty-beans-in-jackson
+- https://jhkang-tech.tistory.com/92
+- https://thoughts-on-java.org/ultimate-guide-to-implementing-equals-and-hashcode-with-hibernate/
+- https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Using_XMLHttpRequest
+
+- JPA 확실히 강력하고 편하지만, 사용하면서 제대로 모르고 사용하고 있다는 생각이 강하게 듬.
+
+##### XHR
+
+- XMLHttpRequest
+
+- Ajax와 같이 동작하는 요청. 
+
+- 예시
+
+  ```js
+  function reqListener () {
+    console.log(this.responseText);
+  }
+  
+  var oReq = new XMLHttpRequest();
+  oReq.addEventListener("load", reqListener);
+  oReq.open("GET", "http://www.example.org/example.txt");
+  oReq.send();
+  ```
+
+- 동기적, 비동기적 요청 모두 보낼수 있는 듯.
+
+- 기본적으로는 비동기적.
+
+
+
+##### API
+
+- Application Programming Interface
+- 데이터에 대한 집합을 뜻하는 듯.
+- 요청하면 **보통 Json** 형식으로 데이터를 돌려주고.
+
+
+
+- 웹, 모바일 백엔드가 하는일 은 같다.
+
+- 요즘 트랜드는 최초 접속시 서비스 이용에 필요한 자원(이미지등 파일)을 모두 받고, 그 이후에 요청에는 모두 ajax를 이용하여 Json or XML을 통해서 통신하는 것이 트랜드.

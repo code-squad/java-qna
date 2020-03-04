@@ -3,6 +3,11 @@ $(".update-answer-form button[type=submit]").click(updateAnswer);
 $(".qna-comment-slipp-articles").on("click", "a.link-delete-article",
     deleteAnswer);
 
+function onError(xhr) {
+  console.log("error")
+  console.log(xhr)
+}
+
 function addAnswer(e) {
   e.preventDefault();
   var queryString = $(".answer-write").serialize();
@@ -14,10 +19,7 @@ function addAnswer(e) {
     url: url,
     data: queryString,
     dataType: 'json',
-    error: function (xhr) {
-      console.log("error")
-      console.log(xhr)
-    },
+    error: onError(xhr),
     success: function (data) {
       // console.log(data)
       if (data.valid) {
@@ -59,9 +61,7 @@ function deleteAnswer(e) {
     type: 'DELETE',
     url: url,
     dataType: 'json',
-    error: function (xhr, status) {
-      console.log(xhr);
-    },
+    error: onError(xhr),
     success: function (data, status) {
       // console.log(data);
       if (data.valid) {

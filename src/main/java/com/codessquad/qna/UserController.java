@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpSession;
+
 
 @Controller
 @RequestMapping("/users")
@@ -39,7 +41,12 @@ public class UserController {
 
     ///수정버튼 눌렀을 때
     @GetMapping("/{givenNumber}/form")
-    public String editInfo(@PathVariable Long givenNumber, Model model) {
+    public String editInfo(@PathVariable Long givenNumber, Model model, HttpSession session) {
+        Object sessionedUser = session.getAttribute("loginUser");
+        if (sessionedUser == null) {
+            System.out.println("cannot edit other's info");
+            return "redirect:/";
+        }
 
         model.addAttribute("user", userRepository.findById(givenNumber).get());
         System.out.println(userRepository.findById(givenNumber));

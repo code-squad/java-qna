@@ -3,7 +3,6 @@ package com.codessquad.qna.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,16 +22,13 @@ public class Question extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @JsonProperty
   private Long id;
 
   @ManyToOne
   @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
-  @JsonProperty
   private User writer;
 
   @Column(nullable = false)
-  @JsonProperty
   private String title;
 
   @Lob
@@ -95,7 +91,7 @@ public class Question extends BaseTimeEntity {
 
   public void deleteAnswer() {
     this.countOfAnswer--;
-    if(countOfAnswer < 0) {
+    if (countOfAnswer < 0) {
       countOfAnswer = 0;
     }
   }
@@ -116,14 +112,6 @@ public class Question extends BaseTimeEntity {
     this.contents = contents;
   }
 
-  public String getCreatedTime() {
-    return getFormattedCreateTime();
-  }
-
-  private String getFormattedCreateTime() {
-    return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(createdTime);
-  }
-
   public Integer getCountOfAnswer() {
     return countOfAnswer;
   }
@@ -131,12 +119,5 @@ public class Question extends BaseTimeEntity {
   public Question setCountOfAnswer(Integer countOfAnswer) {
     this.countOfAnswer = countOfAnswer;
     return this;
-  }
-
-  @Override
-  public String toString() {
-    return "writer : " + writer + '\n' +
-        "title : " + title + '\n' +
-        "contents : " + contents + '\n';
   }
 }

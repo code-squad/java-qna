@@ -1,6 +1,5 @@
 package com.codessquad.qna.domain;
 
-import java.time.format.DateTimeFormatter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -84,23 +83,5 @@ public class Answer extends BaseTimeEntity {
   public Answer setContents(String contents) {
     this.contents = contents;
     return this;
-  }
-
-  public String getCreatedTime() {
-    return getFormattedCreateTime();
-  }
-
-  private String getFormattedCreateTime() {
-    return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(createdTime);
-  }
-
-  @Override
-  public String toString() {
-    return "Answer{" +
-        "id=" + id +
-        ", question=" + question.getTitle() +
-        ", writer=" + writer.getUserId() +
-        ", contents='" + contents + '\'' +
-        '}';
   }
 }

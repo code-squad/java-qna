@@ -59,11 +59,11 @@ public class UserController {
     }
 
     @PostMapping("/{givenNumber}")
-    public String updateInfo(@PathVariable Long givenNumber, User newUser) {
+    public String updateInfo(@PathVariable Long givenNumber, User updatedUser) {
         User user = userRepository.findById(givenNumber).get();
         System.out.println("Before edited : " + user);
 
-        user.update(newUser);
+        user.update(updatedUser);
         userRepository.save(user);
         System.out.println("Edited info : " + user);
         return "redirect:/users";

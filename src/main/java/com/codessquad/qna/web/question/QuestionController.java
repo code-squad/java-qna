@@ -1,9 +1,9 @@
-package com.codessquad.qna.question;
+package com.codessquad.qna.web.question;
 
-import com.codessquad.qna.constants.CommonConstants;
-import com.codessquad.qna.error.exception.QuestionNotFoundException;
-import com.codessquad.qna.user.User;
-import com.codessquad.qna.utils.HttpSessionUtils;
+import com.codessquad.qna.common.constants.CommonConstants;
+import com.codessquad.qna.common.error.exception.QuestionNotFoundException;
+import com.codessquad.qna.web.user.User;
+import com.codessquad.qna.common.utils.HttpSessionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

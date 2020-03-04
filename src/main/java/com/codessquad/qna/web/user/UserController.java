@@ -1,9 +1,9 @@
-package com.codessquad.qna.user;
+package com.codessquad.qna.web.user;
 
-import com.codessquad.qna.constants.CommonConstants;
-import com.codessquad.qna.constants.ErrorConstants;
-import com.codessquad.qna.error.exception.UserNotFoundException;
-import com.codessquad.qna.utils.HttpSessionUtils;
+import com.codessquad.qna.common.constants.CommonConstants;
+import com.codessquad.qna.common.constants.ErrorConstants;
+import com.codessquad.qna.common.error.exception.UserNotFoundException;
+import com.codessquad.qna.common.utils.HttpSessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;

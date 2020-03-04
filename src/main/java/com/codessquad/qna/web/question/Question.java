@@ -1,7 +1,7 @@
-package com.codessquad.qna.question;
+package com.codessquad.qna.web.question;
 
-import com.codessquad.qna.constants.FormatConstants;
-import com.codessquad.qna.user.User;
+import com.codessquad.qna.common.constants.FormatConstants;
+import com.codessquad.qna.web.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;

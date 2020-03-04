@@ -1,6 +1,6 @@
-package com.codessquad.qna.error;
+package com.codessquad.qna.common.error;
 
-import com.codessquad.qna.error.exception.ErrorCode;
+import com.codessquad.qna.common.error.exception.ErrorCode;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 

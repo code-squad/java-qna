@@ -1,7 +1,8 @@
-package com.codessquad.qna.question;
+package com.codessquad.qna.api.question;
 
-import com.codessquad.qna.user.User;
-import com.codessquad.qna.utils.HttpSessionUtils;
+import com.codessquad.qna.common.utils.HttpSessionUtils;
+import com.codessquad.qna.web.question.*;
+import com.codessquad.qna.web.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +37,7 @@ public class ApiAnswerController {
             return Result.failed("로그인이 되어있지 않습니다.");
         }
 
-        Answer answer = answerRepository.findByQuestionIdAndId(questionId, answerId).orElse(null);
+        Answer answer = answerRepository.findByQuestionIdAndId(questionId, answerId).orElseGet(Answer::new);
         if (!loginUser.equals(answer.getWriter())) {
             return Result.failed("해당 댓글의 작성자가 아닙니다.");
         }

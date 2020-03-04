@@ -1,4 +1,4 @@
-package com.codessquad.qna.user;
+package com.codessquad.qna.web.user;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;

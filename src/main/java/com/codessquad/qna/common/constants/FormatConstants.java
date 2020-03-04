@@ -1,4 +1,4 @@
-package com.codessquad.qna.constants;
+package com.codessquad.qna.common.constants;
 
 import java.time.format.DateTimeFormatter;
 

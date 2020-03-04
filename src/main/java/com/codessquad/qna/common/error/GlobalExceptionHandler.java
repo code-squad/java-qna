@@ -1,7 +1,7 @@
-package com.codessquad.qna.error;
+package com.codessquad.qna.common.error;
 
-import com.codessquad.qna.error.exception.BusinessException;
-import com.codessquad.qna.error.exception.ErrorCode;
+import com.codessquad.qna.common.error.exception.ErrorCode;
+import com.codessquad.qna.common.error.exception.BusinessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

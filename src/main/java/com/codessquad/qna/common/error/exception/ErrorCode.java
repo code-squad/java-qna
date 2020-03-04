@@ -1,4 +1,4 @@
-package com.codessquad.qna.error.exception;
+package com.codessquad.qna.common.error.exception;
 
 public enum ErrorCode {
 

@@ -22,3 +22,7 @@
 - Answer는 Question에 종속되어 있기 때문에 AnswerController에서 @RequestMapping("/question/{questionId}/answers}로 대체할 수 있다. )
 - Question에서 List<Answer> answers를 @OneToMany로 묶으면 View에는 question만 전달하면 된다.
 - String.format("rediret:/questions/%d", questionId) 로 표현 가능. 
+
+## 리팩토링 
+- 반복되는 로그인 유저 확인 작업을 리팩토링
+- 접근 권한이 없으면 로그인 페이지로 이동하는데 이 때, 에러메세지 출력 유도. login_failed.html에서 alert form을 복사해서 사용.

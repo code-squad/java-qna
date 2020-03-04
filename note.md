@@ -143,6 +143,18 @@ e.g. User findByUserId(String userId) , findBy하고 뒤에 찾는 기준 값으
 INSERT INTO USER (user_id, password, name, email) VALUES 
 ('huji', '3156', 'Jenny', 'huji3156@gmail.com');
 를 입력하면 된다.(no data sources are cofigured.. 같은 메세지는 무시해도 상관없는 듯 하다)
-- 이 때 만약 Null not allowed for column~~ 에러 메세지가 뜬다면 이는 @GeneratedValue 애노테이션에
+- *이 때 만약 Null not allowed for column~~ 에러 메세지가 뜬다면 이는 @GeneratedValue 애노테이션에
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 을 추가해주면 해결된다.
+
+
+로그인 전 후, 네비게이션 바 구성 다르게 하기
+-
+- 로그인 전이라면 네비바에 회원가입, 로그인 창만 뜨고 로그인 후에는 로그아웃, 개인정보 수정 창이 뜨게 하기
+- session.setAttribute("user", user) 하고
+- application.properties 에 handlebars.expose-session-attributes=true 추가
+- 엥 로그아웃 기능 구현하니까 갑자기 됨... 왜지 모르겠다...
+
+
+html 네비 바 눌렀을 때 메뉴 밑에 파란 라인 동적으로 active 하는 법?
+-

@@ -43,10 +43,6 @@ public class QuestionController {
     public String detailPage(@PathVariable("id") Long questionId, Model model) {
         model.addAttribute("question", findQuestion(questionRepository, questionId));
         List<Answer> answers = answerRepository.findByQuestionId(questionId);
-//
-//        if (answers == null) {
-//            return "question/show";
-//        }
         model.addAttribute("answers", answers);
         return "question/show";
     }

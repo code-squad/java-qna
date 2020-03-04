@@ -29,7 +29,7 @@ public class AnswerController {
         Question question = findQuestion(questionRepository, questionId);
         Answer answer = new Answer(question, contents, sessionedUser);
         answerRepository.save(answer);
-        return "redirect:/questions/{questionId}";
+        return String.format("redirect:/questions/%d", questionId);
     }
 
     @GetMapping("/{questionId}/answers/{id}/{writer}/form")

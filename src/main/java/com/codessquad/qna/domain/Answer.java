@@ -25,7 +25,6 @@ public class Answer {
     public Answer(Question question, String contents, User writer) {
         this.contents = contents;
         this.writer = writer;
-        this.question = question;
         this.createdDate = LocalDateTime.now();
     }
 
@@ -57,8 +56,8 @@ public class Answer {
         return createdDate;
     }
 
-    public void setCreatedDate(LocalDateTime date) {
-        this.createdDate = date;
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
     }
 
     public Question getQuestion() {
@@ -74,7 +73,7 @@ public class Answer {
         this.createdDate = LocalDateTime.now();
     }
 
-    public String gerFormattedCreatedDate() {
+    public String getFormattedCreatedDate() {
         if (createdDate == null) {
             return "";
         }

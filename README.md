@@ -19,3 +19,6 @@
 ## 답변 기능 구현 
 - Answer 객체에 @ManyToOne으로 User 객체와 매핑.
 - Answer와 Question의 contents에 @Lob 어노테이션 추가하면 DB 타입이 길어진다.
+- Answer는 Question에 종속되어 있기 때문에 AnswerController에서 @RequestMapping("/question/{questionId}/answers}로 대체할 수 있다. )
+- Question에서 List<Answer> answers를 @OneToMany로 묶으면 View에는 question만 전달하면 된다.
+- String.format("rediret:/questions/%d", questionId) 로 표현 가능. 

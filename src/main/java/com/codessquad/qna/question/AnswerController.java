@@ -1,10 +1,9 @@
 package com.codessquad.qna.question;
 
 import com.codessquad.qna.constants.CommonConstants;
-import com.codessquad.qna.constants.ErrorConstants;
+import com.codessquad.qna.error.exception.QuestionNotFoundException;
 import com.codessquad.qna.user.User;
 import com.codessquad.qna.utils.HttpSessionUtils;
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,22 +27,20 @@ public class AnswerController {
                                      @PathVariable Long answerId,
                                      HttpSession session,
                                      Model model) {
-        try {
-            User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
-            if (loginUser == null) {
-                return CommonConstants.REDIRECT_LOGIN_PAGE;
-            }
-
-            Question question = questionRepository.findById(questionId).orElseThrow(() -> new NotFoundException("못찾음"));
-            Answer answer = answerRepository.findByQuestionIdAndId(questionId, answerId).orElseGet(Answer::new);
-            if (!loginUser.equals(answer.getWriter())) {
-                return "redirect:/questions/" + questionId;
-            }
-            model.addAttribute("question", question);
-            model.addAttribute("answer", answer);
-        } catch (NotFoundException e) {
-            return ErrorConstants.ERROR_QUESTION_NOT_FOUND;
+        User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
+        if (loginUser == null) {
+            return CommonConstants.REDIRECT_LOGIN_PAGE;
         }
+
+        Question question = questionRepository.findById(questionId).orElseThrow(() -> new QuestionNotFoundException("해당 질문글이 존재하지 않습니다."));
+        Answer answer = answerRepository.findByQuestionIdAndId(questionId, answerId).orElseGet(Answer::new);
+
+        if (!loginUser.equals(answer.getWriter())) {
+            return "redirect:/questions/" + questionId;
+        }
+
+        model.addAttribute("question", question);
+        model.addAttribute("answer", answer);
 
         return "questions/answer-modify-form";
     }

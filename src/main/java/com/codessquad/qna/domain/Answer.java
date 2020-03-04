@@ -1,5 +1,6 @@
 package com.codessquad.qna.domain;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -84,4 +85,25 @@ public class Answer extends BaseTimeEntity {
     this.contents = contents;
     return this;
   }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(id);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (this.getClass() != obj.getClass()) {
+      return false;
+    }
+    Answer answer = (Answer) obj;
+    return Objects.equals(id, answer.getId());
+  }
+
 }

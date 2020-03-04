@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/api/questions/{id}/answers")
+@RequestMapping(value = "/api/questions/{questionId}/answers")
 public class ApiAnswerController {
 
   @Autowired
@@ -32,7 +32,7 @@ public class ApiAnswerController {
   UserRepository userRepository;
 
   @PostMapping(value = "")
-  public Result create(@PathVariable("id") Long questionsId, String contents,
+  public Result create(@PathVariable("questionId") Long questionsId, String contents,
       HttpSession httpSession) {
     if (!HttpSessionUtils.isLoginUser(httpSession)) {
       return Result.fail("로그인이 필요합니다");
@@ -41,8 +41,10 @@ public class ApiAnswerController {
     Question question = qnaRepository.getOne(questionsId);
     User writer = HttpSessionUtils.getUserFromSession(httpSession);
     Answer answer = new Answer(question, writer, contents);
+    question.addAnswer();
+    qnaRepository.save(question);
     answerRepository.save(answer);
-    return Result.ok(answer);
+    return Result.ok(answer, question);
   }
 
   @PutMapping(value = "/{id}")
@@ -60,7 +62,8 @@ public class ApiAnswerController {
 
 
   @DeleteMapping(value = "/{id}")
-  public Result delete(@PathVariable("id") Long answerId, HttpSession httpSession) {
+  public Result delete(@PathVariable("questionId") Long questionId,
+      @PathVariable("id") Long answerId, HttpSession httpSession) {
     if (!HttpSessionUtils.isLoginUser(httpSession)) {
       return Result.fail("로그인이 필요합니다");
     }
@@ -70,8 +73,11 @@ public class ApiAnswerController {
     if (!answer.isSameWriter(sessionUser)) {
       return Result.fail("자신이 쓴 답글만 수정 혹은 삭제할 수 있습니다.");
     }
+    Question question = qnaRepository.getOne(questionId);
+    question.deleteAnswer();
+    qnaRepository.save(question);
     answerRepository.delete(answer);
-    return Result.ok();
+    return Result.ok(question);
   }
 
   private Result valid(HttpSession httpSession, Answer answer) {

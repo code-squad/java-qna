@@ -19,10 +19,11 @@ function addAnswer(e) {
       console.log(xhr)
     },
     success: function (data) {
-      console.log(data)
+      // console.log(data)
       if (data.valid) {
         var answerTemplate = $("#answerTemplate").html();
         var answer = data.answer;
+        var question = data.question;
         var template = answerTemplate.format(
             answer.writer,
             answer.createdTime,
@@ -30,7 +31,7 @@ function addAnswer(e) {
             answer.question.id,
             answer.id);
         $(".qna-comment-slipp-articles").prepend(template);
-
+        $(".qna-comment-count strong").html(question.countOfAnswer);
         $("textarea[name=contents]").val("");
         // console.log("success")
       } else {
@@ -62,9 +63,11 @@ function deleteAnswer(e) {
       console.log(xhr);
     },
     success: function (data, status) {
-      console.log(data);
+      // console.log(data);
       if (data.valid) {
+        var question = data.question;
         deleteBtn.closest("article").remove();
+        $(".qna-comment-count strong").html(question.countOfAnswer);
       } else {
         alert(data.errorMessage);
       }

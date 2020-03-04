@@ -26,7 +26,6 @@ public class LogInController {
         if (user == null) {
             System.out.println("no user exist");
             return "redirect:/user/login/failed";
-
         }
 
         if (!user.matchPassword(password ) || !user.matchId(userId)) {
@@ -41,7 +40,7 @@ public class LogInController {
             session.setAttribute(HttpSessionUtil.USER_SESSION_KEY, user);
             System.out.println("attribute 'loginUser' added to session");
         }
-        return "redirect:/";
+        return "redirect:/posts";
     }
 
     @GetMapping("/user/login/failed")

@@ -165,3 +165,29 @@ html 네비 바 눌렀을 때 메뉴 밑에 파란 라인 동적으로 active �
 
 
 (User) 캐스팅???
+
+
+#쿼리를 볼 수 있게 해줌
+- application.properties 에
+- spring.jpa.show-sql=true 추가
+- spring.jpa.properties.hibernate.format_sql=true 추가
+
+
+JPA 사용하여 데이터 클래스만들어서 매핑할에는 디폴트 생성자를 만들어줘야 문제 발생X
+
+
+게시물을 클릭했을 때 writer, contents 불러오기
+- QuestionRepository 에 저장된 모든 정보를 불러오면 당연히 안되고, 또 userId 로 불러와도 안될꺼 같았다
+- 왜냐하면 한 userId 로 여러 개의 글을 작성할 수도 있기 때문이다.
+- 그래서 unique 한 값인 postNumber 로 questionRepository를 조회하였다.
+- 이 때 postNumber 를 가져오기 위한 방법은 아직 하나밖에 모른다, 바로 @PathVariable 을 이용하여
+주소창으로 넘겨주는 것이다. 
+- e.g. @GetMapping("/questions/{postNumber}/contents")
+- 그렇게 해서 가져온 postNumber 로 questionRepository 를 조회한다.
+-  이 때 주의할 점은 Question question = questionRepository.findById(postNumber) 하면 에러가 나기 때문에 꼭 뒤에 .get()
+을 붙여주어야한다.
+- Question question = questionRepository.findById(postNumber)
+- 이렇게 하고 model 에 question 을 add 해준다.
+- model.addAttribute("question", question)
+- 이렇게 하면 다음에 불러올 html 에서 {{#question}} ~ {{/question}} 하여 title, contents, writer 등
+속성을 {{title}} 와 같이 불러올 수 있다.

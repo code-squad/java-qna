@@ -1,5 +1,6 @@
 package com.codesquad.qna.web;
 
+import com.codesquad.qna.NotFoundError;
 import com.codesquad.qna.domain.User;
 import com.codesquad.qna.domain.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,28 +36,31 @@ public class UserController {
     }
 
     @GetMapping("/{id}/form")
-    public String updateForm(@PathVariable Long id, Model model) {
-        User user = userRepository.findById(id).orElse(null);
+    public String updateForm(@PathVariable Long id, Model model) throws NotFoundError {
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundError(NotFoundError.NOT_FOUND_MESSAGE));
+
         model.addAttribute("user", user);
         return "/user/updateForm";
     }
 
     @PostMapping("/{id}/update")
-    public String updateUser(@PathVariable Long id, User newUser) {
-        User user = userRepository.findById(id).orElseThrow(null);
+    public String updateUser(@PathVariable Long id, User newUser) throws NotFoundError {
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundError(NotFoundError.NOT_FOUND_MESSAGE));
+
         user.update(newUser);
         userRepository.save(user);
         return "redirect:/users/list";
     }
 
     @GetMapping("/{userId}")
-    public String read(@PathVariable String userId, Model model) {
-        for (User user : userRepository.findAll()) {
-            if (userId.equals(user.getUserId())) {
-                model.addAttribute("user", user);
-                return "user/profile";
-            }
-        }
-        return "/error/notFound.html";
+    public String read(@PathVariable String userId, Model model) throws NotFoundError {
+        User user = userRepository.findAll()
+                .stream()
+                .filter(u -> u.getUserId().equals(userId))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundError(NotFoundError.NOT_FOUND_MESSAGE));
+
+        model.addAttribute("user", user);
+        return "user/profile";
     }
 }

@@ -14,7 +14,7 @@ public class Question {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String writer;
 
     private String title;

@@ -1,5 +1,6 @@
 package com.codesquad.qna.web;
 
+import com.codesquad.qna.NotFoundError;
 import com.codesquad.qna.domain.Question;
 import com.codesquad.qna.domain.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,10 @@ public class QuestionController {
 
     @PostMapping("/create")
     public String create(Question question, Model model) {
+        if (question.toString().contains(null)) {
+            throw new NullPointerException();
+        }
+        System.out.println(question);
         question.setCreatedDateTime(LocalDateTime.now());
         questionRepository.save(question);
         return "redirect:/questions/list";
@@ -38,8 +43,8 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}")
-    public String read(@PathVariable Long id, Model model) {
-        Question question = questionRepository.findById(id).orElseThrow(null);
+    public String read(@PathVariable Long id, Model model) throws NotFoundError {
+        Question question = questionRepository.findById(id).orElseThrow(() -> new NotFoundError(NotFoundError.NOT_FOUND_MESSAGE));
         model.addAttribute("question", question);
         return "qna/show";
     }

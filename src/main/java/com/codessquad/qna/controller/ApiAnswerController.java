@@ -8,9 +8,9 @@ import com.codessquad.qna.repository.AnswerRepository;
 import com.codessquad.qna.repository.QnaRepository;
 import com.codessquad.qna.repository.UserRepository;
 import com.codessquad.qna.web.HttpSessionUtils;
+import java.rmi.NoSuchObjectException;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,46 +34,71 @@ public class ApiAnswerController {
   @PostMapping(value = "")
   public Result create(@PathVariable("questionId") Long questionsId, String contents,
       HttpSession httpSession) {
+    Question question;
     if (!HttpSessionUtils.isLoginUser(httpSession)) {
       return Result.fail("로그인이 필요합니다");
     }
 
-    Question question = qnaRepository.getOne(questionsId);
+    try {
+      question = qnaRepository.findById(questionsId)
+          .orElseThrow(() -> new NoSuchObjectException("해당 질문을 찾지 못하였습니다."));
+    } catch (NoSuchObjectException e) {
+      return Result.fail("질문을 불러올 수가 없습니다");
+    }
     User writer = HttpSessionUtils.getUserFromSession(httpSession);
     Answer answer = new Answer(question, writer, contents);
     question.addAnswer();
     qnaRepository.save(question);
     answerRepository.save(answer);
+
     return Result.ok(answer, question);
   }
 
   @PutMapping(value = "/{id}")
-  public Answer update(@PathVariable("id") Long answerId, String contents,
-      Model model, HttpSession httpSession) {
-    Answer answer = answerRepository.getOne(answerId);
+  public Result update(@PathVariable("id") Long answerId, String contents,
+      HttpSession httpSession) {
+    Answer answer;
+    try {
+      answer = answerRepository.findById(answerId)
+          .orElseThrow(() -> new NoSuchObjectException("해당 댓글 찾지 못하였습니다."));
+    } catch (NoSuchObjectException e) {
+      return Result.fail("질문을 불러올 수가 없습니다");
+    }
+
     Result result = valid(httpSession, answer);
     if (!result.isValid()) {
-      model.addAttribute("errorMessage", result.getErrorMessage());
-      return null;
+      return Result.fail(result.getErrorMessage());
     }
     answer.update(contents);
-    return answerRepository.save(answer);
+    answerRepository.save(answer);
+
+    return Result.ok(answer);
   }
 
 
   @DeleteMapping(value = "/{id}")
   public Result delete(@PathVariable("questionId") Long questionId,
       @PathVariable("id") Long answerId, HttpSession httpSession) {
-    if (!HttpSessionUtils.isLoginUser(httpSession)) {
-      return Result.fail("로그인이 필요합니다");
+    Answer answer;
+    Question question;
+    try {
+      answer = answerRepository.findById(answerId)
+          .orElseThrow(() -> new NoSuchObjectException("해당 댓글을 찾지 못하였습니다."));
+    } catch (NoSuchObjectException e) {
+      return Result.fail("댓글을 불러올 수가 없습니다");
     }
 
-    User sessionUser = (User) httpSession.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
-    Answer answer = answerRepository.getOne(answerId);
-    if (!answer.isSameWriter(sessionUser)) {
-      return Result.fail("자신이 쓴 답글만 수정 혹은 삭제할 수 있습니다.");
+    Result result = valid(httpSession, answer);
+    if (!result.isValid()) {
+      return Result.fail(result.getErrorMessage());
     }
-    Question question = qnaRepository.getOne(questionId);
+
+    try {
+      question = qnaRepository.findById(questionId)
+          .orElseThrow(() -> new NoSuchObjectException("해당 질문을 찾지 못하였습니다"));
+    } catch (NoSuchObjectException e) {
+      return Result.fail("질문을 불러올 수 없습니다");
+    }
     question.deleteAnswer();
     qnaRepository.save(question);
     answerRepository.delete(answer);

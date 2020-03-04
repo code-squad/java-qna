@@ -8,10 +8,12 @@ import java.util.Optional;
 
 public class HttpSessionUtils {
 
+    private HttpSessionUtils() {}
+
     /**
      * Session에 담겨있는 User를 Optional로 Wrapping해서 반환합니다.
      *
-     * @param session
+     * @param session HttpSession 클래스
      * @return User object wrapped by Optional
      */
     public static Optional<User> getUserFromSession(HttpSession session) {

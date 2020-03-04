@@ -3,6 +3,7 @@ package com.codesquad.qna.web;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
@@ -25,5 +26,21 @@ public class UserController {
         model.addAttribute("users", users);
 
         return "list";
+    }
+
+    @GetMapping("/users/{userId}")
+    public String printProfile(@PathVariable String userId, Model model) {
+        User selectedUser = null;
+
+        for (User user : users) {
+          if (user.getUserId().equals(userId)) {
+              selectedUser = user;
+              break;
+          }
+        }
+
+        model.addAttribute("user", selectedUser);
+
+        return "profile";
     }
 }

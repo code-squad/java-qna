@@ -115,3 +115,22 @@ repositoryname.findById(id);
 - 회원 정보 수정 버튼 눌렀을 때 value 값이 전달이 되지 않아서 모두 빈 칸이다.
    -> 해결  model.addAttribute("user", userRepository.findById(givenNumber).get());
    끝에 get() 을 꼭 해주어야 데이터를 모델에 넘겨줄 수 있음. 아니면 Object가 넘어가는듯 함.
+   
+   
+회원 정보 수정 
+-
+- User 클래스에 update 메소드를 만들어서 바뀐 유저 정보를 업데이트 해줌.
+- UserRepository에 바뀐 정보를 save 해줌.
+
+put 사용하기 위해 추가해야할 사항
+- application.properties 에 spring.mvc.hiddenmethod.filter.enabled=true 추가
+
+
+로그인 시
+-
+- 로그인할 때 유저로부터 아이디와 패스워드를 받는다. 지금까지는 userRepository.findById(givenNumber) 해서
+long 타입의 givenNumber 로 유저 레파지토리에서 유저 정보를 조회했는데, 이제는 givenNumber 를 알지 못하고
+userId와 password만 아니까 userId 로 유저 정보를 조회하는 방법이 필요하다.
+이럴 때는 간단하게 조회하려는 레파지토리에서 findBy찾는기준 메소드를 만들어 주면 된다.(이름만 정의해놓으면 스프링부트가 알아서 만들어주는듯) 
+e.g. User findByUserId(String userId) , findBy하고 뒤에 찾는 기준 값으 대문자로 오면 되는듯 하다.
+'

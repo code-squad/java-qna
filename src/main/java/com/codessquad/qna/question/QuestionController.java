@@ -3,6 +3,7 @@ package com.codessquad.qna.question;
 import com.codessquad.qna.constants.CommonConstants;
 import com.codessquad.qna.constants.ErrorConstants;
 import com.codessquad.qna.user.User;
+import com.codessquad.qna.utils.HttpSessionUtils;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +41,7 @@ public class QuestionController {
 
     @PostMapping("/questions")
     public String createQuestion(HttpSession session, @RequestParam String title, @RequestParam String contents) {
-        User loginUser = getLoginUser(session);
+        User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
         if (loginUser == null) {
             return CommonConstants.REDIRECT_LOGIN_PAGE;
         }
@@ -52,7 +53,7 @@ public class QuestionController {
     @GetMapping("/questions/{id}")
     public String showQuestion(@PathVariable long id, Model model, HttpSession session) {
         try {
-            User loginUser = getLoginUser(session);
+            User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
             Question question = getQuestionIfExist(id);
             List<Answer> answers = answerRepository.findByQuestionIdAndIsDeletedFalse(id);
             model.addAttribute("question", question);
@@ -68,7 +69,7 @@ public class QuestionController {
     @GetMapping("/questions/{id}/form")
     public String goQuestionModifyForm(@PathVariable long id, Model model, HttpSession session) {
         try {
-            User loginUser = getLoginUser(session);
+            User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
             if (loginUser == null) {
                 return CommonConstants.REDIRECT_LOGIN_PAGE;
             }
@@ -90,7 +91,7 @@ public class QuestionController {
                                  @RequestParam String title,
                                  @RequestParam String contents) {
         try {
-            User loginUser = getLoginUser(session);
+            User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
             if (loginUser == null) {
                 return CommonConstants.REDIRECT_LOGIN_PAGE;
             }
@@ -110,7 +111,7 @@ public class QuestionController {
     @Transactional
     public String deleteQuestion(@PathVariable long id, HttpSession session) {
         try {
-            User loginUser = getLoginUser(session);
+            User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
             if (loginUser == null) {
                 return CommonConstants.REDIRECT_LOGIN_PAGE;
             }
@@ -127,10 +128,6 @@ public class QuestionController {
             return ErrorConstants.ERROR_QUESTION_NOT_FOUND;
         }
         return "redirect:/questions/" + id;
-    }
-
-    private User getLoginUser(HttpSession session) {
-        return (User) session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
     }
 
     private Question getQuestionIfExist(long id) throws NotFoundException {

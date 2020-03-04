@@ -1,7 +1,7 @@
 package com.codessquad.qna.question;
 
-import com.codessquad.qna.constants.CommonConstants;
 import com.codessquad.qna.user.User;
+import com.codessquad.qna.utils.HttpSessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +19,7 @@ public class ApiAnswerController {
 
     @PostMapping("")
     public Answer create(@PathVariable Long questionId, String comment, HttpSession session) {
-        User loginUser = (User) session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
+        User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
         if (loginUser == null) {
             return null;
         }
@@ -31,12 +31,12 @@ public class ApiAnswerController {
 
     @DeleteMapping("/{answerId}")
     public Result deleteAnswer(@PathVariable Long questionId, @PathVariable Long answerId, HttpSession session) {
-        User loginUser = (User) session.getAttribute(CommonConstants.SESSION_LOGIN_USER);
+        User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
         if (loginUser == null) {
             return Result.failed("로그인이 되어있지 않습니다.");
         }
 
-        Answer answer = answerRepository.findByQuestionIdAndId(questionId, answerId);
+        Answer answer = answerRepository.findByQuestionIdAndId(questionId, answerId).orElse(null);
         if (!loginUser.equals(answer.getWriter())) {
             return Result.failed("해당 댓글의 작성자가 아닙니다.");
         }

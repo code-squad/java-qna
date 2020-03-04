@@ -8,7 +8,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long givenNumber;
 
-    @Column(nullable = false, length = 15)
+    @Column(nullable = false, length = 15, unique = true)
     private String userId;
     private String password;
     private String name;

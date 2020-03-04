@@ -42,10 +42,15 @@ public class UserController {
     ///수정버튼 눌렀을 때
     @GetMapping("/{givenNumber}/form")
     public String editInfo(@PathVariable Long givenNumber, Model model, HttpSession session) {
-        Object sessionedUser = session.getAttribute("loginUser");
-        if (sessionedUser == null) {
-            System.out.println("cannot edit other's info");
+        Object tempUser = session.getAttribute("loginUser");
+        if (tempUser == null) {
+            System.out.println("Sign in first to edit your info");
             return "redirect:/";
+        }
+
+        User sessionedUser = (User)tempUser;
+        if (!givenNumber.equals(sessionedUser.getGivenNumber())) {
+            throw new IllegalStateException("Access denied");
         }
 
         model.addAttribute("user", userRepository.findById(givenNumber).get());

@@ -158,3 +158,7 @@ INSERT INTO USER (user_id, password, name, email) VALUES
 
 html 네비 바 눌렀을 때 메뉴 밑에 파란 라인 동적으로 active 하는 법?
 -
+
+
+아이디 유일하게 
+- @Columne(unique = true)

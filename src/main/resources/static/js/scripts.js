@@ -1,14 +1,13 @@
 $(".answer-write button[type=submit]").click(addAnswer);
 $(".update-answer-form button[type=submit]").click(updateAnswer);
-$(".delete-answer-button").click(deleteAnswer);
+$(".qna-comment-slipp-articles").on("click", "a.link-delete-article",
+    deleteAnswer);
 
 function addAnswer(e) {
   e.preventDefault();
   var queryString = $(".answer-write").serialize();
-  // console.log("query : " + queryString);
 
   var url = $(".answer-write").attr("action");
-  // console.log("url : " + url);
 
   $.ajax({
     type: 'post',
@@ -20,10 +19,8 @@ function addAnswer(e) {
       console.log(xhr)
     },
     success: function (data) {
-      // console.log(data.createdTime)
-      // console.log(data.contents)
-      // console.log(data.id)
       var answerTemplate = $("#answerTemplate").html();
+      // console.log(data.question.id)
       var template = answerTemplate.format(
           data.writer,
           data.createdTime,
@@ -33,7 +30,7 @@ function addAnswer(e) {
       $(".qna-comment-slipp-articles").prepend(template);
 
       $("textarea[name=contents]").val("");
-      console.log("success")
+      // console.log("success")
     }
   });
 }
@@ -46,9 +43,10 @@ function updateAnswer(e) {
 
 function deleteAnswer(e) {
   e.preventDefault();
-
-  var url = $(".delete-answer-form").attr("action");
-  console.log(url);
+  var deleteBtn = $(this)
+  // console.log(deleteBtn);
+  var url = deleteBtn.attr("href");
+  // console.log(url);
 
   $.ajax({
     type: 'DELETE',
@@ -58,7 +56,10 @@ function deleteAnswer(e) {
       console.log(xhr);
     },
     success: function (data, status) {
-      console.log("success");
+      console.log(data);
+      if (data.valid) {
+        deleteBtn.closest("article").remove();
+      }
     }
   })
 }

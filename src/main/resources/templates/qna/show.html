@@ -16,8 +16,9 @@
                    src="https://graph.facebook.com/v2.3/100000059371774/picture">
             </div>
             <div class="article-header-text">
-              <a class="article-author-name" href="/users/{{writer}}">{{question.writer}}</a>
-              <a class="article-header-time" href="/questions/{{id}}" title="퍼머링크">{{question.createdTime}}
+              <a class="article-author-name"
+                 href="/users/{{question.writer}}">{{question.writer}}</a>
+              <a class="article-header-time" href="/questions/{{question.id}}" title="퍼머링크">{{question.createdTime}}
                 <i class="icon-link"></i>
               </a>
             </div>
@@ -57,7 +58,7 @@
                   </div>
                   <div class="article-header-text">
                     <a class="article-author-name" href="/users/{{writer}}">{{writer}}</a>
-                    <a class="article-header-time" href="/questions/{{id}}" title="퍼머링크">
+                    <a class="article-header-time" href="/questions/{{question.id}}" title="퍼머링크">
                       {{createdTime}}
                     </a>
                   </div>
@@ -68,20 +69,12 @@
                 <div class="article-util">
                   <ul class="article-util-list">
                     <li>
-                      <form action="/api/questions/{{question.id}}/answers/{{id}}"
-                            class="update-answer-form"
-                            method="POST">
-                        <input type="hidden" name="_method" value="PUT"/>
-                        <button class="update-answer-button" type="submit">수정</button>
-                      </form>
+                      <a class="link-modify-article"
+                         href="/api/questions/{{question.id}}/answers/{{id}}">수정</a>
                     </li>
                     <li>
-                      <form action="/api/questions/{{question.id}}/answers/{{id}}"
-                            class="delete-answer-form"
-                            method="POST">
-                        <input type="hidden" name="_method" value="DELETE"/>
-                        <button class="delete-answer-button" type="submit">삭제</button>
-                      </form>
+                      <a class="link-delete-article"
+                         href="/api/questions/{{question.id}}/answers/{{id}}">삭제</a>
                     </li>
                   </ul>
                 </div>
@@ -127,20 +120,10 @@
     <div class="article-util">
       <ul class="article-util-list">
         <li>
-          <form action="/api/questions/{3}/answers/{4}"
-                class="update-answer-form"
-                method="POST">
-            <input type="hidden" name="_method" value="PUT"/>
-            <button class="update-answer-button" type="submit">수정</button>
-          </form>
+          <a class="link-modify-article" href="/api/questions/{3}/answers/{3}">수정</a>
         </li>
         <li>
-          <form action="/api/questions/{3}/answers/{4}"
-                class="delete-answer-form"
-                method="POST">
-            <input type="hidden" name="_method" value="DELETE"/>
-            <button class="delete-answer-button" type="submit">삭제</button>
-          </form>
+          <a class="link-delete-article" href="/api/questions/{3}/answers/{4}">삭제</a>
         </li>
       </ul>
     </div>

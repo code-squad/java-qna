@@ -8,7 +8,6 @@ import com.codessquad.qna.repository.AnswerRepository;
 import com.codessquad.qna.repository.QnaRepository;
 import com.codessquad.qna.repository.UserRepository;
 import com.codessquad.qna.web.HttpSessionUtils;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;

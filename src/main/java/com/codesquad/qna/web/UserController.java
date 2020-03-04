@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
@@ -25,7 +25,7 @@ public class UserController {
     @PostMapping("/create")
     public String create(User user) {
         userRepository.save(user);
-        return "redirect:/user/list";
+        return "redirect:/users/list";
     }
 
     @GetMapping("/list")
@@ -46,7 +46,7 @@ public class UserController {
         User user = userRepository.findById(id).orElseThrow(null);
         user.update(newUser);
         userRepository.save(user);
-        return "redirect:/user/list";
+        return "redirect:/users/list";
     }
 
     @GetMapping("/{userId}")

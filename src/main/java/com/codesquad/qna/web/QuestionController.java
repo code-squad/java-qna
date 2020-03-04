@@ -11,12 +11,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.LocalDateTime;
+
 @Controller
-@RequestMapping("/question")
+@RequestMapping("/questions")
 public class QuestionController {
 
     @Autowired
-    public static QuestionRepository questionRepository;
+    private QuestionRepository questionRepository;
 
     @GetMapping("/form")
     public String createForm() {
@@ -27,7 +28,13 @@ public class QuestionController {
     public String create(Question question, Model model) {
         question.setCreatedDateTime(LocalDateTime.now());
         questionRepository.save(question);
-        return "redirect:/";
+        return "redirect:/questions/list";
+    }
+
+    @GetMapping("/list")
+    public String list(Model model) {
+        model.addAttribute("questions", questionRepository.findAll());
+        return "qna/list";
     }
 
     @GetMapping("/{id}")

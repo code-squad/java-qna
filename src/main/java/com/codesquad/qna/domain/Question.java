@@ -9,18 +9,28 @@ import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Question {
-    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
 
     @Id
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String writer;
+
     private String title;
     private String contents;
-
     private LocalDateTime createdDateTime;
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "id=" + id +
+                ", writer='" + writer + '\'' +
+                ", title='" + title + '\'' +
+                ", contents='" + contents + '\'' +
+                ", createdDateTime=" + createdDateTime +
+                '}';
+    }
 
     public Long getId() {
         return id;
@@ -54,11 +64,13 @@ public class Question {
         this.contents = contents;
     }
 
+    public String getFormattedCreatedTime() {
+        return createdDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    }
+
     public void setCreatedDateTime(LocalDateTime createdDateTime) {
         this.createdDateTime = createdDateTime;
     }
 
-    public String getFormattedCreatedTime() {
-        return createdDateTime.format(DateTimeFormatter.ofPattern(DATE_FORMAT));
-    }
+
 }

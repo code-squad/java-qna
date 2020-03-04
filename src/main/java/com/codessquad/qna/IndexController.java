@@ -7,6 +7,7 @@ import com.codessquad.qna.service.users.UsersService;
 import com.codessquad.qna.web.HttpSessionUtils;
 import com.codessquad.qna.web.dto.PostsResponseDto;
 import com.codessquad.qna.web.dto.UsersResponseDto;
+import java.util.Optional;
 import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,7 +44,9 @@ public class IndexController {
   //"/users/logout" 로그아웃 기능 만들어야 함
   //"/users/update" 개인정보 수정 기능 만들어야 함
   @GetMapping("/posts/save")
-  public String postsSave() {
+  public String postsSave(Model model, HttpSession httpSession) {
+    Users sessionUser = (Users) httpSession.getAttribute("sessionUser");
+    model.addAttribute("author", sessionUser);
     return "posts-save";
   }
 
@@ -90,9 +93,17 @@ public class IndexController {
   }
 
   @GetMapping("/posts/update/{Id}")
-  public String postsUpdate(@PathVariable Long Id, Model model) {
+  public String postsUpdate(@PathVariable Long Id, Model model, HttpSession httpSession) {
+    if (HttpSessionUtils.isLoggedIn(httpSession)) {
+      return "redirect:/users/login";
+    }
     PostsResponseDto responseDto = postsService.findById(Id);
+    Users sessionUser = (Users) httpSession.getAttribute("sessionUser");
+    if (!sessionUser.getId().equals(Id)) {
+      return "users-update-invalid-access";
+    }
     model.addAttribute("posts", responseDto);
+    model.addAttribute("author", sessionUser);
     return "posts-update";
   }
 

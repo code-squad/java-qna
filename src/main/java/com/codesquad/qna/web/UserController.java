@@ -1,7 +1,11 @@
 package com.codesquad.qna.web;
 
+import com.codesquad.qna.global.error.exception.DataNotFoundException;
+import com.codesquad.qna.global.error.exception.ErrorCode;
+import com.codesquad.qna.global.error.exception.RequestNotAllowedException;
 import com.codesquad.qna.model.User;
 import com.codesquad.qna.model.UserRepository;
+import com.codesquad.qna.util.HttpSessionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,13 +92,13 @@ public class UserController {
     private User findUser(String userId, boolean isNullable) {
         log.info("findUser: {}", userId);
         Optional<User> user = userRepository.findById(userId);
-        return isNullable ? user.orElse(null) : user.orElseThrow(() -> new IllegalArgumentException(ErrorMessage.ILLEGAL_ARGUMENT.getMessage()));
+        return isNullable ? user.orElse(null) : user.orElseThrow(() -> new DataNotFoundException(ErrorCode.DATA_NOT_FOUND));
     }
 
     private User getMatchedUser(String userId, HttpSession session) {
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
         if (!sessionedUser.matchId(userId))
-            throw new IllegalStateException(ErrorMessage.ILLEGAL_STATE.getMessage());
+            throw new RequestNotAllowedException(ErrorCode.FORBIDDEN);
 
         return findUser(userId, false);
     }

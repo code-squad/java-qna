@@ -1,6 +1,10 @@
 package com.codesquad.qna.web;
 
+import com.codesquad.qna.global.error.exception.DataNotFoundException;
+import com.codesquad.qna.global.error.exception.ErrorCode;
+import com.codesquad.qna.global.error.exception.RequestNotAllowedException;
 import com.codesquad.qna.model.*;
+import com.codesquad.qna.util.HttpSessionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
 
 @Controller
@@ -76,7 +81,7 @@ public class QuestionController {
 
         Question deleteQuestion = getMatchedQuestion(id, session);
         if (!deleteQuestion.delete())
-            throw new IllegalStateException(ErrorMessage.ILLEGAL_STATE.getMessage());
+            throw new RequestNotAllowedException(ErrorCode.DELETE_FAILED);
         // deleted 필드 변경 사항 저장
         questionRepository.save(deleteQuestion);
         answerRepository.findByQuestionIdAndDeletedFalse(id).stream()
@@ -88,7 +93,7 @@ public class QuestionController {
     }
 
     private Question findQuestion(Long id) {
-        return questionRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(ErrorMessage.ILLEGAL_ARGUMENT.getMessage()));
+        return questionRepository.findById(id).orElseThrow(() -> new DataNotFoundException(ErrorCode.DATA_NOT_FOUND));
     }
 
     private Question getMatchedQuestion(Long questionId, HttpSession session) {
@@ -96,7 +101,7 @@ public class QuestionController {
         Question matchedQuestion = findQuestion(questionId);
         log.info("matchedQuestion : {}, sessionedUser : {}", matchedQuestion, sessionedUser);
         if (!matchedQuestion.matchWriter(sessionedUser))
-            throw new IllegalStateException(ErrorMessage.ILLEGAL_STATE.getMessage());
+            throw new RequestNotAllowedException(ErrorCode.FORBIDDEN);
 
         return matchedQuestion;
     }

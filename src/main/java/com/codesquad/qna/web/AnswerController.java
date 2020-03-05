@@ -1,6 +1,10 @@
 package com.codesquad.qna.web;
 
+import com.codesquad.qna.global.error.exception.DataNotFoundException;
+import com.codesquad.qna.global.error.exception.ErrorCode;
+import com.codesquad.qna.global.error.exception.RequestNotAllowedException;
 import com.codesquad.qna.model.*;
+import com.codesquad.qna.util.HttpSessionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +45,7 @@ public class AnswerController {
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
         Answer answer = findAnswer(answerId);
         if (!answer.matchWriter(sessionedUser))
-            throw new IllegalStateException(ErrorMessage.ILLEGAL_STATE.getMessage());
+            throw new RequestNotAllowedException(ErrorCode.FORBIDDEN);
 
         answer.setDeleted(true);
         answerRepository.save(answer);
@@ -49,10 +53,10 @@ public class AnswerController {
     }
 
     private Question findQuestion(Long questionId) {
-        return questionRepository.findById(questionId).orElseThrow(() -> new IllegalArgumentException(ErrorMessage.ILLEGAL_ARGUMENT.getMessage()));
+        return questionRepository.findById(questionId).orElseThrow(() -> new DataNotFoundException(ErrorCode.DATA_NOT_FOUND));
     }
 
     private Answer findAnswer(Long answerId) {
-        return answerRepository.findById(answerId).orElseThrow(() -> new IllegalArgumentException(ErrorMessage.ILLEGAL_ARGUMENT.getMessage()));
+        return answerRepository.findById(answerId).orElseThrow(() -> new DataNotFoundException(ErrorCode.DATA_NOT_FOUND));
     }
 }

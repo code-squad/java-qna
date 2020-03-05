@@ -1,17 +1,39 @@
 package com.codessquad.user;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class User {
-    private String id;
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(nullable = false, unique = true, length = 30)
+    private String userId;
+
+    @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private String email;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
+    
+    public String getUserId() {
+        return userId;
+    }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getPassword() {
@@ -36,15 +58,5 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id='" + id + '\'' +
-                ", password='" + password + '\'' +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                '}';
     }
 }

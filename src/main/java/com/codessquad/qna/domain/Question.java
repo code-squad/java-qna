@@ -22,7 +22,7 @@ public class Question {
     @Type(type = "text")
     private String contents;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private LocalDateTime writeTime;
 
     public Long getId() {
@@ -63,6 +63,11 @@ public class Question {
 
     public void setWriteTimeNow() {
         setWriteTime(LocalDateTime.now());
+    }
+
+    public void update(Question updatedQuestion) {
+        title = updatedQuestion.title;
+        contents = updatedQuestion.contents;
     }
     
     @Override

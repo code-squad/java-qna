@@ -96,6 +96,10 @@ public class User {
         return id.equals(inputId);
     }
 
+    public boolean matchName(String writer) {
+        return name.equals(writer);
+    }
+
     @Override
     public String toString() {
         return "User{" +

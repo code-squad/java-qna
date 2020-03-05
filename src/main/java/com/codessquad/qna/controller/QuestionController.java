@@ -9,10 +9,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
@@ -26,7 +23,7 @@ public class QuestionController {
     private QuestionRepository questionRepository;
 
     @GetMapping("/form")
-    public String questionFrom(HttpSession session) {
+    public String questionForm(HttpSession session) {
         LOGGER.debug("[page]질문작성 폼");
 
         Object sessionUser = session.getAttribute("sessionUser");
@@ -48,11 +45,8 @@ public class QuestionController {
             return "redirect:/users/loginForm";
         }
 
-        User user = (User)sessionUser;
-
         Question createdQuestion = Optional.ofNullable(question).orElseThrow(() -> new NullPointerException("NULL"));
         createdQuestion.setWriteTimeNow();
-        createdQuestion.setWriter(user.getName());
 
         LOGGER.debug("[page]질문 DB에 저장");
         questionRepository.save(createdQuestion);
@@ -66,4 +60,49 @@ public class QuestionController {
         model.addAttribute("question", questionRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 질문입니다.")));
         return "qna/show";
     }
+
+    @GetMapping("/{id}/form")
+    public String updateForm(@PathVariable Long id, HttpSession session, Model model) throws NotFoundException {
+        LOGGER.debug("[page]질문 수정 폼");
+
+        Object sessionUser = session.getAttribute("sessionUser");
+        if(sessionUser == null) {
+            LOGGER.debug("[page]비로그인 상태");
+            return "redirect:/users/loginForm";
+        }
+
+        User user = (User)sessionUser;
+        Question question = questionRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 질문입니다."));
+        if(!user.matchName(question.getWriter())) {
+            LOGGER.debug("[page]글 작성자 아님");
+            throw new IllegalStateException("글 작성자 아님");
+        }
+
+        model.addAttribute("question", question);
+        return "qna/updateForm";
+    }
+
+    @PutMapping("/{id}")
+    public String updateQuestion(@PathVariable Long id, HttpSession session, Question updatedQuestion) throws NotFoundException {
+        LOGGER.debug("[page]질문 수정");
+
+        Object sessionUser = session.getAttribute("sessionUser");
+        if(sessionUser == null) {
+            LOGGER.debug("[page]비로그인 상태");
+            return "redirect:/users/loginForm";
+        }
+
+        User user = (User)sessionUser;
+        if(!user.matchName(updatedQuestion.getWriter())) {
+            LOGGER.debug("[page]글 작성자 아님");
+            throw new IllegalStateException("글 작성자 아님");
+        }
+
+        Question question = questionRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 질문입니다."));
+        question.update(updatedQuestion);
+        questionRepository.save(question);
+
+        return "redirect:/questions/"+id;
+    }
+
 }

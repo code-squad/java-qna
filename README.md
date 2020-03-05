@@ -216,8 +216,8 @@ https://jay-simple-qna.herokuapp.com/
   > https://heowc.dev/2018/02/06/spring-boot-interceptor/
   >
   > [http-method-구분참고](https://stackoverflow.com/questions/45825582/spring-configureradapter-exclude-pattern-for-separate-http-method)
-
-  
+  > 
+  > https://elfinlas.github.io/2017/12/28/SpringBootInterceptor/
 
 ### 기타
 

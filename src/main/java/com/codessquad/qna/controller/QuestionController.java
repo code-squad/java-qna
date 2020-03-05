@@ -105,4 +105,26 @@ public class QuestionController {
         return "redirect:/questions/"+id;
     }
 
+    @DeleteMapping("/{id}")
+    public String deleteQuestion(@PathVariable Long id, HttpSession session) throws NotFoundException {
+        LOGGER.debug("[page]질문 삭제");
+
+        Object sessionUser = session.getAttribute("sessionUser");
+        if(sessionUser == null) {
+            LOGGER.debug("[page]비로그인 상태");
+            return "redirect:/users/loginForm";
+        }
+
+        User user = (User)sessionUser;
+        Question question = questionRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 질문입니다."));
+        if(!user.matchName(question.getWriter())) {
+            LOGGER.debug("[page]글 작성자 아님");
+            throw new IllegalStateException("글 작성자 아님");
+        }
+
+        questionRepository.deleteById(id);
+
+        return "redirect:/";
+    }
+
 }

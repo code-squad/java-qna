@@ -16,6 +16,9 @@ public class Question {
     @ManyToOne
     private User writer;
 
+    @OneToMany(mappedBy = "question")
+    private List<Answer> answers;
+
     @Column(nullable = false)
     @NotEmpty
     private String title;
@@ -25,7 +28,7 @@ public class Question {
     @Column(nullable = false)
     private LocalDateTime createdDateTime;
 
-    @Formula("(select count(*) from answer a where a.question_id = id)")
+    @Formula("(select count(*) from answer a where a.question_id = id and a.deleted = false)")
     private int countOfAnswers;
 
     @Column(nullable = false)
@@ -71,6 +74,17 @@ public class Question {
     public void update(String title, String contents) {
         this.title = title;
         this.contents = contents;
+    }
+
+    public boolean delete() {
+        if (countOfAnswers == 0)
+            return (this.deleted = true);
+
+        for (Answer answer : answers) {
+            if (!answer.matchWriter(this.writer))
+                return false;
+        }
+        return (this.deleted = true);
     }
 
     @Override

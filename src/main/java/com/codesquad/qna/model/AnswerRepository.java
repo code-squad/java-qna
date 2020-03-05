@@ -6,12 +6,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 public interface AnswerRepository extends CrudRepository<Answer, Long> {
-    Iterable<Answer> findByQuestionId(Long questionId);
-
-    @Transactional
-    @Modifying
-    @Query("delete from Answer a where a.question.id in :id")
-    void deleteAllByIdInQuery(@Param("id") Long id);
+    List<Answer> findByQuestionIdAndDeletedFalse(Long questionId);
 }

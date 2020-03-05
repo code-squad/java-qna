@@ -43,7 +43,8 @@ public class AnswerController {
         if (!answer.matchWriter(sessionedUser))
             throw new IllegalStateException(ErrorMessage.ILLEGAL_STATE.getMessage());
 
-        answerRepository.delete(answer);
+        answer.setDeleted(true);
+        answerRepository.save(answer);
         return String.format("redirect:/questions/%d", questionId);
     }
 

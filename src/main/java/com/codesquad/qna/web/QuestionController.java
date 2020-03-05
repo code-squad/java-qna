@@ -1,9 +1,6 @@
 package com.codesquad.qna.web;
 
-import com.codesquad.qna.model.AnswerRepository;
-import com.codesquad.qna.model.Question;
-import com.codesquad.qna.model.QuestionRepository;
-import com.codesquad.qna.model.User;
+import com.codesquad.qna.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +44,7 @@ public class QuestionController {
     public String show(@PathVariable Long id, Model model) {
         Question question = findQuestion(id);
         model.addAttribute("question", question);
-        model.addAttribute("answers", answerRepository.findByQuestionId(id));
+        model.addAttribute("answers", answerRepository.findByQuestionIdAndDeletedFalse(id));
         return "qna/show";
     }
 
@@ -78,8 +75,15 @@ public class QuestionController {
             return "redirect:/user/login";
 
         Question deleteQuestion = getMatchedQuestion(id, session);
-        answerRepository.deleteAllByIdInQuery(id);
-        questionRepository.delete(deleteQuestion);
+        if (!deleteQuestion.delete())
+            throw new IllegalStateException(ErrorMessage.ILLEGAL_STATE.getMessage());
+        // deleted 필드 변경 사항 저장
+        questionRepository.save(deleteQuestion);
+        answerRepository.findByQuestionIdAndDeletedFalse(id).stream()
+                .forEach(answer -> {
+                    answer.setDeleted(true);
+                    answerRepository.save(answer);
+        });
         return "redirect:/";
     }
 

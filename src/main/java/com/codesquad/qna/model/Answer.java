@@ -23,6 +23,9 @@ public class Answer {
     @Column(nullable = false)
     private LocalDateTime createDateTime;
 
+    @Column(nullable = false)
+    private boolean deleted;
+
     public Answer() {}
 
     public Answer(Question question, User user, @NotEmpty String contents) {
@@ -30,6 +33,10 @@ public class Answer {
         this.user = user;
         this.contents = contents;
         this.createDateTime = LocalDateTime.now();
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     public Long getId() {

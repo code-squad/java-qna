@@ -1,25 +1,25 @@
 <head>
-    {{> include/header}}
+  {{> include/header}}
 </head>
 <body>
 {{> include/navigation}}
 <div class="container" id="main">
-    <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
-        <div class="panel panel-default qna-list">
-            {{#code}}
-                <p><img src="/images/{{code}}.jpeg" width="60%"/></p>
-                <p>Code : {{code}}</p>
-                <p>Msd : {{msg}}</p>
-                <p>DescMsg : {{descMsg}}</p>
-            {{/code}}
-            {{^code}}
-                <p><img src="/images/404.jpeg" width="60%"/></p>
-                <p>Code : 404</p>
-                <p>Msd : Not Found</p>
-                <p>DescMsg : </p>
-            {{/code}}
-        </div>
+  <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
+    <div class="panel panel-default qna-list">
+      {{#code}}
+        <p><img src="/images/{{code}}.jpeg" width="60%"/></p>
+        <p>Code : {{code}}</p>
+        <p>Msd : {{msg}}</p>
+        <p>DescMsg : {{descMsg}}</p>
+      {{/code}}
+      {{^code}}
+        <p><img src="/images/404.jpeg" width="60%"/></p>
+        <p>Code : 404</p>
+        <p>Msd : Not Found</p>
+        <p>DescMsg : </p>
+      {{/code}}
     </div>
+  </div>
 </div>
 {{> include/footer}}
 </body>

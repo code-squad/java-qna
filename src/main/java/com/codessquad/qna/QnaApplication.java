@@ -8,8 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class QnaApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(QnaApplication.class, args);
-		log.info("Simple log statement with inputs {}, {} and {}", 1, 2, 3);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(QnaApplication.class, args);
+    log.info("Simple log statement with inputs {}, {} and {}", 1, 2, 3);
+  }
 }

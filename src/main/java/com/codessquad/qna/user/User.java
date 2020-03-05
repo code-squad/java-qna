@@ -30,6 +30,6 @@ public class User {
   }
 
   public boolean validatePassword(String password) {
-    return (this.password.equals(password)) ? true : false;
+    return this.password.equals(password);
   }
 }

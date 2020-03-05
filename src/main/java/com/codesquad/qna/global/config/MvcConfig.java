@@ -1,4 +1,4 @@
-package com.codesquad.qna.config;
+package com.codesquad.qna.global.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;

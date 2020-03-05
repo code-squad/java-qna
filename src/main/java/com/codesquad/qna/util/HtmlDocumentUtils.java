@@ -1,4 +1,4 @@
-package com.codesquad.qna.model;
+package com.codesquad.qna.util;
 
 public class HtmlDocumentUtils {
     public static String getEntertoBrTag(String contents) {

@@ -37,7 +37,7 @@ public class UserController {
         User selectedUser = userList.get((int)id - 1);
         model.addAttribute("user", selectedUser);
 
-        return "profile";
+        return "user/profile";
     }
 
     @GetMapping("/users/{id}/form")

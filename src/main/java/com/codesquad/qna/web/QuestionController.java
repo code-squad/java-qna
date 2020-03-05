@@ -48,7 +48,6 @@ public class QuestionController {
         Question question = findQuestion(id);
         model.addAttribute("question", question);
         model.addAttribute("answers", answerRepository.findByQuestionId(id));
-        model.addAttribute("countOfAnswers", answerRepository.countByQuestionId(id));
         return "qna/show";
     }
 

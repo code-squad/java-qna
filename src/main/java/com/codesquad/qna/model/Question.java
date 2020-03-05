@@ -1,8 +1,11 @@
 package com.codesquad.qna.model;
 
+import org.hibernate.annotations.Formula;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class Question {
@@ -22,8 +25,13 @@ public class Question {
     @Column(nullable = false)
     private LocalDateTime createdDateTime;
 
-    public Question() {
-    }
+    @Formula("(select count(*) from answer a where a.question_id = id)")
+    private int countOfAnswers;
+
+    @Column(nullable = false)
+    private boolean deleted;
+
+    public Question() {}
 
     public Question(User writer, String title, String contents) {
         this.writer = writer;
@@ -50,6 +58,10 @@ public class Question {
 
     public String getCreatedDateTimetoString() {
         return DateTimeFormatUtils.getFormattedLocalDateTime(this.createdDateTime);
+    }
+
+    public int getCountOfAnswers() {
+        return countOfAnswers;
     }
 
     public boolean matchWriter(User sessionedUser) {

@@ -84,4 +84,8 @@ public class Question {
                 ", date=" + date +
                 '}';
     }
+
+    public boolean isSameWriter(User loggedInUser) {
+        return this.writer.equals(loggedInUser);
+    }
 }

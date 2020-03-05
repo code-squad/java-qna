@@ -209,3 +209,14 @@ JPA 사용하여 데이터 클래스만들어서 매핑할에는 디폴트 생�
          return date.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
      }
 - 목록 html 파일에서 {{date}}
+
+
+가능하다 객체가 가지고 있는 데이터를 꺼내지말아라.. e.g. getId, getUserName
+예를 들어, 현재 로그인한 유저와 특정 글의 글쓴이가 같은지 확인하고 싶을 때
+User loggedInUser = HttpSessionUtils.getUserFromSession(session);
+Question question = questionRepository.findById(postNumber).get();
+if (loggedInUser.equals(question.getWriter))면
+
+그 대신에 객체에다가 메세지를 보내서 확인해라
+e.g. if(question.isSameWriter(loggedInUser)) {
+}

@@ -2,6 +2,7 @@ package com.codessquad.qna.controller;
 
 import com.codessquad.qna.domain.Question;
 import com.codessquad.qna.domain.QuestionRepository;
+import com.codessquad.qna.domain.User;
 import javassist.NotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpSession;
+import java.util.Optional;
+
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
@@ -22,16 +26,37 @@ public class QuestionController {
     private QuestionRepository questionRepository;
 
     @GetMapping("/form")
-    public String questionFrom() {
+    public String questionFrom(HttpSession session) {
         LOGGER.debug("[page]질문작성 폼");
+
+        Object sessionUser = session.getAttribute("sessionUser");
+        if(sessionUser == null) {
+            LOGGER.debug("[page]비로그인 상태");
+            return "redirect:/users/loginForm";
+        }
+
         return "qna/form";
     }
 
     @PostMapping("")
-    public String createQuestion(Question question) {
+    public String createQuestion(Question question, HttpSession session) {
         LOGGER.debug("[page]질문 작성");
-        question.setWriteTime();
-        questionRepository.save(question);
+
+        Object sessionUser = session.getAttribute("sessionUser");
+        if(sessionUser == null) {
+            LOGGER.debug("[page]비로그인 상태");
+            return "redirect:/users/loginForm";
+        }
+
+        User user = (User)sessionUser;
+
+        Question createdQuestion = Optional.ofNullable(question).orElseThrow(() -> new NullPointerException("NULL"));
+        createdQuestion.setWriteTimeNow();
+        createdQuestion.setWriter(user.getName());
+
+        LOGGER.debug("[page]질문 DB에 저장");
+        questionRepository.save(createdQuestion);
+
         return "redirect:/";
     }
 

@@ -1,5 +1,7 @@
 package com.codessquad.qna.domain;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -9,11 +11,18 @@ public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false, length = 20)
     private String writer;
+
     @Column(nullable = false, length = 50)
     private String title;
+
+    @Column(nullable = false)
+    @Type(type = "text")
     private String contents;
+
+    @Column(nullable = false)
     private LocalDateTime writeTime;
 
     public Long getId() {
@@ -44,12 +53,16 @@ public class Question {
         this.contents = contents;
     }
 
+    public void setWriteTime(LocalDateTime writeTime) {
+        this.writeTime = writeTime;
+    }
+
     public String getWriteTime() {
         return writeTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
-    public void setWriteTime() {
-        this.writeTime = LocalDateTime.now();
+    public void setWriteTimeNow() {
+        setWriteTime(LocalDateTime.now());
     }
     
     @Override

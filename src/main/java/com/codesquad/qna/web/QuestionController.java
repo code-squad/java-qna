@@ -85,7 +85,7 @@ public class QuestionController {
     }
 
     private Question findQuestion(Long id) {
-        return questionRepository.findById(id).orElseThrow(()->new IllegalArgumentException(ErrorMessage.ILLEGAL_ARGUMENT.getMessage()));
+        return questionRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(ErrorMessage.ILLEGAL_ARGUMENT.getMessage()));
     }
 
     private Question getMatchedQuestion(Long questionId, HttpSession session) {

@@ -8,10 +8,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpSession;
 
 @Controller
+@RequestMapping("/questions/{questionId}/answers")
 public class AnswerController {
 
     private static final Logger log = LoggerFactory.getLogger(AnswerController.class);
@@ -20,10 +22,9 @@ public class AnswerController {
     @Autowired
     private QuestionRepository questionRepository;
 
-    @PostMapping("/questions/{questionId}/answers/")
+    @PostMapping("")
     public String create(@PathVariable Long questionId, String contents, HttpSession session) {
-        if (HttpSessionUtils.isNotLoggedIn(session))
-            return "redirect:/user/login";
+        if (HttpSessionUtils.isNotLoggedIn(session)) return "redirect:/user/login";
 
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
         Question answeredQuestion = findQuestion(questionId);
@@ -32,7 +33,7 @@ public class AnswerController {
         return String.format("redirect:/questions/%d", questionId);
     }
 
-    @DeleteMapping("/questions/{questionId}/answers/{answerId}")
+    @DeleteMapping("/{answerId}")
     public String delete(@PathVariable Long questionId, @PathVariable Long answerId, HttpSession session) {
         if (HttpSessionUtils.isNotLoggedIn(session))
             return "redirect:/user/login";
@@ -47,10 +48,10 @@ public class AnswerController {
     }
 
     private Question findQuestion(Long questionId) {
-        return questionRepository.findById(questionId).orElseThrow(()->new IllegalArgumentException(ErrorMessage.ILLEGAL_ARGUMENT.getMessage()));
+        return questionRepository.findById(questionId).orElseThrow(() -> new IllegalArgumentException(ErrorMessage.ILLEGAL_ARGUMENT.getMessage()));
     }
 
     private Answer findAnswer(Long answerId) {
-        return answerRepository.findById(answerId).orElseThrow(()->new IllegalArgumentException(ErrorMessage.ILLEGAL_ARGUMENT.getMessage()));
+        return answerRepository.findById(answerId).orElseThrow(() -> new IllegalArgumentException(ErrorMessage.ILLEGAL_ARGUMENT.getMessage()));
     }
 }

@@ -88,7 +88,7 @@ public class UserController {
     private User findUser(String userId, boolean isNullable) {
         log.info("findUser: {}", userId);
         Optional<User> user = userRepository.findById(userId);
-        return isNullable ? user.orElse(null) : user.orElseThrow(()->new IllegalArgumentException(ErrorMessage.ILLEGAL_ARGUMENT.getMessage()));
+        return isNullable ? user.orElse(null) : user.orElseThrow(() -> new IllegalArgumentException(ErrorMessage.ILLEGAL_ARGUMENT.getMessage()));
     }
 
     private User getMatchedUser(String userId, HttpSession session) {

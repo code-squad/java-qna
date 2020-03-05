@@ -1,4 +1,4 @@
-package com.codessquad.user;
+package com.codessquad.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,7 +27,7 @@ public class User {
     public Long getId() {
         return id;
     }
-    
+
     public String getUserId() {
         return userId;
     }

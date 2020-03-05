@@ -2,6 +2,7 @@ package com.codessquad.qna.question;
 
 import com.codessquad.qna.user.User;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -13,8 +14,6 @@ import java.time.format.DateTimeFormatter;
 @NotNull
 public class Question {
 
-  private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -23,24 +22,25 @@ public class Question {
   private String userId;
   private String title;
   private String contents;
-  private LocalDateTime dateTime;
+  private LocalDateTime createdDateTime;
 
   public Question() {
-    this.dateTime = LocalDateTime.now();
+    this.createdDateTime = LocalDateTime.now();
   }
 
   public void update(Question question) {
     this.userId = question.userId;
     this.title = question.title;
     this.contents = question.contents;
-    this.dateTime = question.dateTime;
+    this.createdDateTime = question.createdDateTime;
   }
 
   public boolean validateUserId(User user) {
     return (this.userId.equals(user.getUserId())) ? true : false;
   }
 
-  public String getDateTime() {
-    return dateTime.format(dateTimeFormatter);
+  public String getCreatedDateTime() {
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    return createdDateTime.format(dateTimeFormatter);
   }
 }

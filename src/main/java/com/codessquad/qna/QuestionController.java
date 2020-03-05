@@ -3,10 +3,7 @@ package com.codessquad.qna;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -38,7 +35,7 @@ public class QuestionController {
     public String seeQuestions(@PathVariable Long postNumber, Model model) {
         Question question = questionRepository.findById(postNumber).get();
         model.addAttribute("question", question);
-        return "questionContents";
+        return "QuestionContents";
     }
 
     /// 질문 수정하기
@@ -55,6 +52,13 @@ public class QuestionController {
         question.updateContents(title, contents);
         questionRepository.save(question);
         return "redirect:/questions/{postNumber}/contents";
+    }
+
+    @DeleteMapping("/questions/{postNumber}/delete")
+    public String delete(@PathVariable Long postNumber) {
+        Question uselessQuestion = questionRepository.findById(postNumber).get();
+        questionRepository.delete(uselessQuestion);
+        return "redirect:/posts";
     }
 
 }

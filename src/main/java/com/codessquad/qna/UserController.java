@@ -17,7 +17,6 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-
     @PostMapping("")
     public String createUser(User user) {
         userRepository.save(user);
@@ -30,14 +29,11 @@ public class UserController {
         return "userList";
     }
 
-
     ///회원가입 눌렀을 때
     @GetMapping("/form")
     public String createAccount() {
-        return "form";
+        return "RegistrationForm";
     }
-
-
 
     ///수정버튼 눌렀을 때
     @GetMapping("/{givenNumber}/form")
@@ -55,17 +51,14 @@ public class UserController {
 
         model.addAttribute("user", userRepository.findById(givenNumber).get());
         System.out.println(userRepository.findById(givenNumber));
-        return "updateForm";
+        return "EditUserInfo";
     }
 
     @PostMapping("/{givenNumber}")
     public String updateInfo(@PathVariable Long givenNumber, User updatedUser) {
         User user = userRepository.findById(givenNumber).get();
-        System.out.println("Before edited : " + user);
-
         user.update(updatedUser);
         userRepository.save(user);
-        System.out.println("Edited info : " + user);
         return "redirect:/users";
     }
 

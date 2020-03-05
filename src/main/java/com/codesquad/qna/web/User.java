@@ -5,6 +5,7 @@ public class User {
     private String password;
     private String userName;
     private String email;
+    private long id;
 
     public void setUserId(String userId) {
         this.userId = userId;
@@ -20,6 +21,10 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getUserId() {
@@ -38,9 +43,13 @@ public class User {
         return email;
     }
 
+    public long getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
-        return "userId : " + userId + ", userName : " + userName + ", password : " + password + ", Email : " + email;
+        return "userId : " + userId + ", userName : " + userName + ", password : " + password + ", Email : " + email + ", ID : " + id;
     }
 
 }

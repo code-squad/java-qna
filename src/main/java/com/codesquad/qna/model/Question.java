@@ -58,6 +58,10 @@ public class Question {
     }
 
     public String getContents() {
+        return contents;
+    }
+
+    public String getContentsWithBr() {
         return HtmlDocumentUtils.getEntertoBrTag(this.contents);
     }
 

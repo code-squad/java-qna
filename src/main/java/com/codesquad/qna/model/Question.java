@@ -1,5 +1,7 @@
 package com.codesquad.qna.model;
 
+import com.codesquad.qna.util.DateTimeFormatUtils;
+import com.codesquad.qna.util.HtmlDocumentUtils;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
@@ -81,7 +83,7 @@ public class Question {
             return (this.deleted = true);
 
         for (Answer answer : answers) {
-            if (!answer.matchWriter(this.writer))
+            if (!answer.checkDeleteCondition(writer))
                 return false;
         }
         return (this.deleted = true);

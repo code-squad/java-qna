@@ -76,7 +76,6 @@ var index = {
   save: function () {
     var data = {
       title: $('#title').val(),
-      author: $('#author').val(),
       content: $('#content').val()
     };
 

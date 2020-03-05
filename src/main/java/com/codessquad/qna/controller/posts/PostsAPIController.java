@@ -1,8 +1,8 @@
-package com.codessquad.qna.controller;
+package com.codessquad.qna.controller.posts;
 
 import com.codessquad.qna.service.posts.PostsService;
-import com.codessquad.qna.web.dto.PostsSaveRequestDto;
-import com.codessquad.qna.web.dto.PostsUpdateRequestDto;
+import com.codessquad.qna.web.dto.posts.PostsSaveRequestDto;
+import com.codessquad.qna.web.dto.posts.PostsUpdateRequestDto;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;

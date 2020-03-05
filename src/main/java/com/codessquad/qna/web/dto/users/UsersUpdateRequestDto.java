@@ -1,4 +1,4 @@
-package com.codessquad.qna.web.dto;
+package com.codessquad.qna.web.dto.users;
 
 public class UsersUpdateRequestDto {
   private String userId;

@@ -1,6 +1,7 @@
 package com.codessquad.qna.domain;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import javax.persistence.EntityListeners;
 import lombok.Getter;
 import javax.persistence.MappedSuperclass;

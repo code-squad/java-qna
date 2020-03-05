@@ -1,11 +1,11 @@
 package com.codessquad.qna.service.users;
 
-import com.codessquad.qna.controller.UsersRepository;
+import com.codessquad.qna.controller.users.UsersRepository;
 import com.codessquad.qna.domain.Users;
-import com.codessquad.qna.web.dto.UsersListResponseDto;
-import com.codessquad.qna.web.dto.UsersRegisterRequestDto;
-import com.codessquad.qna.web.dto.UsersResponseDto;
-import com.codessquad.qna.web.dto.UsersUpdateRequestDto;
+import com.codessquad.qna.web.dto.users.UsersListResponseDto;
+import com.codessquad.qna.web.dto.users.UsersRegisterRequestDto;
+import com.codessquad.qna.web.dto.users.UsersResponseDto;
+import com.codessquad.qna.web.dto.users.UsersUpdateRequestDto;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;

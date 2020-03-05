@@ -1,4 +1,4 @@
-package com.codessquad.qna.controller;
+package com.codessquad.qna.controller.users;
 
 import com.codessquad.qna.domain.Users;
 import java.util.List;

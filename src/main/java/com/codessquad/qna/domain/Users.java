@@ -125,4 +125,24 @@ public class Users {
           + this.name + ", email=" + this.email + ")";
     }
   }
+
+  public void setId(Long id) {
+    Id = id;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public void setUserId(String userId) {
+    this.userId = userId;
+  }
 }

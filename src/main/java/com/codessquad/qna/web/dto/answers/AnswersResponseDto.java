@@ -1,22 +1,23 @@
-package com.codessquad.qna.web.dto;
+package com.codessquad.qna.web.dto.answers;
 
-import com.codessquad.qna.domain.Posts;
+import com.codessquad.qna.domain.Answers;
+import com.codessquad.qna.domain.Users;
 
-public class PostsResponseDto {
+public class AnswersResponseDto {
 
   private Long id;
   private String title;
   private String content;
-  private String author;
+  private Users author;
 
-  public PostsResponseDto(Posts entity) {
+  public AnswersResponseDto(Answers entity) {
     this.id = entity.getId();
     this.title = entity.getTitle();
     this.content = entity.getContent();
     this.author = entity.getAuthor();
   }
 
-  public PostsResponseDto() {
+  public AnswersResponseDto() {
   }
 
   public Long getId() {
@@ -31,7 +32,7 @@ public class PostsResponseDto {
     return this.content;
   }
 
-  public String getAuthor() {
+  public Users getAuthor() {
     return this.author;
   }
 }

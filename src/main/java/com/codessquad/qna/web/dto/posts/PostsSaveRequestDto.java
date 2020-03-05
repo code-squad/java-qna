@@ -1,13 +1,16 @@
-package com.codessquad.qna.web.dto;
+package com.codessquad.qna.web.dto.posts;
 
 import com.codessquad.qna.domain.Posts;
+import com.codessquad.qna.domain.Users;
+import javax.servlet.http.HttpSession;
 
 public class PostsSaveRequestDto {
   private String title;
-  private String author;
+  private Users author;
   private String content;
+  private HttpSession httpSession;
 
-  public PostsSaveRequestDto(String title, String author, String content) {
+  public PostsSaveRequestDto(String title, Users author, String content) {
     this.title = title;
     this.author = author;
     this.content = content;
@@ -23,7 +26,7 @@ public class PostsSaveRequestDto {
   public Posts toEntity() {
     return Posts.builder()
         .title(title)
-        .author(author)
+        .author()
         .content(content)
         .build();
   }
@@ -32,7 +35,7 @@ public class PostsSaveRequestDto {
     return this.title;
   }
 
-  public String getAuthor() {
+  public Users getAuthor() {
     return this.author;
   }
 
@@ -43,7 +46,7 @@ public class PostsSaveRequestDto {
   public static class PostsSaveRequestDtoBuilder {
 
     private String title;
-    private String author;
+    private Users author;
     private String content;
 
     PostsSaveRequestDtoBuilder() {
@@ -54,8 +57,8 @@ public class PostsSaveRequestDto {
       return this;
     }
 
-    public PostsSaveRequestDto.PostsSaveRequestDtoBuilder author(String author) {
-      this.author = author;
+    public PostsSaveRequestDto.PostsSaveRequestDtoBuilder author(HttpSession httpSession) {
+      this.author = (Users) httpSession.getAttribute("sessionUser");
       return this;
     }
 

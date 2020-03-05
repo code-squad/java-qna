@@ -1,12 +1,13 @@
-package com.codessquad.qna.web.dto;
+package com.codessquad.qna.web.dto.posts;
 
 import com.codessquad.qna.domain.Posts;
+import com.codessquad.qna.domain.Users;
 import java.time.LocalDateTime;
 
 public class PostsListResponseDto {
   private Long Id;
   private String title;
-  private String author;
+  private Users author;
   private LocalDateTime modifiedDate;
 
   public PostsListResponseDto(Posts entity) {
@@ -24,7 +25,7 @@ public class PostsListResponseDto {
     return this.title;
   }
 
-  public String getAuthor() {
+  public Users getAuthor() {
     return this.author;
   }
 

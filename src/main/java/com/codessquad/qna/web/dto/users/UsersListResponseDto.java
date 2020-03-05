@@ -1,4 +1,4 @@
-package com.codessquad.qna.web.dto;
+package com.codessquad.qna.web.dto.users;
 
 import com.codessquad.qna.domain.Users;
 

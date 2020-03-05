@@ -1,8 +1,8 @@
-package com.codessquad.qna.controller;
+package com.codessquad.qna.controller.users;
 
 import com.codessquad.qna.service.users.UsersService;
-import com.codessquad.qna.web.dto.UsersRegisterRequestDto;
-import com.codessquad.qna.web.dto.UsersUpdateRequestDto;
+import com.codessquad.qna.web.dto.users.UsersRegisterRequestDto;
+import com.codessquad.qna.web.dto.users.UsersUpdateRequestDto;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

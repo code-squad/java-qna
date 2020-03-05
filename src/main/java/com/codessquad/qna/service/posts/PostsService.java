@@ -1,11 +1,11 @@
 package com.codessquad.qna.service.posts;
 
-import com.codessquad.qna.controller.PostsRepository;
+import com.codessquad.qna.controller.posts.PostsRepository;
 import com.codessquad.qna.domain.Posts;
-import com.codessquad.qna.web.dto.PostsListResponseDto;
-import com.codessquad.qna.web.dto.PostsResponseDto;
-import com.codessquad.qna.web.dto.PostsSaveRequestDto;
-import com.codessquad.qna.web.dto.PostsUpdateRequestDto;
+import com.codessquad.qna.web.dto.posts.PostsListResponseDto;
+import com.codessquad.qna.web.dto.posts.PostsResponseDto;
+import com.codessquad.qna.web.dto.posts.PostsSaveRequestDto;
+import com.codessquad.qna.web.dto.posts.PostsUpdateRequestDto;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;

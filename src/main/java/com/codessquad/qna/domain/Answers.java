@@ -7,13 +7,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.servlet.http.HttpSession;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Entity
-public class Posts extends BaseTimeEntity {
+public class Answers extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,8 +26,15 @@ public class Posts extends BaseTimeEntity {
   @JoinColumn(name = "AUTHOR_ID")
   private Users author;
 
+  @ManyToOne
+  @JoinColumn(name = "ANSWERS_POSTS")
+  @OnDelete(action = OnDeleteAction.CASCADE)
+  private Posts posts;
+
   @Column(columnDefinition = "TEXT", nullable = false)
   private String title;
+
+  @Lob
   private String content;
 
   public void setAuthor(Users author) {
@@ -43,17 +53,17 @@ public class Posts extends BaseTimeEntity {
     this.title = title;
   }
 
-  public Posts(Users author, String title, String content) {
+  public Answers(Users author, String title, String content) {
     this.author = author;
     this.title = title;
     this.content = content;
   }
 
-  public Posts() {
+  public Answers() {
   }
 
-  public static PostsBuilder builder() {
-    return new PostsBuilder();
+  public static AnswersBuilder builder() {
+    return new AnswersBuilder();
   }
 
   public void update(String title, String content) {
@@ -87,13 +97,13 @@ public class Posts extends BaseTimeEntity {
     return this.content;
   }
 
-  public static class PostsBuilder {
+  public static class AnswersBuilder {
 
     private Users author;
     private String title;
     private String content;
 
-    PostsBuilder() {
+    AnswersBuilder() {
     }
 
     public static HttpSession getHttpSession() {
@@ -101,29 +111,29 @@ public class Posts extends BaseTimeEntity {
       return attr.getRequest().getSession(true);
     }
 
-    public Posts.PostsBuilder author() { //Posts 클래스 내부의 PostsBuilder 라는 의미
+    public Answers.AnswersBuilder author() {
       HttpSession httpSession = getHttpSession();
       this.author = (Users) httpSession.getAttribute("sessionUser");
       System.out.println("sessionUser: " + this.author);
       return this;
     }
 
-    public Posts.PostsBuilder title(String title) {
+    public Answers.AnswersBuilder title(String title) {
       this.title = title;
       return this;
     }
 
-    public Posts.PostsBuilder content(String content) {
+    public Answers.AnswersBuilder content(String content) {
       this.content = content;
       return this;
     }
 
-    public Posts build() {
-      return new Posts(author, title, content);
+    public Answers build() {
+      return new Answers(author, title, content);
     }
 
     public String toString() {
-      return "Posts.PostsBuilder(author=" + this.author + ", title=" + this.title + ", content="
+      return "Answers.AnswersBuilder(author=" + this.author + ", title=" + this.title + ", content="
           + this.content + ")";
     }
   }

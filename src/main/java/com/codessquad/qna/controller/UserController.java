@@ -12,6 +12,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpSession;
+import java.util.Optional;
+
 @Controller
 @RequestMapping("/users") // 중복되는 prefix, 자원에 대해 명시해준다.
 public class UserController {
@@ -26,11 +29,44 @@ public class UserController {
         return "users/form";
     }
 
-    @PostMapping("/create")
+    @PostMapping("")
     public String createUser(User user) {
         LOGGER.debug("[page]사용자 생성");
-        userRepository.save(user);
+
+        User createdUser = Optional.ofNullable(user).orElseThrow(() -> new NullPointerException("NULL"));
+        userRepository.save(createdUser);
+
         return "redirect:/users/list";
+    }
+
+    @GetMapping("/loginForm")
+    public String loginForm() {
+        LOGGER.debug("[page]로그인 폼");
+        return "users/login";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        LOGGER.debug("[page]로그아웃");
+        session.removeAttribute("sessionUser");
+        return "redirect:/";
+    }
+
+    @PostMapping("/login")
+    public String login(String userId, String password, HttpSession session) throws NotFoundException {
+        LOGGER.debug("[page]로그인");
+
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new NotFoundException("존재하지 않는 회원입니다."));
+
+        if(!user.matchPassword(password)) {
+            LOGGER.debug("[page]비밀번호 불일치");
+            return "redirect:/users/loginForm";
+        }
+
+        LOGGER.debug("[page]로그인");
+        session.setAttribute("sessionUser", user);
+
+        return "redirect:/";
     }
 
     @GetMapping("/list")
@@ -59,18 +95,16 @@ public class UserController {
         LOGGER.debug("[page]사용자 정보 수정");
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 회원입니다."));
 
-        if(!isMatchPassword(user,updatedUser)){
+        if(!user.matchPassword(updatedUser)){
             LOGGER.debug("[page]비밀번호 불일치");
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not Match Password");
         }
 
         user.update(updatedUser);
         userRepository.save(user);
+
         return "redirect:/users/list";
     }
 
-    private boolean isMatchPassword(User user, User updatedUser) {
-        return user.getPassword().equals(updatedUser.getPassword());
-    }
 
 }

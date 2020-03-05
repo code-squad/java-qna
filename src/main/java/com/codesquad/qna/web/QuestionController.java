@@ -29,12 +29,12 @@ public class QuestionController {
         return "redirect:/";
     }
 
-    @GetMapping("")
-    public String home(Model model) {
-        model.addAttribute("questions", questionList);
-
-        return "index";
-    }
+//    @GetMapping("")
+//    public String home(Model model) {
+//        model.addAttribute("questions", questionList);
+//
+//        return "index";
+//    }
 
     @GetMapping("/questions/{index}")
     public String showQuestion(@PathVariable long index, Model model) {

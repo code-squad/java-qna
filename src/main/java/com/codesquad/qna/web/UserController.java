@@ -29,20 +29,12 @@ public class UserController {
     public String printUsers(Model model) {
         model.addAttribute("users", userList);
 
-        return "list";
+        return "user/list";
     }
 
-    @GetMapping("/users/{userId}")
-    public String showUser(@PathVariable String userId, Model model) {
-        User selectedUser = null;
-
-        for (User user : userList) {
-          if (user.getUserId().equals(userId)) {
-              selectedUser = user;
-              break;
-          }
-        }
-
+    @GetMapping("/users/{id}")
+    public String showUser(@PathVariable long id, Model model) {
+        User selectedUser = userList.get((int)id - 1);
         model.addAttribute("user", selectedUser);
 
         return "profile";

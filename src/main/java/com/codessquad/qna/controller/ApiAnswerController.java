@@ -35,19 +35,22 @@ public class ApiAnswerController {
   public Result create(@PathVariable("questionId") Long questionsId, String contents,
       HttpSession httpSession) {
     Question question;
-    if (!HttpSessionUtils.isLoginUser(httpSession)) {
-      return Result.fail("로그인이 필요합니다");
+
+    Result result = valid(httpSession);
+    if (!result.isValid()) {
+      return Result.fail(result.getErrorMessage());
     }
 
     try {
-      question = qnaRepository.findById(questionsId)
-          .orElseThrow(() -> new NoSuchObjectException("해당 질문을 찾지 못하였습니다."));
+      question = qnaFindById(questionsId);
     } catch (NoSuchObjectException e) {
       return Result.fail("질문을 불러올 수가 없습니다");
     }
+
     User writer = HttpSessionUtils.getUserFromSession(httpSession);
     Answer answer = new Answer(question, writer, contents);
     question.addAnswer();
+
     qnaRepository.save(question);
     answerRepository.save(answer);
 
@@ -58,17 +61,18 @@ public class ApiAnswerController {
   public Result update(@PathVariable("id") Long answerId, String contents,
       HttpSession httpSession) {
     Answer answer;
+
     try {
-      answer = answerRepository.findById(answerId)
-          .orElseThrow(() -> new NoSuchObjectException("해당 댓글 찾지 못하였습니다."));
+      answer = answerFindById(answerId);
     } catch (NoSuchObjectException e) {
-      return Result.fail("질문을 불러올 수가 없습니다");
+      return Result.fail("댓글을 불러올 수가 없습니다");
     }
 
     Result result = valid(httpSession, answer);
     if (!result.isValid()) {
       return Result.fail(result.getErrorMessage());
     }
+
     answer.update(contents);
     answerRepository.save(answer);
 
@@ -81,9 +85,9 @@ public class ApiAnswerController {
       @PathVariable("id") Long answerId, HttpSession httpSession) {
     Answer answer;
     Question question;
+
     try {
-      answer = answerRepository.findById(answerId)
-          .orElseThrow(() -> new NoSuchObjectException("해당 댓글을 찾지 못하였습니다."));
+      answer = answerFindById(answerId);
     } catch (NoSuchObjectException e) {
       return Result.fail("댓글을 불러올 수가 없습니다");
     }
@@ -94,16 +98,25 @@ public class ApiAnswerController {
     }
 
     try {
-      question = qnaRepository.findById(questionId)
-          .orElseThrow(() -> new NoSuchObjectException("해당 질문을 찾지 못하였습니다"));
+      question = qnaFindById(questionId);
     } catch (NoSuchObjectException e) {
       return Result.fail("질문을 불러올 수 없습니다");
     }
+
     question.deleteAnswer();
     qnaRepository.save(question);
     answerRepository.delete(answer);
+
     return Result.ok(question);
   }
+
+  private Result valid(HttpSession httpSession) {
+    if (!HttpSessionUtils.isLoginUser(httpSession)) {
+      return Result.fail("로그인이 필요합니다");
+    }
+    return Result.ok();
+  }
+
 
   private Result valid(HttpSession httpSession, Answer answer) {
     if (!HttpSessionUtils.isLoginUser(httpSession)) {
@@ -114,6 +127,16 @@ public class ApiAnswerController {
       return Result.fail("자신이 쓴 답글만 수정 혹은 삭제할 수 있습니다.");
     }
     return Result.ok();
+  }
+
+  private Answer answerFindById(Long answerId) throws NoSuchObjectException {
+    return answerRepository.findById(answerId)
+        .orElseThrow(() -> new NoSuchObjectException("해당 댓글을 찾지 못하였습니다."));
+  }
+
+  private Question qnaFindById(Long questionId) throws NoSuchObjectException {
+    return qnaRepository.findById(questionId)
+        .orElseThrow(() -> new NoSuchObjectException("해당 질문을 찾지 못하였습니다."));
   }
 
 

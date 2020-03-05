@@ -2,7 +2,6 @@ package com.codessquad.qna.question;
 
 import com.codessquad.qna.user.User;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -36,7 +35,7 @@ public class Question {
   }
 
   public boolean validateUserId(User user) {
-    return (this.userId.equals(user.getUserId())) ? true : false;
+    return this.userId.equals(user.getUserId());
   }
 
   public String getCreatedDateTime() {

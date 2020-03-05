@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller
@@ -26,6 +27,9 @@ public class UserController {
 
     @PostMapping("")
     public String create(User newUser) {
+        if (Objects.nonNull(findUser(newUser.getUserId(), true)))
+            return "users/join_failed";
+
         userRepository.save(newUser);
         log.info("signUp : {}", newUser);
         return "redirect:/users";
@@ -44,21 +48,15 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/form")
-    public String updateForm(@PathVariable String userId, Model model, HttpSession session) {
-        if (HttpSessionUtils.isNotLoggedIn(session))
-            return "redirect:/user/login";
-
-        User user = getMatchedUser(userId, session);
+    public String updateForm(@PathVariable String userId, Model model, @RequestAttribute User sessionedUser) {
+        User user = getMatchedUser(userId, sessionedUser);
         model.addAttribute("user", user);
         return "users/updateForm";
     }
 
     @PutMapping("/{userId}/update")
-    public String update(@PathVariable String userId, User updateUser, HttpSession session) {
-        if (HttpSessionUtils.isNotLoggedIn(session))
-            return "redirect:/user/login";
-
-        User originUser = getMatchedUser(userId, session);
+    public String update(@PathVariable String userId, User updateUser, @RequestAttribute User sessionedUser) {
+        User originUser = getMatchedUser(userId, sessionedUser);
         if (!originUser.matchPassword(updateUser))
             return "users/update_failed";
 
@@ -95,8 +93,7 @@ public class UserController {
         return isNullable ? user.orElse(null) : user.orElseThrow(() -> new DataNotFoundException(ErrorCode.DATA_NOT_FOUND));
     }
 
-    private User getMatchedUser(String userId, HttpSession session) {
-        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+    private User getMatchedUser(String userId, User sessionedUser) {
         if (!sessionedUser.matchId(userId))
             throw new RequestNotAllowedException(ErrorCode.FORBIDDEN);
 

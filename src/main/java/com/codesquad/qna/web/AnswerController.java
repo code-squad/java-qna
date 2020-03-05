@@ -4,17 +4,11 @@ import com.codesquad.qna.global.error.exception.DataNotFoundException;
 import com.codesquad.qna.global.error.exception.ErrorCode;
 import com.codesquad.qna.global.error.exception.RequestNotAllowedException;
 import com.codesquad.qna.model.*;
-import com.codesquad.qna.util.HttpSessionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import javax.servlet.http.HttpSession;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/questions/{questionId}/answers")
@@ -27,10 +21,7 @@ public class AnswerController {
     private QuestionRepository questionRepository;
 
     @PostMapping("")
-    public String create(@PathVariable Long questionId, String contents, HttpSession session) {
-        if (HttpSessionUtils.isNotLoggedIn(session)) return "redirect:/user/login";
-
-        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+    public String create(@PathVariable Long questionId, String contents, @RequestAttribute User sessionedUser) {
         Question answeredQuestion = findQuestion(questionId);
         Answer newAnswer = new Answer(answeredQuestion, sessionedUser, contents);
         answerRepository.save(newAnswer);
@@ -38,11 +29,7 @@ public class AnswerController {
     }
 
     @DeleteMapping("/{answerId}")
-    public String delete(@PathVariable Long questionId, @PathVariable Long answerId, HttpSession session) {
-        if (HttpSessionUtils.isNotLoggedIn(session))
-            return "redirect:/user/login";
-
-        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+    public String delete(@PathVariable Long questionId, @PathVariable Long answerId, @RequestAttribute User sessionedUser) {
         Answer answer = findAnswer(answerId);
         if (!answer.matchWriter(sessionedUser))
             throw new RequestNotAllowedException(ErrorCode.FORBIDDEN);

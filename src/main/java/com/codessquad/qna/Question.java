@@ -1,12 +1,9 @@
 package com.codessquad.qna;
 
-import net.bytebuddy.dynamic.loading.InjectionClassLoader;
-
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.IdentityHashMap;
+
 
 @Entity
 public class Question {
@@ -72,4 +69,19 @@ public class Question {
         this.contents = contents;
     }
 
+    public void updateContents(String title, String contents) {
+        this.contents = contents;
+        this.title = title;
+    }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "postNumber=" + postNumber +
+                ", writer=" + writer +
+                ", title='" + title + '\'' +
+                ", contents='" + contents + '\'' +
+                ", date=" + date +
+                '}';
+    }
 }

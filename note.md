@@ -200,5 +200,12 @@ JPA 사용하여 데이터 클래스만들어서 매핑할에는 디폴트 생�
 
 게시글 날짜 시간
 -
--    private LocalDateTime createDate;
-
+-    private date createDate; 선언
+-  getter 메소드 생성
+-  public String getDate() {
+         if (date == null) {
+             return "";
+         }
+         return date.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
+     }
+- 목록 html 파일에서 {{date}}

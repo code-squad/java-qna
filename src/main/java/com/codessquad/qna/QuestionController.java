@@ -6,11 +6,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import javax.servlet.http.HttpSession;
 
 @Controller
-public class QnaController {
+public class QuestionController {
 
     @Autowired
     private QuestionRepository questionRepository;
@@ -35,13 +36,25 @@ public class QnaController {
 
     @GetMapping("/questions/{postNumber}/contents")
     public String seeQuestions(@PathVariable Long postNumber, Model model) {
-        System.out.println("post number : " + postNumber);
         Question question = questionRepository.findById(postNumber).get();
-
-        System.out.println(question.toString());
         model.addAttribute("question", question);
-
         return "questionContents";
+    }
+
+    /// 질문 수정하기
+    @GetMapping("/questions/{postNumber}/form")
+    public String editContents(@PathVariable Long postNumber, Model model) {
+        Question question = questionRepository.findById(postNumber).get();
+        model.addAttribute("question", question);
+        return "qna/updateForm";
+    }
+
+    @PutMapping("/questions/{postNumber}/edit")
+    public String update(@PathVariable Long postNumber, String title, String contents) {
+        Question question = questionRepository.findById(postNumber).get();
+        question.updateContents(title, contents);
+        questionRepository.save(question);
+        return "redirect:/questions/{postNumber}/contents";
     }
 
 }

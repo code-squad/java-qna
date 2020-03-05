@@ -3,6 +3,7 @@ package com.codessquad.qna;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 
 @Entity
@@ -14,15 +15,16 @@ public class Question {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     private User writer;
+
     private String title;
     private String contents;
 
     private LocalDateTime date;
 
-
     public Question() {}
 
     public Question(User writer, String title, String contents) {
+
         this.writer = writer;
         this.title = title;
         this.contents = contents;
@@ -87,5 +89,18 @@ public class Question {
 
     public boolean isSameWriter(User loggedInUser) {
         return this.writer.equals(loggedInUser);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Question question = (Question) o;
+        return writer.equals(question.writer);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(writer);
     }
 }

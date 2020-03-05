@@ -220,3 +220,26 @@ if (loggedInUser.equals(question.getWriter))면
 그 대신에 객체에다가 메세지를 보내서 확인해라
 e.g. if(question.isSameWriter(loggedInUser)) {
 }
+
+이거 왜 안되지 왜 유저와 writer 가 일치하는데 안되지..
+-
+ ///질문을 삭제할 수 있는 권한 확인 1) 로그인 된 상태인가
+        if (!HttpSessionUtil.isLoginUser(session)) {
+            return "loginForm";
+        }
+
+        ///질문을 삭제할 수 있는 권한 확인 2) 질문의 작성자와 로그인한 유저가 일치하는가
+        User loggedInUser = HttpSessionUtil.getUserFromSession(session);
+        Question question = questionRepository.findById(postNumber).get();
+        if (!question.isSameWriter(loggedInUser)) {
+            System.out.println("you cannot delete or edit other's post");
+            return "redirect:/posts";
+        }
+
+
+여기 이해 안됨.->  equals 랑 hashcode 만들어줘야 정상작동함
+-
+public boolean isSameWriter(User loggedInUser) {
+        return this.writer.equals(loggedInUser);
+    }
+    equal 해도 false 반환?? 

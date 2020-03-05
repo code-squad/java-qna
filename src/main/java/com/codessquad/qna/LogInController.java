@@ -57,7 +57,4 @@ public class LogInController {
         return "redirect:/";
     }
 
-
-
-
 }

@@ -25,6 +25,7 @@ public class QuestionController {
     @PostMapping("/questions")
     public String ask(String title, String contents, HttpSession session) {
         User writer = HttpSessionUtil.getUserFromSession(session);
+        System.out.println(writer);
         Question newQ = new Question(writer, title, contents);
         questionRepository.save(newQ);
 
@@ -49,11 +50,12 @@ public class QuestionController {
         ///질문을 수정할 수 있는 권한 확인 2) 질문의 작성자와 로그인한 유저가 일치하는가
         User loggedInUser = HttpSessionUtil.getUserFromSession(session);
         Question question = questionRepository.findById(postNumber).get();
-        if (!question.isSameWriter(loggedInUser)) {
+
+        if (question.isSameWriter(loggedInUser)) {
+            System.out.println("logged in user : " + loggedInUser.getName() + "writer : " + question.getWriter().getName());
             System.out.println("you cannot delete or edit other's post");
             return "redirect:/posts";
         }
-
 
         model.addAttribute("question", question);
         return "qna/updateForm";
@@ -68,7 +70,20 @@ public class QuestionController {
     }
 
     @DeleteMapping("/questions/{postNumber}/delete")
-    public String delete(@PathVariable Long postNumber) {
+    public String delete(@PathVariable Long postNumber, HttpSession session) {
+        ///질문을 삭제할 수 있는 권한 확인 1) 로그인 된 상태인가
+        if (!HttpSessionUtil.isLoginUser(session)) {
+            return "loginForm";
+        }
+
+        ///질문을 삭제할 수 있는 권한 확인 2) 질문의 작성자와 로그인한 유저가 일치하는가
+        User loggedInUser = HttpSessionUtil.getUserFromSession(session);
+        Question question = questionRepository.findById(postNumber).get();
+        if (question.isSameWriter(loggedInUser)) {
+            System.out.println("you cannot delete or edit other's post");
+            return "redirect:/posts";
+        }
+
         Question uselessQuestion = questionRepository.findById(postNumber).get();
         questionRepository.delete(uselessQuestion);
         return "redirect:/posts";

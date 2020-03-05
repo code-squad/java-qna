@@ -2,10 +2,10 @@ package com.codessquad.qna;
 
 import net.bytebuddy.dynamic.loading.InjectionClassLoader;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.IdentityHashMap;
 
 @Entity
@@ -14,17 +14,31 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postNumber;
 
-    private String writer;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    private User writer;
     private String title;
     private String contents;
 
+    private LocalDateTime date;
+
+
     public Question() {}
 
-    public Question(String writer, String title, String contents) {
+    public Question(User writer, String title, String contents) {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
+        this.date = LocalDateTime.now();
     }
+
+    public String getDate() {
+        if (date == null) {
+            return "";
+        }
+        return date.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
+    }
+
 
     public Long getPostNumber() {
         return postNumber;
@@ -34,11 +48,11 @@ public class Question {
         this.postNumber = postNumber;
     }
 
-    public String getWriter() {
+    public User getWriter() {
         return writer;
     }
 
-    public void setWriter(String writer) {
+    public void setWriter(User writer) {
         this.writer = writer;
     }
 
@@ -58,13 +72,4 @@ public class Question {
         this.contents = contents;
     }
 
-    @Override
-    public String toString() {
-        return "Question{" +
-                "postNumber=" + postNumber +
-                ", writer='" + writer + '\'' +
-                ", title='" + title + '\'' +
-                ", contents='" + contents + '\'' +
-                '}';
-    }
 }

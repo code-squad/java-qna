@@ -27,7 +27,7 @@ public class QnaController {
     @PostMapping("/questions")
     public String ask(String title, String contents, HttpSession session) {
         User writer = HttpSessionUtil.getUserFromSession(session);
-        Question newQ = new Question(writer.getName(), title, contents);
+        Question newQ = new Question(writer, title, contents);
         questionRepository.save(newQ);
 
         return "redirect:/posts";

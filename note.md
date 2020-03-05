@@ -177,6 +177,7 @@ JPA 사용하여 데이터 클래스만들어서 매핑할에는 디폴트 생�
 
 
 게시물을 클릭했을 때 writer, contents 불러오기
+-
 - QuestionRepository 에 저장된 모든 정보를 불러오면 당연히 안되고, 또 userId 로 불러와도 안될꺼 같았다
 - 왜냐하면 한 userId 로 여러 개의 글을 작성할 수도 있기 때문이다.
 - 그래서 unique 한 값인 postNumber 로 questionRepository를 조회하였다.
@@ -191,3 +192,13 @@ JPA 사용하여 데이터 클래스만들어서 매핑할에는 디폴트 생�
 - model.addAttribute("question", question)
 - 이렇게 하면 다음에 불러올 html 에서 {{#question}} ~ {{/question}} 하여 title, contents, writer 등
 속성을 {{title}} 와 같이 불러올 수 있다.
+
+
+회원과 질문을 매핑
+-
+
+
+게시글 날짜 시간
+-
+-    private LocalDateTime createDate;
+

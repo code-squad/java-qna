@@ -2,12 +2,15 @@ package com.codessquad.qna;
 
 import com.codessquad.domain.Question;
 import com.codessquad.domain.QuestionRepository;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 
@@ -34,5 +37,15 @@ public class QuestionController {
         model.addAttribute("questions", questionRepository.findAll());
         return "/main";
     }
-    
+
+    @GetMapping("/questions/{id}")
+    public String show(@PathVariable Long id, Model model) {
+        try {
+            model.addAttribute("question", questionRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 질문 입니다.")));
+            return "qna/show";
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
 }

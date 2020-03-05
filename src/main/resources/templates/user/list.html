@@ -21,8 +21,8 @@
                 <tbody>
                 {{#each users}}
                 <tr>
-                    <th scope="row">{{@index}}</th>
-                    <td><a href="/users/{{id}}"/>{{id}}</td>
+                    <th scope="row">{{id}}</th>
+                    <td><a href="/users/{{id}}"/>{{userId}}</td>
                     <td>{{name}}</td>
                     <td>{{email}}</td>
                     <td><a href="/users/{{id}}" class="btn btn-success" role="button">수정</a></td>

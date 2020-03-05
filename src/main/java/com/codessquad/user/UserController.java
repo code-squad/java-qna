@@ -1,6 +1,8 @@
 package com.codessquad.user;
 
 import com.codessquad.domain.User;
+import com.codessquad.domain.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,43 +10,33 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Controller
 @RequestMapping("/users")
 public class UserController {
-    private List<User> users = new ArrayList<>();
+
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/form")
     public String form() {
         return "user/form";
     }
 
-    @PostMapping("/create")
+    @PostMapping("")
     public String create(User user) {
-        System.out.println("User: " + user);
-        users.add(user);
-        return "redirect:/users/list";
+        userRepository.save(user);
+        return "redirect:/users";
     }
 
-    @GetMapping("/list")
+    @GetMapping("")
     public String list(Model model) {
-        model.addAttribute("users", users);
+        model.addAttribute("users", userRepository.findAll());
         return "user/list";
     }
 
     @GetMapping("/{id}")
     public String profile(@PathVariable String id, Model model) {
-        model.addAttribute("user", checkUser(id));
         return "/user/profile";
     }
 
-    private User checkUser(String id) {
-        for (User user : users) {
-            if (id.equals(user.getId()))
-                return user;
-        }
-        return null;
-    }
 }

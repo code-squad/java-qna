@@ -29,7 +29,6 @@ public class Answer extends BaseTimeEntity {
   @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_writer"))
   private User writer;
 
-
   @Lob
   @Column(nullable = false)
   private String contents;
@@ -95,4 +94,13 @@ public class Answer extends BaseTimeEntity {
     return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(createdTime);
   }
 
+  @Override
+  public String toString() {
+    return "Answer{" +
+        "id=" + id +
+        ", question=" + question.getTitle() +
+        ", writer=" + writer.getUserId() +
+        ", contents='" + contents + '\'' +
+        '}';
+  }
 }

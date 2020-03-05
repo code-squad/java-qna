@@ -45,7 +45,7 @@
 
         <div class="qna-comment">
           <div class="qna-comment-slipp">
-            <p class="qna-comment-count"><strong>2</strong>개의 의견</p>
+            <p class="qna-comment-count"><strong>{{answerList}}</strong>개의 의견</p>
             <div class="qna-comment-slipp-articles">
               {{#answers}}
               <article class="article" id="answer-1405">
@@ -69,14 +69,16 @@
                 <div class="article-util">
                   <ul class="article-util-list">
                     <li>
-                      <form action="/questions/{{question.id}}/answers/{{id}}" class="delete-answer-form"
+                      <form action="/questions/{{question.id}}/answers/{{id}}"
+                            class="delete-answer-form"
                             method="POST">
                         <input type="hidden" name="_method" value="PUT"/>
                         <button class="delete-answer-button" type="submit">수정</button>
                       </form>
                     </li>
                     <li>
-                      <form action="/questions/{{question.id}}/answers/{{id}}" class="delete-answer-form"
+                      <form action="/questions/{{question.id}}/answers/{{id}}"
+                            class="delete-answer-form"
                             method="POST">
                         <input type="hidden" name="_method" value="DELETE"/>
                         <button class="delete-answer-button" type="submit">삭제</button>
@@ -88,7 +90,8 @@
               {{/answers}}
               <form action="/questions/{{question.id}}/answers" class="submit-write" method="POST">
                 <div class="form-group" style="padding:14px;">
-                  <textarea class="form-control" id="contents" name="contents" placeholder="Update your status"></textarea>
+                  <textarea class="form-control" id="contents" name="contents"
+                            placeholder="Update your status"></textarea>
                 </div>
                 <button class="btn btn-success pull-right" type="submit">답변하기</button>
                 <div class="clearfix"/>

@@ -25,18 +25,28 @@ public class User {
   @Column(nullable = false)
   private String email;
 
-  public boolean matchId(Long inputId) {
-    if (inputId == null) {
-      return false;
-    }
-    return id.equals(inputId);
+  public void update(User updateUser) {
+    name = updateUser.getName();
+    email = updateUser.getEmail();
+    password = updateUser.getPassword();
   }
 
-  public boolean matchPassword(String inputPassword) {
-    if (inputPassword == null) {
+  public boolean isSameUser(User sessionUser) {
+    return matchId(sessionUser.getId());
+  }
+
+  public boolean matchId(Long id) {
+    if (id == null) {
       return false;
     }
-    return password.equals(inputPassword);
+    return this.id.equals(id);
+  }
+
+  public boolean matchPassword(String password) {
+    if (password == null) {
+      return false;
+    }
+    return this.password.equals(password);
   }
 
   public Long getId() {
@@ -75,12 +85,6 @@ public class User {
     this.email = email;
   }
 
-  public void update(User updateUser) {
-    name = updateUser.getName();
-    email = updateUser.getEmail();
-    password = updateUser.getPassword();
-  }
-
   @Override
   public String toString() {
     return "userId :'" + userId + '\'' +
@@ -89,4 +93,5 @@ public class User {
         ", email :'" + email + '\'' +
         '}';
   }
+
 }

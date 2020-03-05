@@ -3,6 +3,7 @@ package com.codessquad.qna.controller;
 import com.codessquad.qna.domain.Answer;
 import com.codessquad.qna.domain.Question;
 import com.codessquad.qna.domain.User;
+import com.codessquad.qna.error.Result;
 import com.codessquad.qna.repository.AnswerRepository;
 import com.codessquad.qna.repository.QnaRepository;
 import com.codessquad.qna.repository.UserRepository;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,22 +48,28 @@ public class AnswerController {
 
   @DeleteMapping(value = "/{id}")
   public String delete(@PathVariable("id") Long answerId, HttpSession httpSession,
-      HttpServletRequest request) {
-    if (!HttpSessionUtils.isLoginUser(httpSession)) {
-      return "redirect:/user/login";
-    }
-
-    User sessionUser = HttpSessionUtils.getUserFromSession(httpSession);
+      Model model, HttpServletRequest request) {
     Answer answer = answerRepository.getOne(answerId);
-    if (!answer.isSameWriter(sessionUser)) {
-      throw new IllegalStateException("자신이 쓴 답글만 삭제할 수 있습니다");
+    Result result = valid(httpSession, answer);
+    if (!result.isValid()) {
+      model.addAttribute("errorMessage", result.getErrorMessage());
+      return "/user/login";
     }
-    answer = answerRepository.getOne(answerId);
-    answerRepository.delete(answer);
 
+    answerRepository.delete(answer);
     String referer = request.getHeader("Referer");
     return "redirect:" + referer;
+  }
 
+  private Result valid(HttpSession httpSession, Answer answer) {
+    if (!HttpSessionUtils.isLoginUser(httpSession)) {
+      return Result.fail("로그인이 필요합니다");
+    }
+    User sessionUser = (User) httpSession.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
+    if (!answer.isSameWriter(sessionUser)) {
+      return Result.fail("자신이 쓴 답글만 수정 혹은 삭제할 수 있습니다.");
+    }
+    return Result.ok();
   }
 
 

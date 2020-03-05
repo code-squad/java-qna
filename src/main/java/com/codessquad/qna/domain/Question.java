@@ -1,9 +1,10 @@
 package com.codessquad.qna.domain;
 
 import java.time.format.DateTimeFormatter;
-import javax.persistence.CascadeType;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 @Entity
 public class Question extends BaseTimeEntity {
@@ -29,6 +32,10 @@ public class Question extends BaseTimeEntity {
   @Lob
   @Column(nullable = false)
   private String contents;
+
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "question")
+  @OrderBy(value = "id ASC ")
+  private List<Answer> answerList;
 
   public Question() {
   }
@@ -80,10 +87,13 @@ public class Question extends BaseTimeEntity {
     return getFormattedCreateTime();
   }
 
+  public int getAnswerList() {
+    return answerList.size();
+  }
+
   private String getFormattedCreateTime() {
     return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(createdTime);
   }
-
 
   @Override
   public String toString() {

@@ -1,6 +1,7 @@
 package com.codessquad.qna.controller;
 
 import com.codessquad.qna.domain.User;
+import com.codessquad.qna.error.Result;
 import com.codessquad.qna.repository.UserRepository;
 import com.codessquad.qna.web.HttpSessionUtils;
 import javax.servlet.http.HttpSession;
@@ -12,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -23,7 +25,6 @@ public class UserController {
   @Autowired
   private UserRepository userRepository;
 
-
   @PostMapping(value = "/login")
   public String login(String userId, String password, HttpSession httpSession) {
     User user = userRepository.findByUserId(userId);
@@ -34,62 +35,73 @@ public class UserController {
       return "user/login_failed";
     }
     httpSession.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
-    return "redirect:/";
-  }
-
-  @PostMapping(value = "")
-  public String create(User user) {
-    userRepository.save(user);
-    return "redirect:/";
-  }
-
-  @PostMapping(value = "/{id}")
-  public String update(@PathVariable("id") long id, User updateUser,
-      HttpSession httpSession) {
-    if (!HttpSessionUtils.isLoginUser(httpSession)) {
-      return "redirect:/user/login";
-    }
-    User sessionUser = HttpSessionUtils.getUserFromSession(httpSession);
-    if (!sessionUser.matchId(id)) {
-      throw new IllegalStateException("자신이 아닌 다른 유저를 업데이트 할 수 없습니다.");
-    }
-
-    User user = userRepository.getOne(sessionUser.getId());
-    user.update(updateUser);
-    userRepository.save(user);
-    return "redirect:/";
+    return "redirect:/questions/";
   }
 
   @GetMapping(value = "/logout")
   public String logout(HttpSession httpSession) {
     httpSession.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
-    return "redirect:/";
+    httpSession.invalidate();
+    return "redirect:/questions/";
+  }
+
+  @PostMapping(value = "")
+  public String create(User user) {
+    userRepository.save(user);
+    return "redirect:/questions/";
+  }
+
+  @PutMapping(value = "/{id}")
+  public String update(@PathVariable("id") long id, User updateUser,
+      Model model, HttpSession httpSession) {
+    User user = userRepository.getOne(id);
+    Result result = valid(httpSession, user);
+    if (!result.isValid()) {
+      model.addAttribute("errorMessage", result.getErrorMessage());
+      return "/user/login";
+    }
+
+    user.update(updateUser);
+    userRepository.save(user);
+    return "redirect:/users/";
   }
 
   @GetMapping(value = "")
-  public String getUsers(Model model) {
+  public String list(Model model) {
     model.addAttribute("users", userRepository.findAll());
     return "user/list";
   }
 
   @GetMapping(value = "/{writer}")
-  public String getProfile(@PathVariable("writer") String userId, Model model) {
+  public String profile(@PathVariable("writer") String userId, Model model) {
     model.addAttribute("user", userRepository.findByUserId(userId));
     return "user/profile";
   }
 
   @GetMapping(value = "/{id}/form")
-  public String updateProfile(@PathVariable("id") long id, Model model,
+  public String update(@PathVariable("id") long id, Model model,
       HttpSession httpSession) {
-    if (!HttpSessionUtils.isLoginUser(httpSession)) {
-      return "redirect:/user/login";
+    User user = userRepository.getOne(id);
+    Result result = valid(httpSession, user);
+    if (!result.isValid()) {
+      model.addAttribute("errorMessage", result.getErrorMessage());
+      return "/user/login";
     }
-    User sessionUser = HttpSessionUtils.getUserFromSession(httpSession);
-    if (!sessionUser.matchId(id)) {
-      throw new IllegalStateException("자신이 아닌 다른 유저를 업데이트 할 수 없습니다.");
-    }
-    model.addAttribute("user", userRepository.getOne(sessionUser.getId()));
-    return "user/updateForm";
+
+    model.addAttribute("user", user);
+    return "user/update_form";
   }
+
+  private Result valid(HttpSession httpSession, User user) {
+    if (!HttpSessionUtils.isLoginUser(httpSession)) {
+      return Result.fail("로그인이 필요합니다");
+    }
+    User sessionUser = (User) httpSession.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
+    if (!user.isSameUser(sessionUser)) {
+      return Result.fail("자기 자신만 수정 혹은 삭제할 수 있습니다");
+    }
+    return Result.ok();
+  }
+
 
 }

@@ -92,7 +92,9 @@ public class User {
         return password.equals(inputPassword);
     }
 
-
+    public boolean matchId(Long inputId) {
+        return id.equals(inputId);
+    }
 
     @Override
     public String toString() {

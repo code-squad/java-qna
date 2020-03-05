@@ -84,16 +84,41 @@ public class UserController {
     }
 
     @GetMapping("/{id}/form")
-    public String updateForm(@PathVariable Long id, Model model) throws NotFoundException {
+    public String updateForm(@PathVariable Long id, Model model, HttpSession session) throws IllegalStateException {
         LOGGER.debug("[page]사용자 정보 수정 폼");
-        model.addAttribute("user", userRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 회원입니다.")));
+
+        Object sessionUser = session.getAttribute("sessionUser");
+        if(sessionUser == null) {
+            LOGGER.debug("[page]로그인 하지 않음");
+            return "redirect:/users/loginForm";
+        }
+
+        User user = (User)sessionUser;
+        if(!user.matchId(id)) {
+            LOGGER.debug("[page]다른 회원 정보 열람 요청");
+            throw new IllegalStateException("허용되지 않은 요청");
+        }
+
+        model.addAttribute("user", user);
+
         return "users/updateForm";
     }
 
     @PutMapping("/{id}")
-    public String updateUser(@PathVariable Long id, User updatedUser) throws NotFoundException {
+    public String updateUser(@PathVariable Long id, User updatedUser, HttpSession session) throws IllegalStateException,ResponseStatusException{
         LOGGER.debug("[page]사용자 정보 수정");
-        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 회원입니다."));
+
+        Object sessionUser = session.getAttribute("sessionUser");
+        if(sessionUser == null) {
+            LOGGER.debug("[page]로그인 하지 않음");
+            return "redirect:/users/loginForm";
+        }
+
+        User user = (User)sessionUser;
+        if(!user.matchId(id)) {
+            LOGGER.debug("[page]다른 회원 정보 열람 요청");
+            throw new IllegalStateException("허용되지 않은 요청");
+        }
 
         if(!user.matchPassword(updatedUser)){
             LOGGER.debug("[page]비밀번호 불일치");

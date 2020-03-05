@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Question {
-    
+
     @Id
     @GeneratedValue
     private Long id;
@@ -25,7 +25,7 @@ public class Question {
 
     private LocalDateTime dateTime;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

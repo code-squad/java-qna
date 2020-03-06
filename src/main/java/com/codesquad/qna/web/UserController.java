@@ -46,7 +46,7 @@ public class UserController {
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.removeAttribute("sessionUser");
-        return "redirect:/users/list";
+        return "redirect:/";
     }
 
     @GetMapping("/form")
@@ -94,14 +94,9 @@ public class UserController {
         return USER_LIST;
     }
 
-    @GetMapping("/{userId}")
-    public String read(@PathVariable String userId, Model model) throws NotFoundError {
-        User user = userRepository.findAll()
-                .stream()
-                .filter(u -> u.isEqualsUserId(userId))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundError(NotFoundError.NOT_FOUND_MESSAGE));
-
+    @GetMapping("/{id}")
+    public String read(@PathVariable Long id, Model model) throws NotFoundError {
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundError(NotFoundError.NOT_FOUND_MESSAGE));
         model.addAttribute("user", user);
         return "user/profile";
     }

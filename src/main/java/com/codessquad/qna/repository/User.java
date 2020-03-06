@@ -1,5 +1,8 @@
 package com.codessquad.qna.repository;
 
+import com.codessquad.qna.exception.CustomWrongFormatException;
+import com.codessquad.qna.util.ErrorMessageUtil;
+import com.codessquad.qna.util.PathUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.ObjectUtils;
@@ -33,10 +36,14 @@ public class User {
     @Setter
     private String email;
 
-    public void update(User updateUser) {
-        this.password = updateUser.password;
-        this.name = updateUser.name;
-        this.email = updateUser.email;
+    public void update(User updateData, String currentPassword) {
+        if (!isCorrectPassword(currentPassword))
+            throw new CustomWrongFormatException(PathUtil.BAD_REQUEST, ErrorMessageUtil.WRONG_PASSWORD);
+        if (!isCorrectFormat(updateData))
+            throw new CustomWrongFormatException(PathUtil.BAD_REQUEST, ErrorMessageUtil.WRONG_FORMAT);
+        this.password = updateData.password;
+        this.name = updateData.name;
+        this.email = updateData.email;
     }
 
     public boolean isCorrectPassword(String password) {

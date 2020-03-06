@@ -73,6 +73,10 @@ public class User {
         return this.password.equals(updateUser.password);
     }
 
+    public boolean isEqualsPassword(String password) {
+        return this.password.equals(password);
+    }
+
     @Override
     public String toString() {
         return "User{" +

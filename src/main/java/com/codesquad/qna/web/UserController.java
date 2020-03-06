@@ -9,12 +9,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/users")
 public class UserController {
+    private Logger logger = LogManager.getLogger(UserController.class);
+
     @Autowired
     private UserRepository userRepository;
 
@@ -29,16 +33,16 @@ public class UserController {
         try {
             sessionUser = userRepository.findByUserId(userId); //에러캐치가 안됨..어느시점에서 발생하는거지..
         } catch (NullPointerException e) {
-            System.out.println("Login Fail!");
+            logger.debug("Login Fail!! no user");
             //TODO: user가 없는 경우, 404 NotFound
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user가 없어요!!");
         }
 
         if (!sessionUser.matchPassword(password)) {
-            System.out.println("Login Fail!");
+            logger.debug("Login Fail!! not match password");
             return "redirect:/users/login";
         }
-        System.out.println("Login Success!");
+        logger.debug("Login Success!");
         session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, sessionUser); //sessionUser 이름의 session 데이터에 sessionUser 정보를 담음
         return "redirect:/";
     }

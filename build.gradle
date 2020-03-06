@@ -13,6 +13,10 @@ configurations {
 	runtimeClasspath {
 		extendsFrom developmentOnly
 	}
+	// log4j2
+	all {
+		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+	}
 }
 
 repositories {
@@ -31,6 +35,9 @@ dependencies {
 	compile group: 'com.h2database', name: 'h2', version: '1.4.200'
 	// @NotNull, @NotEmpty annotaion dependency
 	compile group: 'javax.validation', name: 'validation-api'
+	// log4j2
+	compile 'org.springframework.boot:spring-boot-starter-web'
+	compile 'org.springframework.boot:spring-boot-starter-log4j2'
 }
 
 test {

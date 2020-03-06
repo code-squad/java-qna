@@ -29,7 +29,6 @@ public class Question {
     @Column(nullable = false)
     private LocalDateTime createdTime;
 
-
     private Integer countOfAnswers = 0;
 
     public Question() {

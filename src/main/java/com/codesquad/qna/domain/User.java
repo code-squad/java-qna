@@ -12,7 +12,6 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(nullable = false, length = 20, unique = true)
     private String userId;
     private String password;
@@ -65,16 +64,26 @@ public class User {
         this.email = updateUser.email;
     }
 
-    public boolean isEqualsUserId(String userId) {
+    private boolean isUserIdEquals(String userId) {
         return this.userId.equals(userId);
     }
 
-    public boolean isEqualsPassword(User updateUser) {
-        return this.password.equals(updateUser.password);
+    public boolean isPasswordEquals(User updateUser) {
+        return updateUser != null && this.password.equals(updateUser.password);
     }
 
-    public boolean isEqualsPassword(String password) {
+    public boolean isPasswordEquals(String password) {
         return this.password.equals(password);
+    }
+
+    public boolean isIdEquals(Long id) {
+        return this.id.equals(id);
+    }
+
+    public void checkIllegalAccess(Long id) throws IllegalAccessException {
+        if (!isIdEquals(id)) {
+            throw new IllegalAccessException("잘못된 접근입니다");
+        }
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.codesquad.qna.web;
 
-import com.codesquad.qna.NotFoundError;
 import com.codesquad.qna.domain.Question;
 import com.codesquad.qna.domain.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 
 @Controller
@@ -42,8 +42,8 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}")
-    public String read(@PathVariable Long id, Model model) throws NotFoundError {
-        Question question = questionRepository.findById(id).orElseThrow(() -> new NotFoundError(NotFoundError.NOT_FOUND_MESSAGE));
+    public String read(@PathVariable Long id, Model model) {
+        Question question = questionRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         model.addAttribute("question", question);
         return "qna/show";
     }

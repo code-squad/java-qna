@@ -66,7 +66,7 @@ public class Answer {
 
     @Override
     public String toString() {
-        return "Answer{" +
+        return "Answer {" +
                 "id=" + id +
                 ", writer=" + writer +
                 ", contents='" + contents + '\'' +

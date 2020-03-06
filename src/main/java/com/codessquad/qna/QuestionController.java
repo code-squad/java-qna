@@ -1,5 +1,6 @@
 package com.codessquad.qna;
 
+import com.codessquad.qna.domain.AnswerRepository;
 import com.codessquad.qna.domain.Question;
 import com.codessquad.qna.domain.QuestionRepository;
 import com.codessquad.qna.domain.User;
@@ -16,6 +17,9 @@ public class QuestionController {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private AnswerRepository answerRepository;
 
     @GetMapping("/form")
     public String form(HttpSession session) {
@@ -44,6 +48,7 @@ public class QuestionController {
     @GetMapping("/{id}")
     public String show(Model model, @PathVariable Long id) {
         model.addAttribute("question", questionRepository.findById(id).orElseThrow(NullPointerException::new));
+        model.addAttribute("answers", answerRepository.findAll());
         return "/question/show";
     }
 

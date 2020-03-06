@@ -7,4 +7,5 @@ public class ErrorMessageUtil {
     public static final String WRONG_FORMAT = "입력값을 모두 입력해주세요";
     public static final String NOTFOUND_USER = "해당하는 사용자가 없습니다";
     public static final String NOTFOUND_ANSWER = "해당 아이디의 답변을 찾을 수 없습니다";
+    public static final String WRONG_PASSWORD = "비밀번호가 틀렸습니다";
 }

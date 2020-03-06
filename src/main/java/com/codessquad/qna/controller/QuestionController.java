@@ -1,17 +1,17 @@
 package com.codessquad.qna.controller;
 
+import com.codessquad.qna.exception.CustomNoSuchElementException;
+import com.codessquad.qna.exception.CustomUnauthorizedException;
+import com.codessquad.qna.exception.CustomWrongFormatException;
 import com.codessquad.qna.repository.*;
 import com.codessquad.qna.util.HttpSessionUtil;
 import com.codessquad.qna.util.PathUtil;
-import org.graalvm.compiler.nodes.calc.IntegerDivRemNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
-import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/questions")
@@ -24,41 +24,38 @@ public class QuestionController {
     @GetMapping("/form")
     public String showForm(HttpSession session) {
         if (!HttpSessionUtil.isAuthorizedUser(session)) {
-            return PathUtil.UNAUTHORIZED;
+            throw new CustomUnauthorizedException(PathUtil.UNAUTHORIZED, "로그인이 필요합니다");
         }
         return PathUtil.QUESTION_FORM_TEMPLATE;
     }
 
     @GetMapping("/{id}")
     public Object showQuestion(@PathVariable Long id, Model model) {
-        Optional<Question> question = questionRepository.findById(id);
-        if (!question.isPresent()) {
-            return PathUtil.NOT_FOUND;
-        }
-        model.addAttribute("question", question.get());
+        Question question = questionRepository.findById(id).orElseThrow(() ->
+                new CustomNoSuchElementException(PathUtil.NOT_FOUND, "해당 아이디의 질문을 찾을 수 없습니다"));
+
+        model.addAttribute("question", question);
         return PathUtil.QUESTION_DETAIL_TEMPLATE;
     }
 
     @GetMapping("{id}/editForm")
     public Object showEditPage(@PathVariable Long id, Model model, HttpSession session) {
-        Optional<Question> question = questionRepository.findById(id);
-        Result result = valid(session, question);
-        if (!result.isValid()) {
-            return result.getResult();
-        }
-        model.addAttribute("question", question.get());
+        Question question = questionRepository.findById(id).orElseThrow(() ->
+                new CustomNoSuchElementException(PathUtil.NOT_FOUND, "해당 아이디의 질문을 찾을 수 없습니다"));
+
+        if (!verifyUser(session, question))
+            throw new CustomUnauthorizedException(PathUtil.UNAUTHORIZED, "권한이 없습니다");
+
+        model.addAttribute("question", question);
         return PathUtil.QUESTION_EDIT_TEMPLATE;
     }
 
     @PostMapping
     public String createQuestion(String title, String contents, HttpSession session) {
-        if (!HttpSessionUtil.isAuthorizedUser(session)) {
-            return PathUtil.UNAUTHORIZED;
-        }
         User user = HttpSessionUtil.getUserFromSession(session);
         Question question = new Question(title, contents, user);
         if (!question.isCorrectFormat(question)) {
-            return PathUtil.BAD_REQUEST;
+            throw new CustomWrongFormatException(PathUtil.BAD_REQUEST, "입력값을 모두 입력해주세요");
         }
         questionRepository.save(question);
         return PathUtil.HOME;
@@ -66,51 +63,33 @@ public class QuestionController {
 
     @PutMapping("/{id}")
     public Object updateQuestion(@PathVariable Long id, Question updateData, HttpSession session) {
-        Optional<Question> question = questionRepository.findById(id);
-        User user = HttpSessionUtil.getUserFromSession(session);
-        Result result = valid(session, question);
-        if (!result.isValid()) {
-            return result.getResult();
-        }
-        return update(question.get(), updateData, user);
+        Question question = questionRepository.findById(id).orElseThrow(() ->
+                new CustomNoSuchElementException(PathUtil.NOT_FOUND, "해당 아이디의 질문을 찾을 수 없습니다"));
+
+        if (!verifyUser(session, question))
+            throw new CustomUnauthorizedException(PathUtil.UNAUTHORIZED, "권한이 없습니다");
+
+        question.update(updateData);
+        questionRepository.save(question);
+        return PathUtil.REDIRECT_QUESTION_DETAIL + question.getId();
     }
 
     @Transactional
     @DeleteMapping("/{id}")
-    public Object deleteQuestion(@PathVariable Long id, HttpSession session) {
-        Optional<Question> question = questionRepository.findById(id);
-        Result result = valid(session, question);
-        if (!result.isValid()) {
-            return result.getResult();
-        }
-        answerRepository.deleteByQuestion(question.get());
+    public String deleteQuestion(@PathVariable Long id, HttpSession session) {
+        Question question = questionRepository.findById(id).orElseThrow(() ->
+                new CustomNoSuchElementException(PathUtil.NOT_FOUND, "해당 아이디의 질문을 찾을 수 없습니다"));
+
+        if (!verifyUser(session, question))
+            throw new CustomUnauthorizedException(PathUtil.UNAUTHORIZED, "권한이 없습니다");
+
+        answerRepository.deleteByQuestion(question);
         questionRepository.deleteById(id);
         return PathUtil.HOME;
     }
 
-    private Result valid(HttpSession session, Optional<Question> question) {
-        if (!question.isPresent()) {
-            return Result.fail(PathUtil.NOT_FOUND);
-        }
-
-        if (!HttpSessionUtil.isAuthorizedUser(session)) {
-            return Result.fail(PathUtil.UNAUTHORIZED);
-        }
-
+    private boolean verifyUser(HttpSession session, Question question) {
         User user = HttpSessionUtil.getUserFromSession(session);
-        if (!question.get().isCorrectWriter(user)) {
-            return Result.fail(PathUtil.UNAUTHORIZED);
-        }
-        return Result.ok();
-    }
-
-    private Object update(Question question, Question updateData, User user) {
-        updateData.setWriter(user);
-        if (question.isCorrectFormat(updateData)){
-            question.update(updateData);
-            questionRepository.save(question);
-            return PathUtil.REDIRECT_QUESTION_DETAIL + question.getId();
-        }
-        return PathUtil.BAD_REQUEST;
+        return question.isCorrectWriter(user);
     }
 }

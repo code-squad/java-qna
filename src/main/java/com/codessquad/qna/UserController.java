@@ -1,5 +1,7 @@
 package com.codessquad.qna;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +12,8 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/users")
 public class UserController {
+    private static final Logger log = LoggerFactory.getLogger(HomeController.class);
+
     @Autowired
     private UserRepository userRepository;
 
@@ -61,7 +65,7 @@ public class UserController {
             model.addAttribute("user", getSessionUser(id, session));
             return "/users/profile";
         } catch (NullPointerException | IllegalAccessException e) {
-            System.out.println("ERROR CODE > " + e.toString());
+            log.info("Error Code > " + e.toString());
             return e.getMessage();
         }
     }
@@ -72,7 +76,7 @@ public class UserController {
             model.addAttribute("user", getSessionUser(id, session));
             return "/users/updateForm";
         } catch (NullPointerException | IllegalAccessException e) {
-            System.out.println("ERROR CODE > " + e.toString());
+            log.info("Error Code > " + e.toString());
             return e.getMessage();
         }
     }
@@ -88,7 +92,7 @@ public class UserController {
             userRepository.save(user);
             return "redirect:/users";
         } catch (NullPointerException | IllegalAccessException e) {
-            System.out.println("ERROR CODE > " + e.toString());
+            log.info("Error Code > " + e.toString());
             return e.getMessage();
         }
     }

@@ -1,5 +1,7 @@
 package com.codessquad.qna;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -7,11 +9,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
-import java.util.NoSuchElementException;
 
 @Controller
 @RequestMapping("/questions/{questionId}/answers")
 public class AnswerController {
+    private static final Logger log = LoggerFactory.getLogger(HomeController.class);
+
     @Autowired
     private AnswerRepository answerRepository;
 
@@ -36,7 +39,7 @@ public class AnswerController {
             model.addAttribute("answer", getVerifiedAnswer(id, questionId, session));
             return "/qna/updatedAnswerForm";
         } catch (NullPointerException | IllegalAccessException | EntityNotFoundException e) {
-            System.out.println("ERROR CODE > " + e.toString());
+            log.info("Error Code > " + e.toString());
             return e.getMessage();
         }
     }
@@ -49,7 +52,7 @@ public class AnswerController {
             answerRepository.save(answer);
             return "redirect:/questions/" + questionId;
         } catch (NullPointerException | IllegalAccessException | EntityNotFoundException e) {
-            System.out.println("ERROR CODE > " + e.toString());
+            log.info("Error Code > " + e.toString());
             return e.getMessage();
         }
     }
@@ -61,7 +64,7 @@ public class AnswerController {
             answerRepository.delete(answer);
             return "redirect:/questions/" + questionId;
         } catch (NullPointerException | IllegalAccessException | EntityNotFoundException e) {
-            System.out.println("ERROR CODE > " + e.getMessage());
+            log.info("Error Code > " + e.toString());
             return e.getMessage();
         }
     }

@@ -1,5 +1,7 @@
 package com.codessquad.qna;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +13,8 @@ import java.util.NoSuchElementException;
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
+    private static final Logger log = LoggerFactory.getLogger(HomeController.class);
+
     @Autowired
     private QuestionRepository questionRepository;
 
@@ -40,7 +44,7 @@ public class QuestionController {
             model.addAttribute("question", questionRepository.findById(id).get());
             return "/qna/show";
         } catch (NoSuchElementException e) {
-            System.out.println("ERROR CODE > " + e.toString());
+            log.info("Error Code > " + e.toString());
             return e.getMessage();
         }
     }
@@ -51,7 +55,7 @@ public class QuestionController {
             model.addAttribute("question", getVerifiedQuestion(id, session));
             return "/qna/updatedForm";
         } catch (NullPointerException | IllegalAccessException | NoSuchElementException e) {
-            System.out.println("ERROR CODE > " + e.toString());
+            log.info("Error Code > " + e.toString());
             return e.getMessage();
         }
     }
@@ -64,7 +68,7 @@ public class QuestionController {
             questionRepository.save(question);
             return "redirect:/questions/" + id;
         } catch (NullPointerException | IllegalAccessException | NoSuchElementException e) {
-            System.out.println("ERROR CODE > " + e.toString());
+            log.info("Error Code > " + e.toString());
             return e.getMessage();
         }
     }
@@ -76,7 +80,7 @@ public class QuestionController {
             questionRepository.delete(question);
             return "redirect:/";
         } catch (NullPointerException | IllegalAccessException | NoSuchElementException e) {
-            System.out.println("ERROR CODE > " + e.toString());
+            log.info("Error Code > " + e.toString());
             return e.getMessage();
         }
     }

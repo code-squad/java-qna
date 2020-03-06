@@ -16,7 +16,7 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/users")
 public class UserController {
-    private static final String USER_LIST = "redirect:/users/list";
+    private static final String REDIRECT_USERS_LIST = "redirect:/users/list";
 
     @Autowired
     private UserRepository userRepository;
@@ -28,30 +28,30 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
-        User sessionUser = userRepository.findByUserId(userId);
+        User sessionedUser = userRepository.findByUserId(userId);
 
-        if (sessionUser == null) {
+        if (sessionedUser == null) {
             return "redirect:/users/loginForm";
         }
 
-        if (!sessionUser.isEqualsPassword(password)) {
+        if (!sessionedUser.isEqualsPassword(password)) {
             return "redirect:/users/loginForm";
         }
 
-        session.setAttribute("sessionUser", sessionUser);
+        session.setAttribute("sessionedUser", sessionedUser);
 
         return "redirect:/";
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.removeAttribute("sessionUser");
+        session.removeAttribute("sessionedUser");
         return "redirect:/";
     }
 
-    @GetMapping("/form")
+    @GetMapping("/createForm")
     public String createForm() {
-        return "user/form";
+        return "/user/form";
     }
 
     @PostMapping("/create")
@@ -60,48 +60,73 @@ public class UserController {
             throw new NullPointerException();
         }
         userRepository.save(user);
-        return USER_LIST;
+        return REDIRECT_USERS_LIST;
     }
 
     @GetMapping("/list")
     public String list(Model model) {
         model.addAttribute("users", userRepository.findAll());
-        return "user/list";
+        return "/user/list";
     }
 
-    @GetMapping("/{id}/form")
-    public String checkPasswordForm(@PathVariable Long id, Model model) throws NotFoundError {
-        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundError(NotFoundError.NOT_FOUND_MESSAGE));
+    @GetMapping("/{id}/checkForm")
+    public String checkPasswordForm(@PathVariable Long id, Model model, HttpSession session) throws NotFoundError {
+        User sessionedUser = (User) session.getAttribute("sessionedUser");
+
+        if (sessionedUser == null) {
+            return "redirect:/users/loginForm";
+        }
+
+        User user = findUserByObject(sessionedUser);
+
         model.addAttribute("user", user);
-        return "user/checkForm";
+        return "/user/checkForm";
     }
 
     @PostMapping("/{id}/checkPassword")
-    public String checkPassword(@PathVariable Long id, User updateUser, Model model) throws NotFoundError {
-        User user = findUserById(id);
+    public String checkPassword(@PathVariable Long id, User updateUser, Model model, HttpSession session) throws NotFoundError {
+        User sessionedUser = (User) session.getAttribute("sessionedUser");
+
+        if (sessionedUser == null) {
+            return "redirect:/users/loginForm";
+        }
+
+        User user = findUserByObject(sessionedUser);
+
         if (user.isEqualsPassword(updateUser)) {
             model.addAttribute("user", user);
-            return "user/updateForm";
+            return "/user/updateForm";
         }
-        return USER_LIST;
+        return REDIRECT_USERS_LIST;
     }
 
     @PostMapping("/{id}/update")
-    public String updateUser(@PathVariable Long id, User updateUser) throws NotFoundError {
-        User user = findUserById(id);
+    public String updateUser(@PathVariable Long id, User updateUser, HttpSession session) throws NotFoundError {
+        User sessionedUser = (User) session.getAttribute("sessionedUser");
+
+        if (sessionedUser == null) {
+            return "redirect:/users/loginForm";
+        }
+
+        User user = findUserByObject(sessionedUser);
+
         user.update(updateUser);
         userRepository.save(user);
-        return USER_LIST;
+        return REDIRECT_USERS_LIST;
     }
 
     @GetMapping("/{id}")
     public String read(@PathVariable Long id, Model model) throws NotFoundError {
         User user = findUserById(id);
         model.addAttribute("user", user);
-        return "user/profile";
+        return "/user/profile";
     }
 
-    public User findUserById(Long id) throws NotFoundError {
+    private User findUserById(Long id) throws NotFoundError {
         return userRepository.findById(id).orElseThrow(() -> new NotFoundError(NotFoundError.NOT_FOUND_MESSAGE));
+    }
+
+    private User findUserByObject(User user) throws NotFoundError {
+        return userRepository.findById(user.getId()).orElseThrow(() -> new NotFoundError(NotFoundError.NOT_FOUND_MESSAGE));
     }
 }

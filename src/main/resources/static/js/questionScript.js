@@ -9,8 +9,9 @@ const addAnswer = function (e) {
     url: url,
     data: queryString,
     dataType: 'json',
-    error: function () {
-      console.error('failure');
+    error: function (error) {
+      alert(error.responseJSON.message);
+      window.location.replace("/users/login");
     },
     success: function (data, status) {
       const answerTemplate = $('#answerTemplate').html();
@@ -38,8 +39,9 @@ const deleteAnswer = function (e) {
     type: 'delete',
     url: url,
     dataType: 'json',
-    error: function () {
-      console.error('failure');
+    error: function (error) {
+      alert(error.responseJSON.message);
+      window.location.replace("/users/login");
     },
     success: function (data, status) {
       if (data.valid) {

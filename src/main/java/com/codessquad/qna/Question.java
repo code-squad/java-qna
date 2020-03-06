@@ -60,7 +60,11 @@ public class Question {
         return contents;
     }
 
-    public String getPostingTime() {
+    public LocalDateTime getPostingTime() {
+        return postingTime;
+    }
+
+    public String getFormattedPostingTime() {
         return postingTime.format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT));
     }
 

@@ -52,7 +52,7 @@ public class QuestionController {
 
         Optional<Answer> optionalAnswer = answerRepository.findById(id);
         optionalAnswer.ifPresent(answer -> {
-            if (HttpSessionUtils.getUserFromSession(session).matchId(optionalAnswer.get().getWriter().getId())) {
+            if (answer.getWriter().equals(HttpSessionUtils.getUserFromSession(session))) {
                 answerRepository.deleteById(id);
             }
         });
@@ -68,7 +68,7 @@ public class QuestionController {
 
         Optional<Answer> optionalAnswer = answerRepository.findById(id);
         optionalAnswer.ifPresent(answer -> {
-            if (HttpSessionUtils.getUserFromSession(session).matchId(optionalAnswer.get().getWriter().getId())) {
+            if (answer.getWriter().equals(HttpSessionUtils.getUserFromSession(session))) {
                 answer.update(updatedAnswer);
                 answerRepository.save(answer);
             }

@@ -1,9 +1,9 @@
 package com.codessquad.qna.web.question;
 
-import com.codessquad.qna.common.constants.CommonConstants;
+import com.codessquad.qna.common.error.exception.LoginRequiredException;
 import com.codessquad.qna.common.error.exception.QuestionNotFoundException;
-import com.codessquad.qna.web.user.User;
 import com.codessquad.qna.common.utils.HttpSessionUtils;
+import com.codessquad.qna.web.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,11 +27,7 @@ public class AnswerController {
                                      @PathVariable Long answerId,
                                      HttpSession session,
                                      Model model) {
-        User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
-        if (loginUser == null) {
-            return CommonConstants.REDIRECT_LOGIN_PAGE;
-        }
-
+        User loginUser = HttpSessionUtils.getUserFromSession(session).orElseThrow(LoginRequiredException::new);
         Question question = questionRepository.findById(questionId).orElseThrow(QuestionNotFoundException::new);
         Answer answer = answerRepository.findByQuestionIdAndId(questionId, answerId).orElseGet(Answer::new);
 
@@ -50,11 +46,7 @@ public class AnswerController {
                                @PathVariable Long answerId,
                                @RequestParam String comment,
                                HttpSession session) {
-        User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
-        if (loginUser == null) {
-            return CommonConstants.REDIRECT_LOGIN_PAGE;
-        }
-
+        User loginUser = HttpSessionUtils.getUserFromSession(session).orElseThrow(LoginRequiredException::new);
         Answer answer = answerRepository.findByQuestionIdAndId(questionId, answerId).orElseGet(Answer::new);
         if (!loginUser.equals(answer.getWriter())) {
             return "redirect:/questions/" + questionId;

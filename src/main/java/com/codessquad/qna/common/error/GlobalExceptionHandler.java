@@ -1,7 +1,9 @@
 package com.codessquad.qna.common.error;
 
+import com.codessquad.qna.common.constants.ErrorConstants;
 import com.codessquad.qna.common.error.exception.ErrorCode;
 import com.codessquad.qna.common.error.exception.BusinessException;
+import com.codessquad.qna.common.error.exception.LoginRequiredException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -10,8 +12,9 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ControllerAdvice
+@ControllerAdvice("com.codessquad.qna.web")
 public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
@@ -39,11 +42,21 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * 로그인하지 않았을 때, 로그인 페이지로 이동.
+     */
+    @ExceptionHandler(LoginRequiredException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    protected String handleLoginRequiredException(LoginRequiredException e) {
+        log.error("handleLoginRequiredException", e);
+        return ErrorConstants.ERROR_LOGIN_REQUIRED;
+    }
+
+    /**
      * 비즈니스 로직상의 에러
      */
     @ExceptionHandler(BusinessException.class)
     protected ResponseEntity<ErrorResponse> handleBusinessException(final BusinessException e) {
-        log.error("handleEntityNotFoundException", e);
+        log.error("handleBusinessException", e);
         final ErrorCode errorCode = e.getErrorCode();
         final ErrorResponse response = ErrorResponse.of(errorCode);
         return new ResponseEntity<>(response, HttpStatus.valueOf(errorCode.getStatus()));

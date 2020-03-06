@@ -1,4 +1,4 @@
-package com.codessquad.qna.web.question;
+package com.codessquad.qna.api.result;
 
 public class Result {
     private boolean valid;

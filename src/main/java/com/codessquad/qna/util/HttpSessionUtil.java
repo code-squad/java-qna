@@ -1,7 +1,9 @@
 package com.codessquad.qna.util;
 
+import com.codessquad.qna.exception.CustomUnauthorizedException;
 import com.codessquad.qna.repository.User;
 import javax.servlet.http.HttpSession;
+import java.util.Optional;
 
 public class HttpSessionUtil {
     public static final String USER_SESSION_KEY = "authorizedUser";
@@ -12,6 +14,7 @@ public class HttpSessionUtil {
     }
 
     public static User getUserFromSession(HttpSession session) {
-        return (User)session.getAttribute(USER_SESSION_KEY);
+        return Optional.ofNullable((User)session.getAttribute(USER_SESSION_KEY))
+                .orElseThrow(() -> new CustomUnauthorizedException(PathUtil.UNAUTHORIZED, "권한이 없습니다"));
     }
 }

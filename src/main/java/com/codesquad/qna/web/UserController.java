@@ -71,12 +71,12 @@ public class UserController {
 
     @GetMapping("/{id}/checkForm")
     public String checkPasswordForm(@PathVariable Long id, Model model, HttpSession session) throws IllegalAccessException {
-        Optional<User> sessionedUser = HttpSessionUtils.getOptionalUser(session);
+        Optional<Object> sessionedUser = HttpSessionUtils.getObject(session);
         if (!sessionedUser.isPresent()) {
             return "/users/loginForm";
         }
 
-        User user = sessionedUser.get();
+        User user = (User) sessionedUser.get();
         user.checkIllegalAccess(id);
         model.addAttribute("user", user);
         return "/user/checkForm";
@@ -84,12 +84,12 @@ public class UserController {
 
     @PostMapping("/{id}/checkPassword")
     public String checkPassword(@PathVariable Long id, User updateUser, Model model, HttpSession session) throws IllegalAccessException {
-        Optional<User> sessionedUser = HttpSessionUtils.getOptionalUser(session);
+        Optional<Object> sessionedUser = HttpSessionUtils.getObject(session);
         if (!sessionedUser.isPresent()) {
             return "/users/loginForm";
         }
 
-        User user = sessionedUser.get();
+        User user = (User) sessionedUser.get();
         user.checkIllegalAccess(id);
         if (user.isPasswordEquals(updateUser)) {
             model.addAttribute("user", user);
@@ -100,12 +100,12 @@ public class UserController {
 
     @PostMapping("/{id}/update")
     public String updateUser(@PathVariable Long id, User updateUser, HttpSession session) throws IllegalAccessException {
-        Optional<User> sessionedUser = HttpSessionUtils.getOptionalUser(session);
+        Optional<Object> sessionedUser = HttpSessionUtils.getObject(session);
         if (!sessionedUser.isPresent()) {
             return "/users/loginForm";
         }
 
-        User user = sessionedUser.get();
+        User user = (User) sessionedUser.get();
         user.checkIllegalAccess(id);
         user.update(updateUser);
         userRepository.save(user);

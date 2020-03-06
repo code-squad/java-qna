@@ -2,6 +2,7 @@ package com.codesquad.qna.web;
 
 import com.codesquad.qna.domain.Question;
 import com.codesquad.qna.domain.QuestionRepository;
+import com.codesquad.qna.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,7 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.persistence.EntityNotFoundException;
-import java.time.LocalDateTime;
+import javax.servlet.http.HttpSession;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/questions")
@@ -20,25 +22,27 @@ public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
 
-    @GetMapping("/form")
-    public String createForm() {
+    @GetMapping("/createForm")
+    public String createForm(HttpSession session) {
+        Optional<Object> sessionedUser = HttpSessionUtils.getObject(session);
+        if (!sessionedUser.isPresent()) {
+            return "/users/loginForm";
+        }
+
         return "qna/form";
     }
 
     @PostMapping("/create")
-    public String create(Question question, Model model) {
-        if (question == null) {
-            throw new NullPointerException();
+    public String create(Question question, Model model, HttpSession session) {
+        Optional<Object> sessionedUser = HttpSessionUtils.getObject(session);
+        if (!sessionedUser.isPresent()) {
+            return "/users/loginForm";
         }
-        question.setCreatedDateTime(LocalDateTime.now());
-        questionRepository.save(question);
-        return "redirect:/questions/list";
-    }
 
-    @GetMapping("/list")
-    public String list(Model model) {
-        model.addAttribute("questions", questionRepository.findAll());
-        return "qna/list";
+        User user = (User) sessionedUser.get();
+        Question createdQuestion = new Question(user, question);
+        questionRepository.save(createdQuestion);
+        return "redirect:/";
     }
 
     @GetMapping("/{id}")

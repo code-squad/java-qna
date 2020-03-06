@@ -15,6 +15,6 @@ public class HttpSessionUtil {
 
     public static User getUserFromSession(HttpSession session) {
         return Optional.ofNullable((User)session.getAttribute(USER_SESSION_KEY))
-                .orElseThrow(() -> new CustomUnauthorizedException(PathUtil.UNAUTHORIZED, "권한이 없습니다"));
+                .orElseThrow(() -> new CustomUnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.UNAUTHORIZED));
     }
 }

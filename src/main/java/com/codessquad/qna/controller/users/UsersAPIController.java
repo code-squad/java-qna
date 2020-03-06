@@ -1,6 +1,7 @@
 package com.codessquad.qna.controller.users;
 
 import com.codessquad.qna.service.users.UsersService;
+import com.codessquad.qna.web.PathUtils;
 import com.codessquad.qna.web.dto.users.UsersRegisterRequestDto;
 import com.codessquad.qna.web.dto.users.UsersUpdateRequestDto;
 import org.springframework.ui.Model;
@@ -30,7 +31,7 @@ public class UsersAPIController {
   @GetMapping("/api/v1/users/list")
   public String index(Model model) {
     model.addAttribute("users", usersService.findAllDesc());
-    return "users-show";
+    return PathUtils.USERS_LIST;
   }
 
   @PutMapping("/api/v1/users/{Id}")

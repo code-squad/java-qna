@@ -5,6 +5,7 @@ import com.codessquad.qna.domain.Users;
 import com.codessquad.qna.service.posts.PostsService;
 import com.codessquad.qna.service.users.UsersService;
 import com.codessquad.qna.web.HttpSessionUtils;
+import com.codessquad.qna.web.PathUtils;
 import com.codessquad.qna.web.dto.posts.PostsResponseDto;
 import com.codessquad.qna.web.dto.users.UsersResponseDto;
 import javax.servlet.http.HttpSession;
@@ -31,77 +32,77 @@ public class IndexController {
   @GetMapping("/")
   public String index(Model model) {
     model.addAttribute("posts", postsService.findAllDesc());
-    return "index";
+    return PathUtils.INDEX;
   }
 
   @GetMapping("/posts-list")
   public String anotherIndex(Model model) {
     model.addAttribute("posts", postsService.findAllDesc());
-    return "index";
+    return PathUtils.INDEX;
   }
 
   @GetMapping("/posts/save")
   public String postsSave(Model model, HttpSession httpSession) {
     Users sessionUser = (Users) httpSession.getAttribute("sessionUser");
     model.addAttribute("author", sessionUser);
-    return "posts-save";
+    return PathUtils.POSTS_SAVE;
   }
 
   @GetMapping("/users/login")
   public String usersLogin() {
-    return "users-login";
+    return PathUtils.USERS_LOGIN;
   }
 
   @GetMapping("/users/login/fail")
   public String usersLoginFailed() {
-    return "users-login-failed";
+    return PathUtils.USERS_LOGIN_FAILED;
   }
 
   @GetMapping("/users/register")
   public String usersRegister() {
-    return "users-register";
+    return PathUtils.USERS_REGISTER;
   }
 
   @GetMapping("/logout")
   public String usersLogout(HttpSession httpSession) {
     httpSession.removeAttribute("sessionUser");
     System.out.println("logout succeed");
-    return "redirect:/";
+    return PathUtils.REDIRECT_TO_MAIN;
   }
 
   @GetMapping("/users/show")
   public String usersShow(Model model) {
     model.addAttribute("users", usersService.findAllDesc());
-    return "users-show";
+    return PathUtils.USERS_SHOW;
   }
 
   @GetMapping("/users/update/{Id}")
   public String usersUpdate(@PathVariable Long Id, Model model, HttpSession httpSession) {
     if (HttpSessionUtils.isLoggedIn(httpSession)) {
-      return "redirect:/users/login";
+      return PathUtils.REDIRECT_TO_USERS_LOGIN;
     }
     Users sessionUser = (Users) httpSession.getAttribute("sessionUser");
     if (!sessionUser.getId().equals(Id)) {
-      return "users-update-invalid-access";
+      return PathUtils.INVALID_ACCESS;
     }
     UsersResponseDto responseDto = usersService.findById(Id);
     model.addAttribute("user", responseDto);
-    return "users-update";
+    return PathUtils.USERS_UPDATE;
   }
 
   @GetMapping("/posts/update/{Id}")
   public String postsUpdate(@PathVariable Long Id, Model model, HttpSession httpSession) {
     if (HttpSessionUtils.isLoggedIn(httpSession)) {
-      return "redirect:/users/login";
+      return PathUtils.REDIRECT_TO_USERS_LOGIN;
     }
     PostsResponseDto responseDto = postsService.findById(Id);
     Users sessionUser = (Users) httpSession.getAttribute("sessionUser");
     if (!sessionUser.getId().equals(Id)) {
-      return "users-update-invalid-access";
+      return PathUtils.INVALID_ACCESS;
     }
     model.addAttribute("posts", responseDto);
     model.addAttribute("author", sessionUser);
-    return "posts-update";
+    return PathUtils.POSTS_UPDATE;
   }
 
   @PostMapping("/login") //@RestController에서 하면 리다이렉트가 안된다고 한다. 왜인지는 모르겠다.
@@ -109,14 +110,14 @@ public class IndexController {
     Users user = usersRepository.findByUserId(userId);
     if (user == null) {
       System.out.println("login failure!");
-      return "users-login-failed";
+      return PathUtils.USERS_LOGIN_FAILED;
     }
     if (!password.equals(user.getPassword())) {
       System.out.println("login failure!");
-      return "users-login-failed";
+      return PathUtils.USERS_LOGIN_FAILED;
     }
     session.setAttribute("sessionUser", user);
     System.out.println("login success");
-    return "redirect:/";
+    return PathUtils.REDIRECT_TO_MAIN;
   }
 }

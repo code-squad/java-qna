@@ -68,6 +68,10 @@ public class Question {
         this.title = question.title;
     }
 
+    public boolean isSameWriter(User loginUser) {
+        return this.writer.equals(loginUser);
+    }
+
     @Override
     public String toString() {
         return "Question{" +

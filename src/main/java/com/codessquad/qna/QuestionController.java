@@ -19,6 +19,15 @@ public class QuestionController {
     @Autowired
     private AnswerRepository answerRepository;
 
+    private Result valid(HttpSession session, Question question) {
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        if (!question.isSameWriter(loginUser)) {
+            return Result.fail("자신이 쓴 글만 수정, 삭제가 가능합니다.");
+        }
+
+        return Result.ok();
+    }
+
     @PostMapping("/questions/{questionId}/answers")
     public String createAnswer(@PathVariable("questionId") Long questionId, HttpSession session, Answer answer) {
         if (!HttpSessionUtils.isUserLogin(session)) {
@@ -113,64 +122,72 @@ public class QuestionController {
     }
 
     @GetMapping("/questions/{id}/update")
-    public String updateQuestion(@PathVariable("id") Long id, HttpSession session, Model model) throws IllegalAccessException {
+    public String updateQuestion(@PathVariable("id") Long id, HttpSession session, Model model) {
         if (!HttpSessionUtils.isUserLogin(session)) {
             return "redirect:/login";
         }
 
         Optional<Question> optionalQuestion = questionRepository.findById(id);
-        if (!optionalQuestion.isPresent()) {
-            return "redirect:/";
+        if (optionalQuestion.isPresent()) {
+            Question question = optionalQuestion.get();
+            Result result = valid(session, question);
+            if (!result.isValid()) {
+                model.addAttribute("errorMessage", result.getErrorMessage());
+                return "/error";
+            }
+
+            model.addAttribute("question", question);
+            return "/qna/updateForm";
         }
 
-        Question question = optionalQuestion.get();
-        if (!HttpSessionUtils.getUserFromSession(session).matchId(question.getWriter().getId())) {
-            throw new IllegalAccessException("자신이 올린 게시글만 수정할 수 있습니다.");
-        }
-
-        model.addAttribute("question", question);
-        return "/qna/updateForm";
+        model.addAttribute("errorMessage", "질문이 없습니다.");
+        return "/error";
     }
 
     @PutMapping("/questions/{id}/update")
-    public String putQuestion(@PathVariable("id") Long id, Question updatedQuestion, HttpSession session) throws IllegalAccessException {
+    public String putQuestion(@PathVariable("id") Long id, Question updatedQuestion, HttpSession session, Model model) {
         if (!HttpSessionUtils.isUserLogin(session)) {
             return "redirect:/login";
         }
 
         Optional<Question> optionalQuestion = questionRepository.findById(id);
 
-        if (!optionalQuestion.isPresent()) {
-            return "redirect:/";
+        if (optionalQuestion.isPresent()) {
+            Question question = optionalQuestion.get();
+            Result result = valid(session, question);
+            if (!result.isValid()) {
+                model.addAttribute("errorMessage", result.getErrorMessage());
+                return "/error";
+            }
+
+            question.update(updatedQuestion);
+            questionRepository.save(question);
+            return "redirect:/questions/" + id;
         }
 
-        Question question = optionalQuestion.get();
-        if (!HttpSessionUtils.getUserFromSession(session).matchId(question.getWriter().getId())) {
-            throw new IllegalAccessException("자신이 올린 게시글만 수정할 수 있습니다.");
-        }
-
-        question.update(updatedQuestion);
-        questionRepository.save(question);
-        return "redirect:/questions/" + id;
+        model.addAttribute("errorMessage", "질문이 없습니다.");
+        return "/error";
     }
 
     @DeleteMapping("/questions/{id}/delete")
-    public String deleteQuestion(@PathVariable("id") Long id, HttpSession session) throws IllegalAccessException {
+    public String deleteQuestion(@PathVariable("id") Long id, HttpSession session, Model model) {
         if (!HttpSessionUtils.isUserLogin(session)) {
             return "redirect:/login";
         }
 
         Optional<Question> optionalQuestion = questionRepository.findById(id);
-        if (!optionalQuestion.isPresent()) {
-            return "redirect:/";
+
+        if (optionalQuestion.isPresent()) {
+            Question question = optionalQuestion.get();
+            Result result = valid(session, question);
+            if (!result.isValid()) {
+                model.addAttribute("errorMessage", result.getErrorMessage());
+                return "/error";
+            }
+            questionRepository.delete(question);
         }
 
-        Question question = optionalQuestion.get();
-        if (!HttpSessionUtils.getUserFromSession(session).matchId(question.getWriter().getId())) {
-            throw new IllegalAccessException("자신이 올린 게시글만 삭제할 수 있습니다.");
-        }
-
-        questionRepository.delete(question);
-        return "redirect:/";
+        model.addAttribute("errorMessage", "질문이 없습니다.");
+        return "/error";
     }
 }

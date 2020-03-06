@@ -3,21 +3,21 @@ package com.codesquad.qna.web;
 import com.codesquad.qna.domain.User;
 import com.codesquad.qna.domain.UserRepository;
 import javassist.NotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
 
 import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/users")
 public class UserController {
-    private Logger logger = LogManager.getLogger(UserController.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -60,6 +60,7 @@ public class UserController {
 
     @PostMapping("")
     public String addUser(User user) {
+        logger.debug("User : {}", user);
         userRepository.save(user);
         return "redirect:/users"; //templates의 index.html 호출
     }

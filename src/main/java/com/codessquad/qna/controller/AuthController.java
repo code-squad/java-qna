@@ -3,6 +3,7 @@ package com.codessquad.qna.controller;
 import com.codessquad.qna.exception.CustomNoSuchUserException;
 import com.codessquad.qna.repository.User;
 import com.codessquad.qna.repository.UserRepository;
+import com.codessquad.qna.util.ErrorMessageUtil;
 import com.codessquad.qna.util.HttpSessionUtil;
 import com.codessquad.qna.util.PathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ public class AuthController {
     @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
         User user = userRepository.findByUserId(userId).orElseThrow(() ->
-                new CustomNoSuchUserException(PathUtil.LOGIN_FAILED_TEMPLATE, "해당하는 유저가 없습니다"));
+                new CustomNoSuchUserException(PathUtil.LOGIN_FAILED_TEMPLATE, ErrorMessageUtil.NOTFOUND_USER));
         if (!user.isCorrectPassword(password)) {
             return PathUtil.LOGIN_FAILED_TEMPLATE;
         }

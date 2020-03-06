@@ -9,7 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -22,7 +22,7 @@ public class AnswerController {
 
     @GetMapping
     public Object showAnswerList(@PathVariable Long questionId, Model model) {
-        ArrayList<Answer> answerList = answerRepository.findByQuestionId(questionId);
+        List<Answer> answerList = answerRepository.findByQuestionId(questionId);
         model.addAttribute("answers", answerList);
         return ResponseEntity.ok(model);
     }

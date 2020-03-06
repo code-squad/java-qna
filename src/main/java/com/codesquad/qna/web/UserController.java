@@ -78,7 +78,7 @@ public class UserController {
 
     @PostMapping("/{id}/checkPassword")
     public String checkPassword(@PathVariable Long id, User updateUser, Model model) throws NotFoundError {
-        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundError(NotFoundError.NOT_FOUND_MESSAGE));
+        User user = findUserById(id);
         if (user.isEqualsPassword(updateUser)) {
             model.addAttribute("user", user);
             return "user/updateForm";
@@ -88,7 +88,7 @@ public class UserController {
 
     @PostMapping("/{id}/update")
     public String updateUser(@PathVariable Long id, User updateUser) throws NotFoundError {
-        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundError(NotFoundError.NOT_FOUND_MESSAGE));
+        User user = findUserById(id);
         user.update(updateUser);
         userRepository.save(user);
         return USER_LIST;
@@ -96,8 +96,12 @@ public class UserController {
 
     @GetMapping("/{id}")
     public String read(@PathVariable Long id, Model model) throws NotFoundError {
-        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundError(NotFoundError.NOT_FOUND_MESSAGE));
+        User user = findUserById(id);
         model.addAttribute("user", user);
         return "user/profile";
+    }
+
+    public User findUserById(Long id) throws NotFoundError {
+        return userRepository.findById(id).orElseThrow(() -> new NotFoundError(NotFoundError.NOT_FOUND_MESSAGE));
     }
 }

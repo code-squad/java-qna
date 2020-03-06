@@ -51,7 +51,7 @@ public class QuestionController {
     }
 
     @GetMapping("/questions/{id}")
-    public String showQuestion(@PathVariable long id, Model model, HttpSession session) {
+    public String showQuestion(@PathVariable Long id, Model model, HttpSession session) {
         User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
         Question question = getQuestionIfExist(id);
         List<Answer> answers = answerRepository.findByQuestionIdAndIsDeletedFalse(id);
@@ -64,7 +64,7 @@ public class QuestionController {
     }
 
     @GetMapping("/questions/{id}/form")
-    public String goQuestionModifyForm(@PathVariable long id, Model model, HttpSession session) {
+    public String goQuestionModifyForm(@PathVariable Long id, Model model, HttpSession session) {
         User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
         if (loginUser == null) {
             return CommonConstants.REDIRECT_LOGIN_PAGE;
@@ -81,7 +81,7 @@ public class QuestionController {
     }
 
     @PutMapping("/questions/{id}")
-    public String updateQuestion(@PathVariable long id,
+    public String updateQuestion(@PathVariable Long id,
                                  HttpSession session,
                                  @RequestParam String title,
                                  @RequestParam String contents) {
@@ -102,7 +102,7 @@ public class QuestionController {
 
     @DeleteMapping("/questions/{id}")
     @Transactional
-    public String deleteQuestion(@PathVariable long id, HttpSession session) {
+    public String deleteQuestion(@PathVariable Long id, HttpSession session) {
         User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
         if (loginUser == null) {
             return CommonConstants.REDIRECT_LOGIN_PAGE;
@@ -119,8 +119,8 @@ public class QuestionController {
         return "redirect:/questions/" + id;
     }
 
-    private Question getQuestionIfExist(long id) {
-        return questionRepository.findById(id).orElseThrow(() -> new QuestionNotFoundException("해당 질문글을 찾을 수 없습니다."));
+    private Question getQuestionIfExist(Long id) {
+        return questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
     }
 
 }

@@ -9,8 +9,8 @@ public enum ErrorCode {
     METHOD_NOT_ALLOWED(405, "COM004", "Change Http Method"),
     INTERNAL_SERVER_ERROR(500, "COM005", "백엔드 개발자라 죄송합니다..."),
     // User
-    USER_NOT_FOUND(404, "U001", " User Not Found"),
-    QUESTION_NOT_FOUND(404, "Q001", " Question Not Found"),
+    USER_NOT_FOUND(404, "U001", " 해당 사용자가 존재하지 않습니다."),
+    QUESTION_NOT_FOUND(404, "Q001", " 해당 질문이 존재하지 않습니다."),
     // Answer
     ;
     private final String code;

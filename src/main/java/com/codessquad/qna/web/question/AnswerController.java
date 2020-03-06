@@ -32,7 +32,7 @@ public class AnswerController {
             return CommonConstants.REDIRECT_LOGIN_PAGE;
         }
 
-        Question question = questionRepository.findById(questionId).orElseThrow(() -> new QuestionNotFoundException("해당 질문글이 존재하지 않습니다."));
+        Question question = questionRepository.findById(questionId).orElseThrow(QuestionNotFoundException::new);
         Answer answer = answerRepository.findByQuestionIdAndId(questionId, answerId).orElseGet(Answer::new);
 
         if (!loginUser.equals(answer.getWriter())) {

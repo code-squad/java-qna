@@ -11,7 +11,7 @@ public class Answer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
@@ -44,7 +44,7 @@ public class Answer {
         this.isDeleted = false;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

@@ -50,7 +50,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ModelAndView showUserProfile(@PathVariable long id) {
+    public ModelAndView showUserProfile(@PathVariable Long id) {
         ModelAndView modelAndView = new ModelAndView("users/profile");
         modelAndView.addObject("user", getUserIfExist(id));
         return modelAndView;
@@ -58,7 +58,7 @@ public class UserController {
 
 
     @GetMapping("/{id}/form")
-    public String showUserInfoModifyForm(@PathVariable long id, Model model, HttpSession session) {
+    public String showUserInfoModifyForm(@PathVariable Long id, Model model, HttpSession session) {
         User user = getUserIfExist(id);
         User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
         if (!user.equals(loginUser)) {
@@ -70,7 +70,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public String updateUserInfo(@PathVariable long id,
+    public String updateUserInfo(@PathVariable Long id,
                                  User updateUser,
                                  @RequestParam String newPassword,
                                  HttpSession session) {
@@ -117,8 +117,8 @@ public class UserController {
         return "redirect:/";
     }
 
-    private User getUserIfExist(long id) {
-        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("해당 사용자는 존재하지 않는 사용자입니다."));
+    private User getUserIfExist(Long id) {
+        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
 }

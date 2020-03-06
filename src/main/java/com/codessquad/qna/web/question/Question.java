@@ -13,7 +13,7 @@ public class Question {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
@@ -50,7 +50,7 @@ public class Question {
         this.isDeleted = false;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -118,7 +118,7 @@ public class Question {
         return answers.size();
     }
 
-    public long getAnswerCountExceptDeleted() {
+    public Long getAnswerCountExceptDeleted() {
         return answers.stream().filter(answer -> !answer.isDeleted()).count();
     }
 

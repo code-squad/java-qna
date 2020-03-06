@@ -7,8 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
-import java.util.NoSuchElementException;
 
 import static com.codessquad.qna.HttpSessionUtils.isLogin;
 import static com.codessquad.qna.HttpSessionUtils.getUserFromSession;
@@ -46,7 +46,7 @@ public class QuestionController {
             Question question = findQuestion(id);
             model.addAttribute("question", question);
             return "/qna/show";
-        } catch (NoSuchElementException e) {
+        } catch (EntityNotFoundException e) {
             log.info("Error Code > " + e.toString());
             return e.getMessage();
         }
@@ -57,7 +57,7 @@ public class QuestionController {
         try {
             model.addAttribute("question", getVerifiedQuestion(id, session));
             return "/qna/updatedForm";
-        } catch (NullPointerException | IllegalAccessException | NoSuchElementException e) {
+        } catch (IllegalAccessException | EntityNotFoundException e) {
             log.info("Error Code > " + e.toString());
             return e.getMessage();
         }
@@ -70,7 +70,7 @@ public class QuestionController {
             question.update(title, contents);
             questionRepository.save(question);
             return "redirect:/questions/" + id;
-        } catch (NullPointerException | IllegalAccessException | NoSuchElementException e) {
+        } catch (IllegalAccessException | EntityNotFoundException e) {
             log.info("Error Code > " + e.toString());
             return e.getMessage();
         }
@@ -82,24 +82,24 @@ public class QuestionController {
             Question question = getVerifiedQuestion(id, session);
             questionRepository.delete(question);
             return "redirect:/";
-        } catch (NullPointerException | IllegalAccessException | NoSuchElementException e) {
+        } catch (IllegalAccessException | EntityNotFoundException e) {
             log.info("Error Code > " + e.toString());
             return e.getMessage();
         }
     }
 
     private Question findQuestion(Long id) {
-        return questionRepository.findById(id).orElseThrow(() -> new NoSuchElementException("/error/notFound"));
+        return questionRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("/error/notFound"));
     }
 
     private Question getVerifiedQuestion(Long id, HttpSession session) throws IllegalAccessException {
         if (!isLogin(session)) {
-            throw new NullPointerException("/error/unauthorized");
+            throw new IllegalAccessException("/error/unauthorized");
         }
         User sessionUser = getUserFromSession(session);
         Question question = findQuestion(id);
         if (!question.isWriterEquals(sessionUser)) {
-            throw new IllegalAccessException("/error/unauthorized");
+            throw new IllegalAccessException("/error/forbidden");
         }
         return question;
     }

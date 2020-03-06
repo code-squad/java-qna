@@ -41,7 +41,7 @@ public class AnswerController {
         try {
             model.addAttribute("answer", getVerifiedAnswer(id, session));
             return "/qna/updatedAnswerForm";
-        } catch (NullPointerException | IllegalAccessException | EntityNotFoundException e) {
+        } catch (IllegalAccessException | EntityNotFoundException e) {
             log.info("Error Code > " + e.toString());
             return e.getMessage();
         }
@@ -54,7 +54,7 @@ public class AnswerController {
             answer.update(contents);
             answerRepository.save(answer);
             return "redirect:/questions/" + questionId;
-        } catch (NullPointerException | IllegalAccessException | EntityNotFoundException e) {
+        } catch (IllegalAccessException | EntityNotFoundException e) {
             log.info("Error Code > " + e.toString());
             return e.getMessage();
         }
@@ -66,7 +66,7 @@ public class AnswerController {
             Answer answer = getVerifiedAnswer(id, session);
             answerRepository.delete(answer);
             return "redirect:/questions/" + questionId;
-        } catch (NullPointerException | IllegalAccessException | EntityNotFoundException e) {
+        } catch (IllegalAccessException | EntityNotFoundException e) {
             log.info("Error Code > " + e.toString());
             return e.getMessage();
         }
@@ -82,12 +82,12 @@ public class AnswerController {
 
     private Answer getVerifiedAnswer(Long id, HttpSession session) throws IllegalAccessException {
         if (!isLogin(session)) {
-            throw new NullPointerException("/error/unauthorized");
+            throw new IllegalAccessException("/error/unauthorized");
         }
         User sessionUser = getUserFromSession(session);
         Answer answer = findAnswer(id);
         if (!answer.isWriterEquals(sessionUser)) {
-            throw new IllegalAccessException("/error/unauthorized");
+            throw new IllegalAccessException("/error/forbidden");
         }
         return answer;
     }

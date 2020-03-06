@@ -2,10 +2,14 @@ package com.codessquad.qna.web.user;
 
 import com.codessquad.qna.common.constants.CommonConstants;
 import com.codessquad.qna.common.constants.ErrorConstants;
+import com.codessquad.qna.common.error.exception.CannotEditOtherUserInfoException;
 import com.codessquad.qna.common.error.exception.UserNotFoundException;
 import com.codessquad.qna.common.utils.HttpSessionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.ui.Model;
@@ -18,6 +22,8 @@ import javax.validation.ConstraintViolationException;
 @Controller
 @RequestMapping("/users")
 public class UserController {
+
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -62,7 +68,7 @@ public class UserController {
         User user = getUserIfExist(id);
         User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
         if (!user.equals(loginUser)) {
-            return ErrorConstants.ERROR_CANNOT_EDIT_OTHER_USER_INFO;
+            throw new CannotEditOtherUserInfoException();
         }
         model.addAttribute("user", user);
         model.addAttribute("actionUrl", "/users/" + id);
@@ -78,7 +84,7 @@ public class UserController {
             User user = getUserIfExist(id);
             User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
             if (!user.equals(loginUser)) {
-                return ErrorConstants.ERROR_CANNOT_EDIT_OTHER_USER_INFO;
+                throw new CannotEditOtherUserInfoException();
             }
             if (user.isUserPasswordNotEquals(updateUser)) {
                 return "redirect:/users/" + id + "/form";
@@ -119,6 +125,16 @@ public class UserController {
 
     private User getUserIfExist(Long id) {
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+    }
+
+    /**
+     * 다른 유저의 정보를 수정하려고 하였을 때, 유저 목록으로 이동.
+     */
+    @ExceptionHandler(CannotEditOtherUserInfoException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    protected String handleCannotEditOtherUserInfoException(CannotEditOtherUserInfoException e) {
+        log.error("handleCannotEditOtherUserInfoException", e);
+        return ErrorConstants.ERROR_CANNOT_EDIT_OTHER_USER_INFO;
     }
 
 }

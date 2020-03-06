@@ -11,7 +11,7 @@ const addAnswer = function (e) {
     dataType: 'json',
     error: function (error) {
       alert(error.responseJSON.message);
-      window.location.replace("/users/login");
+      window.location.assign("/users/login");
     },
     success: function (data, status) {
       const answerTemplate = $('#answerTemplate').html();
@@ -41,7 +41,7 @@ const deleteAnswer = function (e) {
     dataType: 'json',
     error: function (error) {
       alert(error.responseJSON.message);
-      window.location.replace("/users/login");
+      window.location.assign("/users/login");
     },
     success: function (data, status) {
       if (data.valid) {

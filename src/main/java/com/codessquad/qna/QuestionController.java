@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.util.NoSuchElementException;
 
+import static com.codessquad.qna.HttpSessionUtils.isLogin;
+import static com.codessquad.qna.HttpSessionUtils.getUserFromSession;
+
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
@@ -20,7 +23,7 @@ public class QuestionController {
 
     @GetMapping("/form")
     public String viewQuestionForm(HttpSession session) {
-        if (!HttpSessionUtils.isLogin(session)) {
+        if (!isLogin(session)) {
             return "/users/loginForm";
         }
         return "/qna/form";
@@ -28,10 +31,10 @@ public class QuestionController {
 
     @PostMapping("")
     public String createQuestion(String title, String contents, HttpSession session) {
-        if (!HttpSessionUtils.isLogin(session)) {
+        if (!isLogin(session)) {
             return "/users/loginForm";
         }
-        User sessionUser = HttpSessionUtils.getUserFromSession(session);
+        User sessionUser = getUserFromSession(session);
         Question question = new Question(sessionUser, title, contents);
         questionRepository.save(question);
         return "redirect:/";
@@ -93,10 +96,10 @@ public class QuestionController {
 
     private Question getVerifiedQuestion(Long id, HttpSession session) throws IllegalAccessException {
         checkNotFound(id);
-        if (!HttpSessionUtils.isLogin(session)) {
+        if (!isLogin(session)) {
             throw new NullPointerException("/error/unauthorized");
         }
-        User sessionUser = HttpSessionUtils.getUserFromSession(session);
+        User sessionUser = getUserFromSession(session);
         Question question = questionRepository.findById(id).get();
         if (!question.isWriterEquals(sessionUser)) {
             throw new IllegalAccessException("/error/unauthorized");

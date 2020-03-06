@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
+import static com.codessquad.qna.HttpSessionUtils.isLogin;
+import static com.codessquad.qna.HttpSessionUtils.getUserFromSession;
+import static com.codessquad.qna.HttpSessionUtils.USER_SESSION_KEY;
+
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -40,7 +44,7 @@ public class UserController {
             if (!user.isPasswordEquals(password)) {
                 return "redirect:/users/loginForm";
             }
-            session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
+            session.setAttribute(USER_SESSION_KEY, user);
             return "redirect:/";
         } catch (NullPointerException e) {
             return "redirect:/users/loginForm";
@@ -49,7 +53,7 @@ public class UserController {
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
+        session.removeAttribute(USER_SESSION_KEY);
         return "redirect:/";
     }
 
@@ -98,10 +102,10 @@ public class UserController {
     }
 
     private User getSessionUser(Long id, HttpSession session) throws IllegalAccessException {
-        if (!HttpSessionUtils.isLogin(session)) {
+        if (!isLogin(session)) {
             throw new NullPointerException("/error/unauthorized");
         }
-        User sessionUser = HttpSessionUtils.getUserFromSession(session);
+        User sessionUser = getUserFromSession(session);
         if (!sessionUser.isIdEquals(id)) {
             throw new IllegalAccessException("/error/unauthorized");
         }

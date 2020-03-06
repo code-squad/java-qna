@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
 
+import static com.codessquad.qna.HttpSessionUtils.isLogin;
+import static com.codessquad.qna.HttpSessionUtils.getUserFromSession;
+
 @Controller
 @RequestMapping("/questions/{questionId}/answers")
 public class AnswerController {
@@ -23,10 +26,10 @@ public class AnswerController {
 
     @PostMapping("")
     public String createAnswer(@PathVariable Long questionId, String contents, HttpSession session) {
-        if (!HttpSessionUtils.isLogin(session)) {
+        if (!isLogin(session)) {
             return "/users/loginForm";
         }
-        User sessionUser = HttpSessionUtils.getUserFromSession(session);
+        User sessionUser = getUserFromSession(session);
         Question question = questionRepository.findById(questionId).get();
         Answer answer = new Answer(sessionUser, question, contents);
         answerRepository.save(answer);
@@ -80,10 +83,10 @@ public class AnswerController {
 
     private Answer getVerifiedAnswer(Long id, Long questionId, HttpSession session) throws IllegalAccessException {
         checkNotFound(id, questionId);
-        if (!HttpSessionUtils.isLogin(session)) {
+        if (!isLogin(session)) {
             throw new NullPointerException("/error/unauthorized");
         }
-        User sessionUser = HttpSessionUtils.getUserFromSession(session);
+        User sessionUser = getUserFromSession(session);
         Answer answer = answerRepository.getOne(id);
         if (!answer.isWriterEquals(sessionUser)) {
             throw new IllegalAccessException("/error/unauthorized");

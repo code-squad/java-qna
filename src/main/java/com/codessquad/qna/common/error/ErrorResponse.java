@@ -63,6 +63,16 @@ public class ErrorResponse {
         return code;
     }
 
+    public String toHtmlString() {
+        return "<html><head><title>[" +
+                this.status +
+                "]</title></head>" +
+                "<body><h1>Whitelabel Error Page</h1>" +
+                "<img src=\"https://i.imgur.com/aBJdxJz.png\" alt=\"어피치\" width=\"300\" height=\"300\"><p>" +
+                this.message +
+                "</p></body></html>";
+    }
+
     public static class FieldError {
 
         private String field;

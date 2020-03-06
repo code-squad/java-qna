@@ -6,13 +6,17 @@ import com.codessquad.qna.common.error.exception.ErrorCode;
 import com.codessquad.qna.common.error.exception.LoginRequiredException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
+import java.nio.charset.StandardCharsets;
 
 @ControllerAdvice("com.codessquad.qna.web")
 public class GlobalExceptionHandler {
@@ -55,11 +59,13 @@ public class GlobalExceptionHandler {
      * 비즈니스 로직상의 에러
      */
     @ExceptionHandler(BusinessException.class)
-    protected ResponseEntity<ErrorResponse> handleBusinessException(final BusinessException e) {
+    protected ResponseEntity<String> handleBusinessException(final BusinessException e) {
         log.error("handleBusinessException", e);
         final ErrorCode errorCode = e.getErrorCode();
         final ErrorResponse response = ErrorResponse.of(errorCode);
-        return new ResponseEntity<>(response, HttpStatus.valueOf(errorCode.getStatus()));
+        final HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setContentType(new MediaType("text", "html", StandardCharsets.UTF_8));
+        return new ResponseEntity<>(response.toHtmlString(), responseHeaders, HttpStatus.valueOf(errorCode.getStatus()));
     }
 
     /**

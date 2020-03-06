@@ -26,21 +26,27 @@ public class UserController {
         return "/user/login";
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
-        User user = userRepository.findByUserId(userId);
+        User sessionUser = userRepository.findByUserId(userId);
 
-        if (user == null) {
+        if (sessionUser == null) {
             return "redirect:/users/loginForm";
         }
 
-        if (!user.isEqualsPassword(password)) {
+        if (!sessionUser.isEqualsPassword(password)) {
             return "redirect:/users/loginForm";
         }
 
-        session.setAttribute("user", user);
+        session.setAttribute("sessionUser", sessionUser);
 
         return "redirect:/";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.removeAttribute("sessionUser");
+        return "redirect:/users/list";
     }
 
     @GetMapping("/form")

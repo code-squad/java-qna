@@ -43,8 +43,8 @@ public class QuestionController {
     @GetMapping("/{id}")
     public String viewQuestionContents(@PathVariable Long id, Model model) {
         try {
-            checkNotFound(id);
-            model.addAttribute("question", questionRepository.findById(id).get());
+            Question question = findQuestion(id);
+            model.addAttribute("question", question);
             return "/qna/show";
         } catch (NoSuchElementException e) {
             log.info("Error Code > " + e.toString());
@@ -88,19 +88,16 @@ public class QuestionController {
         }
     }
 
-    private void checkNotFound(Long id) {
-        if (!questionRepository.findById(id).isPresent()) {
-            throw new NoSuchElementException("/error/notFound");
-        }
+    private Question findQuestion(Long id) {
+        return questionRepository.findById(id).orElseThrow(() -> new NoSuchElementException("/error/notFound"));
     }
 
     private Question getVerifiedQuestion(Long id, HttpSession session) throws IllegalAccessException {
-        checkNotFound(id);
         if (!isLogin(session)) {
             throw new NullPointerException("/error/unauthorized");
         }
         User sessionUser = getUserFromSession(session);
-        Question question = questionRepository.findById(id).get();
+        Question question = findQuestion(id);
         if (!question.isWriterEquals(sessionUser)) {
             throw new IllegalAccessException("/error/unauthorized");
         }

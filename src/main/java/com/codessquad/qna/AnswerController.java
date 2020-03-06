@@ -30,16 +30,16 @@ public class AnswerController {
             return "/users/loginForm";
         }
         User sessionUser = getUserFromSession(session);
-        Question question = questionRepository.findById(questionId).get();
+        Question question = findQuestion(questionId);
         Answer answer = new Answer(sessionUser, question, contents);
         answerRepository.save(answer);
         return "redirect:/questions/" + questionId;
     }
 
     @GetMapping("/{id}/form")
-    public String viewUpdateForm(@PathVariable Long questionId, @PathVariable Long id, Model model, HttpSession session) {
+    public String viewUpdateForm(@PathVariable Long id, Model model, HttpSession session) {
         try {
-            model.addAttribute("answer", getVerifiedAnswer(id, questionId, session));
+            model.addAttribute("answer", getVerifiedAnswer(id, session));
             return "/qna/updatedAnswerForm";
         } catch (NullPointerException | IllegalAccessException | EntityNotFoundException e) {
             log.info("Error Code > " + e.toString());
@@ -50,7 +50,7 @@ public class AnswerController {
     @PutMapping("/{id}/form")
     public String updateAnswer(@PathVariable Long questionId, @PathVariable Long id, String contents, HttpSession session) {
         try {
-            Answer answer = getVerifiedAnswer(id, questionId, session);
+            Answer answer = getVerifiedAnswer(id, session);
             answer.update(contents);
             answerRepository.save(answer);
             return "redirect:/questions/" + questionId;
@@ -63,7 +63,7 @@ public class AnswerController {
     @DeleteMapping("/{id}")
     public String deleteAnswer(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
         try {
-            Answer answer = getVerifiedAnswer(id, questionId,session);
+            Answer answer = getVerifiedAnswer(id, session);
             answerRepository.delete(answer);
             return "redirect:/questions/" + questionId;
         } catch (NullPointerException | IllegalAccessException | EntityNotFoundException e) {
@@ -72,22 +72,20 @@ public class AnswerController {
         }
     }
 
-    private void checkNotFound(Long id, Long questionId) {
-        if (!answerRepository.findById(id).isPresent()) {
-            throw new EntityNotFoundException("/error/notFound");
-        }
-        if (!questionRepository.findById(questionId).isPresent()) {
-            throw new EntityNotFoundException("/error/notFound");
-        }
+    private Question findQuestion(Long questionId) {
+        return questionRepository.findById(questionId).orElseThrow(() -> new EntityNotFoundException("/error/notFound"));
     }
 
-    private Answer getVerifiedAnswer(Long id, Long questionId, HttpSession session) throws IllegalAccessException {
-        checkNotFound(id, questionId);
+    private Answer findAnswer(Long id) {
+        return answerRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("/error/notFound"));
+    }
+
+    private Answer getVerifiedAnswer(Long id, HttpSession session) throws IllegalAccessException {
         if (!isLogin(session)) {
             throw new NullPointerException("/error/unauthorized");
         }
         User sessionUser = getUserFromSession(session);
-        Answer answer = answerRepository.getOne(id);
+        Answer answer = findAnswer(id);
         if (!answer.isWriterEquals(sessionUser)) {
             throw new IllegalAccessException("/error/unauthorized");
         }

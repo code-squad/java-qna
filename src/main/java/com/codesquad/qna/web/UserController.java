@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.persistence.EntityNotFoundException;
@@ -107,7 +108,7 @@ public class UserController {
         return "/user/updateForm";
     }
 
-    @PostMapping("/{id}/update")
+    @PutMapping("/{id}/update")
     public String updateUser(@PathVariable Long id, User updateUser, HttpSession session) throws IllegalAccessException {
         Optional<Object> sessionedUser = HttpSessionUtils.getObject(session);
         if (!sessionedUser.isPresent()) {
@@ -116,8 +117,6 @@ public class UserController {
 
         User user = (User) sessionedUser.get();
         user.checkIllegalAccess(id);
-
-
         user.update(updateUser);
         userRepository.save(user);
         return REDIRECT_USERS_LIST;

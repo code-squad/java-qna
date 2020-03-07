@@ -95,7 +95,6 @@ public class QuestionController {
                 questionRepository.save(question);
                 return "redirect:/";
             }
-            System.out.println("답변이 있는 경우 지울 수 없습니다.");
             return "redirect:/questions/{id}";
         } catch (IllegalStateException e) {
             model.addAttribute("errorMessage", e.getMessage());

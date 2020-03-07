@@ -19,6 +19,7 @@ public class Answer {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_question"))
     private Question question;
+    private boolean deleted;
 
     public Answer() {
     }
@@ -28,6 +29,15 @@ public class Answer {
         this.contents = contents;
         this.writer = writer;
         this.createdDate = LocalDateTime.now();
+        deleted = false;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     public Long getId() {
@@ -80,5 +90,9 @@ public class Answer {
             return "";
         }
         return createdDate.format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:ss"));
+    }
+
+    public void delete() {
+        deleted = true;
     }
 }

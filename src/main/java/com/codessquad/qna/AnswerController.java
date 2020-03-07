@@ -69,18 +69,30 @@ public class AnswerController {
     @DeleteMapping("/{questionId}/answers/{id}/{writer}/delete")
     public String delete(@PathVariable("id") Long answerId,
                          @PathVariable String writer,
-                         HttpSession httpSession) {
+                         HttpSession httpSession,
+                         Model model) {
+        try {
+            hasPermission(httpSession, writer);
+            Answer answer = findAnswerById(answerRepository, answerId);
+            answer.delete();
+            answerRepository.save(answer);
+            return "redirect:/questions/{questionId}";
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/user/login";
+        }
+    }
+
+    private void hasPermission(HttpSession httpSession, String writer) {
         User sessionedUser = HttpSessionUtils.getUserFromSession(httpSession);
 
         if (!HttpSessionUtils.isLoginUser(sessionedUser)) {
-            return "redirect:/users/loginForm";
+            throw new IllegalStateException("일치하는 아이디가 없습니다.");
         }
 
         if (sessionedUser.notMatchWriter(writer)) {
-            return "redirect:/users/loginForm";
+            throw new IllegalStateException("작성자만 삭제할 수 있습니다.");
         }
-        answerRepository.delete(findAnswerById(answerRepository, answerId));
-        return "redirect:/questions/{questionId}";
     }
 
     private Answer findAnswerById(AnswerRepository answerRepository, Long answerId) {

@@ -118,18 +118,18 @@ public class Question {
         return createdDate.format(DateTimeFormatter.ofPattern("YYYY-MM-SS HH:mm:ss"));
     }
 
-    public void delete() {
-        deleted = true;
-    }
-
     public boolean notHasAnswers() {
         return answers.isEmpty();
     }
 
     public boolean isSameBetweenWritersOfAnswers() {
-        for (Answer each : answers) {
-            if (each.getWriter() == writer) return true;
-        }
-        return false;
+        long countOfSameWriter = answers.stream()
+                .filter(answer -> answer.getWriter() == writer).count();
+        return countOfSameWriter == answers.size();
+    }
+
+    public void delete() {
+        deleted = true;
+        answers.forEach(Answer::delete);
     }
 }

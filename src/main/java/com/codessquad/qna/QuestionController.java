@@ -90,8 +90,12 @@ public class QuestionController {
         try {
             hasPermission(httpSession, writer);
             Question question = findQuestionById(questionRepository, id);
-            question.delete();
-            questionRepository.save(question);
+            if (question.notHasAnswers()) {
+                question.delete();
+                questionRepository.save(question);
+                return "redirect:/questions/{id}";
+            }
+            System.out.println("답변이 있는 경우 지울 수 없습니다.");
             return "redirect:/";
         } catch (IllegalStateException e) {
             model.addAttribute("errorMessage", e.getMessage());

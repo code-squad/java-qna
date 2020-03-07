@@ -121,4 +121,8 @@ public class Question {
     public void delete() {
         deleted = true;
     }
+
+    public boolean notHasAnswers() {
+        return answers.isEmpty();
+    }
 }

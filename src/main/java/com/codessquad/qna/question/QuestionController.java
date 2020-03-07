@@ -106,7 +106,7 @@ public class QuestionController {
    * Return : /questions/show
    */
   @DeleteMapping("/{id}")
-  public String delete(@PathVariable Long id, Model model, HttpSession session) {
+  public String delete(@PathVariable Long id, HttpSession session) {
     log.info("### delete()");
 
     User sessionedUser = CommonUtils.getSessionedUser(session);

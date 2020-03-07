@@ -11,6 +11,7 @@ public enum CustomErrorCode {
   USER_NOT_MATCHED("다른 User 입니다."),
 
   QUESTION_NOT_EXIST("존재하지 않는 Question id 입니다."),
+  ANSWER_NOT_EXIST("존재하지 않는 Answer id 입니다."),
 
   BAD_REQUEST(HttpStatus.BAD_REQUEST.getReasonPhrase());
 

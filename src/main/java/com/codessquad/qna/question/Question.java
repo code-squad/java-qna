@@ -34,10 +34,6 @@ public class Question {
     this.createdDateTime = question.createdDateTime;
   }
 
-  public boolean validateUserId(User user) {
-    return this.userId.equals(user.getUserId());
-  }
-
   public String getCreatedDateTime() {
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     return createdDateTime.format(dateTimeFormatter);

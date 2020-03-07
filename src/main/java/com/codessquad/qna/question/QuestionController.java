@@ -1,7 +1,7 @@
 package com.codessquad.qna.question;
 
+import com.codessquad.qna.commons.CommonUtils;
 import com.codessquad.qna.commons.CustomErrorCode;
-import com.codessquad.qna.commons.Utils;
 import com.codessquad.qna.errors.QuestionException;
 import com.codessquad.qna.user.User;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.Optional;
 
 @Slf4j
 @Controller
@@ -29,7 +28,7 @@ public class QuestionController {
   @GetMapping("/form")
   public String form(Model model, HttpSession session) {
     log.info("### sessionedUser : " + session.getAttribute("sessionedUser"));
-    Utils.getSessionedUser(session);
+    CommonUtils.getSessionedUser(session);
 
     return "/questions/form";
   }
@@ -43,10 +42,10 @@ public class QuestionController {
   public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
     log.info("### sessionedUser : " + session.getAttribute("sessionedUser"));
 
-    User sessionedUser = Utils.getSessionedUser(session);
-    Question question = getQuestion(id, CustomErrorCode.QUESTION_NOT_EXIST);
+    User sessionedUser = CommonUtils.getSessionedUser(session);
+    Question question = CommonUtils.getQuestion(questionRepository, id);
 
-    if (question.validateUserId(sessionedUser)) {
+    if (sessionedUser.validateUserId(question.getUserId())) {
       model.addAttribute("question", question);
       return "/questions/update";
     }
@@ -61,7 +60,7 @@ public class QuestionController {
    */
   @PostMapping("")
   public String create(Question question, HttpSession session) {
-    Utils.getSessionedUser(session);
+    CommonUtils.getSessionedUser(session);
     questionRepository.save(question);
 
     return "redirect:/";
@@ -75,7 +74,7 @@ public class QuestionController {
   @GetMapping("/{id}")
   public String show(@PathVariable Long id, Model model) {
     log.info("### show()");
-    Question question = getQuestion(id, CustomErrorCode.BAD_REQUEST);
+    Question question = CommonUtils.getQuestion(questionRepository, id);
     model.addAttribute("question", question);
 
     return "/questions/show";
@@ -89,7 +88,7 @@ public class QuestionController {
   @PutMapping("/{id}")
   public String update(@PathVariable Long id, Question question, Model model) {
     log.info("### update()");
-    Question origin = getQuestion(id, CustomErrorCode.QUESTION_NOT_EXIST);
+    Question origin = CommonUtils.getQuestion(questionRepository, id);
     origin.update(question);
     questionRepository.save(question);
 
@@ -105,26 +104,14 @@ public class QuestionController {
   public String delete(@PathVariable Long id, Model model, HttpSession session) {
     log.info("### delete()");
 
-    User sessionedUser = Utils.getSessionedUser(session);
-    Question question = getQuestion(id, CustomErrorCode.QUESTION_NOT_EXIST);
+    User sessionedUser = CommonUtils.getSessionedUser(session);
+    Question question = CommonUtils.getQuestion(questionRepository, id);
 
-    if (question.validateUserId(sessionedUser)) {
+    if (sessionedUser.validateUserId(question.getUserId())) {
       questionRepository.delete(question);
       return "redirect:/";
     }
 
     throw new QuestionException(CustomErrorCode.USER_NOT_MATCHED);
-  }
-
-  /**
-   * Feat : Question 을 가져옵니다.
-   * Desc : question 이 존재하지 않으면 customErrorCode 에 따라 처리합니다.
-   * Return : id 에 매칭된 question.
-   */
-  private Question getQuestion(Long id, CustomErrorCode customErrorCode) {
-    Optional<Question> optionalUser = questionRepository.findById(id);
-    Question question = optionalUser.orElseThrow(() -> new QuestionException(customErrorCode));
-
-    return question;
   }
 }

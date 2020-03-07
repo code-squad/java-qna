@@ -32,4 +32,8 @@ public class User {
   public boolean validatePassword(String password) {
     return this.password.equals(password);
   }
+
+  public boolean validateUserId(String userId) {
+    return this.userId.equals(userId);
+  }
 }

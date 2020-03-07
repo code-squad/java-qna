@@ -33,13 +33,6 @@
         <div class="col-md-3"></div>
         <div class="col-md-6 text-center">
           <ul class="pagination center-block" style="display:inline-block;">
-            <li><a href="#">«</a></li>
-            <li><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li><a href="#">»</a></li>
           </ul>
         </div>
         {{#loginUser}}
@@ -130,5 +123,33 @@
 -->
 
 {{> script-references}}
+<script>
+  const maxPage = Number.parseInt('{{maxPage}}');
+  const pageParam = Number.parseInt(new URLSearchParams(window.location.search).get('page'));
+  const currentPage = Number.isNaN(pageParam) ? 1 : pageParam;
+
+  const firstLocatePage =
+      currentPage + 2 > maxPage && currentPage > 5 ? maxPage - 4
+          : currentPage - 2 > 0 ? currentPage - 2
+          : 1;
+  const lastLocatePage =
+      currentPage < 3 && maxPage < 5 ? maxPage
+          : currentPage < 3 && maxPage > 4 ? 5
+          : currentPage + 2 < maxPage ? currentPage + 2
+              : maxPage;
+
+  console.log(currentPage, firstLocatePage, lastLocatePage);
+
+  if (currentPage > 3) {
+    $('.pagination.center-block').prepend('<li><a href=\"?page=' + (firstLocatePage - 1) + '\">«</a></li>');
+  }
+  for (let i = firstLocatePage; i <= lastLocatePage; i++) {
+    $('.pagination.center-block').append('<li id=\"page' + i + '"\><a href=\"?page=' + i + '\">' + i + '</a></li>');
+  }
+  if (lastLocatePage < maxPage) {
+    $('.pagination.center-block').append('<li><a href=\"?page=' + (lastLocatePage + 1) + '\">»</a></li>');
+  }
+  $('#page' + currentPage).find($('a')).css('background-color', '#428bca').css('color', '#FFF');
+</script>
 </body>
 </html>

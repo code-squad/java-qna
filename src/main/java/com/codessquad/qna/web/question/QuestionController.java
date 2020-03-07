@@ -8,6 +8,8 @@ import com.codessquad.qna.domain.question.AnswerRepository;
 import com.codessquad.qna.domain.question.Question;
 import com.codessquad.qna.domain.question.QuestionRepository;
 import com.codessquad.qna.domain.user.User;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +32,18 @@ public class QuestionController {
     }
 
     @GetMapping("")
-    public String goIndexPage(Model model) {
-        model.addAttribute("questions", questionRepository.findAllByIsDeletedFalseOrderByCreatedDateTimeDesc());
+    public String goQuestionPage(Model model, @RequestParam(defaultValue = "1", required = false) int page) {
+        final int totalCount = questionRepository.countByIsDeletedFalse();
+        final int size = 15;
+        final int maxPage = totalCount / size + (totalCount % size == 0 ? 0 : 1);
+
+        if (page > maxPage || page < 1) {
+            return "redirect:/questions?page=" + maxPage;
+        }
+
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("createdDateTime").descending());
+        model.addAttribute("questions", questionRepository.findAllByIsDeletedFalse(pageRequest).getContent());
+        model.addAttribute("maxPage", maxPage);
         return "main";
     }
 

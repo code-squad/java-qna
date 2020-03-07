@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
+@RequestMapping("/questions")
 public class QuestionController {
 
     private final QuestionRepository questionRepository;
@@ -28,18 +29,18 @@ public class QuestionController {
         this.answerRepository = answerRepository;
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public String goIndexPage(Model model) {
         model.addAttribute("questions", questionRepository.findAllByIsDeletedFalseOrderByCreatedDateTimeDesc());
         return "main";
     }
 
-    @GetMapping("/questions/form")
+    @GetMapping("/form")
     public String goQuestionForm() {
         return "questions/form";
     }
 
-    @PostMapping("/questions")
+    @PostMapping("")
     public String createQuestion(HttpSession session, @RequestParam String title, @RequestParam String contents) {
         User loginUser = HttpSessionUtils.getUserFromSession(session).orElseThrow(LoginRequiredException::new);
         Question question = new Question(loginUser, title, contents);
@@ -47,7 +48,7 @@ public class QuestionController {
         return "redirect:/";
     }
 
-    @GetMapping("/questions/{id}")
+    @GetMapping("/{id}")
     public String showQuestion(@PathVariable Long id, Model model, HttpSession session) {
         User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
         Question question = getQuestionIfExist(id);
@@ -60,7 +61,7 @@ public class QuestionController {
         return "questions/show";
     }
 
-    @GetMapping("/questions/{id}/form")
+    @GetMapping("/{id}/form")
     public String goQuestionModifyForm(@PathVariable Long id, Model model, HttpSession session) {
         User loginUser = HttpSessionUtils.getUserFromSession(session).orElseThrow(LoginRequiredException::new);
         Question question = getQuestionIfExist(id);
@@ -73,7 +74,7 @@ public class QuestionController {
         return "questions/modify-form";
     }
 
-    @PutMapping("/questions/{id}")
+    @PutMapping("/{id}")
     public String updateQuestion(@PathVariable Long id,
                                  HttpSession session,
                                  @RequestParam String title,
@@ -90,7 +91,7 @@ public class QuestionController {
         return "redirect:/questions/" + id;
     }
 
-    @DeleteMapping("/questions/{id}")
+    @DeleteMapping("/{id}")
     @Transactional
     public String deleteQuestion(@PathVariable Long id, HttpSession session) {
         User loginUser = HttpSessionUtils.getUserFromSession(session).orElseThrow(LoginRequiredException::new);

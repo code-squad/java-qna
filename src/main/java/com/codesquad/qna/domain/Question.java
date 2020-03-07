@@ -68,6 +68,11 @@ public class Question {
         this.createdDateTime = createdDateTime;
     }
 
+    public void update(Question updateQuestion) {
+        this.title = updateQuestion.title;
+        this.contents = updateQuestion.contents;
+    }
+
     @Override
     public String toString() {
         return "Question{" +

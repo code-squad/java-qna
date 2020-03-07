@@ -1,5 +1,6 @@
 package com.codessquad.qna.question;
 
+import com.codessquad.qna.answer.AnswerRepository;
 import com.codessquad.qna.commons.CommonUtils;
 import com.codessquad.qna.commons.CustomErrorCode;
 import com.codessquad.qna.errors.QuestionException;
@@ -19,6 +20,9 @@ public class QuestionController {
 
   @Autowired
   private QuestionRepository questionRepository;
+
+  @Autowired
+  private AnswerRepository answerRepository;
 
   /**
    * Feat : Question 작성을 위한 hbs 로 이동합니다.
@@ -76,6 +80,7 @@ public class QuestionController {
     log.info("### show()");
     Question question = CommonUtils.getQuestion(questionRepository, id);
     model.addAttribute("question", question);
+    model.addAttribute("answers", answerRepository.findByQuestionId(question.getId()));
 
     return "/questions/show";
   }

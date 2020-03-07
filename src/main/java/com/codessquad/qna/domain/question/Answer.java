@@ -1,7 +1,7 @@
-package com.codessquad.qna.web.question;
+package com.codessquad.qna.domain.question;
 
 import com.codessquad.qna.common.constants.FormatConstants;
-import com.codessquad.qna.web.user.User;
+import com.codessquad.qna.domain.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

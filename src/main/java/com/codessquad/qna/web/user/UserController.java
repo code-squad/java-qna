@@ -5,6 +5,8 @@ import com.codessquad.qna.common.constants.ErrorConstants;
 import com.codessquad.qna.common.error.exception.CannotEditOtherUserInfoException;
 import com.codessquad.qna.common.error.exception.UserNotFoundException;
 import com.codessquad.qna.common.utils.HttpSessionUtils;
+import com.codessquad.qna.domain.user.User;
+import com.codessquad.qna.domain.user.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;

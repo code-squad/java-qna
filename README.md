@@ -156,3 +156,4 @@
 # STEP6
 
 1. Field Injection을 사용할 경우 Spring에 의존하게 되어 생성자 Dependency Injection을 사용하였습니다.
+2. package 구조를 변경하였습니다. domain에 관련된 클래스는 domain패키지에 저장되도록 하였습니다.

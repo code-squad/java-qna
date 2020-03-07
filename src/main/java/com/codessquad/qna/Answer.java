@@ -21,6 +21,8 @@ public class Answer {
 
     @NotEmpty
     private String contents;
+
+    private boolean deleted;
     private LocalDateTime postingTime;
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
 
@@ -30,6 +32,7 @@ public class Answer {
         this.writer = writer;
         this.question = question;
         this.contents = contents;
+        this.deleted = false;
         this.postingTime = LocalDateTime.now();
     }
 
@@ -49,6 +52,10 @@ public class Answer {
         return contents;
     }
 
+    public boolean getDeleted() {
+        return deleted;
+    }
+
     public String getPostingTime() {
         return postingTime.format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT));
     }
@@ -56,6 +63,10 @@ public class Answer {
     public void update(String contents) {
         this.contents = contents;
         this.postingTime = LocalDateTime.now();
+    }
+
+    public void delete() {
+        this.deleted = true;
     }
 
     public boolean isWriterEquals(User sessionUser) {
@@ -67,8 +78,8 @@ public class Answer {
         return "Answer{" +
                 "id=" + id +
                 ", writer=" + writer +
-                ", question=" + question +
                 ", contents='" + contents + '\'' +
+                ", deleted=" + deleted +
                 ", postingTime=" + postingTime +
                 '}';
     }

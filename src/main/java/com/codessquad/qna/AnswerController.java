@@ -64,7 +64,8 @@ public class AnswerController {
     public String deleteAnswer(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
         try {
             Answer answer = getVerifiedAnswer(id, session);
-            answerRepository.delete(answer);
+            answer.delete();
+            answerRepository.save(answer);
             return "redirect:/questions/" + questionId;
         } catch (IllegalAccessException | EntityNotFoundException e) {
             log.info("Error Code > " + e.toString());

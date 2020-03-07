@@ -21,15 +21,14 @@ public class Question {
 
     @NotEmpty
     private String contents;
-    
+
     private boolean deleted;
+    private LocalDateTime postingTime;
+    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
 
     @OneToMany(mappedBy = "question")
     @OrderBy("id ASC")
     private List<Answer> answers;
-
-    private LocalDateTime postingTime;
-    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
 
     public Question() {}
 
@@ -88,7 +87,12 @@ public class Question {
         this.contents = contents;
     }
 
-    public void delete() {
+    public void delete() throws IllegalAccessException {
+        for (Answer answer : answers) {
+            if (!writer.equals(answer.getWriter())) {
+                throw new IllegalAccessException("/error/forbidden");
+            }
+        }
         this.deleted = true;
     }
 

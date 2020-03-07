@@ -28,7 +28,7 @@ public class QuestionRepositoryTest {
     void 페이징이_잘되는지_테스트() {
         final int addPostCount = 100;
         final int pageSize = 15;
-        final int defaultSize = questionRepository.findAllByIsDeletedFalse().size();
+        final int defaultSize = questionRepository.countByIsDeletedFalse();
 
         int questionSize = addPostCount + defaultSize;
         int pageCount = questionSize / pageSize;

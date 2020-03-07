@@ -4,6 +4,8 @@ import com.codessquad.qna.common.constants.ErrorConstants;
 import com.codessquad.qna.common.error.exception.BusinessException;
 import com.codessquad.qna.common.error.exception.ErrorCode;
 import com.codessquad.qna.common.error.exception.LoginRequiredException;
+import com.google.common.base.Throwables;
+import org.apache.tomcat.util.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -72,9 +74,12 @@ public class GlobalExceptionHandler {
      * 처리되지 않은 에러
      */
     @ExceptionHandler(Exception.class)
-    protected ResponseEntity<ErrorResponse> handleException(Exception e) {
+    protected ResponseEntity<String> handleException(Exception e) {
         log.error("handleEntityNotFoundException", e);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        response.setStackTrace(Throwables.getStackTraceAsString(e));
+        final HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setContentType(new MediaType("text", "html", StandardCharsets.UTF_8));
+        return new ResponseEntity<>(response.toHtmlString(), responseHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

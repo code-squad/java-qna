@@ -1,6 +1,7 @@
 package com.codessquad.qna.common.error;
 
 import com.codessquad.qna.common.error.exception.ErrorCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
@@ -14,6 +15,7 @@ public class ErrorResponse {
     private String message;
     private List<FieldError> errors;
     private String code;
+    private String stackTrace;
 
     private ErrorResponse(final ErrorCode code, final List<FieldError> errors) {
         this.status = code.getStatus();
@@ -63,14 +65,26 @@ public class ErrorResponse {
         return code;
     }
 
+    public String getStackTrace() {
+        return stackTrace;
+    }
+
+    public void setStackTrace(String stackTrace) {
+        this.stackTrace = stackTrace;
+    }
+
     public String toHtmlString() {
         return "<html><head><title>[" +
                 this.status +
-                "]</title></head>" +
+                "] " +
+                HttpStatus.valueOf(this.status).getReasonPhrase() +
+                "</title></head>" +
                 "<body><h1>Whitelabel Error Page</h1>" +
                 "<img src=\"https://i.imgur.com/aBJdxJz.png\" alt=\"어피치\" width=\"300\" height=\"300\"><p>" +
                 this.message +
-                "</p></body></html>";
+                "</p><pre>" +
+                this.stackTrace +
+                "</pre></body></html>";
     }
 
     public static class FieldError {

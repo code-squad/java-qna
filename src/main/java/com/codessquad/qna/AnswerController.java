@@ -16,8 +16,8 @@ public class AnswerController {
     @Autowired
     private QuestionRepository questionRepository;
 
-    @PostMapping("/{question.id}/answers")
-    public String answer(@PathVariable("question.id") Long questionId,
+    @PostMapping("/{questionId}/answers")
+    public String answer(@PathVariable Long questionId,
                          @RequestParam String contents,
                          HttpSession httpSession) {
         User sessionedUser = HttpSessionUtils.getUserFromSession(httpSession);
@@ -27,13 +27,13 @@ public class AnswerController {
         }
 
         Question question = findQuestion(questionRepository, questionId);
-        Answer answer = new Answer(question, contents, sessionedUser.getName());
+        Answer answer = new Answer(question, contents, sessionedUser);
         answerRepository.save(answer);
-        return "redirect:/questions/{question.id}";
+        return "redirect:/questions/{questionId}";
     }
 
-    @GetMapping("/{question.id}/answers/{id}/{writer}/form")
-    public String updateForm(@PathVariable("question.id") Long questionId,
+    @GetMapping("/{questionId}/answers/{id}/{writer}/form")
+    public String updateForm(@PathVariable Long questionId,
                              @PathVariable("id") Long answerId,
                              @PathVariable String writer,
                              HttpSession httpSession,
@@ -49,12 +49,11 @@ public class AnswerController {
         }
 
         model.addAttribute("question", findQuestion(questionRepository, questionId));
-        model.addAttribute("answers", answerRepository.findByQuestionId(questionId));
         model.addAttribute("answer", findAnswer(answerRepository, answerId));
         return "answer/updateForm";
     }
 
-    @PutMapping("/{question.id}/answers/{answer.id}/update")
+    @PutMapping("/{questionId}/answers/{answer.id}/update")
     public String update(@PathVariable("answer.id") Long answerId,
                          String contents,
                          HttpSession httpSession) {
@@ -67,10 +66,10 @@ public class AnswerController {
         Answer answer = findAnswer(answerRepository, answerId);
         answer.update(contents);
         answerRepository.save(answer);
-        return "redirect:/questions/{question.id}";
+        return "redirect:/questions/{questionId}";
     }
 
-    @DeleteMapping("/{question.id}/answers/{id}/{writer}/delete")
+    @DeleteMapping("/{questionId}/answers/{id}/{writer}/delete")
     public String delete(@PathVariable("id") Long answerId,
                          @PathVariable String writer,
                          HttpSession httpSession) {
@@ -85,7 +84,7 @@ public class AnswerController {
         }
 
         answerRepository.delete(findAnswer(answerRepository, answerId));
-        return "redirect:/questions/{question.id}";
+        return "redirect:/questions/{questionId}";
     }
 
     private Answer findAnswer(AnswerRepository answerRepository, Long answerId) {

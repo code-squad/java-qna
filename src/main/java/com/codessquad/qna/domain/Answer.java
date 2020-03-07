@@ -9,9 +9,11 @@ public class Answer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String writer;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
+    private User writer;
     private String contents;
-    private LocalDateTime date;
+    private LocalDateTime CreatedDate;
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_question"))
     private Question question;
@@ -19,11 +21,11 @@ public class Answer {
     public Answer() {
     }
 
-    public Answer(Question question, String contents, String writer) {
+    public Answer(Question question, String contents, User writer) {
         this.contents = contents;
         this.writer = writer;
         this.question = question;
-        this.date = LocalDateTime.now();
+        this.CreatedDate = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -34,11 +36,11 @@ public class Answer {
         this.id = id;
     }
 
-    public String getWriter() {
+    public User getWriter() {
         return writer;
     }
 
-    public void setWriter(String writer) {
+    public void setWriter(User writer) {
         this.writer = writer;
     }
 
@@ -50,12 +52,12 @@ public class Answer {
         this.contents = contents;
     }
 
-    public LocalDateTime getDate() {
-        return date;
+    public LocalDateTime getCreatedDate() {
+        return CreatedDate;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
+    public void setCreatedDate(LocalDateTime date) {
+        this.CreatedDate = date;
     }
 
     public Question getQuestion() {
@@ -68,6 +70,6 @@ public class Answer {
 
     public void update(String contents) {
         this.contents = contents;
-        this.date = LocalDateTime.now();
+        this.CreatedDate = LocalDateTime.now();
     }
 }

@@ -50,7 +50,7 @@
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
                         <p class="qna-comment-count"><strong></strong>개의 의견</p>
-                        {{#each answers}}
+                        {{#answer}}
                         <div class="qna-comment-slipp-articles">
                             <article class="article" id="answer-1405">
                                 <div class="article-header">
@@ -59,8 +59,9 @@
                                              class="article-author-thumb" alt="">
                                     </div>
                                     <div class="article-header-text">
-                                        <a href="/users/1/자바지기" class="article-author-name">{{writer}}</a>
-                                        <a href="#answer-1434" class="article-header-time" title="퍼머링크">{{date}}</a>
+                                        <a href="/users/1/자바지기" class="article-author-name">{{writer.name}}</a>
+                                        <a href="#answer-1434" class="article-header-time"
+                                           title="퍼머링크">{{createdDate}}</a>
                                     </div>
                                 </div>
                                 <div class="article-doc comment-doc">
@@ -82,7 +83,7 @@
                                     </ul>
                                 </div>
                             </article>
-                            {{/each}}
+                            {{/answer}}
                             <form class="submit-write" action="/questions/{{question.id}}/answers/{{answer.id}}/update"
                                   method="post">
                                 <input type="hidden" name="_method" value="PUT"/>

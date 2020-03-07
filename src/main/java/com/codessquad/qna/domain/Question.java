@@ -11,7 +11,7 @@ public class Question {
 
     @Column(nullable = false)
     private String title;
-    private LocalDateTime date;
+    private LocalDateTime createdDate;
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     private User writer;
@@ -24,7 +24,7 @@ public class Question {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-        date = LocalDateTime.now();
+        createdDate = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -43,12 +43,12 @@ public class Question {
         this.title = title;
     }
 
-    public LocalDateTime getDate() {
-        return date;
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
+    public void setCreatedDate(LocalDateTime date) {
+        this.createdDate = date;
     }
 
     public User getWriter() {
@@ -72,8 +72,8 @@ public class Question {
         return "Question{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                ", date=" + date +
-                ", writer='" + writer + '\'' +
+                ", date=" + createdDate +
+                ", writer='" + writer.getName() + '\'' +
                 ", contents='" + contents + '\'' +
                 '}';
     }
@@ -81,6 +81,6 @@ public class Question {
     public void update(String title, String contents) {
         this.title = title;
         this.contents = contents;
-        this.date = LocalDateTime.now();
+        this.createdDate = LocalDateTime.now();
     }
 }

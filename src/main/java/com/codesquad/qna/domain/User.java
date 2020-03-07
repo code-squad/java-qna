@@ -64,15 +64,11 @@ public class User {
         this.email = updateUser.email;
     }
 
-    public boolean isPasswordEquals(User updateUser) {
-        return updateUser != null && this.password.equals(updateUser.password);
-    }
-
     public boolean isPasswordEquals(String password) {
         return this.password.equals(password);
     }
 
-    public void checkIllegalAccess(Long id) throws IllegalAccessException {
+    public void hasPermission(Long id) throws IllegalAccessException {
         if (!this.id.equals(id)) {
             throw new IllegalAccessException("잘못된 접근입니다");
         }

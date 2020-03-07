@@ -64,13 +64,16 @@ public class Question {
         return createdDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }
 
-    public void setCreatedDateTime(LocalDateTime createdDateTime) {
-        this.createdDateTime = createdDateTime;
-    }
-
     public void update(Question updateQuestion) {
         this.title = updateQuestion.title;
         this.contents = updateQuestion.contents;
+        this.createdDateTime = LocalDateTime.now();
+    }
+
+    public void hasPermission(User user) throws IllegalAccessException {
+        if (!writer.equals(user.getUserId())) {
+            throw new IllegalAccessException("다른 사람의 글을 수정할 수 없습니다");
+        }
     }
 
     @Override

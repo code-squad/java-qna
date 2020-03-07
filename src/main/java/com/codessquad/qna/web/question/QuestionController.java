@@ -110,7 +110,7 @@ public class QuestionController {
     }
 
     private Question getQuestionIfExist(Long id) {
-        return questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
+        return questionRepository.findByIdAndIsDeleted(id, false).orElseThrow(QuestionNotFoundException::new);
     }
 
 }

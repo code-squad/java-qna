@@ -90,13 +90,13 @@ public class QuestionController {
         try {
             hasPermission(httpSession, writer);
             Question question = findQuestionById(questionRepository, id);
-            if (question.notHasAnswers()) {
+            if (question.notHasAnswers() || question.isSameBetweenWritersOfAnswers()) {
                 question.delete();
                 questionRepository.save(question);
-                return "redirect:/questions/{id}";
+                return "redirect:/";
             }
             System.out.println("답변이 있는 경우 지울 수 없습니다.");
-            return "redirect:/";
+            return "redirect:/questions/{id}";
         } catch (IllegalStateException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "/user/login";

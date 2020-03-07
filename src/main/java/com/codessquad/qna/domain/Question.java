@@ -125,4 +125,11 @@ public class Question {
     public boolean notHasAnswers() {
         return answers.isEmpty();
     }
+
+    public boolean isSameBetweenWritersOfAnswers() {
+        for (Answer each : answers) {
+            if (each.getWriter() == writer) return true;
+        }
+        return false;
+    }
 }

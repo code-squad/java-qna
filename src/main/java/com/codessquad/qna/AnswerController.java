@@ -25,8 +25,7 @@ public class AnswerController {
         if (!HttpSessionUtils.isLoginUser(sessionedUser)) {
             return "redirect:/users/loginForm";
         }
-
-        Question question = findQuestion(questionRepository, questionId);
+        Question question = findQuestionById(questionRepository, questionId);
         Answer answer = new Answer(question, contents, sessionedUser);
         answerRepository.save(answer);
         return String.format("redirect:/questions/%d", questionId);
@@ -47,9 +46,8 @@ public class AnswerController {
         if (sessionedUser.notMatchWriter(writer)) {
             return "redirect:/users/loginForm";
         }
-
-        model.addAttribute("question", findQuestion(questionRepository, questionId));
-        model.addAttribute("answer", findAnswer(answerRepository, answerId));
+        model.addAttribute("question", findQuestionById(questionRepository, questionId));
+        model.addAttribute("answer", findAnswerById(answerRepository, answerId));
         return "answer/updateForm";
     }
 
@@ -62,8 +60,7 @@ public class AnswerController {
         if (!HttpSessionUtils.isLoginUser(user)) {
             return "redirect:/users/loginForm";
         }
-
-        Answer answer = findAnswer(answerRepository, answerId);
+        Answer answer = findAnswerById(answerRepository, answerId);
         answer.update(contents);
         answerRepository.save(answer);
         return "redirect:/questions/{questionId}";
@@ -82,17 +79,16 @@ public class AnswerController {
         if (sessionedUser.notMatchWriter(writer)) {
             return "redirect:/users/loginForm";
         }
-
-        answerRepository.delete(findAnswer(answerRepository, answerId));
+        answerRepository.delete(findAnswerById(answerRepository, answerId));
         return "redirect:/questions/{questionId}";
     }
 
-    private Answer findAnswer(AnswerRepository answerRepository, Long answerId) {
+    private Answer findAnswerById(AnswerRepository answerRepository, Long answerId) {
         return answerRepository.findById(answerId).orElseThrow(() ->
                 new IllegalStateException("There is no answer"));
     }
 
-    private Question findQuestion(QuestionRepository questionRepository, Long questionId) {
+    private Question findQuestionById(QuestionRepository questionRepository, Long questionId) {
         return questionRepository.findById(questionId).orElseThrow(() ->
                 new IllegalStateException("There is no question."));
     }

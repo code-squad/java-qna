@@ -13,6 +13,7 @@ public class Answer {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
     private User writer;
+    @Lob
     private String contents;
     private LocalDateTime createdDate;
     @ManyToOne
@@ -23,6 +24,7 @@ public class Answer {
     }
 
     public Answer(Question question, String contents, User writer) {
+        this.question = question;
         this.contents = contents;
         this.writer = writer;
         this.createdDate = LocalDateTime.now();

@@ -4,7 +4,6 @@ import com.codessquad.qna.common.error.exception.LoginRequiredException;
 import com.codessquad.qna.common.error.exception.QuestionNotFoundException;
 import com.codessquad.qna.common.utils.HttpSessionUtils;
 import com.codessquad.qna.web.user.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,11 +15,13 @@ import java.time.LocalDateTime;
 @RequestMapping("/questions/{questionId}/answers")
 public class AnswerController {
 
-    @Autowired
-    private QuestionRepository questionRepository;
+    private final QuestionRepository questionRepository;
+    private final AnswerRepository answerRepository;
 
-    @Autowired
-    private AnswerRepository answerRepository;
+    public AnswerController(QuestionRepository questionRepository, AnswerRepository answerRepository) {
+        this.questionRepository = questionRepository;
+        this.answerRepository = answerRepository;
+    }
 
     @GetMapping("/{answerId}/form")
     public String goUpdateAnswerForm(@PathVariable Long questionId,

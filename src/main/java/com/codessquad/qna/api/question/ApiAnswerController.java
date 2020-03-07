@@ -3,9 +3,11 @@ package com.codessquad.qna.api.question;
 import com.codessquad.qna.api.result.Result;
 import com.codessquad.qna.common.error.exception.LoginRequiredException;
 import com.codessquad.qna.common.utils.HttpSessionUtils;
-import com.codessquad.qna.web.question.*;
+import com.codessquad.qna.web.question.Answer;
+import com.codessquad.qna.web.question.AnswerRepository;
+import com.codessquad.qna.web.question.Question;
+import com.codessquad.qna.web.question.QuestionRepository;
 import com.codessquad.qna.web.user.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -14,11 +16,13 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("/api/questions/{questionId}/answers")
 public class ApiAnswerController {
 
-    @Autowired
-    private QuestionRepository questionRepository;
+    private final QuestionRepository questionRepository;
+    private final AnswerRepository answerRepository;
 
-    @Autowired
-    private AnswerRepository answerRepository;
+    public ApiAnswerController(QuestionRepository questionRepository, AnswerRepository answerRepository) {
+        this.questionRepository = questionRepository;
+        this.answerRepository = answerRepository;
+    }
 
     @PostMapping("")
     public Answer create(@PathVariable Long questionId, String comment, HttpSession session) {

@@ -152,3 +152,7 @@
    - AJAX로 추가된 답변의 삭제 기능도 같이 적용하였습니다.
    - question/show에서만 사용하는 Javascript를 별도의 파일로 분리하였습니다.
    - 이벤트 버블링, 이벤트 델리게이션에 대해서 더 공부해야할 필요성을 느꼈습니다.
+
+# STEP6
+
+1. Field Injection을 사용할 경우 Spring에 의존하게 되어 생성자 Dependency Injection을 사용하였습니다.

@@ -7,7 +7,6 @@ import com.codessquad.qna.common.error.exception.UserNotFoundException;
 import com.codessquad.qna.common.utils.HttpSessionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -25,8 +24,9 @@ public class UserController {
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public UserController(UserRepository userRepository) {this.userRepository = userRepository;}
 
     @GetMapping("/form")
     public String goUserForm() {

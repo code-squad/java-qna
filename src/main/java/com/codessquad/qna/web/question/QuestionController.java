@@ -4,9 +4,6 @@ import com.codessquad.qna.common.error.exception.LoginRequiredException;
 import com.codessquad.qna.common.error.exception.QuestionNotFoundException;
 import com.codessquad.qna.common.utils.HttpSessionUtils;
 import com.codessquad.qna.web.user.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,13 +16,13 @@ import java.util.List;
 @Controller
 public class QuestionController {
 
-    private static Logger log = LoggerFactory.getLogger(QuestionController.class);
+    private final QuestionRepository questionRepository;
+    private final AnswerRepository answerRepository;
 
-    @Autowired
-    private QuestionRepository questionRepository;
-
-    @Autowired
-    private AnswerRepository answerRepository;
+    public QuestionController(QuestionRepository questionRepository, AnswerRepository answerRepository) {
+        this.questionRepository = questionRepository;
+        this.answerRepository = answerRepository;
+    }
 
     @GetMapping("/")
     public String goIndexPage(Model model) {

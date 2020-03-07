@@ -157,3 +157,4 @@
 
 1. Field Injection을 사용할 경우 Spring에 의존하게 되어 생성자 Dependency Injection을 사용하였습니다.
 2. package 구조를 변경하였습니다. domain에 관련된 클래스는 domain패키지에 저장되도록 하였습니다.
+3. User Domain에 대한 테스트를 만들었습니다. UserController에서 사용하는 메소드를 테스트해보려고 하였습니다.

@@ -21,19 +21,16 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(String userId, String password, HttpSession httpSession) {
-        User user = userRepository.findByUserId(userId);
-
-        if (!HttpSessionUtils.isLoginUser(user)) {
-            return "redirect:/users/loginForm";
+    public String login(String userId, String password, HttpSession httpSession, Model model) {
+        try {
+            User user = userRepository.findByUserId(userId);
+            hasPermission(user, password);
+            httpSession.setAttribute(HttpSessionUtils.USER_SESSION_ID, user);
+            return "redirect:/";
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/user/login";
         }
-
-        if (user.notMatchPassword(password)) {
-            return "redirect:/users/loginForm";
-        }
-
-        httpSession.setAttribute(HttpSessionUtils.USER_SESSION_ID, user);
-        return "redirect:/";
     }
 
     @GetMapping("/logout")
@@ -67,18 +64,14 @@ public class UserController {
 
     @GetMapping("/{id}/form")
     public String updateForm(@PathVariable Long id, Model model, HttpSession httpSession) {
-        User sessionedUser = HttpSessionUtils.getUserFromSession(httpSession);
-
-        if (!HttpSessionUtils.isLoginUser(sessionedUser)) {
-            return "redirect:/users/loginForm";
+        try {
+            hasPermission(httpSession, id);
+            model.addAttribute("user", findUser(userRepository, id));
+            return "user/updateForm";
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/user/login";
         }
-
-        if (sessionedUser.notMatchId(id)) {
-            throw new IllegalStateException("Yon can't update another user.");
-        }
-
-        model.addAttribute("user", findUser(userRepository, id));
-        return "user/updateForm";
     }
 
     @PostMapping("/{id}/update")
@@ -88,34 +81,51 @@ public class UserController {
                              @RequestParam String checkPassword,
                              @RequestParam String name,
                              @RequestParam String email,
-                             HttpSession httpSession) {
+                             HttpSession httpSession,
+                             Model model) {
+        try {
+            hasPermission(httpSession, id);
+            User user = findUser(userRepository, id);
 
-        User sessionedUser = HttpSessionUtils.getUserFromSession(httpSession);
+            if (user.notMatchPassword(password)) {
+                return "redirect:/users/{id}/form";
+            }
 
-        if (!HttpSessionUtils.isLoginUser(sessionedUser)) {
-            return "redirect:/users/loginForm";
-        }
-
-        if (sessionedUser.notMatchId(id)) {
-            throw new IllegalStateException("Yon can't update another user.");
-        }
-
-        User user = findUser(userRepository, id);
-
-        if (user.notMatchPassword(password)) {
+            if (newPassword.equals(checkPassword)) {
+                user.update(name, email, newPassword);
+                userRepository.save(user);
+                return "redirect:/users";
+            }
             return "redirect:/users/{id}/form";
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/user/login";
         }
-
-        if (newPassword.equals(checkPassword)) {
-            user.update(name, email, newPassword);
-            userRepository.save(user);
-            return "redirect:/users";
-        }
-        return "redirect:/users/{id}/form";
     }
 
     private User findUser(UserRepository userRepository, Long id) {
         return userRepository.findById(id).orElseThrow(() ->
                 new IllegalStateException("There is no user."));
+    }
+
+    private void hasPermission(User user, String password) {
+        if (!HttpSessionUtils.isLoginUser(user)) {
+            throw new IllegalStateException("일치하는 아이디가 없습니다.");
+        }
+        if (user.notMatchPassword(password)) {
+            throw new IllegalStateException("비밀번호가 일치하지 않습니다.");
+        }
+    }
+
+    private void hasPermission(HttpSession httpSession, Long id) {
+        User sessionedUser = HttpSessionUtils.getUserFromSession(httpSession);
+
+        if (!HttpSessionUtils.isLoginUser(sessionedUser)) {
+            throw new IllegalStateException("일치하는 아이디가 없습니다.");
+        }
+
+        if (sessionedUser.notMatchId(id)) {
+            throw new IllegalStateException("다른 사용자의 정보는 변경할 수 없습니다.");
+        }
     }
 }

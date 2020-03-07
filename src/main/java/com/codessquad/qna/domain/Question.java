@@ -104,6 +104,6 @@ public class Question {
         if (createdDate == null) {
             return "";
         }
-        return createdDate.format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:ss"));
+        return createdDate.format(DateTimeFormatter.ofPattern("YYYY-MM-SS HH:mm:ss"));
     }
 }

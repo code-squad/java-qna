@@ -1,6 +1,7 @@
 package com.codessquad.qna.domain;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class User {
@@ -14,6 +15,13 @@ public class User {
     private String password;
     private String name;
     private String email;
+
+    @OneToMany(mappedBy = "writer")
+    @OrderBy("id asc")
+    private List<Question> questions;
+    @OneToMany(mappedBy = "writer")
+    @OrderBy("id asc")
+    private List<Answer> answers;
 
     public Long getId() {
         return id;
@@ -55,10 +63,20 @@ public class User {
         this.email = email;
     }
 
-    public void update(String name, String email, String newPassword) {
-        this.name = name;
-        this.email = email;
-        this.password = newPassword;
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
+    }
+
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
     }
 
     @Override
@@ -70,6 +88,12 @@ public class User {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 '}';
+    }
+
+    public void update(String name, String email, String newPassword) {
+        this.name = name;
+        this.email = email;
+        this.password = newPassword;
     }
 
     public boolean notMatchId(Long id) {

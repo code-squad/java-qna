@@ -89,9 +89,10 @@ public class Question {
 
     public void delete() throws IllegalAccessException {
         for (Answer answer : answers) {
-            if (!writer.equals(answer.getWriter())) {
+            if (!answer.isDeletable(this.writer)) {
                 throw new IllegalAccessException("/error/forbidden");
             }
+            answer.delete();
         }
         this.deleted = true;
     }

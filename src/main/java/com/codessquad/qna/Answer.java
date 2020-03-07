@@ -69,6 +69,10 @@ public class Answer {
         this.deleted = true;
     }
 
+    public boolean isDeletable(User QuestionWriter) {
+        return QuestionWriter.equals(this.writer);
+    }
+
     public boolean isWriterEquals(User sessionUser) {
         return sessionUser.equals(writer);
     }

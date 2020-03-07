@@ -3,223 +3,64 @@
 
 - https://wooody92.herokuapp.com/
 
-### 1. 구현 기능
+### 1. step3 피드백
 
-- 세션을 활용 한 아래 기능 구현
-  - 로그인
-  - 개인정보 수정
-  - 로그인 상태에서 질문, 수정, 삭제 기능 
-- @ManyToOn 매핑을 이용한 User-Question 연결
-- 테스트 데이터 추가
-- Step2 피드백 리팩토링
-  - LocalDateTime class 사용
-  - 불필요 주석제거
-  - wrapper class -> primitive type 변경
-  - JpaRepository와 CrudRepository의 차이
-- 401 unauthorized, 404 not found 에 대한 에러 페이지 추가
+   1. 일반적으로 **필드의 getter는 필드 class 그대로 반환하는 것이 컨벤션**이다. 원하는 포맷으로 반환하고자 한다면 새로 메서드를 추가하는 것이 바람직 하다.
 
-### 2. 회고
+   2. **유틸성 메서드의 경우 static import**하여 사용하면 코드 가독성을 높일 수 있다. (HttpSessionUtils.isLogin -> isLogin)
 
-어디서부터 어떻게 시작할까 막막할 때, pobi님의 동영상 강의가 방향을 잡아줘서 참 좋은 것 같다. 이번 스텝에서는 에러페이지 html 생성 후 예외처리로 해당 에러 url로 연결시켜 주었는데, 다음 스텝에서는 spring boot framework의 error controller class 학습 후 활용해봐야 겠다.
+   3. **Optional을 사용**하여 저장소의 해당 값 null 검사와 조회를 동시에 처리할 수 있다. (findById.get -> findById.orElseThrow)
+
+   4. NullPointerException 같은 경우는 버그로 인식되는 것이기에, try-catch로 정상 플로우를 타게하는 것이아니고 **해당 부분의 null 처리를 진행하고 필요하다면 다른 예외를 발생시켜 처리**하도록 한다. (Optional 처리와 일맥상통)
+
+   5. 예외처리 관련 참고 블로그
+
+      ```
+      https://cheese10yun.github.io/spring-guide-exception/
+      ```
+
+   6. 객체가 양방향 연관관계에서 toString Override 시 stackOverflow 이슈 주의해야 한다. toStringBuilder 클래스 등으로 해결 할 수 있다.
+
+   7. JpaRepository.delete에서 equals, hashmap 이 없음에도 객체를 인식하고 지우는 원리? 우선 해당 entity 조회 후 결과값을 제거하는 것으로 보이는데 잘모르겠음..
+
+      ```
+      https://jojoldu.tistory.com/235
+      ```
 
 -------
-# STEP 3
-# 인증 기반으로 구현하는 동영상
+# Step 4
 
-## [로그인 기능 구현](https://youtu.be/-J9f_LQILCY)
+## [회원과 질문간의 관계 매핑 및 생성일 추가](https://youtu.be/ByHw1gVQOe4)
 
-- 로그인 성공과 실패에 대한 처리 구현
-- 로그인이 성공할 경우 세션에 로그인 상태 저장
+- User와 Question 간의 관계를 매핑한다. User는 너무 많은 곳에 사용되기 때문에 User에서 관계를 매핑하기 보다는 Question에서 @ManyToOne 관계를 매핑하고 있다.
+- Question에 생성일을 추가한다.
 
-## [로그인 상태에 따른 메뉴 처리 및 로그아웃 ](https://youtu.be/9xmTAmyv_ic)
+## [질문 상세보기 기능](https://youtu.be/T9DWlpWMlF4)
 
-- 로그인 유무에 따라 상단 메뉴 처리.
-  - 로그인 상태이면 개인정보수정과 로그아웃 메뉴, 로그아웃 상태이면 로그인과 회원가입 메뉴가 나타나도록 처리함.
-- 로그아웃 기능 구현함
+- 질문 상세보기 기능 구현
 
-## [자기 자신의 정보만 수정](https://youtu.be/HfW5kvsaAEA)
+## [질문 수정, 삭제 기능 구현](https://youtu.be/asCxX-eUSvU)
 
-- 로그인한 사용자의 경우에 한해 자기 자신의 정보만 수정 가능하도록 구현
+- PUT(수정), DELETE(삭제) HTTP method를 활용해 수정, 삭제 기능을 구현
 
-## [중복 제거, clean code, 쿼리 보기 설정](https://youtu.be/DaqWKDvdmAk)
+## [수정/삭제 기능에 대한 보안 처리 및 LocalDateTime 설정](https://youtu.be/UMEmYw7EJ7g)
 
-- 개발 과정에서 발생한 중복 코드를 제거
-- SQL 쿼리를 볼 수 있도록 설정
+- Back End 프로그래밍에서 정말 중요한 보안 관련된 기능 구현
+- JPA에서 LocalDateTime을 DB 데이터타입과 제대로 매핑하지 못하는 이슈 해결
 
-## [질문하기, 질문 목록 기능 구현](https://youtu.be/aaC07qy3JXQ)
+## [답변 추가 및 목록 기능 구현](https://youtu.be/GvVFQom_SGs)
 
-- 로그인한 사용자에 대한 질문 가능하도록 구현
-- 질문 목록 기능 구현
+- 답변 기능을 담당할 Answer를 추가하고, Question, User와 매핑
+- Question에 Answer를 @OneToMany로 매핑. 이와 같이 매핑함으로써 질문 상세보기 화면에서 답변 목록이 동작하는 과정 공유
 
-------
+## [QuestionController 중복 코드 제거 리팩토링](https://youtu.be/g-nsT3NRK2o)
 
-# 로그인 기능 구현
-
-## 요구사항
-
-> 로그인이 가능해야 한다.
->
-> 현재 상태가 로그인 상태이면 상단 메뉴가 “로그아웃”, “개인정보수정”이 나타나야 하며, 로그아웃 상태이면 상단 메뉴가 “로그인”, “회원가입”이 나타나야 한다.
+- QuestionController에서 보안 처리를 위해 구현한 중복 코드를 제거
+- 중복을 Exception을 활용한 제거와 Result와 같은 새로운 클래스르 추가해 제거
 
 ------
 
-## 로그인 기능 구현 힌트
-
-- 로그인이 성공하는 경우 HttpSession에 로그인 정보 추가
-
-```
-session.setAttribute(“sessionedUser", user);
-코드복사
-```
-
-- Spring MVC에서 HttpSession 메소드의 인자로 전달 가능
-
-```java
-@PostMapping("/login")
-public String login(String userId, String password, HttpSession session) {
-   // 로그인 로직 구현
-}
-코드복사
-```
-
-- UserRepository에서 userId에 해당하는 데이터 조회
-
-```java
-public interface UserRepository extends JpaRepository<User, Long>{
-    User findByUserId(String userId);
-}
-코드복사
-```
-
-------
-
-## 로그인에 따른 메뉴 처리 구현 힌트
-
-#### 세션 설정
-
-- Mustache에서 HttpSession 데이터를 접근하기 위한 설정(application.properties)
-
-```
-handlebars.expose-session-attributes=true
-코드복사
-```
-
-- URL에 jsessionid가 추가되는 이슈를 해결하는 설정
-
-```
-// spring boot 1.5
-server.session.tracking-modes=cookie
-
-// spring boot 2.x
-server.servlet.session.tracking-modes=cookie
-코드복사
-```
-
-#### mustache/handlebars에서 if/else
-
-```
-{{^sessionedUser}}
-    [[HTML 구문]
-{{/sessionedUser}}
-{{#sessionedUser}}
-    [[HTML 구문]
-{{/sessionedUser}}
-코드복사
-```
-
-------
-
-# 테스트 데이터 추가
-
-로그인 기능을 테스트하기 위해 매번 회원가입을 먼저 해야 한다.
-
-로그인 기능을 테스트하는데 어려움이 있다. 테스트 데이터를 미리 추가한 후 개발을 하면 좋겠다.
-
-## 테스트 데이터 추가 방법
-
-- src/main/resources 폴더에 data.sql 파일을 추가한다.
-- 사용자 데이터를 다음과 같이 insert sql 쿼리를 추가한다.
-
-```
-INSERT INTO USER (id, user_id, password, name, email) VALUES (1, 'javajigi', 'test', '자바지기', 'javajigi@slipp.net');
-INSERT INTO USER (id, user_id, password, name, email) VALUES (2, 'sanjigi', 'test', '산지기', 'sanjigi@slipp.net');
-코드복사
-```
-
-- 권한 체크에 대한 테스트를 위해 2명 이상의 테스트 데이터를 추가한다.
-
-------
-
-# 개인정보 수정
-
-## 요구사항
-
-> 회원가입한 사용자의 정보를 수정할 수 있어야 한다.
->
-> 이름, 이메일만 수정할 수 있으며, 사용자 아이디는 수정할 수 없다.
->
-> 비밀번호가 일치하는 경우에만 수정 가능하다.
-
-------
-
-#### 힌트
-
-- HttpSession에 저장된 User 데이터를 가져온다.
-
-```
-Object value = session.getAttribute(”sessionedUser");
-if (value != null) {
-    User user = (User)value;
-}
-코드복사
-```
-
-- 로그인한 사용자와 수정하는 계정의 id가 같은 경우만 수정하도록 한다.
-- 다른 사용자의 정보를 수정하려는 경우 에러 페이지를 만든 후 에러 메시지를 출력한다.
-
-------
-
-# 질문 기능 구현 실습
-
-## 요구사항
-
-> 사용자는 질문을 할 수 있으며, 모든 질문을 볼 수 있다.
->
-> 단, 질문을 할 수 있는 사람은 로그인 사용자만 할 수 있다.
->
-> 질문한 사람은 자신의 글을 수정/삭제할 수 있다.
-
-------
-
-## 질문하기 구현 힌트
-
-- 로그인한 사용자는 질문하기 화면에 접근한다.
-- 로그인한 사용자가 누구인지 알 수 있기 때문에 질문하기 화면에서 글쓴이 입력 필드가 삭제해도 된다.
-- 로그인하지 않은 사용자는 로그인 페이지로 이동한다.
-- Question의 글쓴이 값은 User의 name 값을 가지는 것으로 구현한다.
-
-------
-
-## 질문 수정하기 구현 힌트
-
-- 전체적인 흐름은 개인정보수정의 흐름과 같다.
-- 수정화면 접근/수정하기 모두 로그인 사용자와 글쓴이의 사용자 아이디가 같은 경우에만 가능하다.
-- 로그인하지 않은 사용자 또는 자신의 글이 아닌 경우 "다른 사람의 글을 수정할 수 없다."와 같은 에러 메시지를 출력하는 페이지로 이동하도록 한다.
-- @PutMapping을 사용해 매핑한다.
-  - html에서 form submit을 할 때 ``과 같이 PUT method를 값으로 전송한다.
-
-------
-
-## 질문 삭제하기 구현 힌트
-
-- 삭제하기는 로그인 사용자와 글쓴이의 사용자 아이디가 같은 경우에만 가능하다.
-- 로그인하지 않은 사용자 또는 자신의 글이 아닌 경우 로그인 화면으로 이동한다.
-- @DeleteMapping을 사용해 매핑하고 구현한다.
-  - html에서 form submit을 할 때 ``와 같이 PUT method를 값으로 전송한다.
-
-------
-
-# User와 Question 연결 실습(선택)
+# User와 Question 연결
 
 ## 요구사항
 
@@ -231,13 +72,6 @@ if (value != null) {
 > 이 같은 문제 상황에 대해 원론적으로 문제가 발생하지 않도록 해결한다.
 
 ## 힌트
-
-#### User의 id를 저장하는 방법
-
-- User의 primary key인 id 값을 Question에 저장한다.
-- Question을 조회할 때 id 값을 통해 User도 같이 조회한다.
-
-#### @ManyToOne 매핑을 사용하는 방법
 
 - Question에 다음과 같이 @ManyToOne 매핑을 한다.
 
@@ -257,7 +91,7 @@ public class Question {
 
 ------
 
-# Answer 구현하기 실습(선택)
+# 답변 추가하기
 
 ## 요구사항
 
@@ -287,3 +121,41 @@ public class Answer {
 - 답변 기능 구현을 담당할 AnswerController를 추가하고 구현한다.
 - 답변은 질문에 종속되기 때문에 URL 매핑을 다음과 같이 할 수 있다.
   - `/questions/{questionId}/answers/{id}`
+
+## @OneToMany 매핑 전략
+
+- Question이 Answer와 @OneToMany 관계를 가지도록 매핑한다.
+  - 다음 설정의 “question”은 Answer에서 @ManyToOne으로 매핑한 필드의 이름이다.
+
+```
+@OneToMany(mappedBy="question")
+코드복사
+```
+
+------
+
+## 답변 삭제하기
+
+> 자신이 쓴 답변에 한해 삭제할 수 있다.
+
+#### 힌트
+
+- 답변은 질문에 종속되기 때문에 URL 매핑을 다음과 같이 할 수 있다.
+  - "/questions/{questionId}/answers/{id}" URL로 @DeleteMapping 애노테이션으로 매핑한다.
+- HTML은 기본으로 GET과 POST만 지원한다. DELETE를 지원하지 않기 때문에 꼼수를 써야 한다.
+  - 삭제 버튼을 클릭하는 태그에서 _method 이름의 hidden 값으로 DELETE를 전달해야 서버측에서 @DeleteMapping을 사용할 수 있다.
+
+------
+
+## 질문 삭제하기 실습(선택)
+
+#### 요구사항
+
+> 질문 삭제 기능을 구현한다. 질문 삭제 기능의 요구사항은 다음과 같다.
+
+- 질문 데이터를 완전히 삭제하는 것이 아니라 데이터의 상태를 삭제 상태(deleted - boolean type)로 변경한다.
+- 로그인 사용자와 질문한 사람이 같은 경우 삭제 가능하다.
+- 답변이 없는 경우 삭제가 가능하다.
+- 질문자와 답변 글의 모든 답변자 같은 경우 삭제가 가능하다.
+- 질문을 삭제할 때 답변 또한 삭제해야 하며, 답변의 삭제 또한 삭제 상태(deleted)를 변경한다.
+- 질문자와 답변자가 다른 경우 답변을 삭제할 수 없다.

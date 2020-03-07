@@ -21,6 +21,8 @@ public class Question {
 
     @NotEmpty
     private String contents;
+    
+    private boolean deleted;
 
     @OneToMany(mappedBy = "question")
     @OrderBy("id ASC")
@@ -35,6 +37,7 @@ public class Question {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
+        this.deleted = false;
         this.postingTime = LocalDateTime.now();
     }
 
@@ -60,6 +63,10 @@ public class Question {
         return contents;
     }
 
+    public boolean getDeleted() {
+        return deleted;
+    }
+
     public LocalDateTime getPostingTime() {
         return postingTime;
     }
@@ -81,6 +88,10 @@ public class Question {
         this.contents = contents;
     }
 
+    public void delete() {
+        this.deleted = true;
+    }
+
     @Override
     public String toString() {
         return "Question{" +
@@ -88,6 +99,7 @@ public class Question {
                 ", writer=" + writer +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
+                ", deleted=" + deleted +
                 ", postingTime=" + postingTime +
                 '}';
     }

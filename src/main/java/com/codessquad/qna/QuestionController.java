@@ -80,7 +80,8 @@ public class QuestionController {
     public String deleteQuestion(@PathVariable Long id, HttpSession session) {
         try {
             Question question = getVerifiedQuestion(id, session);
-            questionRepository.delete(question);
+            question.delete();
+            questionRepository.save(question);
             return "redirect:/";
         } catch (IllegalAccessException | EntityNotFoundException e) {
             log.info("Error Code > " + e.toString());

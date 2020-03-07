@@ -9,6 +9,7 @@
       <div class="panel panel-default qna-list">
           <ul class="list">
               {{#each questions}}
+              {{^deleted}}
               <li>
                   <div class="wrap">
                       <div class="main">
@@ -27,6 +28,7 @@
                       </div>
                   </div>
               </li>
+              {{/deleted}}
               {{/each}}
           </ul>
           <div class="row">

@@ -64,10 +64,6 @@ public class User {
         this.email = updateUser.email;
     }
 
-    private boolean isUserIdEquals(String userId) {
-        return this.userId.equals(userId);
-    }
-
     public boolean isPasswordEquals(User updateUser) {
         return updateUser != null && this.password.equals(updateUser.password);
     }
@@ -76,12 +72,8 @@ public class User {
         return this.password.equals(password);
     }
 
-    public boolean isIdEquals(Long id) {
-        return this.id.equals(id);
-    }
-
     public void checkIllegalAccess(Long id) throws IllegalAccessException {
-        if (!isIdEquals(id)) {
+        if (!this.id.equals(id)) {
             throw new IllegalAccessException("잘못된 접근입니다");
         }
     }

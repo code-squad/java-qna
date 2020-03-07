@@ -64,8 +64,14 @@ public class UserController {
     }
 
     @GetMapping("/list")
-    public String list(Model model) {
-        model.addAttribute("users", userRepository.findAll());
+    public String list(Model model, HttpSession session) {
+        Optional<Object> sessionedUser = HttpSessionUtils.getObject(session);
+        if (!sessionedUser.isPresent()) {
+            return "/users/loginForm";
+        }
+
+        User user = (User) sessionedUser.get();
+        model.addAttribute("user", user);
         return "/user/list";
     }
 
@@ -82,8 +88,8 @@ public class UserController {
         return "/user/checkForm";
     }
 
-    @PostMapping("/{id}/checkPassword")
-    public String checkPassword(@PathVariable Long id, User updateUser, Model model, HttpSession session) throws IllegalAccessException {
+    @PostMapping("/{id}/updateForm")
+    public String updateForm(@PathVariable Long id, Model model, HttpSession session) throws IllegalAccessException {
         Optional<Object> sessionedUser = HttpSessionUtils.getObject(session);
         if (!sessionedUser.isPresent()) {
             return "/users/loginForm";
@@ -91,15 +97,13 @@ public class UserController {
 
         User user = (User) sessionedUser.get();
         user.checkIllegalAccess(id);
-        if (user.isPasswordEquals(updateUser)) {
-            model.addAttribute("user", user);
-            return "/user/updateForm";
-        }
-        return REDIRECT_USERS_LIST;
+        model.addAttribute("user", user);
+        return "/user/updateForm";
     }
 
     @PostMapping("/{id}/update")
     public String updateUser(@PathVariable Long id, User updateUser, HttpSession session) throws IllegalAccessException {
+        System.out.println("updateUser = " + updateUser);
         Optional<Object> sessionedUser = HttpSessionUtils.getObject(session);
         if (!sessionedUser.isPresent()) {
             return "/users/loginForm";
@@ -107,6 +111,10 @@ public class UserController {
 
         User user = (User) sessionedUser.get();
         user.checkIllegalAccess(id);
+
+        if (!user.isPasswordEquals(updateUser)) {
+            return "/user/login_failed";
+        }
         user.update(updateUser);
         userRepository.save(user);
         return REDIRECT_USERS_LIST;

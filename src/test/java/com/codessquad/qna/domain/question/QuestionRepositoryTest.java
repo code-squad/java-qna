@@ -26,7 +26,7 @@ public class QuestionRepositoryTest {
 
     @Test
     void 페이징이_잘되는지_테스트() {
-        final int addPostCount = 100;
+        final int addPostCount = 14;
         final int pageSize = 15;
         final int defaultSize = questionRepository.countByIsDeletedFalse();
 
@@ -40,7 +40,7 @@ public class QuestionRepositoryTest {
             questionRepository.save(new Question(userRepository.findByUserId("test").orElseGet(User::new), "test" + i, "contents" + i));
         }
 
-        for (int i = 0; i < pageCount + 1; i++) {
+        for (int i = 0; i < pageCount + (questionSize % pageSize == 0 ? 0 : 1); i++) {
             PageRequest pageRequest = PageRequest.of(i, pageSize, Sort.by("createdDateTime").descending());
             List<Question> questionPage = questionRepository.findAllByIsDeletedFalse(pageRequest).getContent();
             if (i != pageCount) {

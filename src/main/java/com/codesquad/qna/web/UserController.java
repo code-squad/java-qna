@@ -84,12 +84,13 @@ public class UserController {
 
         User user = (User) sessionedUser.get();
         user.checkIllegalAccess(id);
+
         model.addAttribute("user", user);
         return "/user/checkForm";
     }
 
     @PostMapping("/{id}/updateForm")
-    public String updateForm(@PathVariable Long id, Model model, HttpSession session) throws IllegalAccessException {
+    public String updateForm(@PathVariable Long id, String password, Model model, HttpSession session) throws IllegalAccessException {
         Optional<Object> sessionedUser = HttpSessionUtils.getObject(session);
         if (!sessionedUser.isPresent()) {
             return "/users/loginForm";
@@ -97,13 +98,17 @@ public class UserController {
 
         User user = (User) sessionedUser.get();
         user.checkIllegalAccess(id);
+
+        if (!user.isPasswordEquals(password)) {
+            return "redirect:/users/{id}/checkForm";
+        }
+
         model.addAttribute("user", user);
         return "/user/updateForm";
     }
 
     @PostMapping("/{id}/update")
     public String updateUser(@PathVariable Long id, User updateUser, HttpSession session) throws IllegalAccessException {
-        System.out.println("updateUser = " + updateUser);
         Optional<Object> sessionedUser = HttpSessionUtils.getObject(session);
         if (!sessionedUser.isPresent()) {
             return "/users/loginForm";
@@ -112,9 +117,7 @@ public class UserController {
         User user = (User) sessionedUser.get();
         user.checkIllegalAccess(id);
 
-        if (!user.isPasswordEquals(updateUser)) {
-            return "/user/login_failed";
-        }
+
         user.update(updateUser);
         userRepository.save(user);
         return REDIRECT_USERS_LIST;

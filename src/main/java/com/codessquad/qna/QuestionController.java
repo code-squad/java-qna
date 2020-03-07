@@ -45,7 +45,7 @@ public class QuestionController {
 
     @GetMapping("/{id}")
     public String detailPage(@PathVariable("id") Long questionId, Model model) {
-        model.addAttribute("question", findQuestion(questionRepository, questionId));
+        model.addAttribute("question", findQuestionById(questionRepository, questionId));
         return "question/show";
     }
 
@@ -56,7 +56,7 @@ public class QuestionController {
                              Model model) {
         try {
             hasPermission(httpSession, writer);
-            model.addAttribute("question", findQuestion(questionRepository, id));
+            model.addAttribute("question", findQuestionById(questionRepository, id));
             return "question/updateForm";
         } catch (IllegalStateException e) {
             model.addAttribute("errorMessage", e.getMessage());
@@ -72,7 +72,7 @@ public class QuestionController {
                          Model model) {
         try {
             hasPermission(httpSession, writer);
-            Question question = findQuestion(questionRepository, id);
+            Question question = findQuestionById(questionRepository, id);
             question.update(title, contents);
             questionRepository.save(question);
             return "redirect:/questions/{id}";
@@ -89,7 +89,9 @@ public class QuestionController {
                          Model model) {
         try {
             hasPermission(httpSession, writer);
-            questionRepository.delete(findQuestion(questionRepository, id));
+            Question question = findQuestionById(questionRepository, id);
+            question.delete();
+            questionRepository.save(question);
             return "redirect:/";
         } catch (IllegalStateException e) {
             model.addAttribute("errorMessage", e.getMessage());
@@ -97,7 +99,7 @@ public class QuestionController {
         }
     }
 
-    private Question findQuestion(QuestionRepository questionRepository, Long id) {
+    private Question findQuestionById(QuestionRepository questionRepository, Long id) {
         return questionRepository.findById(id).orElseThrow(() ->
                 new IllegalStateException("There is no question."));
     }

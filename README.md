@@ -26,3 +26,9 @@
 ## 리팩토링 
 - 반복되는 로그인 유저 확인 작업을 리팩토링
 - 접근 권한이 없으면 로그인 페이지로 이동하는데 이 때, 에러메세지 출력 유도. login_failed.html에서 alert form을 복사해서 사용.
+
+## 질문 삭제하기 
+- DB에서 삭제하지 않고 deleted : boolean 상태로 데이터 유무를 알아야 한다. List<Question> findAllByDeleted()를 QuestionRepository에 추가. 
+- 답변이 없는 경우 삭제 가능 : DB에서 찾은 Question의 answers가 isEmpty()인 경우 삭제 
+- 질문자와 답변글의 모든 답변자(writer)가 같은 경우 삭제 가능. -> 반복문 돌며 찾기?
+- 질문 삭제 시 답변도 삭제할 때 deleted : boolean를 변경한다.  

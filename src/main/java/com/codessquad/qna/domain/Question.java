@@ -24,6 +24,8 @@ public class Question {
     @Lob
     private String contents;
 
+    private boolean deleted;
+
     public Question() {
     }
 
@@ -32,6 +34,15 @@ public class Question {
         this.title = title;
         this.contents = contents;
         createdDate = LocalDateTime.now();
+        deleted = false;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     public Long getId() {
@@ -105,5 +116,9 @@ public class Question {
             return "";
         }
         return createdDate.format(DateTimeFormatter.ofPattern("YYYY-MM-SS HH:mm:ss"));
+    }
+
+    public void delete() {
+        deleted = true;
     }
 }

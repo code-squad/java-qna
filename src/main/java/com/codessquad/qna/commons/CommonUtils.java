@@ -5,15 +5,11 @@ import com.codessquad.qna.errors.UserException;
 import com.codessquad.qna.question.Question;
 import com.codessquad.qna.question.QuestionRepository;
 import com.codessquad.qna.user.User;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 public class CommonUtils {
-
-  @Autowired
-  private QuestionRepository questionRepository;
 
   /**
    * Feat : Null 을 처리한 User 를 가져옵니다.

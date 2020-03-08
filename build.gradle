@@ -32,6 +32,8 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
+    // stacktrace를 직접 만들어주려니 귀찮아서... guava 라이브러리 사용
+    compile group: 'com.google.guava', name: 'guava', version: '28.2-jre'
 }
 
 test {

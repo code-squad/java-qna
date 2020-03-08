@@ -1,7 +1,8 @@
-INSERT INTO USER (id, user_id, user_password, user_name, user_email)
-VALUES (null, 'dion', 'dion123', '디온', 'dion@codesquad.kr');
-INSERT INTO USER (id, user_id, user_password, user_name, user_email)
-VALUES (null, 'codesquad', 'db1004', '코드스쿼드', 'master@codesquad.kr');
+INSERT INTO USER (id, user_id, user_password, user_name, user_email, user_profile_image)
+VALUES (null, 'dion', 'dion123', '디온', 'dion@codesquad.kr',
+        'https://img.velog.io/images/dion/profile/4bbeba74-8503-4766-9dd3-86d5490b8e92/arno-smit-sKJ7zSylUao-unsplash.jpg?w=240');
+INSERT INTO USER (id, user_id, user_password, user_name, user_email, user_profile_image)
+VALUES (null, 'codesquad', 'db1004', '코드스쿼드', 'master@codesquad.kr', 'https://codesquad.kr/img/company/codesquad2.png');
 INSERT INTO QUESTION (id, writer_id, title, contents, created_date_time, updated_date_time, is_deleted)
 VALUES (null, 1, '음...', '테스트', NOW(), NOW(), false);
 INSERT INTO QUESTION (id, writer_id, title, contents, created_date_time, updated_date_time, is_deleted)

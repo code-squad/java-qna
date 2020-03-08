@@ -1,9 +1,15 @@
-package com.codessquad.qna.user;
+package com.codessquad.qna.web.user;
 
-import com.codessquad.qna.common.CommonConstants;
-import javassist.NotFoundException;
+import com.codessquad.qna.common.constants.CommonConstants;
+import com.codessquad.qna.common.constants.ErrorConstants;
+import com.codessquad.qna.common.error.exception.CannotEditOtherUserInfoException;
+import com.codessquad.qna.common.error.exception.UserNotFoundException;
+import com.codessquad.qna.common.utils.HttpSessionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.ui.Model;
@@ -17,6 +23,8 @@ import javax.validation.ConstraintViolationException;
 @RequestMapping("/users")
 public class UserController {
 
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
+
     @Autowired
     private UserRepository userRepository;
 
@@ -27,6 +35,12 @@ public class UserController {
 
     @PostMapping("")
     public String createUser(User user) {
+        if (user == null) {
+            return "redirect:/users/form";
+        }
+        if (user.getUserProfileImage().equals("")) {
+            user.setUserProfileImage("../images/80-text.png");
+        }
         try {
             userRepository.save(user);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
@@ -42,49 +56,41 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ModelAndView showUserProfile(@PathVariable long id) {
+    public ModelAndView showUserProfile(@PathVariable Long id) {
         ModelAndView modelAndView = new ModelAndView("users/profile");
-        try {
-            modelAndView.addObject("user", getUserIfExist(id));
-        } catch (NotFoundException e) {
-            return new ModelAndView(CommonConstants.ERROR_USER_NOT_FOUND);
-        }
+        modelAndView.addObject("user", getUserIfExist(id));
         return modelAndView;
     }
 
 
     @GetMapping("/{id}/form")
-    public String showUserInfoModifyForm(@PathVariable long id, Model model, HttpSession session) {
-        try {
-            User user = getUserIfExist(id);
-            if (isLoginUserNotEqualsRequestedUser(session, user)) {
-                return CommonConstants.ERROR_CANNOT_EDIT_OTHER_USER_INFO;
-            }
-            model.addAttribute("user", user);
-        } catch (NotFoundException e) {
-            return CommonConstants.ERROR_USER_NOT_FOUND;
+    public String showUserInfoModifyForm(@PathVariable Long id, Model model, HttpSession session) {
+        User user = getUserIfExist(id);
+        User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
+        if (!user.equals(loginUser)) {
+            throw new CannotEditOtherUserInfoException();
         }
+        model.addAttribute("user", user);
         model.addAttribute("actionUrl", "/users/" + id);
         return "/users/modify-form";
     }
 
     @PutMapping("/{id}")
-    public String updateUserInfo(@PathVariable long id,
+    public String updateUserInfo(@PathVariable Long id,
                                  User updateUser,
                                  @RequestParam String newPassword,
                                  HttpSession session) {
         try {
             User user = getUserIfExist(id);
-            if (isLoginUserNotEqualsRequestedUser(session, user)) {
-                return CommonConstants.ERROR_CANNOT_EDIT_OTHER_USER_INFO;
+            User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
+            if (!user.equals(loginUser)) {
+                throw new CannotEditOtherUserInfoException();
             }
-            if (user.isUserPasswordNotEquals(updateUser.getUserPassword())) {
+            if (user.isUserPasswordNotEquals(updateUser)) {
                 return "redirect:/users/" + id + "/form";
             }
             user.update(updateUser, newPassword);
             session.setAttribute(CommonConstants.SESSION_LOGIN_USER, userRepository.save(user));
-        } catch (NotFoundException e) {
-            return CommonConstants.ERROR_USER_NOT_FOUND;
         } catch (TransactionSystemException e) {
             return "redirect:/users/" + id + "/form";
         }
@@ -99,11 +105,13 @@ public class UserController {
 
     @PostMapping("/login")
     public String loginUser(@RequestParam String userId, @RequestParam String userPassword, HttpSession session) {
-        User user = userRepository.findByUserId(userId);
+        User user = userRepository.findByUserId(userId).orElse(null);
+        User tempUser = new User();
+        tempUser.setUserPassword(userPassword);
 
         // 사용자가 없거나, 비밀번호 일치하지 않는 경우
-        if (user == null || user.isUserPasswordNotEquals(userPassword)) {
-            return "users/login_failed";
+        if (user == null || user.isUserPasswordNotEquals(tempUser)) {
+            return "users/login-failed";
         }
         session.setAttribute(CommonConstants.SESSION_LOGIN_USER, user);
         return "redirect:/";
@@ -111,16 +119,22 @@ public class UserController {
 
     @GetMapping("/logout")
     public String logoutUser(HttpSession session) {
-        session.invalidate();
+        HttpSessionUtils.sessionLogout(session);
         return "redirect:/";
     }
 
-    private boolean isLoginUserNotEqualsRequestedUser(HttpSession session, User user) {
-        return !user.equals(session.getAttribute(CommonConstants.SESSION_LOGIN_USER));
+    private User getUserIfExist(Long id) {
+        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
-    private User getUserIfExist(long id) throws NotFoundException {
-        return userRepository.findById(id).orElseThrow(() -> new NotFoundException("해당 사용자는 존재하지 않는 사용자입니다."));
+    /**
+     * 다른 유저의 정보를 수정하려고 하였을 때, 유저 목록으로 이동.
+     */
+    @ExceptionHandler(CannotEditOtherUserInfoException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    protected String handleCannotEditOtherUserInfoException(CannotEditOtherUserInfoException e) {
+        log.error("handleCannotEditOtherUserInfoException", e);
+        return ErrorConstants.ERROR_CANNOT_EDIT_OTHER_USER_INFO;
     }
 
 }

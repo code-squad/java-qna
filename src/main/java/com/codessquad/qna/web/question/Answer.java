@@ -1,7 +1,7 @@
-package com.codessquad.qna.question;
+package com.codessquad.qna.web.question;
 
-import com.codessquad.qna.common.CommonConstants;
-import com.codessquad.qna.user.User;
+import com.codessquad.qna.common.constants.FormatConstants;
+import com.codessquad.qna.web.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,7 +11,7 @@ public class Answer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
@@ -44,12 +44,8 @@ public class Answer {
         this.isDeleted = false;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public User getWriter() {
@@ -77,7 +73,7 @@ public class Answer {
     }
 
     public String getFormattedCreatedDateTime() {
-        return createdDateTime.format(CommonConstants.POST_DATA_DATE_TIME_FORMATTER);
+        return createdDateTime.format(FormatConstants.POST_DATA_DATE_TIME_FORMATTER);
     }
 
     public Question getQuestion() {
@@ -97,15 +93,11 @@ public class Answer {
     }
 
     public String getFormattedUpdatedDateTime() {
-        return updatedDateTime.format(CommonConstants.POST_DATA_DATE_TIME_FORMATTER);
+        return updatedDateTime.format(FormatConstants.POST_DATA_DATE_TIME_FORMATTER);
     }
 
     public boolean isDeleted() {
         return isDeleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
     }
 
     public Answer delete() {

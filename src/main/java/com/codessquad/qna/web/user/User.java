@@ -1,4 +1,4 @@
-package com.codessquad.qna.user;
+package com.codessquad.qna.web.user;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -27,21 +27,24 @@ public class User implements Serializable {
     @Column(unique = true)
     private String userEmail;
 
+    private String userProfileImage;
+
     public User() {}
 
     public User(String userId, String userPassword, String userName, String userEmail) {
+        this(userId, userPassword, userName, userEmail, "../images/80-text.png");
+    }
+
+    public User(String userId, String userPassword, String userName, String userEmail, String userProfileImage) {
         this.userId = userId;
         this.userPassword = userPassword;
         this.userName = userName;
         this.userEmail = userEmail;
+        this.userProfileImage = userProfileImage;
     }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getUserId() {
@@ -76,16 +79,25 @@ public class User implements Serializable {
         this.userEmail = userEmail;
     }
 
-    public boolean isUserPasswordNotEquals(String password) {
-        return !this.userPassword.equals(password);
+    public String getUserProfileImage() {
+        return userProfileImage;
+    }
+
+    public void setUserProfileImage(String userProfileImage) {
+        this.userProfileImage = userProfileImage;
+    }
+
+    public boolean isUserPasswordNotEquals(User updateUser) {
+        return !this.userPassword.equals(updateUser.userPassword);
     }
 
     public void update(User updateUser, String newPassword) {
-        if (!newPassword.equals("")) {
+        if (!"".equals(newPassword)) {
             this.userPassword = newPassword;
         }
         this.userName = updateUser.userName;
         this.userEmail = updateUser.userEmail;
+        this.userProfileImage = updateUser.userProfileImage;
     }
 
     @Override
@@ -93,7 +105,7 @@ public class User implements Serializable {
         if (this == o) { return true; }
         if (!(o instanceof User)) { return false; }
         User user = (User) o;
-        return getUserEmail().equals(user.userEmail);
+        return this.userEmail.equals(user.userEmail);
     }
 
     @Override

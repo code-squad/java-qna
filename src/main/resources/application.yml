@@ -28,6 +28,9 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
 
 logging:
   level:

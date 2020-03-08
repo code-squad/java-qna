@@ -1,5 +1,7 @@
 package com.codessquad.qna.domain;
 
+import com.codessquad.qna.SpringContext;
+import com.codessquad.qna.controller.posts.PostsRepository;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -12,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.servlet.http.HttpSession;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -23,11 +26,11 @@ public class Answers extends BaseTimeEntity {
   private Long Id;
 
   @ManyToOne
-  @JoinColumn(name = "AUTHOR_ID")
+  @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_author"))
   private Users author;
 
   @ManyToOne
-  @JoinColumn(name = "ANSWERS_POSTS")
+  @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_post"))
   @OnDelete(action = OnDeleteAction.CASCADE)
   private Posts posts;
 
@@ -53,10 +56,11 @@ public class Answers extends BaseTimeEntity {
     this.title = title;
   }
 
-  public Answers(Users author, String title, String content) {
+  public Answers(Users author, String title, String content, Posts posts) {
     this.author = author;
     this.title = title;
     this.content = content;
+    this.posts = posts;
   }
 
   public Answers() {
@@ -102,6 +106,7 @@ public class Answers extends BaseTimeEntity {
     private Users author;
     private String title;
     private String content;
+    private Posts posts;
 
     AnswersBuilder() {
     }
@@ -118,6 +123,12 @@ public class Answers extends BaseTimeEntity {
       return this;
     }
 
+    public Answers.AnswersBuilder question(Long postId) {
+      PostsRepository postsRepository = SpringContext.getBean(PostsRepository.class);
+      this.posts = postsRepository.findByPostId(postId);
+      return this;
+    }
+
     public Answers.AnswersBuilder title(String title) {
       this.title = title;
       return this;
@@ -129,12 +140,17 @@ public class Answers extends BaseTimeEntity {
     }
 
     public Answers build() {
-      return new Answers(author, title, content);
+      return new Answers(author, title, content, posts);
     }
 
+    @Override
     public String toString() {
-      return "Answers.AnswersBuilder(author=" + this.author + ", title=" + this.title + ", content="
-          + this.content + ")";
+      return "AnswersBuilder{" +
+          "author=" + author +
+          ", title='" + title + '\'' +
+          ", content='" + content + '\'' +
+          ", posts=" + posts +
+          '}';
     }
   }
 }

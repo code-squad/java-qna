@@ -18,13 +18,13 @@ public class AnswersAPIController {
   }
 
   //답변의 생성
-  @PostMapping("/api/v1/questions")
+  @PostMapping("/api/v1/answers")
   public Long save(@RequestBody AnswersSaveRequestDto requestDto) {
     return answersService.save(requestDto);
   }
 
   //답변의 업데이트
-  @PutMapping("/api/v1/questions/{Id}")
+  @PutMapping("/api/v1/answers/{Id}")
   public Long update(@PathVariable Long Id, @RequestBody AnswersUpdateRequestDto requestDto) {
     return answersService.update(Id, requestDto);
   }

@@ -7,10 +7,14 @@ import javax.servlet.http.HttpSession;
 public class AnswersSaveRequestDto {
   private String title;
   private String content;
+  private Long postId;
+  private Users author;
 
-  public AnswersSaveRequestDto(String title, String content) {
+  public AnswersSaveRequestDto(String title, String content, Long postId, Users author) {
     this.title = title;
     this.content = content;
+    this.postId = postId;
+    this.author = author;
   }
 
   public AnswersSaveRequestDto() {
@@ -25,6 +29,7 @@ public class AnswersSaveRequestDto {
         .title(title)
         .author()
         .content(content)
+        .question(postId)
         .build();
   }
 
@@ -41,6 +46,7 @@ public class AnswersSaveRequestDto {
     private String title;
     private Users author;
     private String content;
+    private Long postId;
 
     AnswersSaveRequestDtoBuilder() {
     }
@@ -60,13 +66,23 @@ public class AnswersSaveRequestDto {
       return this;
     }
 
-    public AnswersSaveRequestDto build() {
-      return new AnswersSaveRequestDto(title, content);
+    public AnswersSaveRequestDto.AnswersSaveRequestDtoBuilder postId(Long postId) {
+      this.postId = postId;
+      return this;
     }
 
+    public AnswersSaveRequestDto build() {
+      return new AnswersSaveRequestDto(title, content, postId, author);
+    }
+
+    @Override
     public String toString() {
-      return "AnswersSaveRequestDto.AnswersSaveRequestDtoBuilder(title=" + this.title + ", author="
-          + this.author + ", content=" + this.content + ")";
+      return "AnswersSaveRequestDtoBuilder{" +
+          "title='" + title + '\'' +
+          ", author=" + author +
+          ", content='" + content + '\'' +
+          ", postId=" + postId +
+          '}';
     }
   }
 }

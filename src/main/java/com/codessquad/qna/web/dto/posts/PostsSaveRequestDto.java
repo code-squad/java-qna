@@ -8,7 +8,6 @@ public class PostsSaveRequestDto {
   private String title;
   private Users author;
   private String content;
-  private HttpSession httpSession;
 
   public PostsSaveRequestDto(String title, Users author, String content) {
     this.title = title;

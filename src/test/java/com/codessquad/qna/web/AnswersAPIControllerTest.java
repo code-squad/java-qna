@@ -7,6 +7,7 @@ import com.codessquad.qna.domain.Answers;
 import com.codessquad.qna.domain.Users;
 import com.codessquad.qna.web.dto.answers.AnswersSaveRequestDto;
 import com.codessquad.qna.web.dto.posts.AnswersUpdateRequestDto;
+import com.codessquad.qna.web.dto.posts.PostsSaveRequestDto;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,19 +53,28 @@ public class AnswersAPIControllerTest {
 
   @Test
   public void Answers가_등록된다() {
-    AnswersSaveRequestDto testAnswers = AnswersSaveRequestDto
-        .builder() //Posts를 빌드하는 것이 아니라 Dto를 빌드하는 것이다.
+    PostsSaveRequestDto testPost = PostsSaveRequestDto.builder() //Posts를 빌드하는 것이 아니라 Dto를 빌드하는 것이다.
         .author(httpSession)
         .content("testContent")
         .title("testTitle")
         .build();
 
-    String url = "http://localhost:" + port + "api/v1/questions";
-    ResponseEntity<Long> responseEntity = testRestTemplate
-        .postForEntity(url, testAnswers, Long.class);
+    String posturl = "http://localhost:" + port + "api/v1/posts";
+    ResponseEntity<Long> postResponseEntity = testRestTemplate.postForEntity(posturl, testPost, Long.class);
+
+    AnswersSaveRequestDto testAnswers = AnswersSaveRequestDto.builder() //Posts를 빌드하는 것이 아니라 Dto를 빌드하는 것이다.
+        .title("testTitle")
+        .content("testContent")
+        .postId(1L)
+        .author(httpSession)
+        .build();
+
+    String answerurl = "http://localhost:" + port + "api/v1/answers";
+    ResponseEntity<Long> answerResponseEntity = testRestTemplate
+        .postForEntity(answerurl, testAnswers, Long.class);
 
     //test
-    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(answerResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     List<Answers> all = answersRepository.findAllDesc();
     assertThat(all.get(0).getContent()).isEqualTo("testContent");
   }

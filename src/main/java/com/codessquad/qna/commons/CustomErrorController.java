@@ -1,35 +1,95 @@
 package com.codessquad.qna.commons;
 
-import org.springframework.boot.web.servlet.error.ErrorController;
+import com.codessquad.qna.errors.ForbiddenException;
+import com.codessquad.qna.errors.QuestionException;
+import com.codessquad.qna.errors.UserException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Optional;
+@Slf4j
+@ControllerAdvice
+public class CustomErrorController {
 
-@Controller
-@RequestMapping("/error")
-public class CustomErrorController implements ErrorController {
+  /**
+   * Feat : 특정되지 않은 예외 처리를 합니다.
+   * Desc :
+   * Return : /error
+   */
+  @ExceptionHandler(Exception.class)
+  public String defaultException(Exception e, HttpStatus httpStatus, Model model) {
+    log.info("### defaultException() ");
 
-  private static final String ERROR_PATH = "/error";
+    model.addAttribute("code", httpStatus.value());
+    model.addAttribute("msg", httpStatus.getReasonPhrase());
+    model.addAttribute("descMsg", e.getMessage());
 
-  @Override
-  public String getErrorPath() {
-    return ERROR_PATH;
+    return "/error";
   }
 
-  @RequestMapping("")
-  public String handleError(HttpServletRequest request, Model model) {
-    Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
-    int statusCode = Integer.parseInt(Optional.of(status.toString()).orElse(HttpStatus.NOT_FOUND.toString()));
-    HttpStatus httpStatus = HttpStatus.valueOf(statusCode);
+  /**
+   * Feat : ForbiddenException 예외 처리를 합니다.
+   * Desc :
+   * Return : /error
+   */
+  @ExceptionHandler(ForbiddenException.class)
+  public String forbiddenException(Exception e, Model model) {
+    log.info("### forbiddenException() ");
 
-    model.addAttribute("code", statusCode);
-    model.addAttribute("msg", httpStatus.getReasonPhrase());
+    model.addAttribute("code", HttpStatus.FORBIDDEN.value());
+    model.addAttribute("msg", HttpStatus.FORBIDDEN.getReasonPhrase());
+    model.addAttribute("descMsg", e.getMessage());
 
-    return "errors/errorPage";
+    return "/error";
+  }
+
+  /**
+   * Feat : UserException 예외 처리를 합니다.
+   * Desc :
+   * Return : /error
+   */
+  @ExceptionHandler(UserException.class)
+  public String userException(Exception e, Model model) {
+    log.info("### userException() ");
+    if (e.getMessage().equals(CustomErrorCode.BAD_REQUEST.getMsg())) {
+      model.addAttribute("code", HttpStatus.BAD_REQUEST.value());
+      model.addAttribute("msg", HttpStatus.BAD_REQUEST.getReasonPhrase());
+      model.addAttribute("descMsg", e.getMessage());
+
+      return "/error";
+    } else if (e.getMessage().equals(CustomErrorCode.USER_NOT_EXIST.getMsg())) {
+      model.addAttribute("notExistUser", true);
+    } else if (e.getMessage().equals(CustomErrorCode.USER_NOT_LOGIN.getMsg())) {
+      model.addAttribute("requestLogin", true);
+    } else if (e.getMessage().equals(CustomErrorCode.USER_NOT_MATCHED_PASSWORD.getMsg())) {
+      model.addAttribute("wrongPassword", true);
+    }
+
+    return "/users/login";
+  }
+
+  /**
+   * Feat : QuestionException 예외 처리를 합니다.
+   * Desc :
+   * Return : /error
+   */
+  @ExceptionHandler(QuestionException.class)
+  public String questionException(Exception e, Model model) {
+    log.info("### questionException() ");
+    if (e.getMessage().equals(CustomErrorCode.BAD_REQUEST.getMsg())) {
+      model.addAttribute("code", HttpStatus.BAD_REQUEST.value());
+      model.addAttribute("msg", HttpStatus.BAD_REQUEST.getReasonPhrase());
+      model.addAttribute("descMsg", e.getMessage());
+
+      return "/error";
+    } else if (e.getMessage().equals(CustomErrorCode.USER_NOT_MATCHED.getMsg())) {
+      model.addAttribute("notMatchedUser", true);
+
+      return "redirect:/";
+    }
+
+    return "/error";
   }
 }

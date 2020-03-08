@@ -1,0 +1,50 @@
+<head>
+  {{> include/header}}
+</head>
+<body>
+{{> include/navigation}}
+<div class="container" id="main">
+  <div class="col-md-12 col-sm-12 col-lg-12">
+    <div class="panel panel-default">
+      <header class="qna-header">
+        <h2 class="qna-title">{{question.title}}</h2>
+      </header>
+      <div class="content-main">
+        <article class="article">
+          <div class="article-header">
+            <div class="article-header-thumb">
+            </div>
+            <div class="article-header-text">
+              <a class="article-author-name">{{question.userId}}</a>
+              <a class="article-header-time">{{question.createdDateTime}}</a>
+            </div>
+          </div>
+          <div class="article-doc">
+            <p>{{question.contents}}</p>
+          </div>
+          <div class="article-util">
+            <ul class="article-util-list">
+              <li>
+                <a class="link-modify-article" href="/questions/{{question.id}}/form">수정</a>
+              </li>
+              <li>
+                <form class="form-delete" action="/questions/{{question.id}}" method="POST">
+                  <input type="hidden" name="_method" value="DELETE">
+                  <button class="link-delete-article" type="submit">삭제</button>
+                </form>
+              </li>
+              <li>
+                <a class="link-modify-article" href="/">목록</a>
+              </li>
+            </ul>
+          </div>
+        </article>
+        {{> questions/answer}}
+      </div>
+    </div>
+  </div>
+</div>
+{{> questions/answerScript}}
+{{> include/footer}}
+</body>
+</html>

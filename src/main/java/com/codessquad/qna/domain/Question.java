@@ -2,23 +2,29 @@ package com.codessquad.qna.domain;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Question {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
     private String title;
-    private String date;
-    private String writer;
+    private LocalDateTime createdDate;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    private User writer;
     private String contents;
 
     public Question() {
-        date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD hh:mm:ss"));
+    }
+
+    public Question(User writer, String title, String contents) {
+        this.writer = writer;
+        this.title = title;
+        this.contents = contents;
+        createdDate = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -29,24 +35,28 @@ public class Question {
         this.id = id;
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public String getWriter() {
-        return writer;
-    }
-
-    public void setWriter(String writer) {
-        this.writer = writer;
-    }
-
     public String getTitle() {
         return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(LocalDateTime date) {
+        this.createdDate = date;
+    }
+
+    public User getWriter() {
+        return writer;
+    }
+
+    public void setWriter(User writer) {
+        this.writer = writer;
     }
 
     public String getContents() {
@@ -61,10 +71,16 @@ public class Question {
     public String toString() {
         return "Question{" +
                 "id=" + id +
-                ", date='" + date + '\'' +
-                ", writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
+                ", date=" + createdDate +
+                ", writer='" + writer.getName() + '\'' +
                 ", contents='" + contents + '\'' +
                 '}';
+    }
+
+    public void update(String title, String contents) {
+        this.title = title;
+        this.contents = contents;
+        this.createdDate = LocalDateTime.now();
     }
 }

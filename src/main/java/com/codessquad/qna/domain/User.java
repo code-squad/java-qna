@@ -55,6 +55,12 @@ public class User {
         this.email = email;
     }
 
+    public void update(String name, String email, String newPassword) {
+        this.name = name;
+        this.email = email;
+        this.password = newPassword;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -64,5 +70,17 @@ public class User {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 '}';
+    }
+
+    public boolean notMatchId(Long id) {
+        return !id.equals(this.id);
+    }
+
+    public boolean notMatchPassword(String password) {
+        return !password.equals(this.password);
+    }
+
+    public boolean notMatchWriter(String writer) {
+        return !writer.equals(name);
     }
 }

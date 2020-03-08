@@ -8,7 +8,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, unique = true)
     private String userId;
     @Column(nullable = false)
     private String password;
@@ -29,22 +29,38 @@ public class User {
         this.name = name;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public void update(User updateUser) {
         this.password = updateUser.password;
         this.name = updateUser.name;
         this.email = updateUser.email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public Long getId() {
         return id;
     }
 
+    public boolean matchId(Long newId) {
+        if (newId == null) {
+            return false;
+        }
+
+        return newId.equals(id);
+    }
+
     public String getUserId() {
         return userId;
+    }
+
+    public boolean matchPassword(String inputPassword) {
+        if (inputPassword == null) {
+            return false;
+        }
+
+        return inputPassword.equals(password);
     }
 
     public String getPassword() {

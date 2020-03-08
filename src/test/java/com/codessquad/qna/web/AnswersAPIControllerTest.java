@@ -81,15 +81,25 @@ public class AnswersAPIControllerTest {
 
   @Test
   public void Answers가_수정된다() throws Exception {
-    AnswersSaveRequestDto testAnswers = AnswersSaveRequestDto
-        .builder() //Posts를 빌드하는 것이 아니라 Dto를 빌드하는 것이다.
+    PostsSaveRequestDto testPost = PostsSaveRequestDto.builder() //Posts를 빌드하는 것이 아니라 Dto를 빌드하는 것이다.
         .author(httpSession)
         .content("testContent")
         .title("testTitle")
         .build();
 
-    String posturl = "http://localhost:" + port + "api/v1/questions";
-    testRestTemplate.postForEntity(posturl, testAnswers, Long.class);
+    String posturl = "http://localhost:" + port + "api/v1/posts";
+    ResponseEntity<Long> postResponseEntity = testRestTemplate.postForEntity(posturl, testPost, Long.class);
+
+    AnswersSaveRequestDto testAnswers = AnswersSaveRequestDto.builder() //Posts를 빌드하는 것이 아니라 Dto를 빌드하는 것이다.
+        .title("testTitle")
+        .content("testContent")
+        .postId(1L)
+        .author(httpSession)
+        .build();
+
+    String answerurl = "http://localhost:" + port + "api/v1/answers";
+    ResponseEntity<Long> answerResponseEntity = testRestTemplate
+        .postForEntity(answerurl, testAnswers, Long.class);
 
     String expectedTitle = "modified title";
     String expectedContent = "modified content";
@@ -99,7 +109,7 @@ public class AnswersAPIControllerTest {
         .content(expectedContent)
         .build();
 
-    String url = "http://localhost:" + port + "/api/v1/questions/" + 1;
+    String url = "http://localhost:" + port + "/api/v1/answers/" + 1;
 
     HttpEntity<AnswersUpdateRequestDto> requestEntity = new HttpEntity<>(requestDto);
 

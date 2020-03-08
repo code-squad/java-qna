@@ -4,43 +4,44 @@
     <div class="col-md-12 col-sm-12 col-lg-12">
         <div class="panel panel-default">
             {{#question}}
-          <header class="qna-header">
-              <h2 class="qna-title">{{title}}</h2>
-          </header>
-          <div class="content-main">
-              <article class="article">
-                  <div class="article-header">
-                      <div class="article-header-thumb">
-                          <img src="https://graph.facebook.com/v2.3/100000059371774/picture" class="article-author-thumb" alt="">
-                      </div>
-                      <div class="article-header-text">
-                          <a href="/user/{{id}}" class="article-author-name">{{writer}}</a>
-                          <a href="/questions/413" class="article-header-time" title="퍼머링크">
-                              {{formattedTime}}
-                              <i class="icon-link"></i>
-                          </a>
-                      </div>
-                  </div>
-                  <div class="article-doc">
-                      <p>{{contents}}</p>
-                  </div>
-                  <div class="article-util">
-                      <ul class="article-util-list">
-                          <li>
-                              <a class="link-modify-article" href="/questions/423/form">수정</a>
-                          </li>
-                          <li>
-                              <form class="form-delete" action="/questions/423" method="POST">
-                                  <input type="hidden" name="_method" value="DELETE">
-                                  <button class="link-delete-article" type="submit">삭제</button>
-                              </form>
-                          </li>
-                          <li>
-                              <a class="link-modify-article" href="/templates/main.html">목록</a>
-                          </li>
-                      </ul>
-                  </div>
-              </article>
+            <header class="qna-header">
+                <h2 class="qna-title">{{title}}</h2>
+            </header>
+            <div class="content-main">
+                <article class="article">
+                    <div class="article-header">
+                        <div class="article-header-thumb">
+                            <img alt=""
+                                 class="article-author-thumb" src="https://graph.facebook.com/v2.3/100000059371774/picture">
+                        </div>
+                        <div class="article-header-text">
+                            <a class="article-author-name" href="/users/{{id}}">{{writer}}</a>
+                            <a class="article-header-time" href="/questions/413" title="퍼머링크">
+                                {{formattedTime}}
+                                <i class="icon-link"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="article-doc">
+                        <p>{{contents}}</p>
+                    </div>
+                    <div class="article-util">
+                        <ul class="article-util-list">
+                            <li>
+                                <a class="link-modify-article" href="/questions/423/form">수정</a>
+                            </li>
+                            <li>
+                                <form action="/questions/423" class="form-delete" method="POST">
+                                    <input name="_method" type="hidden" value="DELETE">
+                                    <button class="link-delete-article" type="submit">삭제</button>
+                                </form>
+                            </li>
+                            <li>
+                                <a class="link-modify-article" href="/templates/main.html">목록</a>
+                            </li>
+                        </ul>
+                    </div>
+                </article>
             </div>
             {{/question}}
         </div>

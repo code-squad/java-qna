@@ -6,7 +6,7 @@ import javax.persistence.*;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long givenNumber;
+    private Long userNumber;
 
     @Column(nullable = false, length = 15, unique = true)
     private String userId;
@@ -14,15 +14,15 @@ public class User {
     private String name;
     private String email;
 
-    public Long getGivenNumber() {
-        return givenNumber;
+    public Long getUserNumber() {
+        return userNumber;
     }
 
-    public boolean matchGivenNumber(Long newGivenNumber) {
-        if (newGivenNumber == null) {
+    public boolean matchUserNumber(Long newUserNumber) {
+        if (newUserNumber == null) {
             return false;
         }
-        return newGivenNumber.equals(givenNumber);
+        return newUserNumber.equals(userNumber);
     }
 
     public void setUserId(String userId) {

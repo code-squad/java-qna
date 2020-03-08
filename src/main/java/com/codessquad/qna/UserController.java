@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
 
 
@@ -36,8 +37,8 @@ public class UserController {
     }
 
     ///수정버튼 눌렀을 때
-    @GetMapping("/{givenNumber}/form")
-    public String editInfo(@PathVariable Long givenNumber, Model model, HttpSession session) {
+    @GetMapping("/{userNumber}/form")
+    public String editInfo(@PathVariable Long userNumber, Model model, HttpSession session) {
 
         if (HttpSessionUtil.isLoginUser(session)) {
             System.out.println("Sign in first to edit your info");
@@ -45,24 +46,26 @@ public class UserController {
         }
 
         User sessionedUser = HttpSessionUtil.getUserFromSession(session);
-        if (! sessionedUser.matchGivenNumber(givenNumber)) {
+        if (! sessionedUser.matchUserNumber(userNumber)) {
             throw new IllegalStateException("Access denied");
         }
 
-        model.addAttribute("user", userRepository.findById(givenNumber).get());
-        System.out.println(userRepository.findById(givenNumber));
+        model.addAttribute("user", findUser(userNumber));
+
         return "EditUserInfo";
     }
 
-    @PostMapping("/{givenNumber}")
-    public String updateInfo(@PathVariable Long givenNumber, User updatedUser) {
-        User user = userRepository.findById(givenNumber).get();
+    @PostMapping("/{userNumber}")
+    public String updateInfo(@PathVariable Long userNumber, User updatedUser) {
+        User user = findUser(userNumber);
         user.update(updatedUser);
         userRepository.save(user);
         return "redirect:/users";
     }
 
-
+    private User findUser(Long userNumber) {
+        return userRepository.findById(userNumber).orElseThrow(() -> new EntityNotFoundException("/error/notFound"));
+    }
 
 
 

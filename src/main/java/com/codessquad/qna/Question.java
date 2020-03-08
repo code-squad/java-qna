@@ -3,6 +3,7 @@ package com.codessquad.qna;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -17,27 +18,40 @@ public class Question {
     private User writer;
 
     private String title;
+
+    @Lob
     private String contents;
 
-    private LocalDateTime date;
+    private LocalDateTime createDate;
+
+
+    @OneToMany(mappedBy = "question")
+    private List<Answer> answers;
+
 
     public Question() {}
-
     public Question(User writer, String title, String contents) {
 
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-        this.date = LocalDateTime.now();
+        this.createDate = LocalDateTime.now();
     }
 
     public String getDate() {
-        if (date == null) {
+        if (createDate == null) {
             return "";
         }
-        return date.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
+        return createDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
     }
 
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
+    }
 
     public Long getPostNumber() {
         return postNumber;
@@ -83,7 +97,7 @@ public class Question {
                 ", writer=" + writer +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
-                ", date=" + date +
+                ", date=" + createDate +
                 '}';
     }
 

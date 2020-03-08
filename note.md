@@ -94,6 +94,8 @@ JpaRepository를 extends 하고 어떤 클래스에 관한 레파지토리인지
 7. @PathVariable
    - url로 데이터를 넘겨줄 때 
 
+8. @Lob
+    - contents 와 같이 많은 글을 써야 할 때 default(256) 값은 부족하기 때문에 @Lob 애노테이션을 붙여주면 많이 쓸 수 있음.
 Repository
 --
 - repositoryname.findAll()  하면 레파지토리안의 모든 정보 가져옴.
@@ -243,3 +245,30 @@ public boolean isSameWriter(User loggedInUser) {
         return this.writer.equals(loggedInUser);
     }
     equal 해도 false 반환?? 
+
+이해 안되는 부분
+- 
+     @GetMapping("/questions/{postNumber}/contents")
+        public String seeQuestions(@PathVariable Long postNumber, Model model) {
+            Question question = questionRepository.findById(postNumber).get();
+            Answer answer = answerRepository.findByRelatedPostNumber(postNumber);
+            model.addAttribute("question", question);
+            model.addAttribute("answer", answer);
+
+        return "QuestionContents";
+    }
+    
+    이렇게 해서 댓글 달기 했더니 댓글 하나는 잘 달리는데 나와서 글 보기 하면 에러뜬다. 왜?
+    그래서 일단은 무시하고 
+    
+    
+    
+
+AJAX 를 이용하여 댓글달기
+-
+
+댓글 달기를 눌렀을 때, 서버로 데이터를 전송하지 않도록 하기
+    
+    
+  
+    

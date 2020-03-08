@@ -15,10 +15,15 @@
 <body>
 <div id="header">
     <div class="topArea">
+        {{^sessionUser}}
         <a href="/users/login">LOGIN</a>
         <a href="/users/join">JOIN US</a>
+        {{/sessionUser}}
+        {{#sessionUser}}
+        <form class="form-top-nav" action="/users/logout" method="post"><button class="form-top-nav" type="submit">LOGOUT</button></form>
+        <a href="/users/{{id}}">PROFILE</a>
+        {{/sessionUser}}
         <a href="/users">LIST</a>
-        <a href="/users/{userId}">PROFILE</a>
         <a href="/questions">QnA</a>
 
     </div>

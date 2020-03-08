@@ -1,23 +1,32 @@
 package com.codesquad.qna.domain;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 20)
+    @NotEmpty
+    @Column(nullable = false, length = 20, unique = true)
     private String userId;
+
+    @NotEmpty
     @Column(nullable = false)
     private String password;
-//    private String newPassword;
+
+    @NotEmpty
     @Column(nullable = false)
     private String name;
+
+    @NotEmpty
     @Column(nullable = false)
     private String email;
+
     private String address;
+
     private String phoneNumber;
 
     public Long getId() {
@@ -77,7 +86,7 @@ public class User {
     }
 
     public void update(User user, String newPassword) {
-        // newPassword 가 null이 아닌경우에만 비밀번호 변경
+        //TODO : newPassword 가 null인 경우 에러처리
         if (!newPassword.isEmpty())
             this.password = newPassword;
         this.name = user.getName();
@@ -86,7 +95,34 @@ public class User {
         this.email = user.getEmail();
     }
 
-    public boolean checkPassword(String password) {
-        return this.password.equals(password);
+    public boolean matchPassword(User user) {
+        return this.password.equals(user.getPassword());
+    }
+
+    public boolean matchPassword(String inputPassword) {
+        if (inputPassword == null) {
+            return false;
+        }
+        return inputPassword.equals(password);
+    }
+
+    public boolean matchId(Long inputId) {
+        if (inputId == null) {
+            return false;
+        }
+        return inputId.equals(id);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", userId='" + userId + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", address='" + address + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                '}';
     }
 }

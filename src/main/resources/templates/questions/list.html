@@ -24,8 +24,9 @@
           <tbody>
             <tr>
               <td>{{id}}</td>
-              <td class="left"><a href="/questions/{{id}}">{{title}}</a></td>
-              <td>{{writer}}</td>
+              <td class="left"><a href="/questions/{{id}}">{{title}}</a>
+                  <span class="comment-count">[{{countOfAnswers}}]</span></td>
+                <td><a href="./users/{{writer.id}}">{{writer.userId}}</a></td>
               <td>{{formattedCreatedTime}}</td>
             </tr>
           </tbody>

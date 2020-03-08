@@ -4,45 +4,94 @@
         <div class="title">
           <h2>Q&amp;A</h2>
         </div>
-        {{#currentQuestion}}
+<!--        {{#currentQuestion}}-->
         <header class="qna-header">
-            <h2 class="qna-title">제목 : {{title}}</h2>
+            <h2 class="qna-title">제목 : {{currentQuestion.title}}</h2>
         </header>
         <div class="content-main">
             <article class="article">
                 <div class="article-header">
                     <div class="article-header-thumb">
-                        <img src="../images/solarc.JPG" class="article-author-thumb" alt=""  width="20" height="20">
+                        <img src="https://tva1.sinaimg.cn/large/0082zybpgy1gc1t11cddhj30u00u07wi.jpg" class="article-author-thumb" alt=""  width="20" height="20">
                     </div>
                     <div class="article-header-text">
-                        <a href="/users/{userId}" class="article-author-name">{{writer}}</a>
+                        <a href="/users/{userId}" class="article-author-name">{{currentQuestion.writer.userId}}</a>
                         <a href="/questions/413" class="article-header-time" title="퍼머링크">
-                            {{formattedCreatedTime}}
+                            {{currentQuestion.formattedCreatedTime}}
                             <i class="icon-link"></i>
                         </a>
                     </div>
                 </div>
                 <div class="article-doc">
-                    <p>{{contents}}</p>
+                    <p>{{currentQuestion.contents}}</p>
                 </div>
                 <div class="article-util">
                     <ul class="article-util-list">
                         <li>
-                            <a class="link-modify-article" href="#">수정</a>
+                            <a class="link-modify-article" href="/questions/{{id}}/modify">수정</a>
                         </li>
                         <li>
-<!--                            <form class="form-delete" action="" method="POST">-->
+                            <form class="form-delete" action="/questions/{{id}}" method="POST">
                                 <input type="hidden" name="_method" value="DELETE">
                                 <button class="link-delete-article" type="submit">삭제</button>
-<!--                            </form>-->
+                            </form>
                         </li>
                         <li>
                             <a class="link-modify-article" href="/questions">목록</a>
                         </li>
                     </ul>
                 </div>
+<!--                {{/currentQuestion}}-->
+                <div class="qna-comment">
+                    <div class="qna-comment-solar">
+                        <div class="qna-comment-solar-articles">
+                        <p class="qna-comment-count"><strong>{{currentQuestion.countOfAnswers}}</strong>개의 의견</p>
+
+                            {{#each answers}}
+                            <article class="article" id="answer-{{this.id}}">
+                                <div class="article-header">
+                                    <div class="article-header-thumb">
+                                        <img alt="" class="article-author-thumb" src="https://tva1.sinaimg.cn/large/00831rSTgy1gcg28u4pghj30bv0bvdh0.jpg">
+                                    </div>
+                                    <div class="article-header-text">
+                                        <a class="article-author-name" href="">{{this.writer.userId}}</a>
+                                        <a class="article-header-time" href="" title="퍼머링크">
+                                            {{this.formattedCreatedTime}}
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="article-doc comment-doc">
+                                    <p>{{this.comment}}</p>
+                                </div>
+                                <div class="article-util">
+                                    <ul class="article-util-list">
+                                        <li>
+                                            <a class="link-modify-article" href="">수정</a>
+                                        </li>
+                                        <li>
+                                            <form action="/questions/{{currentQuestion.id}}/answers/{{this.id}}" class="delete-answer-form" method="POST">
+                                                <input name="_method" type="hidden" value="DELETE">
+                                                <button class="delete-answer-button" type="submit">삭제</button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </article>
+                            {{/each}}
+                            <form class="submit-write" action="/questions/{{id}}/answers" method="POST">
+                                <div class="form-group" style="padding:14px;">
+                                    <textarea class="form-control" placeholder="Update your status" id="comment" name="comment"></textarea>
+                                </div>
+                                <input type="submit" class="btn btn_answer pull-right" value="답변하기" />
+                                <div class="clearfix">
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
             </article>
-            {{/currentQuestion}}
+
         </div>
 
       </div>

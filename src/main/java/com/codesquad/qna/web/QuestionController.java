@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
-import java.util.Optional;
+
+import static com.codesquad.qna.web.HttpSessionUtils.getUserFromSession;
+import static com.codesquad.qna.web.HttpSessionUtils.isLoginUser;
+import static com.codesquad.qna.web.UserController.REDIRECT_LOGIN_FORM;
 
 @Controller
 @RequestMapping("/questions")
@@ -26,9 +29,8 @@ public class QuestionController {
 
     @GetMapping("/createForm")
     public String createForm(HttpSession session) {
-        Optional<User> sessionedUser = HttpSessionUtils.getOptionalUser(session);
-        if (!sessionedUser.isPresent()) {
-            return "/users/loginForm";
+        if (!isLoginUser(session)) {
+            return REDIRECT_LOGIN_FORM;
         }
 
         return "qna/form";
@@ -36,65 +38,67 @@ public class QuestionController {
 
     @PostMapping("/create")
     public String create(Question question, Model model, HttpSession session) {
-        Optional<User> sessionedUser = HttpSessionUtils.getOptionalUser(session);
-        if (!sessionedUser.isPresent()) {
-            return "/users/loginForm";
+        if (!isLoginUser(session)) {
+            return REDIRECT_LOGIN_FORM;
         }
 
-        User user = sessionedUser.get();
-        Question createdQuestion = new Question(user, question);
+        User sessionedUser = getUserFromSession(session);
+        Question createdQuestion = new Question(sessionedUser, question);
         questionRepository.save(createdQuestion);
         return "redirect:/";
     }
 
     @GetMapping("/{id}")
     public String read(@PathVariable Long id, Model model) {
-        Question question = questionRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        Question question = findQuestion(id);
         model.addAttribute("question", question);
         return "qna/show";
     }
 
     @GetMapping("/{id}/updateForm")
-    public String updateForm(@PathVariable Long id, HttpSession session, Model model) throws IllegalAccessException {
-        Optional<User> sessionedUser = HttpSessionUtils.getOptionalUser(session);
-        if (!sessionedUser.isPresent()) {
-            return "/users/loginForm";
+    public String updateForm(@PathVariable Long id, HttpSession session, Model model) {
+        if (!isLoginUser(session)) {
+            return REDIRECT_LOGIN_FORM;
         }
-        User user = sessionedUser.get();
 
-        Question updatedQuestion = questionRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        updatedQuestion.hasPermission(user);
-        model.addAttribute("updatedQuestion", updatedQuestion);
+        User sessionedUser = getUserFromSession(session);
+        Question updatingQuestion = findQuestion(id);
+
+        sessionedUser.hasPermission(updatingQuestion);
+        model.addAttribute("updatingQuestion", updatingQuestion);
         return "qna/form";
     }
 
     @PutMapping("/{id}/update")
-    public String update(@PathVariable Long id, HttpSession session, Question updatedQuestion) throws IllegalAccessException {
-        Optional<User> sessionedUser = HttpSessionUtils.getOptionalUser(session);
-        if (!sessionedUser.isPresent()) {
-            return "/users/loginForm";
+    public String update(@PathVariable Long id, HttpSession session, Question updatedQuestion) {
+        if (!isLoginUser(session)) {
+            return REDIRECT_LOGIN_FORM;
         }
-        User user = sessionedUser.get();
 
-        Question question = questionRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        question.hasPermission(user);
+        User sessionedUser = getUserFromSession(session);
+        Question question = findQuestion(id);
+
+        sessionedUser.hasPermission(question);
         question.update(updatedQuestion);
         questionRepository.save(question);
         return "redirect:/questions/{id}";
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id, HttpSession session) throws IllegalAccessException {
-        Optional<User> sessionedUser = HttpSessionUtils.getOptionalUser(session);
-        if (!sessionedUser.isPresent()) {
-            return "/users/loginForm";
+    public String delete(@PathVariable Long id, HttpSession session) {
+        if (!isLoginUser(session)) {
+            return REDIRECT_LOGIN_FORM;
         }
-        User user = sessionedUser.get();
 
-        Question question = questionRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        User sessionedUser = getUserFromSession(session);
+        Question question = findQuestion(id);
 
-        question.hasPermission(user);
+        sessionedUser.hasPermission(question);
         questionRepository.delete(question);
         return "redirect:/";
+    }
+
+    private Question findQuestion(Long id) {
+        return questionRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 }

@@ -15,12 +15,15 @@ import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
+import static com.codesquad.qna.web.HttpSessionUtils.USER_SESSION_KEY;
+import static com.codesquad.qna.web.HttpSessionUtils.getUserFromSession;
+import static com.codesquad.qna.web.HttpSessionUtils.isLoginUser;
+
 @Controller
 @RequestMapping("/users")
 public class UserController {
-    private static final String REDIRECT_LIST = "redirect:/users/list";
-    private static final String REDIRECT_LOGIN_FORM = "redirect:/users/loginForm";
-
+    public static final String REDIRECT_LOGIN_FORM = "redirect:/users/loginForm";
+    private static final String REDIRECT_USERS_DATA = "redirect:/users/list";
     @Autowired
     private UserRepository userRepository;
 
@@ -40,13 +43,13 @@ public class UserController {
         if (!user.isPasswordEquals(password)) {
             return REDIRECT_LOGIN_FORM;
         }
-        session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
+        session.setAttribute(USER_SESSION_KEY, user);
         return "redirect:/";
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
+        session.removeAttribute(USER_SESSION_KEY);
         return "redirect:/";
     }
 
@@ -57,12 +60,9 @@ public class UserController {
 
     @PostMapping("/create")
     public String create(User user, Model model) {
-        Optional<User> optionalUser = Optional.ofNullable(user);
-        if (!optionalUser.isPresent()) {
-            throw new EntityNotFoundException();
-        }
-        userRepository.save(user);
-        return REDIRECT_LIST;
+        User createdUser = Optional.ofNullable(user).orElseThrow(IllegalArgumentException::new);
+        userRepository.save(createdUser);
+        return REDIRECT_USERS_DATA;
     }
 
     @GetMapping("/list")
@@ -72,49 +72,47 @@ public class UserController {
     }
 
     @GetMapping("/{id}/checkForm")
-    public String checkPasswordForm(@PathVariable Long id, Model model, HttpSession session) throws IllegalAccessException {
-        Optional<User> sessionedUser = HttpSessionUtils.getOptionalUser(session);
-        if (!sessionedUser.isPresent()) {
+    public String checkPasswordForm(@PathVariable Long id, Model model, HttpSession session) {
+        if (!isLoginUser(session)) {
             return REDIRECT_LOGIN_FORM;
         }
 
-        User user = sessionedUser.get();
-        user.hasPermission(id);
+        User sessionedUser = getUserFromSession(session);
+        sessionedUser.hasPermission(id);
 
-        model.addAttribute("user", user);
+        model.addAttribute("user", sessionedUser);
         return "/user/checkForm";
     }
 
     @PostMapping("/{id}/updateForm")
-    public String updateForm(@PathVariable Long id, String password, Model model, HttpSession session) throws IllegalAccessException {
-        Optional<User> sessionedUser = HttpSessionUtils.getOptionalUser(session);
-        if (!sessionedUser.isPresent()) {
+    public String updateForm(@PathVariable Long id, String password, Model model, HttpSession session) {
+        if (!isLoginUser(session)) {
             return REDIRECT_LOGIN_FORM;
         }
 
-        User user = sessionedUser.get();
-        user.hasPermission(id);
+        User sessionedUser = getUserFromSession(session);
+        sessionedUser.hasPermission(id);
 
-        if (!user.isPasswordEquals(password)) {
+        if (!sessionedUser.isPasswordEquals(password)) {
             return "redirect:/users/{id}/checkForm";
         }
 
-        model.addAttribute("user", user);
+        model.addAttribute("user", sessionedUser);
         return "/user/updateForm";
     }
 
     @PutMapping("/{id}/update")
-    public String updateUser(@PathVariable Long id, User updateUser, HttpSession session) throws IllegalAccessException {
-        Optional<User> sessionedUser = HttpSessionUtils.getOptionalUser(session);
-        if (!sessionedUser.isPresent()) {
+    public String updateUser(@PathVariable Long id, User updateUser, HttpSession session) {
+        if (!isLoginUser(session)) {
             return REDIRECT_LOGIN_FORM;
         }
 
-        User user = sessionedUser.get();
-        user.hasPermission(id);
-        user.update(updateUser);
-        userRepository.save(user);
-        return REDIRECT_LIST;
+        User sessionedUser = getUserFromSession(session);
+        sessionedUser.hasPermission(id);
+        sessionedUser.update(updateUser);
+
+        userRepository.save(sessionedUser);
+        return REDIRECT_USERS_DATA;
     }
 
     @GetMapping("/{id}")

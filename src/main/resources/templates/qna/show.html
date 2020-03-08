@@ -16,7 +16,7 @@
                                  src="https://graph.facebook.com/v2.3/100000059371774/picture">
                         </div>
                         <div class="article-header-text">
-                            <a class="article-author-name" href="/users/{{id}}">{{writer}}</a>
+                            <a class="article-author-name" href="/users/{{id}}">{{writer.name}}</a>
                             <a class="article-header-time" href="/questions/413" title="퍼머링크">
                                 {{formattedCreatedTime}}
                                 <i class="icon-link"></i>
@@ -32,7 +32,7 @@
                                 <a class="link-modify-article" href="/questions/{{id}}/updateForm">수정</a>
                             </li>
                             <li>
-                                <form action="/questions/{id}" class="form-delete" method="POST">
+                                <form action="/questions/{{id}}" class="form-delete" method="POST">
                                     <input name="_method" type="hidden" value="DELETE">
                                     <button class="link-delete-article" type="submit">삭제</button>
                                 </form>

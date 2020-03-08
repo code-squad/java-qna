@@ -12,10 +12,17 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false, length = 20, unique = true)
     private String userId;
+
+    @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private String email;
 
     public String getUserId() {
@@ -68,9 +75,15 @@ public class User {
         return this.password.equals(password);
     }
 
-    public void hasPermission(Long id) throws IllegalAccessException {
+    public void hasPermission(Long id) {
         if (!this.id.equals(id)) {
-            throw new IllegalAccessException("잘못된 접근입니다");
+            throw new SecurityException("잘못된 접근입니다");
+        }
+    }
+
+    public void hasPermission(Question question) {
+        if (!this.id.equals(question.getWriter().id)) {
+            throw new SecurityException("다른 사람의 글을 수정할 수 없습니다");
         }
     }
 

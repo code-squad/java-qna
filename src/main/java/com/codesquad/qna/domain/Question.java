@@ -1,28 +1,40 @@
 package com.codesquad.qna.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Question {
-
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String writer;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    private User writer;
+
+    @Column(nullable = false)
     private String title;
+
+    @Column(nullable = false)
     private String contents;
+
+    @Column(nullable = false)
     private LocalDateTime createdDateTime;
 
     public Question() {
     }
 
-    public Question(User user, Question question) {
-        this.writer = user.getUserId();
+    public Question(User writer, Question question) {
+        this.writer = writer;
         this.title = question.title;
         this.contents = question.contents;
         this.createdDateTime = LocalDateTime.now();
@@ -36,11 +48,11 @@ public class Question {
         this.id = id;
     }
 
-    public String getWriter() {
+    public User getWriter() {
         return writer;
     }
 
-    public void setWriter(String writer) {
+    public void setWriter(User writer) {
         this.writer = writer;
     }
 
@@ -68,12 +80,6 @@ public class Question {
         this.title = updateQuestion.title;
         this.contents = updateQuestion.contents;
         this.createdDateTime = LocalDateTime.now();
-    }
-
-    public void hasPermission(User user) throws IllegalAccessException {
-        if (!writer.equals(user.getUserId())) {
-            throw new IllegalAccessException("다른 사람의 글을 수정할 수 없습니다");
-        }
     }
 
     @Override

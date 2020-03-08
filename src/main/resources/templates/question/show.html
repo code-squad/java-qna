@@ -50,7 +50,7 @@
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
                         <p class="qna-comment-count"><strong>2</strong>개의 의견</p>
-                        {{#question.answers}}
+                        {{#answers}}
                         <div class="qna-comment-slipp-articles">
                             <article class="article" id="answer-1405">
                                 <div class="article-header">
@@ -84,7 +84,7 @@
                                     </ul>
                                 </div>
                             </article>
-                            {{/question.answers}}
+                            {{/answers}}
                             <form class="submit-write" action="/questions/{{question.id}}/answers" method="post">
                                 <div class="form-group" style="padding:14px;">
                                     <textarea class="form-control" id="contents" name="contents"

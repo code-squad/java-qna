@@ -118,7 +118,7 @@ public class Question {
         return createdDate.format(DateTimeFormatter.ofPattern("YYYY-MM-SS HH:mm:ss"));
     }
 
-    public boolean notHasAnswers() {
+    public boolean isNoAnswers() {
         return answers.isEmpty();
     }
 

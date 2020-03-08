@@ -1,5 +1,6 @@
 package com.codessquad.qna;
 
+import com.codessquad.qna.domain.AnswerRepository;
 import com.codessquad.qna.domain.Question;
 import com.codessquad.qna.domain.QuestionRepository;
 import com.codessquad.qna.domain.User;
@@ -16,6 +17,8 @@ import java.util.List;
 public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
+    @Autowired
+    private AnswerRepository answerRepository;
 
     @GetMapping("/form")
     public String form(HttpSession httpSession, Model model) {
@@ -46,6 +49,7 @@ public class QuestionController {
     @GetMapping("/{id}")
     public String detailPage(@PathVariable("id") Long questionId, Model model) {
         model.addAttribute("question", findQuestionById(questionRepository, questionId));
+        model.addAttribute("answers", answerRepository.findByQuestionIdAndDeletedFalse(questionId));
         return "question/show";
     }
 
@@ -90,7 +94,7 @@ public class QuestionController {
         try {
             hasPermission(httpSession, writer);
             Question question = findQuestionById(questionRepository, id);
-            if (question.notHasAnswers() || question.isSameBetweenWritersOfAnswers()) {
+            if (question.isNoAnswers() || question.isSameBetweenWritersOfAnswers()) {
                 question.delete();
                 questionRepository.save(question);
                 return "redirect:/";

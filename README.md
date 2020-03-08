@@ -1,5 +1,8 @@
 # Step4 
 
+## 구현하며 배운점
+- 이전에 ORM은 객체지향과 DB에 대해 잘 알아야한다고 했는데 그 이유를 알 것 같다. 예를 들어, findByDeletedFalse()라는 메서드는 DB에서 쿼리를 조회할 수 있어야 이해하고 쓸 수 있다. 
+
 ## 구현할 것 
 - Question에 @OneToMany로 Answer와 매핑한다. -> Question 속성에 answer를 만들어서 mapping 하나?  
 - 질문 삭제하기 실습 (step3)에 비해 기능 업그레이드. 질문 데이터를 삭제하지 않고 질문의 속성에 deleted를 추가해서 true/false로 바꾼 뒤 저장한다. -> 그럼 QuestionRepo에서 question을 찾을 때 deleted가 false인 것만 찾는 메서드 추가? 
@@ -32,4 +35,6 @@
 - 답변이 없는 경우 삭제 가능 : DB에서 찾은 Question의 answers가 isEmpty()인 경우 삭제 0 
 - 질문자와 답변글의 모든 답변자(writer)가 같은 경우 삭제 가능. -> 반복문 돌며 찾기? 0
 - 질문 삭제 시 답변도 삭제할 때 deleted : boolean를 변경한다.  0
-- 구현 못 한 것 : 답변 삭제 한 후 deleted = true;로 변경. show로 question을 넘길 때 answer의 deletd 값이 true인 question을 넘겨야 하는데 어떻게 할 지 고민
+- 답변 삭제 한 후 deleted = true;로 변경. show에는 deleted가 false인 answers만 넘긴다. 
+
+findByDeletedFalse() -> 인자 필요없이 Deleted가 false인 애들을 가져온다?

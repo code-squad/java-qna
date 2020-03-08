@@ -49,9 +49,14 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}")
-    public String read(@PathVariable Long id, Model model) {
+    public String read(@PathVariable Long id, Model model, HttpSession session) {
         Question question = findQuestion(id);
         model.addAttribute("question", question);
+
+        if (isLoginUser(session) && getUserFromSession(session).hasPermission(id)) {
+            model.addAttribute("hasPermissionUser", true);
+        }
+
         return "qna/show";
     }
 

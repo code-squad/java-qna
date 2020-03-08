@@ -75,10 +75,11 @@ public class User {
         return this.password.equals(password);
     }
 
-    public void hasPermission(Long id) {
+    public boolean hasPermission(Long id) {
         if (!this.id.equals(id)) {
             throw new SecurityException("잘못된 접근입니다");
         }
+        return true;
     }
 
     public void hasPermission(Question question) {

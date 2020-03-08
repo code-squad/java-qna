@@ -1,2 +1,4 @@
 INSERT INTO USER (USER_ID, PASSWORD, NAME , EMAIL) VALUES ('ever', 'asd', '현식', 'hsik0225@gmail.com');
 INSERT INTO USER (USER_ID, PASSWORD, NAME , EMAIL) VALUES ('ever2', 'qwe', '준휘', 'hrifle@gmail.com');
+
+INSERT INTO QUESTION (ID, WRITER_ID, TITLE, CONTENTS, CREATED_DATE_TIME) VALUES (NULL, 1, '자바', '재밌는 코딩', NOW());

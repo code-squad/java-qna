@@ -1,5 +1,6 @@
 package com.codessquad.qna.question;
 
+import com.codessquad.qna.answer.Answer;
 import com.codessquad.qna.answer.AnswerRepository;
 import com.codessquad.qna.commons.CustomErrorCode;
 import com.codessquad.qna.errors.QuestionException;
@@ -73,7 +74,7 @@ public class QuestionController {
   }
 
   /**
-   * Feat : Question 상세 내용을 보여주는 .hbs 로 이동합니다.
+   * Feat : Question 상세 내용과 Answers 를 보여주는 .hbs 로 이동합니다.
    * Desc : getQuestion() 을 통해 Question 존재 여부를 검증합니다.
    * Return : /questions/show
    */
@@ -81,8 +82,9 @@ public class QuestionController {
   public String show(@PathVariable Long id, Model model) {
     log.info("### show()");
     Question question = getQuestionOrError(questionRepository, id);
+    Iterable<Answer> answers = answerRepository.findByQuestionId(id);
     model.addAttribute("question", question);
-    model.addAttribute("answers", answerRepository.findByQuestionId(question.getId()));
+    model.addAttribute("answers", answers);
 
     return "/questions/show";
   }
@@ -99,7 +101,7 @@ public class QuestionController {
     originQuestion.update(question);
     questionRepository.save(originQuestion);
 
-    return "/questions/show";
+    return "redirect:/questions/" + id;
   }
 
   /**

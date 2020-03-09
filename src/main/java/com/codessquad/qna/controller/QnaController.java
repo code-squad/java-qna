@@ -103,6 +103,7 @@ public class QnaController {
     return "index";
   }
 
+
   private Result valid(HttpSession httpSession, Question question) {
     if (!HttpSessionUtils.isLoginUser(httpSession)) {
       return Result.fail("로그인이 필요합니다");

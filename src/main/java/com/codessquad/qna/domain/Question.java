@@ -26,7 +26,7 @@ public class Question {
 
     @OneToMany(mappedBy="question")
     @OrderBy("id ASC")
-    public List<Answer> answers = new ArrayList<Answer>();
+    public List<Answer> answers;
 
     public Question() {}
 

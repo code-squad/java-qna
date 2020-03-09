@@ -66,6 +66,14 @@ public class User {
             this.email = email;
         }
     }
+
+    public boolean idCheck(Long id) {
+        if (this.id.equals(id)) {
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
         return "User{" +

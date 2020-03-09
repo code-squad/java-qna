@@ -121,5 +121,16 @@ public class UserController {
         return modelAndView;
     }
 
+    @GetMapping("/{id}/info_change")
+    public String idInfoChange(@PathVariable Long id, HttpSession session) {
+        Object value = session.getAttribute("user");
+        if (value != null) {
+            User user = (User) value;
+            if(user.idCheck(id)){
+                return "redirect:/users/info_change";
+            }
+        }
+        return "/user/login_failed";
+    }
 
 }

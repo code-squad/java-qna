@@ -18,10 +18,9 @@ public class AnswerController {
 
     @PostMapping("/{questionId}/answers")
     public String answer(@PathVariable Long questionId,
-                         @RequestParam String contents,
+                         String contents,
                          HttpSession httpSession,
                          Model model) {
-
         try {
             User sessionedUser = HttpSessionUtils.getUserFromSession(httpSession);
             hasPermission(httpSession);
@@ -41,7 +40,6 @@ public class AnswerController {
                              @PathVariable String writer,
                              HttpSession httpSession,
                              Model model) {
-
         try {
             hasPermission(httpSession, writer);
             model.addAttribute("question", findQuestionById(questionRepository, questionId));

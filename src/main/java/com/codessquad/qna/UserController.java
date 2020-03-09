@@ -5,7 +5,10 @@ import com.codessquad.qna.domain.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpSession;
 
@@ -75,14 +78,9 @@ public class UserController {
     }
 
     @PostMapping("/{id}/update")
-    public String updateUser(@PathVariable Long id,
-                             @RequestParam String password,
-                             @RequestParam String newPassword,
-                             @RequestParam String checkPassword,
-                             @RequestParam String name,
-                             @RequestParam String email,
-                             HttpSession httpSession,
-                             Model model) {
+    public String updateUser(@PathVariable Long id, String password, String newPassword,
+                             String checkPassword, String name, String email,
+                             HttpSession httpSession, Model model) {
         try {
             hasPermission(httpSession, id);
             User user = findUser(userRepository, id);

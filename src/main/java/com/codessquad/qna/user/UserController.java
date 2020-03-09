@@ -109,11 +109,11 @@ public class UserController {
   @PutMapping("/{id}")
   public String update(@PathVariable Long id, User newUser, Model model) {
     log.info("### update()");
-    User origin = getUser(id, CustomErrorCode.USER_NOT_EXIST);
+    User originUser = getUser(id, CustomErrorCode.USER_NOT_EXIST);
 
-    if (origin.validatePassword(newUser.getOldPassword())) {
-      origin.update(newUser);
-      userRepository.save(origin);
+    if (originUser.validatePassword(newUser.getOldPassword())) {
+      originUser.update(newUser);
+      userRepository.save(originUser);
 
       return "redirect:/users/list";
     }

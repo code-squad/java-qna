@@ -33,7 +33,7 @@ public class QuestionController {
    */
   @GetMapping("/form")
   public String form(Model model, HttpSession session) {
-    log.info("### sessionedUser : " + session.getAttribute("sessionedUser"));
+    log.info("### form");
     getSessionedUserOrError(session);
 
     return "/questions/form";
@@ -66,8 +66,7 @@ public class QuestionController {
    */
   @PostMapping("")
   public String create(Question question, HttpSession session) {
-    User sessionedUser = getSessionedUserOrError(session);
-    question.setUser(sessionedUser);
+    getSessionedUserOrError(session);
     questionRepository.save(question);
 
     return "redirect:/";
@@ -94,11 +93,11 @@ public class QuestionController {
    * Return : /questions/show
    */
   @PutMapping("/{id}")
-  public String update(@PathVariable Long id, Question question, Model model) {
+  public String update(@PathVariable Long id, Question question) {
     log.info("### update()");
-    Question origin = getQuestionOrError(questionRepository, id);
-    origin.update(question);
-    questionRepository.save(question);
+    Question originQuestion = getQuestionOrError(questionRepository, id);
+    originQuestion.update(question);
+    questionRepository.save(originQuestion);
 
     return "/questions/show";
   }

@@ -27,20 +27,22 @@ public class Question {
   private String contents;
   @Column(nullable = false)
   private LocalDateTime createdDateTime;
+  @Column(nullable = false)
+  private LocalDateTime lastModifiedDateTime;
 
   public Question() {
     this.createdDateTime = LocalDateTime.now();
+    this.lastModifiedDateTime = LocalDateTime.now();
   }
 
   public void update(Question question) {
-    this.user = question.user;
     this.title = question.title;
     this.contents = question.contents;
-    this.createdDateTime = question.createdDateTime;
+    this.lastModifiedDateTime = LocalDateTime.now();
   }
 
-  public String getCreatedDateTime() {
+  public String getLastModifiedDateTime() {
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    return createdDateTime.format(dateTimeFormatter);
+    return lastModifiedDateTime.format(dateTimeFormatter);
   }
 }

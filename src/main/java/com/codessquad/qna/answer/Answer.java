@@ -30,13 +30,16 @@ public class Answer {
   private String contents;
   @Column(nullable = false)
   private LocalDateTime createdDateTime;
+  @Column(nullable = false)
+  private LocalDateTime lastModifiedDateTime;
 
   public Answer() {
     this.createdDateTime = LocalDateTime.now();
+    this.lastModifiedDateTime = LocalDateTime.now();
   }
 
-  public String getCreatedDateTime() {
+  public String getLastModifiedDateTime() {
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    return createdDateTime.format(dateTimeFormatter);
+    return lastModifiedDateTime.format(dateTimeFormatter);
   }
 }

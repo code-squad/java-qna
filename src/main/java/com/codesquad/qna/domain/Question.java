@@ -41,6 +41,7 @@ public class Question {
         this.title = question.title;
         this.contents = question.contents;
         this.createdDateTime = LocalDateTime.now();
+        this.replyCount = 0;
     }
 
     public Long getId() {

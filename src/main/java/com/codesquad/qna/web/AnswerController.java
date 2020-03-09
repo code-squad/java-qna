@@ -34,10 +34,11 @@ public class AnswerController {
         if (!isLoginUser(session)) {
             return REDIRECT_LOGIN_FORM;
         }
-        User sessionedUser = getUserFromSession(session);
 
+        User sessionedUser = getUserFromSession(session);
         Question question = questionRepository.findById(questionId).orElseThrow(EntityNotFoundException::new);
         Answer answer = new Answer(sessionedUser, question, contents);
+
         answerRepository.save(answer);
         return "redirect:/questions/{questionId}";
     }
@@ -47,14 +48,11 @@ public class AnswerController {
         if (!isLoginUser(session)) {
             return REDIRECT_LOGIN_FORM;
         }
-        User sessionedUser = getUserFromSession(session);
 
+        User sessionedUser = getUserFromSession(session);
         Answer answer = answerRepository.findByIdAndId(id, questionId).orElseThrow(EntityNotFoundException::new);
 
-        if (sessionedUser.hasPermission(answer)) {
-            answerRepository.delete(answer);
-        }
-
+        sessionedUser.hasPermission(answer);
         answerRepository.delete(answer);
         return "redirect:/questions/{questionId}";
     }

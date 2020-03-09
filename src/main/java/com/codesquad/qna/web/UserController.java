@@ -41,9 +41,11 @@ public class UserController {
         }
 
         User user = optionalUser.get();
+
         if (!user.isPasswordEquals(password)) {
             return REDIRECT_LOGIN_FORM;
         }
+
         session.setAttribute(USER_SESSION_KEY, user);
         return "redirect:/";
     }
@@ -79,8 +81,8 @@ public class UserController {
         }
 
         User sessionedUser = getUserFromSession(session);
-        sessionedUser.hasPermission(id);
 
+        sessionedUser.hasPermission(id);
         model.addAttribute("user", sessionedUser);
         return "/user/checkForm";
     }
@@ -109,9 +111,9 @@ public class UserController {
         }
 
         User sessionedUser = getUserFromSession(session);
+
         sessionedUser.hasPermission(id);
         sessionedUser.update(updateUser);
-
         userRepository.save(sessionedUser);
         return REDIRECT_USERS_DATA;
     }

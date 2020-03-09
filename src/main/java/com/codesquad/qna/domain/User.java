@@ -75,25 +75,24 @@ public class User {
         return this.password.equals(password);
     }
 
-    public boolean hasPermission(Long id) {
+    public boolean isUserEquals(Question question) {
+        return this.equals(question.getWriter());
+    }
+
+    public void hasPermission(Long id) {
         if (!this.id.equals(id)) {
-            throw new SecurityException("잘못된 접근입니다");
-        }
-        return true;
-    }
-
-    public boolean hasPermission(Question question) {
-        if (!this.id.equals(question.getWriter().id)) {
             throw new SecurityException("다른 사람의 글을 수정할 수 없습니다");
         }
-        return true;
     }
 
-    public boolean hasPermission(Answer answer) {
-        if (!this.id.equals(answer.getWriter().id)) {
-            throw new SecurityException("다른 사람의 글을 수정할 수 없습니다");
-        }
-        return true;
+    public void hasPermission(Question question) {
+        Long id = question.getWriter().getId();
+        hasPermission(id);
+    }
+
+    public void hasPermission(Answer answer) {
+        Question question = answer.getQuestion();
+        hasPermission(question);
     }
 
     @Override

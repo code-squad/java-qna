@@ -48,16 +48,17 @@ public class QuestionController {
 
         User sessionedUser = getUserFromSession(session);
         Question createdQuestion = new Question(sessionedUser, question);
+
         questionRepository.save(createdQuestion);
         return "redirect:/";
     }
 
     @GetMapping("/{id}")
     public String read(@PathVariable Long id, Model model, HttpSession session) {
-        Question question = findQuestion(id);
+        Question question = findById(id);
         model.addAttribute("question", question);
 
-        if (isLoginUser(session) && getUserFromSession(session).hasPermission(id)) {
+        if (isLoginUser(session) && getUserFromSession(session).isUserEquals(question)) {
             model.addAttribute("hasPermissionUser", true);
         }
 
@@ -72,7 +73,7 @@ public class QuestionController {
         }
 
         User sessionedUser = getUserFromSession(session);
-        Question updatingQuestion = findQuestion(id);
+        Question updatingQuestion = findById(id);
 
         sessionedUser.hasPermission(updatingQuestion);
         model.addAttribute("updatingQuestion", updatingQuestion);
@@ -86,7 +87,7 @@ public class QuestionController {
         }
 
         User sessionedUser = getUserFromSession(session);
-        Question question = findQuestion(id);
+        Question question = findById(id);
 
         sessionedUser.hasPermission(question);
         question.update(updatedQuestion);
@@ -101,15 +102,14 @@ public class QuestionController {
         }
 
         User sessionedUser = getUserFromSession(session);
-        Question question = findQuestion(id);
+        Question question = findById(id);
 
-        if (sessionedUser.hasPermission(question)) {
-            questionRepository.delete(question);
-        }
+        sessionedUser.hasPermission(question);
+        questionRepository.delete(question);
         return "redirect:/";
     }
 
-    private Question findQuestion(Long id) {
+    private Question findById(Long id) {
         return questionRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 }

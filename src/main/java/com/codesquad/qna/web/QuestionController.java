@@ -62,7 +62,7 @@ public class QuestionController {
             model.addAttribute("hasPermissionUser", true);
         }
 
-        model.addAttribute("answers", answerRepository.findAll());
+        model.addAttribute("answers", answerRepository.findByQuestionId(id));
         return "qna/show";
     }
 

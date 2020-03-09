@@ -52,6 +52,16 @@ public class QuestionController {
         return "/question/show";
     }
 
+    private void hasPermission(HttpSession session, Question question) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            throw new IllegalStateException("로그인이 필요합니다.");
+        }
+
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        if (!question.isSameWriter(loginUser)) {
+            throw new IllegalStateException("자신이 쓴 글만 수정, 삭제가 가능합니다.");
+        }
+    }
 
     @GetMapping("/{id}/form")
     public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
@@ -62,21 +72,8 @@ public class QuestionController {
             return "/question/updateForm";
         } catch (IllegalStateException e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "/users/login";
+            return "/user/login";
         }
-    }
-
-    private boolean hasPermission(HttpSession session, Question question) {
-
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            throw new IllegalStateException("로그인이 필요합니다.");
-        }
-
-        User loginUser = HttpSessionUtils.getUserFromSession(session);
-        if (question.isSameWriter(loginUser)) {
-            throw new IllegalStateException("자신이 쓴 글만 수정, 삭제가 가능합니다.");
-        }
-        return true;
     }
 
     @PutMapping("/{id}")
@@ -89,7 +86,7 @@ public class QuestionController {
             return String.format("redirect:/questions/%d", id);
         } catch (IllegalStateException e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "/users/login";
+            return "/user/login";
         }
     }
 
@@ -102,7 +99,8 @@ public class QuestionController {
             return "redirect:/";
         } catch (IllegalStateException e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "/users/login";
+            System.out.println(e.getMessage());
+            return "/user/login";
         }
     }
 }

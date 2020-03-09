@@ -1,5 +1,8 @@
 package com.codessquad.qna;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
@@ -83,12 +86,6 @@ public class Answer {
 
     @Override
     public String toString() {
-        return "Answer{" +
-                "id=" + id +
-                ", writer=" + writer +
-                ", contents='" + contents + '\'' +
-                ", deleted=" + deleted +
-                ", postingTime=" + postingTime +
-                '}';
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
     }
 }

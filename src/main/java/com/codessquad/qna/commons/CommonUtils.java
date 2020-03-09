@@ -18,7 +18,7 @@ public class CommonUtils {
    * Desc :
    * Return : sessionedUser
    */
-  public static User getSessionedUser(HttpSession session) {
+  public static User getSessionedUserOrError(HttpSession session) {
     Optional<Object> optionalUser = Optional.ofNullable(session.getAttribute("sessionedUser"));
     Object user = optionalUser.orElseThrow(() -> new UserException(CustomErrorCode.USER_NOT_LOGIN));
 
@@ -30,7 +30,7 @@ public class CommonUtils {
    * Desc :
    * Return : id 에 매칭되는 question
    */
-  public static Question getQuestion(QuestionRepository questionRepository, Long id) {
+  public static Question getQuestionOrError(QuestionRepository questionRepository, Long id) {
     Optional<Question> optionalQuestion = questionRepository.findById(id);
     Question question = optionalQuestion.orElseThrow(() -> new QuestionException(CustomErrorCode.QUESTION_NOT_EXIST));
 
@@ -42,7 +42,7 @@ public class CommonUtils {
    * Desc :
    * Return : id 에 매칭되는 answer
    */
-  public static Answer getAnswer(AnswerRepository answerRepository, Long id) {
+  public static Answer getAnswerOrError(AnswerRepository answerRepository, Long id) {
     Optional<Answer> optionalAnswer = answerRepository.findById(id);
     Answer answer = optionalAnswer.orElseThrow(() -> new QuestionException(CustomErrorCode.ANSWER_NOT_EXIST));
 

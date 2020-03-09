@@ -1,7 +1,6 @@
 package com.codessquad.qna.question;
 
 import com.codessquad.qna.answer.AnswerRepository;
-import com.codessquad.qna.commons.CommonUtils;
 import com.codessquad.qna.commons.CustomErrorCode;
 import com.codessquad.qna.errors.QuestionException;
 import com.codessquad.qna.user.User;
@@ -12,6 +11,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+
+import static com.codessquad.qna.commons.CommonUtils.getQuestionOrError;
+import static com.codessquad.qna.commons.CommonUtils.getSessionedUserOrError;
 
 @Slf4j
 @Controller
@@ -32,7 +34,7 @@ public class QuestionController {
   @GetMapping("/form")
   public String form(Model model, HttpSession session) {
     log.info("### sessionedUser : " + session.getAttribute("sessionedUser"));
-    CommonUtils.getSessionedUser(session);
+    getSessionedUserOrError(session);
 
     return "/questions/form";
   }
@@ -46,8 +48,8 @@ public class QuestionController {
   public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
     log.info("### sessionedUser : " + session.getAttribute("sessionedUser"));
 
-    User sessionedUser = CommonUtils.getSessionedUser(session);
-    Question question = CommonUtils.getQuestion(questionRepository, id);
+    User sessionedUser = getSessionedUserOrError(session);
+    Question question = getQuestionOrError(questionRepository, id);
 
     if (sessionedUser.validateUserId(question.getUserId())) {
       model.addAttribute("question", question);
@@ -64,7 +66,7 @@ public class QuestionController {
    */
   @PostMapping("")
   public String create(Question question, HttpSession session) {
-    CommonUtils.getSessionedUser(session);
+    getSessionedUserOrError(session);
     questionRepository.save(question);
 
     return "redirect:/";
@@ -78,7 +80,7 @@ public class QuestionController {
   @GetMapping("/{id}")
   public String show(@PathVariable Long id, Model model) {
     log.info("### show()");
-    Question question = CommonUtils.getQuestion(questionRepository, id);
+    Question question = getQuestionOrError(questionRepository, id);
     model.addAttribute("question", question);
     model.addAttribute("answers", answerRepository.findByQuestionId(question.getId()));
 
@@ -93,7 +95,7 @@ public class QuestionController {
   @PutMapping("/{id}")
   public String update(@PathVariable Long id, Question question, Model model) {
     log.info("### update()");
-    Question origin = CommonUtils.getQuestion(questionRepository, id);
+    Question origin = getQuestionOrError(questionRepository, id);
     origin.update(question);
     questionRepository.save(question);
 
@@ -109,8 +111,8 @@ public class QuestionController {
   public String delete(@PathVariable Long id, HttpSession session) {
     log.info("### delete()");
 
-    User sessionedUser = CommonUtils.getSessionedUser(session);
-    Question question = CommonUtils.getQuestion(questionRepository, id);
+    User sessionedUser = getSessionedUserOrError(session);
+    Question question = getQuestionOrError(questionRepository, id);
 
     if (sessionedUser.validateUserId(question.getUserId())) {
       questionRepository.delete(question);

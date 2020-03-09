@@ -33,7 +33,7 @@ public class AnswerController {
     private QuestionRepository questionRepository;
 
     @PostMapping("")
-    public String answer(@PathVariable Long questionId, HttpSession session, String contents) {
+    public String create(@PathVariable Long questionId, HttpSession session, String contents) {
         if (!isLoginUser(session)) {
             return REDIRECT_LOGIN_FORM;
         }
@@ -46,7 +46,7 @@ public class AnswerController {
         return "redirect:/questions/{questionId}";
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/update")
     public String updateForm(@PathVariable Long questionId, @PathVariable Long id, HttpSession session, Model model) {
         if (!isLoginUser(session)) {
             return REDIRECT_LOGIN_FORM;
@@ -60,7 +60,7 @@ public class AnswerController {
         return "qna/replyForm";
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public String update(@PathVariable Long questionId, @PathVariable Long id, Answer updatedAnswer, HttpSession session, Model model) {
         if (!isLoginUser(session)) {
             return REDIRECT_LOGIN_FORM;

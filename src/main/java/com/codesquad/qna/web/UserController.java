@@ -22,13 +22,13 @@ import static com.codesquad.qna.web.HttpSessionUtils.isLoginUser;
 @Controller
 @RequestMapping("/users")
 public class UserController {
-    public static final String REDIRECT_LOGIN_FORM = "redirect:/users/loginForm";
+    public static final String REDIRECT_LOGIN_FORM = "redirect:/users/login";
     private static final String REDIRECT_USERS_DATA = "redirect:/users";
 
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/loginForm")
+    @GetMapping("/login")
     public String loginForm() {
         return "/user/login";
     }
@@ -56,7 +56,7 @@ public class UserController {
         return "redirect:/";
     }
 
-    @GetMapping("/createForm")
+    @GetMapping("/create")
     public String createForm() {
         return "/user/form";
     }
@@ -74,7 +74,7 @@ public class UserController {
         return "/user/list";
     }
 
-    @GetMapping("/{id}/updateForm")
+    @GetMapping("/{id}/update")
     public String checkPasswordForm(@PathVariable Long id, Model model, HttpSession session) {
         if (!isLoginUser(session)) {
             return REDIRECT_LOGIN_FORM;
@@ -87,7 +87,7 @@ public class UserController {
         return "/user/checkForm";
     }
 
-    @PostMapping("/{id}/updateForm")
+    @PostMapping("/{id}/update")
     public String updateForm(@PathVariable Long id, String password, Model model, HttpSession session) {
         if (!isLoginUser(session)) {
             return REDIRECT_LOGIN_FORM;

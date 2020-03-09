@@ -75,19 +75,24 @@ public class User {
         return this.password.equals(password);
     }
 
-    public boolean isUserEquals(Question question) {
-        return this.equals(question.getWriter());
+    public boolean isIdEquals(Long id) {
+        return this.id.equals(id);
+    }
+
+    public boolean isIdEquals(Question question) {
+        Long questionId = question.getWriter().id;
+        return isIdEquals(questionId);
     }
 
     public void hasPermission(Long id) {
-        if (!this.id.equals(id)) {
+        if (!isIdEquals(id)) {
             throw new SecurityException("다른 사람의 글을 수정할 수 없습니다");
         }
     }
 
     public void hasPermission(Question question) {
-        Long id = question.getWriter().getId();
-        hasPermission(id);
+        Long questionId = question.getWriter().id;
+        hasPermission(questionId);
     }
 
     public void hasPermission(Answer answer) {

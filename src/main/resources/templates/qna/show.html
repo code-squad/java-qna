@@ -30,7 +30,7 @@
 
                             {{#hasPermissionUser}}
                             <li>
-                                <a class="link-modify-article" href="/questions/{{question.id}}/updateForm">수정</a>
+                                <a class="link-modify-article" href="/questions/{{question.id}}/update">수정</a>
                             </li>
                             <li>
                                 <form action="/questions/{{question.id}}" class="form-delete" method="POST">
@@ -75,7 +75,7 @@
                                     <ul class="article-util-list">
                                         <li>
                                             <a class="link-modify-article"
-                                               href="/questions/{{question.id}}/answers/{{id}}">수정</a>
+                                               href="/questions/{{question.id}}/answers/{{id}}/update">수정</a>
                                         </li>
                                         <li>
                                             <form action="/questions/{{question.id}}/answers/{{id}}"

@@ -68,13 +68,13 @@
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="/index">Posts</a></li>
                 {{^sessionedUser}}
-                <li><a href="/users/loginForm" role="button">로그인</a></li>
-                <li><a href="/users/createForm" role="button">회원가입</a></li>
+                <li><a href="/users/login" role="button">로그인</a></li>
+                <li><a href="/users/create" role="button">회원가입</a></li>
                 {{/sessionedUser}}
 
                 {{#sessionedUser}}
                 <li><a href="/users/logout" role="button">로그아웃</a></li>
-                <li><a href="/users/{{id}}/updateForm" role="button">개인정보수정</a></li>
+                <li><a href="/users/{{id}}/update" role="button">개인정보수정</a></li>
                 {{/sessionedUser}}
             </ul>
         </div>

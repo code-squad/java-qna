@@ -31,7 +31,7 @@ public class QuestionController {
     @Autowired
     private AnswerRepository answerRepository;
 
-    @GetMapping("/createForm")
+    @GetMapping("/create")
     public String createForm(HttpSession session) {
         if (!isLoginUser(session)) {
             return REDIRECT_LOGIN_FORM;
@@ -40,7 +40,7 @@ public class QuestionController {
         return "qna/form";
     }
 
-    @PostMapping("/create")
+    @PostMapping("")
     public String create(Question question, Model model, HttpSession session) {
         if (!isLoginUser(session)) {
             return REDIRECT_LOGIN_FORM;
@@ -58,7 +58,7 @@ public class QuestionController {
         Question question = findById(id);
         model.addAttribute("question", question);
 
-        if (isLoginUser(session) && getUserFromSession(session).isUserEquals(question)) {
+        if (isLoginUser(session) && getUserFromSession(session).isIdEquals(question)) {
             model.addAttribute("hasPermissionUser", true);
         }
 
@@ -66,7 +66,7 @@ public class QuestionController {
         return "qna/show";
     }
 
-    @GetMapping("/{id}/updateForm")
+    @GetMapping("/{id}/update")
     public String updateForm(@PathVariable Long id, HttpSession session, Model model) {
         if (!isLoginUser(session)) {
             return REDIRECT_LOGIN_FORM;
@@ -80,7 +80,7 @@ public class QuestionController {
         return "qna/form";
     }
 
-    @PutMapping("/{id}/update")
+    @PutMapping("/{id}")
     public String update(@PathVariable Long id, HttpSession session, Question updatedQuestion) {
         if (!isLoginUser(session)) {
             return REDIRECT_LOGIN_FORM;
@@ -92,7 +92,7 @@ public class QuestionController {
         sessionedUser.hasPermission(question);
         question.update(updatedQuestion);
         questionRepository.save(question);
-        return "redirect:/questions/{}";
+        return "redirect:/questions/{id}";
     }
 
     @DeleteMapping("/{id}")

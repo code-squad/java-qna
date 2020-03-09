@@ -4,11 +4,11 @@
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
         <div class="panel panel-default content-main">
             {{^updatingQuestion}}
-            <form action="/questions/create" method="post" name="question">
+            <form action="/questions" method="post" name="question">
                 {{/updatingQuestion}}
 
                 {{#updatingQuestion}}
-                <form action="/questions/{{id}}/update" method="post" name="question">
+                <form action="/questions/{{id}}" method="post" name="question">
                     <input name="_method" type="hidden" value="put"/>
                     {{/updatingQuestion}}
 

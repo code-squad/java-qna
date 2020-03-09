@@ -2,6 +2,7 @@ package com.codessquad.qna;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class Question {
@@ -23,8 +24,15 @@ public class Question {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @OneToMany(mappedBy = "question")
+    private List<Answer> answers;
+
     public Question() {
         markCreatedTime();
+    }
+
+    public List<Answer> getAnswers() {
+        return answers;
     }
 
     public Long getId() {

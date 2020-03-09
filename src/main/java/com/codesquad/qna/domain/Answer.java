@@ -18,6 +18,11 @@ public class Answer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
+    private User writer;
+
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
     private Question question;
@@ -26,6 +31,16 @@ public class Answer {
 
     @Column(nullable = false)
     private String contents;
+
+    public Answer() {
+    }
+
+    public Answer(User writer, Question question, String contents) {
+        this.writer = writer;
+        this.question = question;
+        this.contents = contents;
+        this.createdDateTime = LocalDateTime.now();
+    }
 
     public Long getId() {
         return id;
@@ -57,6 +72,14 @@ public class Answer {
 
     public void setContents(String contents) {
         this.contents = contents;
+    }
+
+    public User getWriter() {
+        return writer;
+    }
+
+    public void setWriter(User writer) {
+        this.writer = writer;
     }
 
     public String getFormattedCreatedDateTime() {

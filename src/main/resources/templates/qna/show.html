@@ -47,12 +47,12 @@
                     </div>
                 </article>
 
-                {{#answer}}
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
                         <p class="qna-comment-count"><strong>{{question.replyCount}}</strong>개의 의견</p>
                         <div class="qna-comment-slipp-articles">
 
+                            {{#answers}}
                             <article class="article" id="answer-1405">
                                 <div class="article-header">
                                     <div class="article-header-thumb">
@@ -62,7 +62,7 @@
                                     </div>
                                     <div class="article-header-text">
                                         <a class="article-author-name"
-                                           href="/users/{{question.id}}/{{question.writer.name}}">{{question.writer.name}}</a>
+                                           href="/users/{{question.id}}/{{writer.name}}">{{writer.name}}</a>
                                         <a class="article-header-time" href="#answer-1434" title="퍼머링크">
                                             {{formattedCreatedDateTime}}
                                         </a>
@@ -88,18 +88,20 @@
                                     </ul>
                                 </div>
                             </article>
+                            {{/answers}}
 
-                            <form class="submit-write">
+                            <form action="/questions/{{question.id}}/answers" class="submit-write" method="POST">
                                 <div class="form-group" style="padding:14px;">
-                                    <textarea class="form-control" placeholder="Update your status"></textarea>
+                                    <textarea class="form-control" id="contents" name="contents"
+                                              placeholder="Update your status"></textarea>
                                 </div>
-                                <button class="btn btn-success pull-right" type="button">답변하기</button>
+                                <input class="btn btn-success pull-right" type="submit" value="답변하기"/>
                                 <div class="clearfix"/>
                             </form>
+
                         </div>
                     </div>
                 </div>
-                {{/answer}}
             </div>
         </div>
     </div>

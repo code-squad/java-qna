@@ -1,5 +1,6 @@
 package com.codesquad.qna.web;
 
+import com.codesquad.qna.domain.AnswerRepository;
 import com.codesquad.qna.domain.Question;
 import com.codesquad.qna.domain.QuestionRepository;
 import com.codesquad.qna.domain.User;
@@ -26,6 +27,9 @@ public class QuestionController {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private AnswerRepository answerRepository;
 
     @GetMapping("/createForm")
     public String createForm(HttpSession session) {
@@ -57,6 +61,7 @@ public class QuestionController {
             model.addAttribute("hasPermissionUser", true);
         }
 
+        model.addAttribute("answers", answerRepository.findAll());
         return "qna/show";
     }
 

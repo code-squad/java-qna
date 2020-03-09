@@ -19,7 +19,8 @@ public class Question {
     private String contents;
     private String formattedWrittenTime;
 
-    public Question() {}
+    public Question() {
+    }
 
     public Question(String writer, String title, String contents) {
         super();
@@ -30,6 +31,11 @@ public class Question {
 
     public void setFormattedWrittenTime(String formattedWrittenTime) {
         this.formattedWrittenTime = formattedWrittenTime;
+    }
+
+    public void update(String title, String contents) {
+        this.title = title;
+        this.contents = contents;
     }
 
     public Long getId() {
@@ -61,4 +67,6 @@ public class Question {
                 ", formattedWrittenTime='" + formattedWrittenTime + '\'' +
                 '}';
     }
+
+
 }

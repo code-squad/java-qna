@@ -6,10 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
@@ -44,9 +42,22 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}")
-    public ModelAndView showQuestionContents(@PathVariable Long id) throws IllegalAccessException {
-        ModelAndView mav = new ModelAndView("qna/show");
-        mav.addObject("question", questionRepository.findById(id).orElseThrow(IllegalAccessException::new));
-        return mav;
+    public String showQuestionContents(@PathVariable Long id, Model model) throws IllegalAccessException {
+        model.addAttribute("question", questionRepository.findById(id).orElseThrow(IllegalAccessException::new));
+        return "qna/show";
+    }
+
+    @GetMapping("/{id}/form")
+    public String updateForm(@PathVariable Long id, Model model) throws IllegalAccessException {
+        model.addAttribute("question", questionRepository.findById(id).orElseThrow(IllegalAccessException::new));
+        return "/qna/updateForm";
+    }
+
+    @PutMapping("/{id}")
+    public String updateQna(@PathVariable Long id, String title, String contents) throws IllegalAccessException {
+        Question question = questionRepository.findById(id).orElseThrow(IllegalAccessException::new);
+        question.update(title, contents);
+        questionRepository.save(question);
+        return String.format("redirect:/questions/%d",id);
     }
 }

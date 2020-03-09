@@ -51,7 +51,7 @@ public class QuestionController {
     User sessionedUser = getSessionedUserOrError(session);
     Question question = getQuestionOrError(questionRepository, id);
 
-    if (sessionedUser.validateUserId(question.getUserId())) {
+    if (sessionedUser.equals(question.getUser())) {
       model.addAttribute("question", question);
       return "/questions/update";
     }
@@ -66,7 +66,8 @@ public class QuestionController {
    */
   @PostMapping("")
   public String create(Question question, HttpSession session) {
-    getSessionedUserOrError(session);
+    User sessionedUser = getSessionedUserOrError(session);
+    question.setUser(sessionedUser);
     questionRepository.save(question);
 
     return "redirect:/";
@@ -114,7 +115,7 @@ public class QuestionController {
     User sessionedUser = getSessionedUserOrError(session);
     Question question = getQuestionOrError(questionRepository, id);
 
-    if (sessionedUser.validateUserId(question.getUserId())) {
+    if (sessionedUser.equals(question.getUser())) {
       questionRepository.delete(question);
       return "redirect:/";
     }

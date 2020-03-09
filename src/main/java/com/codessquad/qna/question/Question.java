@@ -17,10 +17,15 @@ public class Question {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false, length = 20)
-  private String userId;
+  @ManyToOne
+  @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_to_user"))
+  private User user;
+
+  @Column(nullable = false)
   private String title;
+  @Column(nullable = false)
   private String contents;
+  @Column(nullable = false)
   private LocalDateTime createdDateTime;
 
   public Question() {
@@ -28,7 +33,7 @@ public class Question {
   }
 
   public void update(Question question) {
-    this.userId = question.userId;
+    this.user = question.user;
     this.title = question.title;
     this.contents = question.contents;
     this.createdDateTime = question.createdDateTime;

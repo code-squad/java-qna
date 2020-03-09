@@ -1,6 +1,7 @@
 package com.codessquad.qna.answer;
 
 import com.codessquad.qna.question.Question;
+import com.codessquad.qna.user.User;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -21,9 +22,13 @@ public class Answer {
   @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
   private Question question;
 
-  @Column(nullable = false, length = 20)
-  private String userId;
+  @ManyToOne
+  @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_user"))
+  private User user;
+
+  @Column(nullable = false)
   private String contents;
+  @Column(nullable = false)
   private LocalDateTime createdDateTime;
 
   public Answer() {

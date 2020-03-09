@@ -37,7 +37,7 @@ public class AnswerController {
     User sessionedUser = getSessionedUserOrError(session);
     Question question = getQuestionOrError(questionRepository, questionId);
 
-    answer.setUserId(sessionedUser.getUserId());
+    answer.setUser(sessionedUser);
     answer.setQuestion(question);
     answerRepository.save(answer);
 
@@ -56,7 +56,7 @@ public class AnswerController {
     User sessionedUser = getSessionedUserOrError(session);
     Answer answer = getAnswerOrError(answerRepository, id);
 
-    if (sessionedUser.validateUserId(answer.getUserId())) {
+    if (sessionedUser.equals(answer.getUser())) {
       answerRepository.delete(answer);
       return "redirect:/questions/" + questionId;
     }

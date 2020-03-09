@@ -1,4 +1,6 @@
 package com.codesquad.qna.domain;
 
-public class AnswerRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface AnswerRepository extends JpaRepository<Answer, Long> {
 }

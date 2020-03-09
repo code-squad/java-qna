@@ -32,6 +32,8 @@ public class Answer {
     @Column(nullable = false)
     private String contents;
     private LocalDateTime createdAt = LocalDateTime.now();
+    @Setter
+    private Boolean deleted = false;
 
     public Answer(){}
     public Answer(User user, Question question, String contents) {

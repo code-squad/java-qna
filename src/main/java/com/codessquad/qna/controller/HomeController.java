@@ -14,7 +14,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String showQuestionList(Model model) {
-        model.addAttribute("questions", questionRepository.findAll());
+        model.addAttribute("questions", questionRepository.findAllByDeletedFalse());
         return PathUtil.HOME_TEMPLATE;
     }
 }

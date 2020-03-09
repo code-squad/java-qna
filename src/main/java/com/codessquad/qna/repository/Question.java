@@ -31,6 +31,7 @@ public class Question {
     @Column(nullable = false)
     private String contents;
     private LocalDate createdAt = LocalDate.now();
+    private Boolean deleted = false;
 
     public Question () {}
     public Question(String title, String contents, User user) {

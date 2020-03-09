@@ -85,7 +85,7 @@ public class QuestionController {
             throw new CustomUnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.UNAUTHORIZED);
 
         answerRepository.deleteByQuestion(question);
-        questionRepository.deleteById(id);
+        questionRepository.delete(id);
         return PathUtil.HOME;
     }
 

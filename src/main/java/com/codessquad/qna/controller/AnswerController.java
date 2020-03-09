@@ -24,7 +24,7 @@ public class AnswerController {
 
     @GetMapping
     public Object showAnswerList(@PathVariable Long questionId, Model model) {
-        List<Answer> answerList = answerRepository.findByQuestionId(questionId);
+        List<Answer> answerList = answerRepository.findByQuestionIdAndDeletedFalse(questionId);
         model.addAttribute("answers", answerList);
         return ResponseEntity.ok(model);
     }
@@ -80,7 +80,7 @@ public class AnswerController {
         if (!answer.isCorrectWriter(HttpSessionUtil.getUserFromSession(session)))
             throw new CustomUnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.UNAUTHORIZED);
 
-        answerRepository.delete(answer);
+        answerRepository.delete(answerId);
         return PathUtil.REDIRECT_QUESTION_DETAIL + questionId;
     }
 

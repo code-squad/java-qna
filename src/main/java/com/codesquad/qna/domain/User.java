@@ -33,10 +33,6 @@ public class User {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getUserId() {
         return userId;
     }
@@ -86,9 +82,9 @@ public class User {
     }
 
     public void update(User user, String newPassword) {
-        //TODO : newPassword 가 null인 경우 에러처리
-        if (!newPassword.isEmpty())
+        if (!newPassword.isEmpty()) {
             this.password = newPassword;
+        }
         this.name = user.getName();
         this.address = user.getAddress();
         this.phoneNumber = user.getPhoneNumber();
@@ -96,21 +92,15 @@ public class User {
     }
 
     public boolean matchPassword(User user) {
-        return this.password.equals(user.getPassword());
+        return this.password.equals(user.password);
     }
 
     public boolean matchPassword(String inputPassword) {
-        if (inputPassword == null) {
-            return false;
-        }
-        return inputPassword.equals(password);
+        return this.password.equals(inputPassword);
     }
 
     public boolean matchId(Long inputId) {
-        if (inputId == null) {
-            return false;
-        }
-        return inputId.equals(id);
+        return this.id.equals(inputId);
     }
 
     @Override

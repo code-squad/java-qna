@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Question {
-    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
+    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,10 +44,6 @@ public class Question {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public User getWriter() {
@@ -87,12 +83,8 @@ public class Question {
     }
 
     public String getFormattedCreatedTime() {
-        if (createdTime == null) {
-            return "";
-        }
-
-        return createdTime.format(DateTimeFormatter.ofPattern(DATE_FORMAT));
-    }
+        return createdTime == null ? "" : createdTime.format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT));
+   }
 
     public void update(Question question) {
         this.title = question.getTitle();
@@ -109,10 +101,10 @@ public class Question {
     }
 
     public void increaseAnswersCount() {
-        countOfAnswers++;
+        this.countOfAnswers++;
     }
 
     public void reduceAnswersCount() {
-        countOfAnswers--;
+        this.countOfAnswers--;
     }
 }

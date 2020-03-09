@@ -1,18 +1,16 @@
 package com.codesquad.qna.domain;
 
 import javax.persistence.*;
-import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Answer {
-    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
+    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
@@ -34,7 +32,7 @@ public class Answer {
         this.writer = writer;
         this.question = question;
         this.comment = comment;
-        this.createdTime = LocalDateTime.now();
+        setCreatedTimeNow();
     }
 
     public Long getId() {
@@ -73,12 +71,12 @@ public class Answer {
         this.createdTime = createdTime;
     }
 
-    public String getFormattedCreatedTime() {
-        if (createdTime == null) {
-            return "";
-        }
+    public void setCreatedTimeNow() {
+        setCreatedTime(LocalDateTime.now());
+    }
 
-        return createdTime.format(DateTimeFormatter.ofPattern(DATE_FORMAT));
+    public String getFormattedCreatedTime() {
+        return this.createdTime == null ? "" : this.createdTime.format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT));
     }
 
     public boolean matchUser(User sessionUser) {

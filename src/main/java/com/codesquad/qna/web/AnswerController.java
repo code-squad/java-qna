@@ -28,17 +28,20 @@ public class AnswerController {
             return "redirect:/users/login";
         }
 
+        User sessionUser = HttpSessionUtils.getUserFromSession(session);
+        Question currentQuestion;
+
         try {
-            User sessionUser = HttpSessionUtils.getUserFromSession(session);
-            Question currentQuestion = questionRepostory.findById(questionId).orElseThrow(() -> new NotFoundException("그런 게시물 없어요"));
-            Answer answer = new Answer(sessionUser, currentQuestion, comment);
-            currentQuestion.increaseAnswersCount();
-            answerRepository.save(answer);
-            return String.format("redirect:/questions/%d", questionId); //답변을 단 게시물로 redirect
+            currentQuestion = questionRepostory.findById(questionId).orElseThrow(() -> new NotFoundException("그런 게시물 없어요"));
         } catch (NotFoundException e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
+
+        Answer answer = new Answer(sessionUser, currentQuestion, comment);
+        currentQuestion.increaseAnswersCount();
+        answerRepository.save(answer);
+        return String.format("redirect:/questions/%d", questionId);
     }
 
     @DeleteMapping("/{answerId}")
@@ -47,20 +50,23 @@ public class AnswerController {
             return "redirect:/users/login";
         }
 
+        User sessionUser = HttpSessionUtils.getUserFromSession(session);
+        Question currentQuestion;
+        Answer currentAnswer;
+
         try {
-            User sessionUser = HttpSessionUtils.getUserFromSession(session);
-            Question currentQuestion = questionRepostory.findById(questionId).orElseThrow(() -> new NotFoundException("그런 게시글 없어요"));
-            Answer currentAnswer = answerRepository.findById(answerId).orElseThrow(() -> new NotFoundException("그런 댓글 없어요"));
-
-            if (!currentAnswer.matchUser(sessionUser)) {
-                throw new IllegalStateException("본인 댓글만 삭제할 수 있어요");
-            }
-
-            currentQuestion.reduceAnswersCount();
-            answerRepository.delete(currentAnswer);
-            return "redirect:/questions/{questionId}";
+            currentQuestion = questionRepostory.findById(questionId).orElseThrow(() -> new NotFoundException("그런 게시글 없어요"));
+            currentAnswer = answerRepository.findById(answerId).orElseThrow(() -> new NotFoundException("그런 댓글 없어요"));
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
+
+        if (!currentAnswer.matchUser(sessionUser)) {
+            throw new IllegalStateException("본인 댓글만 삭제할 수 있어요");
+        }
+
+        currentQuestion.reduceAnswersCount();
+        answerRepository.delete(currentAnswer);
+        return "redirect:/questions/{questionId}";
     }
 }

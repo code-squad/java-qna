@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface QnaRepository extends JpaRepository<Question, Long> {
 
-  @Override
   Page<Question> findAll(Pageable pageable);
 }
+

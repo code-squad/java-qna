@@ -67,14 +67,14 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ModelAndView showUser(@PathVariable Long id) {
+    public ModelAndView showUser(@PathVariable Long id) throws IllegalAccessException {
         ModelAndView showMav = new ModelAndView("user/profile");
-        showMav.addObject("user", userRepository.findById(id).orElseThrow(NullPointerException::new));
+        showMav.addObject("user", userRepository.findById(id).orElseThrow(IllegalAccessException::new));
         return showMav;
     }
 
     @GetMapping("/{id}/form")
-    public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
+    public String updateForm(@PathVariable Long id, Model model, HttpSession session) throws IllegalAccessException {
         if (HttpSessionUtils.isNoneExistentUser(session)) {
             return "redirect:/users/loginForm";
         }
@@ -83,13 +83,13 @@ public class UserController {
             throw new IllegalStateException("자신의 정보만 수정하세요.");
         }
 
-        User user = userRepository.findById(id).orElseThrow(NullPointerException::new);
+        User user = userRepository.findById(id).orElseThrow(IllegalAccessException::new);
         model.addAttribute("user", user);
         return "user/updateForm";
     }
 
     @PutMapping("/{id}")
-    public String updateUser(@PathVariable Long id, User updateUser, HttpSession session) {
+    public String updateUser(@PathVariable Long id, User updateUser, HttpSession session) throws IllegalAccessException {
         if (HttpSessionUtils.isNoneExistentUser(session)) {
             return "redirect:/users/loginForm";
         }
@@ -98,7 +98,7 @@ public class UserController {
             throw new IllegalStateException("자신의 정보만 수정하세요.");
         }
 
-        User user = userRepository.findById(id).orElseThrow(NullPointerException::new);
+        User user = userRepository.findById(id).orElseThrow(IllegalAccessException::new);
         user.update(updateUser);
         userRepository.save(user);
         return "redirect:/users";

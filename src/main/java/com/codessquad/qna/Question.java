@@ -75,8 +75,15 @@ public class Question {
     }
 
     public void update(Question question) {
+        if (!isValid(question)) {
+            throw new RuntimeException("InvalidUpdateQuestion");
+        }
         this.contents = question.contents;
         this.title = question.title;
+    }
+
+    private boolean isValid(Question question) {
+        return question.contents != null && question.title != null;
     }
 
     public boolean isSameWriter(User loginUser) {

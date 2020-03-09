@@ -65,7 +65,15 @@ public class Answer {
     }
 
     public void update(Answer answer) {
+        if (!isValid(answer)) {
+            throw new RuntimeException("InvalidUpdateAnswer");
+        }
         this.contents = answer.contents;
+
+    }
+
+    private boolean isValid(Answer answer) {
+        return answer.contents != null;
     }
 
     public void delete() {

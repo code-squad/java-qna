@@ -58,9 +58,17 @@ public class User {
     }
 
     public void update(User user) {
+        if (!isValid(user)) {
+            throw new RuntimeException("InvalidUserUpdate");
+        }
+
         this.name = user.name;
         this.email = user.email;
         this.password = user.password;
+    }
+
+    private boolean isValid(User user) {
+        return user.name != null && user.email != null && user.password != null;
     }
 
     public boolean matchPassword(String newPassword) {

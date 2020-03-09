@@ -92,7 +92,7 @@ public class QuestionController {
         Question currentQuestion = null;
 
         try {
-            currentQuestion = questionRepostory.findById(updateQuestion.getId()).orElseThrow(() -> new NotFoundException("게시물 없어영~!"));
+            currentQuestion = questionRepostory.findById(id).orElseThrow(() -> new NotFoundException("게시물 없어영~!"));
         } catch (NotFoundException e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -116,7 +116,7 @@ public class QuestionController {
         Question currentQuestion;
 
         try {
-            currentQuestion = questionRepostory.findById(deleteQuestion.getId()).orElseThrow(() -> new NotFoundException("게시글 없는데요??!!!"));
+            currentQuestion = questionRepostory.findById(id).orElseThrow(() -> new NotFoundException("게시글 없는데요??!!!"));
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

@@ -6,13 +6,12 @@ import javassist.NotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpSession;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Controller
@@ -105,7 +104,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public String updateUser(@PathVariable Long id, User updatedUser, HttpSession session) throws IllegalStateException,ResponseStatusException{
+    public String updateUser(@PathVariable Long id, User updatedUser, HttpSession session) {
         LOGGER.debug("[page]사용자 정보 수정");
 
         Object sessionUser = session.getAttribute("sessionUser");
@@ -122,7 +121,7 @@ public class UserController {
 
         if(!user.matchPassword(updatedUser)){
             LOGGER.debug("[page]비밀번호 불일치");
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not Match Password");
+            throw new NoSuchElementException("Not Match Password");
         }
 
         user.update(updatedUser);

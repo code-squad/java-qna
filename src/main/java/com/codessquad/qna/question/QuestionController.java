@@ -60,4 +60,10 @@ public class QuestionController {
         questionRepository.save(question);
         return String.format("redirect:/questions/%d",id);
     }
+
+    @DeleteMapping("/{id}")
+    public String deleteQna(@PathVariable Long id) {
+        questionRepository.deleteById(id);
+        return "redirect:/";
+    }
 }

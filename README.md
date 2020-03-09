@@ -97,19 +97,39 @@ WARNING: All illegal access operations will be denied in a future release
 
 ### 요구사항
 
-- [ ] 사용자는 질문을 할 수 있으며, 모든 질문을 볼 수 있다.
-- [ ] 단, 질문을 할 수 있는 사람은 로그인 사용자만 할 수 있다.
-- [ ] 질문한 사람은 자신의 글을 수정/삭제할 수 있다.
+- [x] 사용자는 질문을 할 수 있으며, 모든 질문을 볼 수 있다.
+- [x] 단, 질문을 할 수 있는 사람은 로그인 사용자만 할 수 있다.
+- [x] 질문한 사람은 자신의 글을 수정/삭제할 수 있다.
 
 
 
+#### setter 대신 생성자로 처리하기
 
+```java
+Question newQuestion = new Question(sessionUser.getUserId(), title, contents);
 
+public class Question {
+	
+    public Question() {}
 
+    public Question(String writer, String title, String contents) {
+        super();
+        this.writer = writer;
+        this.title = title;
+        this.contents = contents;
+    }
+}
+```
 
+#### update후 해당 번호페이지 띄우기
 
-
-
-
-
+```java
+@PutMapping("/{id}")
+public String updateQna(@PathVariable Long id, String title, String contents) throws IllegalAccessException {
+        Question question = 		         questionRepository.findById(id).orElseThrow(IllegalAccessException::new);
+        question.update(title, contents);
+        questionRepository.save(question);
+        return String.format("redirect:/questions/%d",id); //여기처럼 하면됨.
+    }
+```
 

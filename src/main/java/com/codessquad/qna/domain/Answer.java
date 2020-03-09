@@ -10,12 +10,15 @@ public class Answer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
     private User writer;
+
     @Lob
     private String contents;
     private LocalDateTime createdDate;
+
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_question"))
     private Question question;

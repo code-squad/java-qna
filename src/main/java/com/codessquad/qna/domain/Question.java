@@ -14,16 +14,17 @@ public class Question {
     @Column(nullable = false)
     private String title;
     private LocalDateTime createdDate;
+
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     private User writer;
+
     @OneToMany(mappedBy = "question")
     @OrderBy("id asc")
     private List<Answer> answers;
 
     @Lob
     private String contents;
-
     private boolean deleted;
 
     public Question() {
@@ -91,6 +92,10 @@ public class Question {
 
     public void setContents(String contents) {
         this.contents = contents;
+    }
+
+    public long getCountOfAnswers() {
+        return answers.stream().filter(answer -> !answer.isDeleted()).count();
     }
 
     @Override

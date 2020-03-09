@@ -97,6 +97,14 @@ public class Question {
         this.deleted = true;
     }
 
+    public int getAnswersCount() {
+        int count = 0;
+        for (Answer answer : answers) {
+            if (!answer.isDeleted()) count++;
+        }
+        return count;
+    }
+
     @Override
     public String toString() {
         return "Question{" +

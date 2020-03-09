@@ -73,6 +73,10 @@ public class Answer {
         return QuestionWriter.equals(this.writer);
     }
 
+    public boolean isDeleted() {
+        return this.deleted;
+    }
+
     public boolean isWriterEquals(User sessionUser) {
         return sessionUser.equals(writer);
     }

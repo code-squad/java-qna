@@ -77,6 +77,15 @@ public class UserController {
         String userPassword = user.getPassword();
         if (userPassword.equals(password)) {
             return "redirect:/users/{id}/update";
+    // 개인정보 수정 페이지에서 userID를 제외한 값들을 수정할 수 있다. password,name,email 값을 user클래스의 update함수를 통해서 값을 전달하고
+    // user 클래스 안에서 각 변수의 길이가 0 이상일 때, 값을 저장한다음, userRepository에 값을 변경한다.
+    @PostMapping("/update")
+    public String infoChange(String password, String name, String email, HttpSession session) {
+        Object value = session.getAttribute("user");
+        if (value != null) {
+            User user = (User) value;
+            user.update(password, name, email);
+            userRepository.save(user);
         }
         return "/user/login_failed";
     }

@@ -9,8 +9,9 @@
       <form name="question" method="post" action="/questions">
         <div class="form-group">
           <label for="userId">글쓴이</label>
-          <input class="form-control" id="userId" name="userId" value="{{sessionedUser.userId}}" readonly
+          <input class="form-control" id="userid" name="userid" value="{{sessionedUser.userId}}" readonly
                  placeholder="글쓴이"/>
+          <input name="user" type="hidden" value="{{sessionedUser.id}}"/>
         </div>
         <div class="form-group">
           <label for="title">제목</label>

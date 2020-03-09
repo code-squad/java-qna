@@ -32,7 +32,7 @@ public class QuestionController {
    * Return : /questions/form
    */
   @GetMapping("/form")
-  public String form(Model model, HttpSession session) {
+  public String form(HttpSession session) {
     log.info("### form");
     getSessionedUserOrError(session);
 
@@ -46,7 +46,7 @@ public class QuestionController {
    */
   @GetMapping("/{id}/form")
   public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
-    log.info("### sessionedUser : " + session.getAttribute("sessionedUser"));
+    log.info("### updateForm");
 
     User sessionedUser = getSessionedUserOrError(session);
     Question question = getQuestionOrError(questionRepository, id);
@@ -110,7 +110,6 @@ public class QuestionController {
   @DeleteMapping("/{id}")
   public String delete(@PathVariable Long id, HttpSession session) {
     log.info("### delete()");
-
     User sessionedUser = getSessionedUserOrError(session);
     Question question = getQuestionOrError(questionRepository, id);
 

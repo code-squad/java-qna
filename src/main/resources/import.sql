@@ -1,0 +1,3 @@
+INSERT INTO USER (USER_ID, PASSWORD, NAME, EMAIL) VALUES ('a', 'a', 'a이름', 'a@a');
+INSERT INTO USER (USER_ID, PASSWORD, NAME, EMAIL) VALUES ('b', 'b', 'b이름', 'b@b');
+

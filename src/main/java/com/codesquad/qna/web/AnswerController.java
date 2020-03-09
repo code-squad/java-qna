@@ -34,8 +34,8 @@ public class AnswerController {
         if (!isLoginUser(session)) {
             return REDIRECT_LOGIN_FORM;
         }
-
         User sessionedUser = getUserFromSession(session);
+
         Question question = questionRepository.findById(questionId).orElseThrow(EntityNotFoundException::new);
         Answer answer = new Answer(sessionedUser, question, contents);
         answerRepository.save(answer);
@@ -43,9 +43,19 @@ public class AnswerController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id) {
-        Answer answer = answerRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+    public String delete(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
+        if (!isLoginUser(session)) {
+            return REDIRECT_LOGIN_FORM;
+        }
+        User sessionedUser = getUserFromSession(session);
+
+        Answer answer = answerRepository.findByIdAndId(id, questionId).orElseThrow(EntityNotFoundException::new);
+
+        if (sessionedUser.hasPermission(answer)) {
+            answerRepository.delete(answer);
+        }
+
         answerRepository.delete(answer);
-        return "redirect:/questions/{question.id}";
+        return "redirect:/questions/{questionId}";
     }
 }

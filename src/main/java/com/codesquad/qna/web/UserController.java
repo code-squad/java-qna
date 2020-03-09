@@ -24,6 +24,7 @@ import static com.codesquad.qna.web.HttpSessionUtils.isLoginUser;
 public class UserController {
     public static final String REDIRECT_LOGIN_FORM = "redirect:/users/loginForm";
     private static final String REDIRECT_USERS_DATA = "redirect:/users/list";
+
     @Autowired
     private UserRepository userRepository;
 

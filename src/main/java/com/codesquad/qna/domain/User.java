@@ -82,10 +82,18 @@ public class User {
         return true;
     }
 
-    public void hasPermission(Question question) {
+    public boolean hasPermission(Question question) {
         if (!this.id.equals(question.getWriter().id)) {
             throw new SecurityException("다른 사람의 글을 수정할 수 없습니다");
         }
+        return true;
+    }
+
+    public boolean hasPermission(Answer answer) {
+        if (!this.id.equals(answer.getWriter().id)) {
+            throw new SecurityException("다른 사람의 글을 수정할 수 없습니다");
+        }
+        return true;
     }
 
     @Override

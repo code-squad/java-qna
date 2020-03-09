@@ -103,8 +103,9 @@ public class QuestionController {
         User sessionedUser = getUserFromSession(session);
         Question question = findQuestion(id);
 
-        sessionedUser.hasPermission(question);
-        questionRepository.delete(question);
+        if (sessionedUser.hasPermission(question)) {
+            questionRepository.delete(question);
+        }
         return "redirect:/";
     }
 

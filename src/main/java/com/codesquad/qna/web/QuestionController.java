@@ -92,7 +92,7 @@ public class QuestionController {
         sessionedUser.hasPermission(question);
         question.update(updatedQuestion);
         questionRepository.save(question);
-        return "redirect:/questions/{id}";
+        return "redirect:/questions/{}";
     }
 
     @DeleteMapping("/{id}")

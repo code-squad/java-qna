@@ -7,9 +7,12 @@ import com.codesquad.qna.domain.QuestionRepository;
 import com.codesquad.qna.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.persistence.EntityNotFoundException;
@@ -43,6 +46,35 @@ public class AnswerController {
         return "redirect:/questions/{questionId}";
     }
 
+    @GetMapping("/{id}")
+    public String updateForm(@PathVariable Long questionId, @PathVariable Long id, HttpSession session, Model model) {
+        if (!isLoginUser(session)) {
+            return REDIRECT_LOGIN_FORM;
+        }
+
+        User sessionedUser = getUserFromSession(session);
+        Answer updatingAnswer = answerRepository.findByQuestionIdAndId(questionId, id).orElseThrow(EntityNotFoundException::new);
+
+        sessionedUser.hasPermission(updatingAnswer);
+        model.addAttribute("updatingAnswer", updatingAnswer);
+        return "qna/replyForm";
+    }
+
+    @PutMapping("{id}")
+    public String update(@PathVariable Long questionId, @PathVariable Long id, Answer updatedAnswer, HttpSession session, Model model) {
+        if (!isLoginUser(session)) {
+            return REDIRECT_LOGIN_FORM;
+        }
+
+        User sessionedUser = getUserFromSession(session);
+        Answer updatingAnswer = answerRepository.findByQuestionIdAndId(questionId, id).orElseThrow(EntityNotFoundException::new);
+
+        sessionedUser.hasPermission(updatingAnswer);
+        updatingAnswer.update(updatedAnswer);
+        answerRepository.save(updatingAnswer);
+        return "redirect:/questions/{questionId}";
+    }
+
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
         if (!isLoginUser(session)) {
@@ -50,7 +82,7 @@ public class AnswerController {
         }
 
         User sessionedUser = getUserFromSession(session);
-        Answer answer = answerRepository.findByIdAndId(id, questionId).orElseThrow(EntityNotFoundException::new);
+        Answer answer = answerRepository.findByQuestionIdAndId(questionId, id).orElseThrow(EntityNotFoundException::new);
 
         sessionedUser.hasPermission(answer);
         answerRepository.delete(answer);

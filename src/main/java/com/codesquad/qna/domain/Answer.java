@@ -84,4 +84,9 @@ public class Answer {
     public String getFormattedCreatedDateTime() {
         return createdDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }
+
+    public void update(Answer updatedAnswer) {
+        this.contents = updatedAnswer.contents;
+        this.createdDateTime = LocalDateTime.now();
+    }
 }

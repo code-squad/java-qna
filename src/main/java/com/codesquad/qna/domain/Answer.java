@@ -80,6 +80,6 @@ public class Answer {
     }
 
     public boolean matchUser(User sessionUser) {
-        return sessionUser.getUserId().equals(getWriter().getUserId());
+        return this.writer.equals(sessionUser);
     }
 }

@@ -93,7 +93,7 @@ public class Question {
     }
 
     public boolean matchUser(User sessionUser) {
-        return sessionUser.getUserId().equals(writer.getUserId());
+        return this.writer.equals(sessionUser);
     }
 
     public Integer getCountOfAnswers() {

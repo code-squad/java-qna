@@ -30,6 +30,9 @@ public class Question {
     @Column(nullable = false)
     private LocalDateTime createdDateTime;
 
+    @Column(nullable = false)
+    private Integer replyCount;
+
     public Question() {
     }
 
@@ -74,6 +77,10 @@ public class Question {
 
     public String getFormattedCreatedTime() {
         return createdDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    }
+
+    public void increaseReplyCount() {
+        replyCount++;
     }
 
     public void update(Question updateQuestion) {

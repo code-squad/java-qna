@@ -27,6 +27,9 @@ public class Question {
     @OneToMany(mappedBy = "question")
     private List<Answer> answers;
 
+    @Column(nullable = false)
+    private boolean deleted = false;
+
     public Question() {
         markCreatedTime();
     }
@@ -78,6 +81,23 @@ public class Question {
 
     public boolean isSameWriter(User loginUser) {
         return this.writer.equals(loginUser);
+    }
+
+    public void delete() {
+        this.deleted = true;
+        this.deleteAnswers();
+    }
+
+    private void deleteAnswers() {
+        this.answers.forEach(Answer::delete);
+    }
+
+    public boolean canDelete() {
+        if (this.answers.size() == 0) {
+            return true;
+        }
+
+        return this.answers.stream().map(answer -> answer.getWriter().equals(this.writer)).reduce(true, (acc, isSameWriter) -> acc && isSameWriter);
     }
 
     @Override

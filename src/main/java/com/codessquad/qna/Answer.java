@@ -22,6 +22,8 @@ public class Answer {
 
     private LocalDateTime createdAt;
 
+    private boolean deleted = false;
+
     public Answer() {
         this.markCreatedTime();
     }
@@ -32,6 +34,10 @@ public class Answer {
 
     public Question getQuestion() {
         return question;
+    }
+
+    public boolean getDeleted() {
+        return this.deleted;
     }
 
     public void setQuestion(Question question) {
@@ -60,6 +66,10 @@ public class Answer {
 
     public void update(Answer answer) {
         this.contents = answer.contents;
+    }
+
+    public void delete() {
+        this.deleted = true;
     }
 
     private void markCreatedTime() {

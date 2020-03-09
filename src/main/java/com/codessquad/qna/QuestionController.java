@@ -184,7 +184,14 @@ public class QuestionController {
                 model.addAttribute("errorMessage", result.getErrorMessage());
                 return "/error";
             }
-            questionRepository.delete(question);
+            if (question.canDelete()) {
+                question.delete();
+                questionRepository.save(question);
+                return "redirect:/";
+            }
+
+//            질문을 삭제할 수 없을 때
+            return "redirect:/";
         }
 
         model.addAttribute("errorMessage", "질문이 없습니다.");

@@ -23,7 +23,7 @@ import static com.codesquad.qna.web.HttpSessionUtils.isLoginUser;
 @RequestMapping("/users")
 public class UserController {
     public static final String REDIRECT_LOGIN_FORM = "redirect:/users/loginForm";
-    private static final String REDIRECT_USERS_DATA = "redirect:/users/list";
+    private static final String REDIRECT_USERS_DATA = "redirect:/users";
 
     @Autowired
     private UserRepository userRepository;
@@ -61,20 +61,20 @@ public class UserController {
         return "/user/form";
     }
 
-    @PostMapping("/create")
+    @PostMapping("")
     public String create(User user, Model model) {
         User createdUser = Optional.ofNullable(user).orElseThrow(IllegalArgumentException::new);
         userRepository.save(createdUser);
         return REDIRECT_USERS_DATA;
     }
 
-    @GetMapping("/list")
+    @GetMapping("")
     public String list(Model model) {
         model.addAttribute("users", userRepository.findAll());
         return "/user/list";
     }
 
-    @GetMapping("/{id}/checkForm")
+    @GetMapping("/{id}/updateForm")
     public String checkPasswordForm(@PathVariable Long id, Model model, HttpSession session) {
         if (!isLoginUser(session)) {
             return REDIRECT_LOGIN_FORM;
@@ -97,14 +97,14 @@ public class UserController {
         sessionedUser.hasPermission(id);
 
         if (!sessionedUser.isPasswordEquals(password)) {
-            return "redirect:/users/{id}/checkForm";
+            return "redirect:/users/{id}";
         }
 
         model.addAttribute("user", sessionedUser);
         return "/user/updateForm";
     }
 
-    @PutMapping("/{id}/update")
+    @PutMapping("/{id}")
     public String updateUser(@PathVariable Long id, User updateUser, HttpSession session) {
         if (!isLoginUser(session)) {
             return REDIRECT_LOGIN_FORM;

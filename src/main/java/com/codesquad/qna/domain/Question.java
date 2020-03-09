@@ -75,6 +75,14 @@ public class Question {
         this.contents = contents;
     }
 
+    public Integer getReplyCount() {
+        return replyCount;
+    }
+
+    public void setReplyCount(Integer replyCount) {
+        this.replyCount = replyCount;
+    }
+
     public String getFormattedCreatedTime() {
         return createdDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }

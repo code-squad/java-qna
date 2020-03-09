@@ -47,7 +47,7 @@
                     </div>
                 </article>
 
-                {{#Answer}}
+                {{#answer}}
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
                         <p class="qna-comment-count"><strong>{{question.replyCount}}</strong>개의 의견</p>
@@ -62,7 +62,7 @@
                                     </div>
                                     <div class="article-header-text">
                                         <a class="article-author-name"
-                                           href="/users/{{question.id}}/{{question.writer.name}}">{question.writer.name}}</a>
+                                           href="/users/{{question.id}}/{{question.writer.name}}">{{question.writer.name}}</a>
                                         <a class="article-header-time" href="#answer-1434" title="퍼머링크">
                                             {{formattedCreatedDateTime}}
                                         </a>

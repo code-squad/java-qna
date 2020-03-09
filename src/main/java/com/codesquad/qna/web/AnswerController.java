@@ -19,12 +19,12 @@ public class AnswerController {
 
     @GetMapping()
     public String createForm() {
-
+        return "";
     }
 
     @PostMapping()
     public String create() {
-
+        return "";
     }
 
     @GetMapping("/{id}/form")

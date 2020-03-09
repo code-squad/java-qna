@@ -14,11 +14,11 @@ public interface AnswerRepository extends CrudRepository<Answer, Long> {
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE Answer SET deleted=true WHERE question.id=question.id")
+    @Query(value = "UPDATE Answer SET deleted=true WHERE question=:question")
     void deleteByQuestion(Question question);
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE Answer SET deleted=true WHERE id=id")
-    void delete(@Param("id") Long id);
+    @Query(value = "UPDATE Answer SET deleted=true WHERE id=:id")
+    void delete(Long id);
 }

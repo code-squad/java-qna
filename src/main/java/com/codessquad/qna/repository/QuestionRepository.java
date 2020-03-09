@@ -12,6 +12,6 @@ public interface QuestionRepository extends CrudRepository<Question, Long> {
     List<Question> findAllByDeletedFalse();
     @Modifying
     @Transactional
-    @Query(value = "UPDATE Question SET deleted=true WHERE id=id")
-    void delete(@Param("id") Long id);
+    @Query(value = "UPDATE Question SET deleted=true WHERE id=:id")
+    void delete(Long id);
 }

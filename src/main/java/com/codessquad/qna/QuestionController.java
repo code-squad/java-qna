@@ -6,14 +6,21 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
+
 @Controller
 public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
 
     @GetMapping("/qna/form")
-    public String createQuestion() {
-        return "/qna/form";
+    public String createQuestion(HttpSession session) {
+        Object value = session.getAttribute("user");
+
+        if(value != null){
+            return "/qna/form";
+        }
+        return "/users/login";
     }
 
     @PostMapping("/qna/form")

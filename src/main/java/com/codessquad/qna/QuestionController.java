@@ -1,18 +1,25 @@
 package com.codessquad.qna;
 
+import com.codessquad.domain.Question;
+import com.codessquad.domain.QuestionRepository;
+import javassist.NotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 public class QuestionController {
-    private List<Question> questions = new ArrayList<>();
+
+    @Autowired
+    private QuestionRepository questionRepository;
 
     @GetMapping("/questions/form")
     public String form() {
@@ -22,29 +29,44 @@ public class QuestionController {
     @PostMapping("/questions")
     public String create(Question newQuestion) {
         newQuestion.setDateTime(LocalDateTime.now());
-        newQuestion.setQuestionIndex(questions.size() + 1);
-        questions.add(newQuestion);
-        System.out.println(newQuestion);
+        questionRepository.save(newQuestion);
         return "redirect:/";
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public String main(Model model) {
-        model.addAttribute("questions", questions);
+        model.addAttribute("questions", questionRepository.findAll());
         return "/main";
     }
 
-    @GetMapping("questions/{questionIndex}")
-    public String show(@PathVariable long questionIndex, Model model) {
-        model.addAttribute("question",checkIndex(questionIndex));
-        return "qna/show";
+    @GetMapping("/questions/{id}")
+    public String show(@PathVariable Long id, Model model) {
+        try {
+            model.addAttribute("question", questionRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 질문 입니다.")));
+            return "qna/show";
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
     }
 
-    private Question checkIndex(Long questionIndex) {
-        for (Question question : questions) {
-            if (questionIndex.equals(question.getQuestionIndex()))
-                return question;
+    @GetMapping("/questions/{id}/form")
+    public String updateForm(@PathVariable Long id, Model model) {
+        try {
+            model.addAttribute("question", questionRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 질문 입니다.")));
+            return "/qna/updateForm";
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
-        return null;
+    }
+
+    @PutMapping("/questions/{id}")
+    public String update(@PathVariable Long id, Question updateQuestion) {
+        Question question = questionRepository.findById(id).get();
+        updateQuestion.setDateTime(LocalDateTime.now());
+        question.update(updateQuestion);
+        questionRepository.save(question);
+        return "redirect:/";
     }
 }

@@ -1,49 +1,65 @@
 package com.codessquad.user;
 
+import com.codessquad.domain.User;
+import com.codessquad.domain.UserRepository;
+import javassist.NotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 @RequestMapping("/users")
 public class UserController {
-    private List<User> users = new ArrayList<>();
+
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/form")
     public String form() {
         return "user/form";
     }
 
-    @PostMapping("/create")
+    @PostMapping("")
     public String create(User user) {
-        System.out.println("User: " + user);
-        users.add(user);
-        return "redirect:/users/list";
+        userRepository.save(user);
+        return "redirect:/users";
     }
 
-    @GetMapping("/list")
+    @GetMapping("")
     public String list(Model model) {
-        model.addAttribute("users", users);
+        model.addAttribute("users", userRepository.findAll());
         return "user/list";
     }
 
     @GetMapping("/{id}")
-    public String profile(@PathVariable String id, Model model) {
-        model.addAttribute("user", checkUser(id));
-        return "/user/profile";
+    public String profile(@PathVariable Long id, Model model) {
+        try {
+            model.addAttribute("user", userRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 사용자 입니다.")));
+            return "/user/profile";
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
     }
 
-    private User checkUser(String id) {
-        for (User user : users) {
-            if (id.equals(user.getId()))
-                return user;
+    @GetMapping("{id}/form")
+    public String updateForm(@PathVariable Long id, Model model) {
+        try {
+            model.addAttribute("user", userRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 사용자 입니다.")));
+            return "/user/updateForm";
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
-        return null;
+    }
+
+    @PutMapping("/{id}")
+    public String update(@PathVariable Long id, User newUser) {
+        User user = userRepository.findById(id).get();
+        user.update(newUser);
+        userRepository.save(user);
+        return "redirect:/users";
     }
 }

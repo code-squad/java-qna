@@ -1,22 +1,27 @@
 package io.david215.forum.thread;
 
-import java.time.ZoneId;
+import org.hibernate.annotations.CreationTimestamp;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
+@Entity
 public class Thread {
-    private static int count = 0;
-
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String author;
+    @NotBlank
+    @Size(max = 80)
     private String title;
+    @CreationTimestamp
     private ZonedDateTime time;
+    @NotBlank
+    @Size(max = 1024)
     private String content;
-
-    public Thread() {
-        id = count++;
-        time = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-    }
 
     public void setAuthor(String author) {
         this.author = author;
@@ -30,7 +35,7 @@ public class Thread {
         this.content = content;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 

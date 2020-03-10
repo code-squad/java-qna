@@ -34,7 +34,7 @@ public class QuestionController {
             return "redirect:/login";
         }
 
-        Optional<Question> optionalQuestion = questionRepository.findById(questionId);
+        Optional<Question> optionalQuestion = questionRepository.findActiveQuestionById(questionId);
         optionalQuestion.ifPresent(question -> {
             answer.setQuestion(question);
             answer.setWriter(HttpSessionUtils.getUserFromSession(session));
@@ -91,13 +91,13 @@ public class QuestionController {
 
     @GetMapping("/")
     public String home(Model model) {
-        model.addAttribute("questions", questionRepository.findAll());
+        model.addAttribute("questions", questionRepository.findAllActiveQuestion());
         return "index";
     }
 
     @GetMapping("/questions/{id}")
     public String post(@PathVariable("id") Long id, Model model) {
-        Optional<Question> optionalQuestion = questionRepository.findById(id);
+        Optional<Question> optionalQuestion = questionRepository.findActiveQuestionById(id);
 
         if (!optionalQuestion.isPresent()) {
             return "redirect:/";
@@ -127,7 +127,7 @@ public class QuestionController {
             return "redirect:/login";
         }
 
-        Optional<Question> optionalQuestion = questionRepository.findById(id);
+        Optional<Question> optionalQuestion = questionRepository.findActiveQuestionById(id);
 
         if (optionalQuestion.isPresent()) {
             Question question = optionalQuestion.get();
@@ -149,7 +149,7 @@ public class QuestionController {
             return "redirect:/login";
         }
 
-        Optional<Question> optionalQuestion = questionRepository.findById(id);
+        Optional<Question> optionalQuestion = questionRepository.findActiveQuestionById(id);
 
         if (optionalQuestion.isPresent()) {
             Question question = optionalQuestion.get();
@@ -172,7 +172,7 @@ public class QuestionController {
             return "redirect:/login";
         }
 
-        Optional<Question> optionalQuestion = questionRepository.findById(id);
+        Optional<Question> optionalQuestion = questionRepository.findActiveQuestionById(id);
 
         if (optionalQuestion.isPresent()) {
             Question question = optionalQuestion.get();

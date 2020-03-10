@@ -2,10 +2,12 @@ package com.codessquad.qna;
 
 import com.codessquad.qna.controller.users.UsersRepository;
 import com.codessquad.qna.domain.Users;
+import com.codessquad.qna.service.answers.AnswersService;
 import com.codessquad.qna.service.posts.PostsService;
 import com.codessquad.qna.service.users.UsersService;
 import com.codessquad.qna.web.HttpSessionUtils;
 import com.codessquad.qna.web.PathUtils;
+import com.codessquad.qna.web.dto.answers.AnswersResponseDto;
 import com.codessquad.qna.web.dto.posts.PostsResponseDto;
 import com.codessquad.qna.web.dto.users.UsersResponseDto;
 import javax.servlet.http.HttpSession;
@@ -20,12 +22,14 @@ public class IndexController {
 
   private final PostsService postsService;
   private final UsersService usersService;
+  private final AnswersService answersService;
   private final UsersRepository usersRepository;
 
-  public IndexController(PostsService postsService, UsersService usersService,
+  public IndexController(PostsService postsService, UsersService usersService, AnswersService answersService,
       UsersRepository usersRepository) {
     this.postsService = postsService;
     this.usersService = usersService;
+    this.answersService = answersService;
     this.usersRepository = usersRepository;
   }
 
@@ -39,6 +43,14 @@ public class IndexController {
   public String anotherIndex(Model model) {
     model.addAttribute("posts", postsService.findAllDesc());
     return PathUtils.INDEX;
+  }
+
+  @GetMapping("/posts/show/{Id}")
+  public String postsShow(@PathVariable Long Id, Model model) {
+    PostsResponseDto responseDto = postsService.findById(Id);
+    model.addAttribute("posts", responseDto);
+    //model.addAttribute("answers", answersService.findAllDesc());
+    return PathUtils.POSTS_SHOW;
   }
 
   @GetMapping("/posts/save")
@@ -90,6 +102,20 @@ public class IndexController {
     return PathUtils.USERS_UPDATE;
   }
 
+  @GetMapping("/answers/update/{Id}")
+  public String answersUpdate(@PathVariable Long Id, Model model, HttpSession httpSession) {
+    if (HttpSessionUtils.isLoggedIn(httpSession)) {
+      return PathUtils.REDIRECT_TO_USERS_LOGIN;
+    }
+    AnswersResponseDto responseDto = answersService.findById(Id);
+    Users sessionUser = (Users) httpSession.getAttribute("sessionUser");
+    if (!sessionUser.matchId(Id)) { //조금 더 객체지향스럽게 수정
+      return PathUtils.INVALID_ACCESS;
+    }
+    model.addAttribute("answers", responseDto);
+    return PathUtils.ANSWERS_UPDATE;
+  }
+
   @GetMapping("/posts/update/{Id}")
   public String postsUpdate(@PathVariable Long Id, Model model, HttpSession httpSession) {
     if (HttpSessionUtils.isLoggedIn(httpSession)) {
@@ -97,7 +123,7 @@ public class IndexController {
     }
     PostsResponseDto responseDto = postsService.findById(Id);
     Users sessionUser = (Users) httpSession.getAttribute("sessionUser");
-    if (!sessionUser.getId().equals(Id)) {
+    if (!sessionUser.matchId(Id)) {
       return PathUtils.INVALID_ACCESS;
     }
     model.addAttribute("posts", responseDto);
@@ -109,15 +135,12 @@ public class IndexController {
   public String login(String userId, String password, HttpSession session) {
     Users user = usersRepository.findByUserId(userId);
     if (user == null) {
-      System.out.println("login failure!");
       return PathUtils.USERS_LOGIN_FAILED;
     }
-    if (!password.equals(user.getPassword())) {
-      System.out.println("login failure!");
+    if (!user.matchPassword(password)) {
       return PathUtils.USERS_LOGIN_FAILED;
     }
     session.setAttribute("sessionUser", user);
-    System.out.println("login success");
     return PathUtils.REDIRECT_TO_MAIN;
   }
 }

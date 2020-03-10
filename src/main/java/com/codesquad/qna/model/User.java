@@ -41,10 +41,6 @@ public class User {
         return userId;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public String getName() {
         return name;
     }
@@ -59,7 +55,7 @@ public class User {
     }
 
     public boolean matchPassword(User sessionedUser) {
-        return this.password.equals(sessionedUser.getPassword());
+        return this.password.equals(sessionedUser.password);
     }
 
     public boolean matchId(String userId) {

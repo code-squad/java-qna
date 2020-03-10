@@ -28,6 +28,7 @@ public class QuestionController {
         if (!HttpSessionUtils.isLoggedInUser(session)) {
             return "redirect:/users/login";
         }
+
         return "qna/form";
     }
 
@@ -36,9 +37,11 @@ public class QuestionController {
         if (!HttpSessionUtils.isLoggedInUser(session)) {
             return "redirect:/users/login";
         }
+
         LocalDateTime nowTime = LocalDateTime.now();
         User loginUser = HttpSessionUtils.getUserFromSession(session);
         assert loginUser != null;
+
         question.createNewQuestion(loginUser.getName(), nowTime);
         questionRepository.save(question);
 
@@ -58,12 +61,16 @@ public class QuestionController {
         if (!HttpSessionUtils.isLoggedInUser(session)) {
             return "redirect:/users/login";
         }
+
         User loginUser = HttpSessionUtils.getUserFromSession(session);
-        Question question = questionRepository.findById(id).orElseThrow(NoSuchElementException::new);
         assert loginUser != null;
-        if (!question.getWriter().equals(loginUser.getName())) {
+
+        Question question = questionRepository.findById(id).orElseThrow(NoSuchElementException::new);
+
+        if (!isSameWriterAndLoginUser(loginUser, question)) {
             throw new IllegalStateException("자기 자신의 질문만 수정 가능합니다.");
         }
+
         model.addAttribute("question", question);
 
         return "qna/updateForm";
@@ -74,12 +81,16 @@ public class QuestionController {
         if (!HttpSessionUtils.isLoggedInUser(session)) {
             return "redirect:/users/login";
         }
+
         User loginUser = HttpSessionUtils.getUserFromSession(session);
-        Question question = questionRepository.findById(id).orElseThrow(NoSuchElementException::new);
         assert loginUser != null;
-        if (!question.getWriter().equals(loginUser.getName())) {
+
+        Question question = questionRepository.findById(id).orElseThrow(NoSuchElementException::new);
+
+        if (!isSameWriterAndLoginUser(loginUser, question)) {
             throw new IllegalStateException("자기 자신의 질문만 수정 가능합니다.");
         }
+
         question.updateQuestion(title, contents);
         questionRepository.save(question);
         model.addAttribute("question", question);
@@ -92,14 +103,22 @@ public class QuestionController {
         if (!HttpSessionUtils.isLoggedInUser(session)) {
             return "redirect:/users/login";
         }
+
         User loginUser = HttpSessionUtils.getUserFromSession(session);
-        Question question = questionRepository.findById(id).orElseThrow(NoSuchElementException::new);
         assert loginUser != null;
-        if (!question.getWriter().equals(loginUser.getName())) {
+
+        Question question = questionRepository.findById(id).orElseThrow(NoSuchElementException::new);
+
+        if (!isSameWriterAndLoginUser(loginUser, question)) {
             throw new IllegalStateException("자기 자신의 질문만 삭제 가능합니다.");
         }
+
         questionRepository.delete(question);
 
         return "redirect:/";
+    }
+
+    private boolean isSameWriterAndLoginUser(User loginUser, Question question) {
+        return question.getWriter().equals(loginUser.getName());
     }
 }

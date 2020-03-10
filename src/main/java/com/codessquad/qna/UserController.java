@@ -47,11 +47,14 @@ public class UserController {
         if (!HttpSessionUtils.isLoggedInUser(session)) {
             return "redirect:/users/login";
         }
+
         User loginUser = HttpSessionUtils.getUserFromSession(session);
         assert loginUser != null;
+
         if (!loginUser.matchId(id)) {
             throw new IllegalStateException("자기 자신의 정보만 수정 가능합니다.");
         }
+
         User user = userRepository.findById(id).orElseThrow(NoSuchElementException::new);
         model.addAttribute("userProfile", user);
 
@@ -63,15 +66,19 @@ public class UserController {
         if (!HttpSessionUtils.isLoggedInUser(session)) {
             return "redirect:/users/login";
         }
+
         User loginUser = HttpSessionUtils.getUserFromSession(session);
         assert loginUser != null;
+
         if (!loginUser.matchId(id)) {
             throw new IllegalStateException("자기 자신의 정보만 수정 가능합니다.");
         }
+
         if (loginUser.matchPassword(updateUser)) {
             loginUser.update(updateUser);
             userRepository.save(loginUser);
         }
+
         model.addAttribute("userProfile", loginUser);
 
         return "redirect:/users";
@@ -90,6 +97,7 @@ public class UserController {
 
             return "user/login_failed";
         }
+
         session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, loginUser);
 
         return "redirect:/";

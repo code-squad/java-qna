@@ -32,22 +32,22 @@ public class UserController {
     // 로그인시 , 해당 아이디가 DB에 없거나, 비밀번호가 다를 경우 login_failed 페이지로 이동
     @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
-        User user = userRepository.findByUserId(userId);
-        if (user == null) {
+        User loginUser = userRepository.findByUserId(userId);
+        if (loginUser == null) {
             return "/user/login_failed";
         }
 
-        if (!password.equals(user.getPassword())) {
+        if (!password.equals(loginUser.getPassword())) {
             return "/user/login_failed";
         }
-        session.setAttribute("user", user);
+        session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, loginUser);
         return "redirect:/";
     }
 
     // 로그인 한 상태에서 logout을 했을 경우 session에 저장된 user의 정보를 제거한 뒤 , home으로 이동
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.removeAttribute("user");
+        session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
         return "redirect:/";
     }
 
@@ -75,12 +75,12 @@ public class UserController {
     // user 클래스 안에서 각 변수의 길이가 0 이상일 때, 값을 저장한다음, userRepository에 값을 변경한다.
     @PostMapping("/update")
     public String infoChange(String password, String name, String email, HttpSession session) {
-        Object value = session.getAttribute("user");
-        if (value != null) {
-            User user = (User) value;
-            user.update(password, name, email);
-            userRepository.save(user);
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "/user/login_failed";
         }
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        loginUser.update(password, name, email);
+        userRepository.save(loginUser);
         return "redirect:/users";
     }
 
@@ -95,14 +95,16 @@ public class UserController {
     // user 전체를 볼 수 있는 list.html에서 수정을 클릭했을 때, 로그인 한 회원만 회원정보를 수정할 수 있고, 다른 경우는 수정할 수 없게
     @GetMapping("/{id}/info_change")
     public String idInfoChange(@PathVariable Long id, HttpSession session) {
-        Object value = session.getAttribute("user");
-        if (value != null) {
-            User user = (User) value;
-            if(user.idCheck(id)){
-                return "redirect:/users/info_change";
-            }
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "/user/not_qualified";
         }
-        return "/user/login_failed";
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        System.out.println(loginUser);
+        if (loginUser.idCheck(id)) {
+            return "redirect:/users/info_change";
+        }
+
+        return "/user/not_qualified";
     }
 
 }

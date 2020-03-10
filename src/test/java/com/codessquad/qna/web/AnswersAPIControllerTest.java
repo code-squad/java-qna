@@ -5,8 +5,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.codessquad.qna.controller.answers.AnswersRepository;
 import com.codessquad.qna.domain.Answers;
 import com.codessquad.qna.domain.Users;
+import com.codessquad.qna.web.dto.answers.AnswersDeleteRequestDto;
 import com.codessquad.qna.web.dto.answers.AnswersSaveRequestDto;
-import com.codessquad.qna.web.dto.posts.AnswersUpdateRequestDto;
+import com.codessquad.qna.web.dto.answers.AnswersUpdateRequestDto;
 import com.codessquad.qna.web.dto.posts.PostsSaveRequestDto;
 import java.util.List;
 import org.junit.Before;
@@ -121,5 +122,42 @@ public class AnswersAPIControllerTest {
     List<Answers> all = answersRepository.findAllDesc();
     assertThat(all.get(0).getContent()).isEqualTo(expectedContent);
     assertThat(all.get(0).getPosts()).isNotNull();
+  }
+
+  @Test
+  public void Answers가_삭제된다() throws Exception {
+    PostsSaveRequestDto testPost = PostsSaveRequestDto.builder() //Posts를 빌드하는 것이 아니라 Dto를 빌드하는 것이다.
+        .author(httpSession)
+        .content("testContent")
+        .title("testTitle")
+        .build();
+
+    String posturl = "http://localhost:" + port + "api/v1/posts";
+    ResponseEntity<Long> postResponseEntity = testRestTemplate.postForEntity(posturl, testPost, Long.class);
+
+    AnswersSaveRequestDto testAnswers = AnswersSaveRequestDto.builder() //Posts를 빌드하는 것이 아니라 Dto를 빌드하는 것이다.
+        .author(httpSession)
+        .content("testContent")
+        .postId(1L)
+        .build();
+
+    String answerurl = "http://localhost:" + port + "api/v1/answers";
+    ResponseEntity<Long> answerResponseEntity = testRestTemplate
+        .postForEntity(answerurl, testAnswers, Long.class);
+
+    AnswersDeleteRequestDto requestDto = AnswersDeleteRequestDto.builder()
+        .deleteAnswer(true)
+        .build();
+
+    String answerDeleteUrl = "http://localhost:" + port + "/api/v1/answers/delete/" + 1;
+    HttpEntity<AnswersDeleteRequestDto> requestEntity = new HttpEntity<>(requestDto);
+
+    ResponseEntity<Long> answerDeleteResponseEntity = testRestTemplate
+        .exchange(answerDeleteUrl, HttpMethod.PUT, requestEntity, Long.class);
+
+    assertThat(answerDeleteResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(answerDeleteResponseEntity.getBody()).isGreaterThan(0L);
+    List<Answers> all = answersRepository.findAllDesc();
+    assertThat(all.get(0).isDeleted()).isEqualTo(true);
   }
 }

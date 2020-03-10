@@ -47,7 +47,7 @@ public class UserController {
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         LOGGER.debug("[page]로그아웃");
-        session.removeAttribute("sessionUser");
+        session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
         return "redirect:/";
     }
 
@@ -63,7 +63,7 @@ public class UserController {
         }
 
         LOGGER.debug("[page]로그인");
-        session.setAttribute("sessionUser", user);
+        session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
 
         return "redirect:/";
     }
@@ -86,13 +86,12 @@ public class UserController {
     public String updateForm(@PathVariable Long id, Model model, HttpSession session) throws IllegalStateException {
         LOGGER.debug("[page]사용자 정보 수정 폼");
 
-        Object sessionUser = session.getAttribute("sessionUser");
-        if(sessionUser == null) {
+        if(!HttpSessionUtils.isLoginUser(session)) {
             LOGGER.debug("[page]로그인 하지 않음");
             return "redirect:/users/loginForm";
         }
 
-        User user = (User)sessionUser;
+        User user = HttpSessionUtils.getUserFromSession(session);
         if(!user.matchId(id)) {
             LOGGER.debug("[page]다른 회원 정보 열람 요청");
             throw new IllegalStateException("허용되지 않은 요청");
@@ -107,13 +106,12 @@ public class UserController {
     public String updateUser(@PathVariable Long id, User updatedUser, HttpSession session) {
         LOGGER.debug("[page]사용자 정보 수정");
 
-        Object sessionUser = session.getAttribute("sessionUser");
-        if(sessionUser == null) {
+        if(!HttpSessionUtils.isLoginUser(session)) {
             LOGGER.debug("[page]로그인 하지 않음");
             return "redirect:/users/loginForm";
         }
 
-        User user = (User)sessionUser;
+        User user = HttpSessionUtils.getUserFromSession(session);
         if(!user.matchId(id)) {
             LOGGER.debug("[page]다른 회원 정보 열람 요청");
             throw new IllegalStateException("허용되지 않은 요청");

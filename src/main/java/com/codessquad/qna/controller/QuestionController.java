@@ -26,7 +26,7 @@ public class QuestionController {
     public String questionForm(HttpSession session) {
         LOGGER.debug("[page]질문작성 폼");
 
-        Object sessionUser = session.getAttribute("sessionUser");
+        Object sessionUser = session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
         if(sessionUser == null) {
             LOGGER.debug("[page]비로그인 상태");
             return "redirect:/users/loginForm";
@@ -39,10 +39,15 @@ public class QuestionController {
     public String createQuestion(Question question, HttpSession session) {
         LOGGER.debug("[page]질문 작성");
 
-        Object sessionUser = session.getAttribute("sessionUser");
-        if(sessionUser == null) {
-            LOGGER.debug("[page]비로그인 상태");
+        if(!HttpSessionUtils.isLoginUser(session)) {
+            LOGGER.debug("[page]로그인 하지 않음");
             return "redirect:/users/loginForm";
+        }
+
+        User user = HttpSessionUtils.getUserFromSession(session);
+        if(!user.matchName(question.getWriter())) {
+            LOGGER.debug("[page]글 작성자 아님");
+            throw new IllegalStateException("글 작성자 아님");
         }
 
         Question createdQuestion = Optional.ofNullable(question).orElseThrow(() -> new NullPointerException("NULL"));
@@ -65,13 +70,12 @@ public class QuestionController {
     public String updateForm(@PathVariable Long id, HttpSession session, Model model) throws NotFoundException {
         LOGGER.debug("[page]질문 수정 폼");
 
-        Object sessionUser = session.getAttribute("sessionUser");
-        if(sessionUser == null) {
-            LOGGER.debug("[page]비로그인 상태");
+        if(!HttpSessionUtils.isLoginUser(session)) {
+            LOGGER.debug("[page]로그인 하지 않음");
             return "redirect:/users/loginForm";
         }
 
-        User user = (User)sessionUser;
+        User user = HttpSessionUtils.getUserFromSession(session);
         Question question = questionRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 질문입니다."));
         if(!user.matchName(question.getWriter())) {
             LOGGER.debug("[page]글 작성자 아님");
@@ -86,13 +90,12 @@ public class QuestionController {
     public String updateQuestion(@PathVariable Long id, HttpSession session, Question updatedQuestion) throws NotFoundException {
         LOGGER.debug("[page]질문 수정");
 
-        Object sessionUser = session.getAttribute("sessionUser");
-        if(sessionUser == null) {
-            LOGGER.debug("[page]비로그인 상태");
+        if(!HttpSessionUtils.isLoginUser(session)) {
+            LOGGER.debug("[page]로그인 하지 않음");
             return "redirect:/users/loginForm";
         }
 
-        User user = (User)sessionUser;
+        User user = HttpSessionUtils.getUserFromSession(session);
         if(!user.matchName(updatedQuestion.getWriter())) {
             LOGGER.debug("[page]글 작성자 아님");
             throw new IllegalStateException("글 작성자 아님");
@@ -109,13 +112,12 @@ public class QuestionController {
     public String deleteQuestion(@PathVariable Long id, HttpSession session) throws NotFoundException {
         LOGGER.debug("[page]질문 삭제");
 
-        Object sessionUser = session.getAttribute("sessionUser");
-        if(sessionUser == null) {
-            LOGGER.debug("[page]비로그인 상태");
+        if(!HttpSessionUtils.isLoginUser(session)) {
+            LOGGER.debug("[page]로그인 하지 않음");
             return "redirect:/users/loginForm";
         }
 
-        User user = (User)sessionUser;
+        User user = HttpSessionUtils.getUserFromSession(session);
         Question question = questionRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 질문입니다."));
         if(!user.matchName(question.getWriter())) {
             LOGGER.debug("[page]글 작성자 아님");

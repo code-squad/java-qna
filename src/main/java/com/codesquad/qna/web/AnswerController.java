@@ -62,11 +62,11 @@ public class AnswerController {
         }
 
         if (!currentAnswer.matchUser(sessionUser)) {
-            throw new IllegalStateException("본인 댓글만 삭제할 수 있어요");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인 댓글만 삭제할 수 있어요.");
         }
 
-        currentQuestion.reduceAnswersCount();
         answerRepository.delete(currentAnswer);
+        currentQuestion.reduceAnswersCount();
         return "redirect:/questions/{questionId}";
     }
 }

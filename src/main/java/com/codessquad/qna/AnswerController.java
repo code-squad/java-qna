@@ -3,7 +3,6 @@ package com.codessquad.qna;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,8 +12,8 @@ import javax.servlet.http.HttpSession;
 import static com.codessquad.qna.HttpSessionUtils.isLogin;
 import static com.codessquad.qna.HttpSessionUtils.getUserFromSession;
 
-@Controller
-@RequestMapping("/questions/{questionId}/answers")
+@RestController
+@RequestMapping("/api/questions/{questionId}/answers")
 public class AnswerController {
     private static final Logger log = LoggerFactory.getLogger(HomeController.class);
 
@@ -25,15 +24,14 @@ public class AnswerController {
     private QuestionRepository questionRepository;
 
     @PostMapping("")
-    public String createAnswer(@PathVariable Long questionId, String contents, HttpSession session) {
+    public Answer createAnswer(@PathVariable Long questionId, String contents, HttpSession session) {
         if (!isLogin(session)) {
-            return "/users/loginForm";
+            return null;
         }
         User sessionUser = getUserFromSession(session);
         Question question = findQuestion(questionId);
         Answer answer = new Answer(sessionUser, question, contents);
-        answerRepository.save(answer);
-        return "redirect:/questions/" + questionId;
+        return answerRepository.save(answer);
     }
 
     @GetMapping("/{id}/form")

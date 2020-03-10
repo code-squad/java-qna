@@ -7,32 +7,23 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.ObjectUtils;
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
-public class Answer {
+@Setter
+public class Answer extends AbstractEntity{
 
-    @Id
-    @GeneratedValue
-    private Long id;
-
-    @Setter
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
     private Question question;
 
-    @Setter
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
     private User writer;
 
-    @Setter
     @Lob
     @Column(nullable = false)
     private String contents;
-    private LocalDateTime createdAt = LocalDateTime.now();
-    @Setter
     private Boolean deleted = false;
 
     public Answer(){}

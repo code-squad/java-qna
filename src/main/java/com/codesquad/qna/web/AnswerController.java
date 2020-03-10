@@ -7,11 +7,10 @@ import com.codesquad.qna.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequestMapping("/questions/{questionId}/answers")
+@RestController
+@RequestMapping("/api/questions/{questionId}/answers")
 public class AnswerController {
 
     private static final Logger log = LoggerFactory.getLogger(AnswerController.class);
@@ -21,11 +20,11 @@ public class AnswerController {
     private QuestionRepository questionRepository;
 
     @PostMapping("")
-    public String create(@PathVariable Long questionId, String contents, @RequestAttribute User sessionedUser) {
+    public Answer create(@PathVariable Long questionId, String contents, @RequestAttribute User sessionedUser) {
+        log.info("api create : {} ", contents);
         Question answeredQuestion = findQuestion(questionId);
         Answer newAnswer = new Answer(answeredQuestion, sessionedUser, contents);
-        answerRepository.save(newAnswer);
-        return String.format("redirect:/questions/%d", questionId);
+        return answerRepository.save(newAnswer);
     }
 
     @DeleteMapping("/{answerId}")

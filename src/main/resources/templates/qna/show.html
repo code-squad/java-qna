@@ -45,39 +45,41 @@
                   <div class="qna-comment-slipp">
                       <p class="qna-comment-count"><strong>{{question.countOfAnswers}}</strong>개의 의견</p>
                       <div class="qna-comment-slipp-articles">
-                          {{#answers}}
-                          <article class="article" id="answer-{{id}}">
-                              <div class="article-header">
-                                  <div class="article-header-thumb">
-                                      <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
+                          <div class="answer-article-ajax">
+                              {{#answers}}
+                              <article class="article" id="answer-article">
+                                  <div class="article-header">
+                                      <div class="article-header-thumb">
+                                          <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
+                                      </div>
+                                      <div class="article-header-text">
+                                          <a href="/users/{{writer}}" class="article-author-name">{{writer}}</a>
+                                          <a href="#" class="article-header-time" title="퍼머링크">
+                                              {{createDateTimeToString}}
+                                          </a>
+                                      </div>
                                   </div>
-                                  <div class="article-header-text">
-                                      <a href="/users/{{writer}}" class="article-author-name">{{writer}}</a>
-                                      <a href="#" class="article-header-time" title="퍼머링크">
-                                          {{createDateTimeToString}}
-                                      </a>
+                                  <div class="article-doc comment-doc">
+                                      <p>{{contents}}</p>
                                   </div>
-                              </div>
-                              <div class="article-doc comment-doc">
-                                  <p>{{contents}}</p>
-                              </div>
-                              <div class="article-util">
-                                  <ul class="article-util-list">
-                                      <li>
-                                          <a class="link-modify-article" href="#">수정</a>
-                                      </li>
-                                      <li>
-                                          <form class="delete-answer-form" action="/questions/{{question.id}}/answers/{{id}}" method="POST">
-                                              <input type="hidden" name="_method" value="DELETE">
-                                              <button type="submit" class="delete-answer-button">삭제</button>
-                                          </form>
-                                      </li>
-                                  </ul>
-                              </div>
-                          </article>
-                          {{/answers}}
+                                  <div class="article-util">
+                                      <ul class="article-util-list">
+                                          <li>
+                                              <a class="link-modify-article" href="#">수정</a>
+                                          </li>
+                                          <li>
+                                              <form class="delete-answer-form" action="/questions/{{question.id}}/answers/{{id}}" method="POST">
+                                                  <input type="hidden" name="_method" value="DELETE">
+                                                  <button type="submit" class="delete-answer-button">삭제</button>
+                                              </form>
+                                          </li>
+                                      </ul>
+                                  </div>
+                              </article>
+                              {{/answers}}
+                          </div>
                           {{#sessionedUser}}
-                          <form name = "answer" method="post" action="/questions/{{question.id}}/answers/" class="submit-write">
+                          <form name = "answer" method="post" action="/api/questions/{{question.id}}/answers/" class="answer-write">
                               <div class="form-group" style="padding:14px;">
                                   <textarea name = "contents" class="form-control" placeholder="Update your status"></textarea>
                               </div>
@@ -105,7 +107,7 @@
 			</div>
 		</div>
 		<div class="article-doc comment-doc">
-			{2}
+            <p>{2}</p>
 		</div>
 		<div class="article-util">
 		<ul class="article-util-list">
@@ -113,7 +115,7 @@
 				<a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
 			</li>
 			<li>
-				<form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
+				<form class="delete-answer-form" action="/api/questions/{4}/answers/{3}" method="POST">
 					<input type="hidden" name="_method" value="DELETE">
                      <button type="submit" class="delete-answer-button">삭제</button>
 				</form>

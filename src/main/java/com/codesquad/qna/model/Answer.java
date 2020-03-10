@@ -2,6 +2,7 @@ package com.codesquad.qna.model;
 
 import com.codesquad.qna.util.DateTimeFormatUtils;
 import com.codesquad.qna.util.HtmlDocumentUtils;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -14,6 +15,7 @@ public class Answer {
     private Long id;
 
     @ManyToOne
+    @JsonProperty
     private Question question;
 
     @ManyToOne
@@ -44,10 +46,6 @@ public class Answer {
 
     public Long getId() {
         return id;
-    }
-
-    public Question getQuestion() {
-        return question;
     }
 
     public String getWriter() {

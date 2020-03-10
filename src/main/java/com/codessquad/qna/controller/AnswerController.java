@@ -42,19 +42,6 @@ public class AnswerController {
         return PathUtil.ANSWER_EDIT_TEMPLATE;
     }
 
-    @PostMapping
-    public Object createAnswer(@PathVariable Long questionId, @RequestBody Answer answer, HttpSession session) {
-        Question question = findQuestion(questionId);
-        Answer newAnswer = new Answer(HttpSessionUtil.getUserFromSession(session), question, answer.getContents());
-
-        if (!answer.isCorrectFormat(newAnswer)) {
-            throw new CustomUnauthorizedException(PathUtil.BAD_REQUEST, ErrorMessageUtil.WRONG_FORMAT);
-        }
-
-        answerRepository.save(newAnswer);
-        return PathUtil.REDIRECT_QUESTION_DETAIL + questionId;
-    }
-
     @PutMapping("/{answerId}")
     public String updateAnswer(@PathVariable("questionId") Long questionId, @PathVariable("answerId") Long answerId, String contents ,HttpSession session) {
         Question question = findQuestion(questionId);
@@ -68,19 +55,6 @@ public class AnswerController {
         Answer updateData = new Answer(user, question, contents);
         answer.update(updateData);
         answerRepository.save(answer);
-        return PathUtil.REDIRECT_QUESTION_DETAIL + questionId;
-    }
-
-    @DeleteMapping("/{answerId}")
-    public String deleteAnswer(@PathVariable("questionId") Long questionId, @PathVariable("answerId") Long answerId, HttpSession session) {
-        questionRepository.findById(questionId).orElseThrow(() ->
-                new CustomNoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_QUESTION));
-        Answer answer = findAnswer(answerId);
-
-        if (!answer.isCorrectWriter(HttpSessionUtil.getUserFromSession(session)))
-            throw new CustomUnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.UNAUTHORIZED);
-
-        answerRepository.delete(answerId);
         return PathUtil.REDIRECT_QUESTION_DETAIL + questionId;
     }
 

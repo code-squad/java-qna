@@ -1,4 +1,4 @@
-package io.david215.qna;
+package io.david215.forum.user;
 
 public class User {
     private String userId;

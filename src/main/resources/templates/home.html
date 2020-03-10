@@ -7,12 +7,12 @@
   <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
     <div class="panel panel-default qna-list">
       <ul class="list">
-        {{#questions}}
+        {{#threads}}
         <li>
           <div class="wrap">
             <div class="main">
               <strong class="subject">
-                <a href="/questions/{{id}}">{{title}}</a>
+                <a href="/threads/{{id}}">{{title}}</a>
               </strong>
               <div class="auth-info">
                 <i class="icon-add-comment"></i>
@@ -26,7 +26,7 @@
             </div>
           </div>
         </li>
-        {{/questions}}
+        {{/threads}}
       </ul>
       <div class="row">
         <div class="col-md-3"></div>
@@ -42,7 +42,7 @@
           </ul>
         </div>
         <div class="col-md-3 qna-write">
-          <a href="/new-question" class="btn btn-primary pull-right" role="button">질문하기</a>
+          <a href="/new-thread" class="btn btn-primary pull-right" role="button">질문하기</a>
         </div>
       </div>
     </div>

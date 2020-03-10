@@ -1,4 +1,4 @@
-package io.david215.qna;
+package io.david215.forum.user;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,13 +24,13 @@ public class UserController {
     @GetMapping("/signup-fail")
     public String signupFail(Model model, String userId) {
         model.addAttribute("userId", userId);
-        return "users/signup-fail";
+        return "user/signup-fail";
     }
 
     @GetMapping("/users")
     public String users(Model model) {
         model.addAttribute("users", users.values());
-        return "users/list";
+        return "user/list";
     }
 
     @GetMapping("/users/{userId}")
@@ -38,8 +38,8 @@ public class UserController {
         if (users.containsKey(userId)) {
             User user = users.get(userId);
             model.addAttribute("user", user);
-            return "users/profile";
+            return "user/profile";
         }
-        return "users/not-found";
+        return "user/not-found";
     }
 }

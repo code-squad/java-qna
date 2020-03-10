@@ -1,4 +1,4 @@
-package io.david215.qna;
+package io.david215.forum.system;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
@@ -9,9 +9,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/new-question").setViewName("qna/form");
-        registry.addViewController("/signup").setViewName("users/form");
-        registry.addViewController("/login").setViewName("users/login");
-        registry.addViewController("/login-failed").setViewName("users/login-failed");
+        registry.addViewController("/new-thread").setViewName("thread/form");
+        registry.addViewController("/signup").setViewName("user/form");
+        registry.addViewController("/login").setViewName("user/login");
+        registry.addViewController("/login-failed").setViewName("user/login-failed");
     }
 }

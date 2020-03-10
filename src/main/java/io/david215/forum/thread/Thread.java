@@ -1,10 +1,10 @@
-package io.david215.qna;
+package io.david215.forum.thread;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Question {
+public class Thread {
     private static int count = 0;
 
     private int id;
@@ -13,7 +13,7 @@ public class Question {
     private ZonedDateTime time;
     private String content;
 
-    public Question() {
+    public Thread() {
         id = count++;
         time = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
     }

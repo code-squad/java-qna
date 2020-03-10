@@ -26,39 +26,39 @@ public class Answers extends BaseTimeEntity {
   private Long Id;
 
   @ManyToOne
-  @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_author"))
+  @JoinColumn(name="AUTHOR_ID")
   private Users author;
 
   @ManyToOne
-  @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_post"))
+  @JoinColumn(name="POSTS_ID")
   @OnDelete(action = OnDeleteAction.CASCADE)
   private Posts posts;
 
-  @Column(columnDefinition = "TEXT", nullable = false)
-  private String title;
-
   @Lob
   private String content;
+
+  public Posts getPosts() {
+    return posts;
+  }
+
+  public void setPosts(Posts posts) {
+    this.posts = posts;
+  }
 
   public void setAuthor(Users author) {
     this.author = author;
   }
 
   public void setId(Long id) {
-    Id = id;
+    this.Id = id;
   }
 
   public void setContent(String content) {
     this.content = content;
   }
 
-  public void setTitle(String title) {
-    this.title = title;
-  }
-
-  public Answers(Users author, String title, String content, Posts posts) {
+  public Answers(Users author, String content, Posts posts) {
     this.author = author;
-    this.title = title;
     this.content = content;
     this.posts = posts;
   }
@@ -70,8 +70,7 @@ public class Answers extends BaseTimeEntity {
     return new AnswersBuilder();
   }
 
-  public void update(String title, String content) {
-    this.title = title;
+  public void update(String content) {
     this.content = content;
   }
 
@@ -80,7 +79,6 @@ public class Answers extends BaseTimeEntity {
     return "Posts{" +
         "Id=" + Id +
         ", author='" + author + '\'' +
-        ", title='" + title + '\'' +
         ", content='" + content + '\'' +
         '}';
   }
@@ -93,10 +91,6 @@ public class Answers extends BaseTimeEntity {
     return this.author;
   }
 
-  public String getTitle() {
-    return this.title;
-  }
-
   public String getContent() {
     return this.content;
   }
@@ -104,7 +98,6 @@ public class Answers extends BaseTimeEntity {
   public static class AnswersBuilder {
 
     private Users author;
-    private String title;
     private String content;
     private Posts posts;
 
@@ -119,9 +112,13 @@ public class Answers extends BaseTimeEntity {
     public Answers.AnswersBuilder author() {
       HttpSession httpSession = getHttpSession();
       this.author = (Users) httpSession.getAttribute("sessionUser");
-      System.out.println("sessionUser: " + this.author);
       return this;
     }
+
+//    public Answers.AnswersBuilder author(Users author) {
+//      this.author = author; //null
+//      return this;
+//    } 자바 객체를 JSON으로 변환하지 못해 발생하는 문제이다 seralize를 활용해보라는 디온의 조언이 있었으나 1차 시도 실패함.
 
     public Answers.AnswersBuilder question(Long postId) {
       PostsRepository postsRepository = SpringContext.getBean(PostsRepository.class);
@@ -129,9 +126,13 @@ public class Answers extends BaseTimeEntity {
       return this;
     }
 
-    public Answers.AnswersBuilder title(String title) {
-      this.title = title;
-      return this;
+    @Override
+    public String toString() {
+      return "AnswersBuilder{" +
+          "author=" + author +
+          ", content='" + content + '\'' +
+          ", posts=" + posts +
+          '}';
     }
 
     public Answers.AnswersBuilder content(String content) {
@@ -140,17 +141,8 @@ public class Answers extends BaseTimeEntity {
     }
 
     public Answers build() {
-      return new Answers(author, title, content, posts);
+      return new Answers(author, content, posts);
     }
 
-    @Override
-    public String toString() {
-      return "AnswersBuilder{" +
-          "author=" + author +
-          ", title='" + title + '\'' +
-          ", content='" + content + '\'' +
-          ", posts=" + posts +
-          '}';
-    }
   }
 }

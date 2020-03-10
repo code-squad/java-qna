@@ -11,5 +11,4 @@ public interface AnswerRepository extends CrudRepository<Answer, Long> {
 
   @Transactional(readOnly = true)
   Iterable<Answer> findByQuestionIdAndDeleted(Long questionId, boolean Deleted);
-
 }

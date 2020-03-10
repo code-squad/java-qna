@@ -12,9 +12,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.Iterator;
 
-import static com.codessquad.qna.commons.CommonUtils.getQuestionOrError;
-import static com.codessquad.qna.commons.CommonUtils.getSessionedUserOrError;
+import static com.codessquad.qna.commons.CommonUtils.*;
 
 @Slf4j
 @Controller
@@ -107,6 +107,7 @@ public class QuestionController {
   /**
    * Feat : Question 을 delete 합니다.
    * Desc : getQuestion() 을 통해 Question 존재 여부를 검증합니다.
+   * 로그인된 유저와 작성자가 다르거나, 로그인된 유저가 작성하지 않은 답변이 있는 경우 삭제되지 않습니다.
    * Return : /questions/show
    */
   @DeleteMapping("/{id}")
@@ -114,13 +115,26 @@ public class QuestionController {
     log.info("### delete()");
     User sessionedUser = getSessionedUserOrError(session);
     Question question = getQuestionOrError(questionRepository, id);
+    Iterator<Answer> answers = getAnswersOrError(answerRepository, question).iterator();
 
-    if (sessionedUser.equals(question.getUser())) {
-      question.delete();
-      questionRepository.save(question);
-      return "redirect:/";
+    if (!sessionedUser.equals(question.getUser())) {
+      throw new QuestionException(CustomErrorCode.USER_NOT_MATCHED);
     }
 
-    throw new QuestionException(CustomErrorCode.USER_NOT_MATCHED);
+    answers.forEachRemaining(answer -> {
+      if (!answer.getUser().equals(sessionedUser)) {
+        throw new QuestionException(CustomErrorCode.USER_NOT_MATCHED);
+      }
+    });
+
+    answers = getAnswersOrError(answerRepository, question).iterator();
+    answers.forEachRemaining(answer -> {
+      answer.delete();
+      answerRepository.save(answer);
+    });
+
+    question.delete();
+    questionRepository.save(question);
+    return "redirect:/";
   }
 }

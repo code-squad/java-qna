@@ -48,4 +48,13 @@ public class CommonUtils {
 
     return answer;
   }
+
+  /**
+   * Feat : Answers 를 가져옵니다.
+   * Desc :
+   * Return : Question 에 매칭되는  answers
+   */
+  public static Iterable<Answer> getAnswersOrError(AnswerRepository answerRepository, Question question) {
+    return answerRepository.findByQuestionIdAndDeleted(question.getId(), false);
+  }
 }

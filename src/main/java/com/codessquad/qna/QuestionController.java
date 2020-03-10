@@ -55,8 +55,20 @@ public class QuestionController {
     @PostMapping("/{questionIndex}/updateQuestion")
     public String updateQuestion(@PathVariable Long questionIndex, String title, String contents) {
         Question question = questionRepository.getOne(questionIndex);
-        question.updateQuestion(title,contents);
+        question.updateQuestion(title, contents);
         questionRepository.save(question);
         return "redirect:/";
     }
+
+    @PostMapping("/{questionIndex}/delete")
+    public String deleteQuestion(@PathVariable Long questionIndex, HttpSession session) {
+        Question question = questionRepository.getOne(questionIndex);
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        if (question.authorizeUser(loginUser.getId())) {
+            questionRepository.delete(question);
+            return "redirect:/";
+        }
+        return "/qna/not_qualified";
+    }
+
 }

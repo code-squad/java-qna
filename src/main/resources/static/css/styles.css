@@ -11,15 +11,18 @@ author: bootply.com
 
 @import url(http://fonts.googleapis.com/css?family=Roboto:400);
 body {
-  background-color:#e0e0e0;
+    /*배경색*/
+  background-color:#ffffff;
   -webkit-font-smoothing: antialiased;
   font: normal 14px Roboto,arial,sans-serif;
 }
-.navbar-default {background-color:#f4f4f4;margin-top:50px;border-width:0;z-index:5;}
+/*post,login,회원가입 bar*/
+.navbar-default {background-color:#ebcccc;margin-top:50px;border-width:0;z-index:5;}
 .navbar-default .navbar-nav > .active > a,.navbar-default .navbar-nav > li:hover > a {border:0 solid #4285f4;border-bottom-width:2px;font-weight:800;background-color:transparent;}
 .navbar-default .dropdown-menu {background-color:#ffffff;}
 .navbar-default .dropdown-menu li > a {padding-left:30px;}
 
+/*맨 윗줄 bar*/
 .header {background-color:#ffffff;border-width:0;}
 .header .navbar-collapse {background-color:#ffffff;}
 .btn,.form-control,.panel,.list-group,.well {border-radius:1px;box-shadow:0 0 0;}
@@ -69,7 +72,7 @@ textarea {
  border-radius:0;
 }
 h3,h4,h5 { 
- border:0 solid #efefef; 
+ border:0 solid #efefef;
  border-bottom-width:1px;
  padding-bottom:10px;
 }

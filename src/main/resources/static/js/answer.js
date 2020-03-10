@@ -1,11 +1,13 @@
 const baseUrl = document.URL + '/answers';
+const apiPath = 'http://localhost:8080/api' + location.pathname + '/answers';
+
 document.addEventListener("DOMContentLoaded", function(){
     getAnswerList()
 });
 
 const submitAnswer = () => {
     const data = { 'contents': document.getElementById('contents').value };
-    fetch(baseUrl, {
+    fetch(apiPath, {
         method: 'POST',
         body: JSON.stringify(data),
         headers:{
@@ -15,6 +17,16 @@ const submitAnswer = () => {
         .then(response => {
             if (!response.ok) {
                 throw Error(response.statusText)
+            }
+            getAnswerList()
+        })
+}
+
+const deleteAnswer = (deleteApiPath) => {
+    fetch(deleteApiPath, {method: 'DELETE'})
+        .then(response => {
+            if (!response.ok) {
+                throw Error(response.statusText);
             }
             getAnswerList()
         })
@@ -63,10 +75,7 @@ const appendAnswerList = (answerList) => {
 				                <a class="link-modify-article" href="/questions/${answer.question.id}/answers/${answer.id}/editForm">수정</a>
 			                </li>
 			                <li>
-				                <form class="delete-answer-form" action="/questions/${answer.question.id}/answers/${answer.id}" method="POST">
-					                <input type="hidden" name="_method" value="DELETE">
-                                    <button type="submit" class="delete-answer-button">삭제</button>
-				                </form>
+                                <button class="delete-answer-button" onclick="deleteAnswer('/api/questions/${answer.question.id}/answers/${answer.id}')">삭제</button>
 			                </li>
 		                </ul>
 		            </div>

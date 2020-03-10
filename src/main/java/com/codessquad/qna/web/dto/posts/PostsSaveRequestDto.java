@@ -5,6 +5,7 @@ import com.codessquad.qna.domain.Users;
 import javax.servlet.http.HttpSession;
 
 public class PostsSaveRequestDto {
+
   private String title;
   private Users author;
   private String content;

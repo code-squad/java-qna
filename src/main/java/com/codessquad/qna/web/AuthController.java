@@ -2,6 +2,8 @@ package com.codessquad.qna.web;
 
 import com.codessquad.qna.domain.User;
 import com.codessquad.qna.domain.UserRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +15,8 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/auth")
 public class AuthController {
+
+    private Logger logger = LogManager.getLogger(AuthController.class);
 
     @Autowired
     UserRepository userRepository;

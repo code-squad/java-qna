@@ -1,13 +1,15 @@
 package com.codessquad.qna.domain;
 
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.servlet.http.HttpSession;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -22,6 +24,29 @@ public class Posts extends BaseTimeEntity {
   @ManyToOne
   @JoinColumn(name = "AUTHOR_ID")
   private Users author;
+
+  @OneToMany(mappedBy="posts")
+  @OrderBy("Id asc")
+  private List<Answers> answers;
+
+  public List<Answers> getAnswers() {
+    return answers;
+  }
+
+  public void setAnswers(List<Answers> answers) {
+    this.answers = answers;
+  }
+
+  @Override
+  public String toString() {
+    return "Posts{" +
+        "Id=" + Id +
+        ", author=" + author +
+        ", answers=" + answers +
+        ", title='" + title + '\'' +
+        ", content='" + content + '\'' +
+        '}';
+  }
 
   @Column(columnDefinition = "TEXT", nullable = false)
   private String title;
@@ -61,16 +86,6 @@ public class Posts extends BaseTimeEntity {
     this.content = content;
   }
 
-  @Override
-  public String toString() {
-    return "Posts{" +
-        "Id=" + Id +
-        ", author='" + author + '\'' +
-        ", title='" + title + '\'' +
-        ", content='" + content + '\'' +
-        '}';
-  }
-
   public Long getId() {
     return this.Id;
   }
@@ -107,6 +122,11 @@ public class Posts extends BaseTimeEntity {
       System.out.println("sessionUser: " + this.author);
       return this;
     }
+
+//    public Posts.PostsBuilder author(Users author) {
+//      this.author = author;
+//      return this;
+//    }
 
     public Posts.PostsBuilder title(String title) {
       this.title = title;

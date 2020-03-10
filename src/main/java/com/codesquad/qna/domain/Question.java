@@ -1,9 +1,11 @@
 package com.codesquad.qna.domain;
 
 import com.codesquad.qna.web.DateTimeFormatConstants;
+import org.hibernate.annotations.Formula;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class Question {
@@ -27,7 +29,12 @@ public class Question {
     @Column(nullable = false)
     private LocalDateTime createdTime;
 
-    private Integer countOfAnswers = 0;
+    @OneToMany(mappedBy="question") //Answer에서 Question을 매핑할 때 설정한 필드 이름으로 주면됨
+    @OrderBy("id ASC")
+    private List<Answer> answers;
+
+    @Formula("(select count(*) from answer a where a.question_id = id)")
+    private int countOfAnswers = 0;
 
     public Question() {
         setCreatedTimeNow();
@@ -76,6 +83,14 @@ public class Question {
         this.createdTime = createdTime;
     }
 
+    public int getCountOfAnswers() {
+        return countOfAnswers;
+    }
+
+    public void setCountOfAnswers(int countOfAnswers) {
+        this.countOfAnswers = countOfAnswers;
+    }
+
     public void setCreatedTimeNow() {
         setCreatedTime(LocalDateTime.now());
     }
@@ -92,17 +107,5 @@ public class Question {
 
     public boolean matchUser(User sessionUser) {
         return this.writer.equals(sessionUser);
-    }
-
-    public Integer getCountOfAnswers() {
-        return countOfAnswers;
-    }
-
-    public void increaseAnswersCount() {
-        this.countOfAnswers++;
-    }
-
-    public void reduceAnswersCount() {
-        this.countOfAnswers--;
     }
 }

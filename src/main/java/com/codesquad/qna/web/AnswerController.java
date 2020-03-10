@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
-
 import javax.servlet.http.HttpSession;
 
 @Controller
@@ -39,7 +38,6 @@ public class AnswerController {
         }
 
         Answer answer = new Answer(sessionUser, currentQuestion, comment);
-        currentQuestion.increaseAnswersCount();
         answerRepository.save(answer);
         return String.format("redirect:/questions/%d", questionId);
     }
@@ -51,11 +49,9 @@ public class AnswerController {
         }
 
         User sessionUser = HttpSessionUtils.getUserFromSession(session);
-        Question currentQuestion;
         Answer currentAnswer;
 
         try {
-            currentQuestion = questionRepostory.findById(questionId).orElseThrow(() -> new NotFoundException("그런 게시글 없어요"));
             currentAnswer = answerRepository.findById(answerId).orElseThrow(() -> new NotFoundException("그런 댓글 없어요"));
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -66,7 +62,6 @@ public class AnswerController {
         }
 
         answerRepository.delete(currentAnswer);
-        currentQuestion.reduceAnswersCount();
         return "redirect:/questions/{questionId}";
     }
 }

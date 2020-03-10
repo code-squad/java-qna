@@ -28,9 +28,9 @@ public class QuestionController {
     }
 
     @GetMapping("/questions/{id}")
-    public String showDetailPage(@PathVariable Long id, Model model) {
+    public String detailPage(@PathVariable Long id, Model model) {
         model.addAttribute("question", questionRepository.getOne(id));
-        return "questions/show";
+        return "questions/detail";
     }
 
     @PostMapping("/questions")

@@ -26,9 +26,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public String showDetailPage(@PathVariable Long id, Model model) {
+    public String detailPage(@PathVariable Long id, Model model) {
         model.addAttribute("user", userRepository.getOne(id));
-        return "users/show";
+        return "users/detail";
     }
 
     @GetMapping("/{id}/updateForm")
@@ -43,7 +43,7 @@ public class UserController {
         return "redirect:/users";
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public String updateUser(@PathVariable Long id, User newUser) {
         userRepository.save(userRepository.getOne(id).merge(newUser));
         return "redirect:/users";

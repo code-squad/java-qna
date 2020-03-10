@@ -25,6 +25,7 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
+	implementation 'com.github.jknack:handlebars-helpers:4.0.7'
 	implementation 'org.webjars:bootstrap:4.4.1'
 	implementation 'org.webjars.bower:jquery:3.4.1'
 	implementation 'com.h2database:h2:1.4.200'

@@ -1,0 +1,30 @@
+{{#partial "main"}}
+<title>회원정보</title>
+{{/partial}}
+
+{{#partial "main"}}
+{{#user}}
+<div class="m-auto" style="max-width: 640px;">
+    <div class="card" style="max-width: 640px;">
+        <div class="row no-gutters">
+            <div class="col-md-4">
+                <img src="/profile.jpeg" class="card-img" alt="프로필">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">{{nickName}}</h5>
+                    <p class="card-text">{{introduction}}</p>
+                    <p class="card-text align-bottom"><small class="text-muted">{{email}}</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{#eq myId id}}
+    <a class="btn btn-outline-primary d-block my-3" href="/users/{{id}}/updateForm">개인정보수정</a>
+    {{/eq}}
+</div>
+{{/user}}
+{{/partial}}
+
+{{> layout/base}}

@@ -32,7 +32,7 @@ public class AuthController {
         User originInfo = userRepository.findByUserId(entrant.getUserId());
 
         if(originInfo != null && originInfo.verify(entrant)) {
-            session.setAttribute("ticketId", originInfo.getId());
+            session.setAttribute("myId", originInfo.getId());
             session.setMaxInactiveInterval(60*60);
             return "redirect:/";
         }

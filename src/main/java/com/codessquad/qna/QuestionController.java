@@ -35,6 +35,9 @@ public class QuestionController {
         }
 
         Optional<Question> optionalQuestion = questionRepository.findActiveQuestionById(questionId);
+
+        optionalQuestion.orElseThrow(ProductNotfoundException::new);
+
         optionalQuestion.ifPresent(question -> {
             answer.setQuestion(question);
             answer.setWriter(HttpSessionUtils.getUserFromSession(session));
@@ -109,9 +112,7 @@ public class QuestionController {
     public String post(@PathVariable("id") Long id, Model model) {
         Optional<Question> optionalQuestion = questionRepository.findActiveQuestionById(id);
 
-        if (!optionalQuestion.isPresent()) {
-            return "redirect:/";
-        }
+        optionalQuestion.orElseThrow(ProductNotfoundException::new);
 
         List<Answer> answers = answerRepository.findActiveAnswerByQuestionId(id);
 
@@ -139,18 +140,16 @@ public class QuestionController {
 
         Optional<Question> optionalQuestion = questionRepository.findActiveQuestionById(id);
 
-        if (optionalQuestion.isPresent()) {
-            Question question = optionalQuestion.get();
-            Result result = valid(session, question);
-            if (!result.isValid()) {
-                throw new UnauthorizedException();
-            }
+        optionalQuestion.orElseThrow(ProductNotfoundException::new);
 
-            model.addAttribute("question", question);
-            return "/qna/updateForm";
+        Question question = optionalQuestion.get();
+        Result result = valid(session, question);
+        if (!result.isValid()) {
+            throw new UnauthorizedException();
         }
 
-        throw new ProductNotfoundException();
+        model.addAttribute("question", question);
+        return "/qna/updateForm";
     }
 
     @PutMapping("/questions/{id}/update")
@@ -161,19 +160,17 @@ public class QuestionController {
 
         Optional<Question> optionalQuestion = questionRepository.findActiveQuestionById(id);
 
-        if (optionalQuestion.isPresent()) {
-            Question question = optionalQuestion.get();
-            Result result = valid(session, question);
-            if (!result.isValid()) {
-                throw new UnauthorizedException();
-            }
+        optionalQuestion.orElseThrow(ProductNotfoundException::new);
 
-            question.update(updatedQuestion);
-            questionRepository.save(question);
-            return "redirect:/questions/" + id;
+        Question question = optionalQuestion.get();
+        Result result = valid(session, question);
+        if (!result.isValid()) {
+            throw new UnauthorizedException();
         }
 
-        throw new ProductNotfoundException();
+        question.update(updatedQuestion);
+        questionRepository.save(question);
+        return "redirect:/questions/" + id;
     }
 
     @DeleteMapping("/questions/{id}/delete")
@@ -184,22 +181,18 @@ public class QuestionController {
 
         Optional<Question> optionalQuestion = questionRepository.findActiveQuestionById(id);
 
-        if (optionalQuestion.isPresent()) {
-            Question question = optionalQuestion.get();
-            Result result = valid(session, question);
-            if (!result.isValid()) {
-                throw new UnauthorizedException();
-            }
-            if (question.canDelete()) {
-                question.delete();
-                questionRepository.save(question);
-                return "redirect:/";
-            }
+        optionalQuestion.orElseThrow(ProductNotfoundException::new);
 
-//            질문을 삭제할 수 없을 때
+        Question question = optionalQuestion.get();
+        Result result = valid(session, question);
+        if (!result.isValid()) {
+            throw new UnauthorizedException();
+        }
+        if (question.canDelete()) {
+            question.delete();
+            questionRepository.save(question);
             return "redirect:/";
         }
-
-        throw new ProductNotfoundException();
+        throw new UnauthorizedException();
     }
 }

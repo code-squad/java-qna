@@ -115,7 +115,7 @@ public class QuestionController {
     log.info("### delete()");
     User sessionedUser = getSessionedUserOrError(session);
     Question question = getQuestionOrError(questionRepository, id);
-    Iterator<Answer> answers = getAnswersOrError(answerRepository, question).iterator();
+    Iterator<Answer> answers = getAnswers(answerRepository, question).iterator();
 
     if (!sessionedUser.equals(question.getUser())) {
       throw new QuestionException(CustomErrorCode.USER_NOT_MATCHED);
@@ -127,7 +127,7 @@ public class QuestionController {
       }
     });
 
-    answers = getAnswersOrError(answerRepository, question).iterator();
+    answers = getAnswers(answerRepository, question).iterator();
     answers.forEachRemaining(answer -> {
       answer.delete();
       answerRepository.save(answer);

@@ -54,7 +54,7 @@ public class CommonUtils {
    * Desc :
    * Return : Question 에 매칭되는  answers
    */
-  public static Iterable<Answer> getAnswersOrError(AnswerRepository answerRepository, Question question) {
+  public static Iterable<Answer> getAnswers(AnswerRepository answerRepository, Question question) {
     return answerRepository.findByQuestionIdAndDeleted(question.getId(), false);
   }
 }

@@ -9,11 +9,13 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpSession;
 
 @Controller
+@RequestMapping("/questions")
 public class QuestionController {
+
     @Autowired
     private QuestionRepository questionRepository;
 
-    @GetMapping("/qna/form")
+    @GetMapping("/form")
     public String createQuestion(HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "/user/login";
@@ -21,25 +23,40 @@ public class QuestionController {
         return "/qna/form";
     }
 
-    @PostMapping("/qna/form")
+    @PostMapping("/form")
     public String makeQuestion(String title, String contents, HttpSession session) {
         User loginUser = HttpSessionUtils.getUserFromSession(session);
-        Question question = new Question(loginUser.getUserId(),title,contents);
-        System.out.println(question.toString());
+        Question question = new Question(loginUser.getName(), title, contents, loginUser.getId());
         questionRepository.save(question);
         return "redirect:/";
     }
 
-    @GetMapping("/")
-    public String showQuestionList(Model model) {
-        model.addAttribute("questions", questionRepository.findAll());
-        return "/home";
-    }
-
-    @GetMapping("/questions/{questionIndex}")
+    @GetMapping("/{questionIndex}")
     public ModelAndView questionShowDetail(@PathVariable Long questionIndex) {
         ModelAndView modelAndView = new ModelAndView("/qna/show");
         modelAndView.addObject("question", questionRepository.getOne(questionIndex));
         return modelAndView;
+    }
+
+    @GetMapping("/{questionIndex}/modifyQuestion")
+    public String modifyQuestion(@PathVariable Long questionIndex, HttpSession session, Model model) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "/user/login";
+        }
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        Question question = questionRepository.getOne(questionIndex);
+        if (question.authorizeUser(loginUser.getId())) {
+            model.addAttribute("question", question);
+            return "/qna/modify_form";
+        }
+        return "/qna/not_qualified";
+    }
+
+    @PostMapping("/{questionIndex}/updateQuestion")
+    public String updateQuestion(@PathVariable Long questionIndex, String title, String contents) {
+        Question question = questionRepository.getOne(questionIndex);
+        question.updateQuestion(title,contents);
+        questionRepository.save(question);
+        return "redirect:/";
     }
 }

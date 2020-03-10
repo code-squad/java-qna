@@ -63,10 +63,9 @@ public class AnswersAPIControllerTest {
     ResponseEntity<Long> postResponseEntity = testRestTemplate.postForEntity(posturl, testPost, Long.class);
 
     AnswersSaveRequestDto testAnswers = AnswersSaveRequestDto.builder() //Posts를 빌드하는 것이 아니라 Dto를 빌드하는 것이다.
-        .title("testTitle")
+        .author(httpSession)
         .content("testContent")
         .postId(1L)
-        .author(httpSession)
         .build();
 
     String answerurl = "http://localhost:" + port + "api/v1/answers";
@@ -77,6 +76,8 @@ public class AnswersAPIControllerTest {
     assertThat(answerResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     List<Answers> all = answersRepository.findAllDesc();
     assertThat(all.get(0).getContent()).isEqualTo("testContent");
+    assertThat(all.get(0).getAuthor().getName()).isEqualTo("자바지기");
+    assertThat(all.get(0).getPosts()).isNotNull();
   }
 
   @Test
@@ -91,7 +92,6 @@ public class AnswersAPIControllerTest {
     ResponseEntity<Long> postResponseEntity = testRestTemplate.postForEntity(posturl, testPost, Long.class);
 
     AnswersSaveRequestDto testAnswers = AnswersSaveRequestDto.builder() //Posts를 빌드하는 것이 아니라 Dto를 빌드하는 것이다.
-        .title("testTitle")
         .content("testContent")
         .postId(1L)
         .author(httpSession)
@@ -119,7 +119,7 @@ public class AnswersAPIControllerTest {
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(responseEntity.getBody()).isGreaterThan(0L);
     List<Answers> all = answersRepository.findAllDesc();
-    assertThat(all.get(0).getTitle()).isEqualTo(expectedTitle);
     assertThat(all.get(0).getContent()).isEqualTo(expectedContent);
+    assertThat(all.get(0).getPosts()).isNotNull();
   }
 }

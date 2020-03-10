@@ -42,7 +42,7 @@ public class QuestionController {
         User loginUser = HttpSessionUtils.getUserFromSession(session);
         assert loginUser != null;
 
-        question.createNewQuestion(loginUser.getName(), nowTime);
+        question.createNewQuestion(loginUser.getUserId(), nowTime);
         questionRepository.save(question);
 
         return "redirect:/";
@@ -119,6 +119,6 @@ public class QuestionController {
     }
 
     private boolean isSameWriterAndLoginUser(User loginUser, Question question) {
-        return question.getWriter().equals(loginUser.getName());
+        return question.getWriter().equals(loginUser.getUserId());
     }
 }

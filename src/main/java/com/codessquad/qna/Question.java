@@ -71,8 +71,8 @@ public class Question {
                 '}';
     }
 
-    public void createNewQuestion(String writer, LocalDateTime time) {
-        this.writer = writer;
+    public void createNewQuestion(String userId, LocalDateTime time) {
+        this.writer = userId;
         this.time = time;
     }
 

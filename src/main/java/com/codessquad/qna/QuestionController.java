@@ -128,20 +128,19 @@ public class QuestionController {
         }
 
         Optional<Question> optionalQuestion = questionRepository.findById(id);
+
         if (optionalQuestion.isPresent()) {
             Question question = optionalQuestion.get();
             Result result = valid(session, question);
             if (!result.isValid()) {
-                model.addAttribute("errorMessage", result.getErrorMessage());
-                return "/error";
+                throw new UnauthorizedException();
             }
 
             model.addAttribute("question", question);
             return "/qna/updateForm";
         }
 
-        model.addAttribute("errorMessage", "질문이 없습니다.");
-        return "/error";
+        throw new ProductNotfoundException();
     }
 
     @PutMapping("/questions/{id}/update")
@@ -156,8 +155,7 @@ public class QuestionController {
             Question question = optionalQuestion.get();
             Result result = valid(session, question);
             if (!result.isValid()) {
-                model.addAttribute("errorMessage", result.getErrorMessage());
-                return "/error";
+                throw new UnauthorizedException();
             }
 
             question.update(updatedQuestion);
@@ -165,8 +163,7 @@ public class QuestionController {
             return "redirect:/questions/" + id;
         }
 
-        model.addAttribute("errorMessage", "질문이 없습니다.");
-        return "/error";
+        throw new ProductNotfoundException();
     }
 
     @DeleteMapping("/questions/{id}/delete")
@@ -181,8 +178,7 @@ public class QuestionController {
             Question question = optionalQuestion.get();
             Result result = valid(session, question);
             if (!result.isValid()) {
-                model.addAttribute("errorMessage", result.getErrorMessage());
-                return "/error";
+                throw new UnauthorizedException();
             }
             if (question.canDelete()) {
                 question.delete();
@@ -194,7 +190,6 @@ public class QuestionController {
             return "redirect:/";
         }
 
-        model.addAttribute("errorMessage", "질문이 없습니다.");
-        return "/error";
+        throw new ProductNotfoundException();
     }
 }

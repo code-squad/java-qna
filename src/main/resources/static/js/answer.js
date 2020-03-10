@@ -65,7 +65,7 @@ const appendAnswerList = (answerList) => {
 			            </div>
 			            <div class="article-header-text">
 				            <a href="/users/${answer.writer.id}" class="article-author-name">${answer.writer.userId}</a>
-			            	<div class="article-header-time">${answer.createdAt}</div>
+			            	<div class="article-header-time">${answer.formattedCreatedAt}</div>
 			            </div>
 		            </div>
 		            <div class="article-doc comment-doc">${answer.contents}</div>

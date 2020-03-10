@@ -1,4 +1,4 @@
-package com.codessquad.qna.web.dto.posts;
+package com.codessquad.qna.web.dto.answers;
 
 public class AnswersUpdateRequestDto {
   private String title;

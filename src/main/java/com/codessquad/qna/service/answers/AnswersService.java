@@ -2,10 +2,12 @@ package com.codessquad.qna.service.answers;
 
 import com.codessquad.qna.controller.answers.AnswersRepository;
 import com.codessquad.qna.domain.Answers;
+import com.codessquad.qna.web.dto.answers.AnswersDeleteRequestDto;
 import com.codessquad.qna.web.dto.answers.AnswersListResponseDto;
 import com.codessquad.qna.web.dto.answers.AnswersResponseDto;
 import com.codessquad.qna.web.dto.answers.AnswersSaveRequestDto;
-import com.codessquad.qna.web.dto.posts.AnswersUpdateRequestDto;
+import com.codessquad.qna.web.dto.answers.AnswersUpdateRequestDto;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
@@ -37,6 +39,17 @@ public class AnswersService {
     Answers answers = answersRepository.findById(id).orElseThrow(
         () -> new IllegalArgumentException("no such post." + " id = " + id));
     answers.update(requestDto.getContent());
+    return id;
+  }
+
+  @Transactional
+  public Long delete(Long id, AnswersDeleteRequestDto requestDto) {
+    Answers answers = answersRepository.findById(id).orElseThrow(
+        () -> new IllegalArgumentException("no such post." + " id = " + id));
+    if (answers.isDeleted()) {
+      throw new IllegalArgumentException("this answer is already deleted." + " id = " + id);
+    }
+    answers.deleteAnswer(requestDto.deleteStatusQuo());
     return id;
   }
 

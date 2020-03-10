@@ -37,6 +37,8 @@ public class Answers extends BaseTimeEntity {
   @Lob
   private String content;
 
+  private boolean deleteStatus;
+
   public Posts getPosts() {
     return posts;
   }
@@ -57,10 +59,19 @@ public class Answers extends BaseTimeEntity {
     this.content = content;
   }
 
+  public boolean isDeleted() {
+    return deleteStatus;
+  }
+
+  public void deleteAnswer(boolean deleteStatus) {
+    this.deleteStatus = deleteStatus;
+  }
+
   public Answers(Users author, String content, Posts posts) {
     this.author = author;
     this.content = content;
     this.posts = posts;
+    this.deleteStatus = false;
   }
 
   public Answers() {

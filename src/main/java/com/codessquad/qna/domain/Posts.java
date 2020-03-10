@@ -29,6 +29,8 @@ public class Posts extends BaseTimeEntity {
   @OrderBy("Id asc")
   private List<Answers> answers;
 
+  private boolean deleteStatus;
+
   public List<Answers> getAnswers() {
     return answers;
   }
@@ -72,6 +74,27 @@ public class Posts extends BaseTimeEntity {
     this.author = author;
     this.title = title;
     this.content = content;
+    this.deleteStatus = false;
+  }
+
+  public boolean isDeleted() {
+    return deleteStatus;
+  }
+
+  public void setDeleted(boolean deletestatus) {
+    this.deleteStatus = deletestatus;
+  }
+
+  public void deletePost() {
+    this.deleteStatus = true;
+  }
+
+  public void recoverPost() {
+    this.deleteStatus = false;
+  }
+
+  public long getCountOfAnswers() {
+    return answers.stream().filter(answer -> !answer.isDeleted()).count();
   }
 
   public Posts() {

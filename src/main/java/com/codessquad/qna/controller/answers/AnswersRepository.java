@@ -11,10 +11,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AnswersRepository extends JpaRepository<Answers, Long> {
-  @Query("SELECT p FROM Answers p ORDER BY p.Id DESC")
+  @Query("SELECT p FROM Answers p where p.deleteStatus = false ORDER BY p.Id DESC")
   List<Answers> findAllDesc();
 
-  @Query("SELECT p FROM Answers p where p.Id = :Id")
+  @Query("SELECT p FROM Answers p where p.Id = :Id AND p.deleteStatus = false")
   Answers findById(@Param("Id") String Id);
 
 //  List<Answers> findByPostId(Long postId);

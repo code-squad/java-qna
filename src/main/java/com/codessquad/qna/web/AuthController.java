@@ -33,6 +33,7 @@ public class AuthController {
 
         if(originInfo != null && originInfo.verify(entrant)) {
             session.setAttribute("ticketId", originInfo.getId());
+            session.setMaxInactiveInterval(60*60);
             return "redirect:/";
         }
 

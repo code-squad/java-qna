@@ -3,6 +3,7 @@ package com.codessquad.qna.repository;
 import com.codessquad.qna.exception.CustomWrongFormatException;
 import com.codessquad.qna.util.ErrorMessageUtil;
 import com.codessquad.qna.util.PathUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.ObjectUtils;
@@ -26,6 +27,7 @@ public class User {
 
     @Column(nullable = false)
     @Setter
+    @JsonIgnore
     private String password;
 
     @Column(nullable = false)

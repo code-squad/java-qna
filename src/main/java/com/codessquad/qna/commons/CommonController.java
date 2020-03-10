@@ -23,7 +23,6 @@ public class CommonController {
   @GetMapping(value = {"/", ""})
   public String welcomeGet(Model model) {
     model.addAttribute("questions", questionRepository.findAllByDeleted(false));
-
     return "/welcome";
   }
 

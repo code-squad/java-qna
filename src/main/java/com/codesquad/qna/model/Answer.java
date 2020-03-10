@@ -1,5 +1,8 @@
 package com.codesquad.qna.model;
 
+import com.codesquad.qna.util.DateTimeFormatUtils;
+import com.codesquad.qna.util.HtmlDocumentUtils;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
@@ -9,24 +12,34 @@ public class Answer {
     @Id
     @GeneratedValue
     private Long id;
+
     @ManyToOne
     private Question question;
+
     @ManyToOne
-    private User user;
+    private User writer;
+
     @Column(nullable = false)
     @NotEmpty
     private String contents;
+
     @Column(nullable = false)
     private LocalDateTime createDateTime;
 
-    public Answer() {
-    }
+    @Column(nullable = false)
+    private boolean deleted;
 
-    public Answer(Question question, User user, @NotEmpty String contents) {
+    public Answer() {}
+
+    public Answer(Question question, User writer, @NotEmpty String contents) {
         this.question = question;
-        this.user = user;
+        this.writer = writer;
         this.contents = contents;
         this.createDateTime = LocalDateTime.now();
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     public Long getId() {
@@ -37,19 +50,27 @@ public class Answer {
         return question;
     }
 
-    public User getUser() {
-        return user;
+    public String getWriter() {
+        return writer.getUserId();
     }
 
     public String getContents() {
-        return contents;
+        return HtmlDocumentUtils.getEntertoBrTag(this.contents);
     }
 
     public String getCreateDateTimeToString() {
-        return DateTimeFormatUtils.localDateTimeToString(this.createDateTime);
+        return DateTimeFormatUtils.getFormattedLocalDateTime(this.createDateTime);
+    }
+
+    public boolean isDeleted() {
+        return deleted;
     }
 
     public boolean matchWriter(User user) {
-        return this.user.equals(user);
+        return this.writer.equals(user);
+    }
+
+    public boolean checkDeleteCondition(User user) {
+        return matchWriter(user) || deleted;
     }
 }

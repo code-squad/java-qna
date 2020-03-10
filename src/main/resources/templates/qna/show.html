@@ -22,7 +22,7 @@
                       </div>
                   </div>
                   <div class="article-doc">
-                      <p>{{question.contents}}</p>
+                      <p>{{{question.contentsWithBr}}}</p>
                   </div>
                   <div class="article-util">
                       <ul class="article-util-list">
@@ -30,7 +30,7 @@
                               <a class="link-modify-article" href="/questions/{{question.id}}/form">수정</a>
                           </li>
                           <li>
-                              <form class="form-delete" action="/questions/{{question.id}}/delete" method="POST">
+                              <form class="form-delete" action="/questions/{{question.id}}" method="POST">
                                   <input type="hidden" name="_method" value="DELETE">
                                   <button class="link-delete-article" type="submit">삭제</button>
                               </form>
@@ -43,16 +43,16 @@
               </article>
               <div class="qna-comment">
                   <div class="qna-comment-slipp">
-                      <p class="qna-comment-count"><strong>{{countOfAnswers}}</strong>개의 의견</p>
+                      <p class="qna-comment-count"><strong>{{question.countOfAnswers}}</strong>개의 의견</p>
                       <div class="qna-comment-slipp-articles">
-                          {{#each answers}}
+                          {{#answers}}
                           <article class="article" id="answer-{{id}}">
                               <div class="article-header">
                                   <div class="article-header-thumb">
                                       <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
                                   </div>
                                   <div class="article-header-text">
-                                      <a href="/users/{{user.userId}}" class="article-author-name">{{user.userId}}</a>
+                                      <a href="/users/{{writer}}" class="article-author-name">{{writer}}</a>
                                       <a href="#" class="article-header-time" title="퍼머링크">
                                           {{createDateTimeToString}}
                                       </a>
@@ -75,7 +75,7 @@
                                   </ul>
                               </div>
                           </article>
-                          {{/each}}
+                          {{/answers}}
                           {{#sessionedUser}}
                           <form name = "answer" method="post" action="/questions/{{question.id}}/answers/" class="submit-write">
                               <div class="form-group" style="padding:14px;">

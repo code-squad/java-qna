@@ -15,16 +15,17 @@ public class QuestionController {
 
     @GetMapping("/qna/form")
     public String createQuestion(HttpSession session) {
-        Object value = session.getAttribute("user");
-
-        if(value != null){
-            return "/qna/form";
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "/user/login";
         }
-        return "/users/login";
+        return "/qna/form";
     }
 
     @PostMapping("/qna/form")
-    public String makeQuestion(Question question, Model model) {
+    public String makeQuestion(String title, String contents, HttpSession session) {
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        Question question = new Question(loginUser.getUserId(),title,contents);
+        System.out.println(question.toString());
         questionRepository.save(question);
         return "redirect:/";
     }

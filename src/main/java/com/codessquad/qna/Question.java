@@ -11,7 +11,7 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long questionIndex;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false)
     private String writer;
 
     @Column(nullable = false)
@@ -19,8 +19,13 @@ public class Question {
     private String contents;
     private LocalDateTime writtenTime;
 
-    public Question() {
-        writtenTime = LocalDateTime.now();
+    public Question() {}
+
+    public Question(String writer, String title, String contents) {
+        this.writer = writer;
+        this.title = title;
+        this.contents = contents;
+        this.writtenTime = LocalDateTime.now();
     }
 
     public String getWriter() {

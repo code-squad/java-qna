@@ -28,8 +28,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String authenticate(@ModelAttribute User entrant, HttpSession session) {
-        User originInfo = userRepository.findByUserId(entrant.getUserId());
+    public String authenticate(User entrant, HttpSession session) {
+        User originInfo = userRepository.findByAccountId(entrant.getAccountId());
 
         if(originInfo != null && originInfo.verify(entrant)) {
             session.setAttribute("myId", originInfo.getId());

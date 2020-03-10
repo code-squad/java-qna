@@ -8,7 +8,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true)
-    private String userId;
+    private String accountId;
     @Column(nullable = false)
     private String password;
     @Column(nullable = false)
@@ -22,12 +22,16 @@ public class User {
         return id;
     }
 
-    public String getUserId() {
-        return userId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public String getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(String userId) {
+        this.accountId = userId;
     }
 
     public String getPassword() {
@@ -70,5 +74,17 @@ public class User {
 
     public boolean verify(User target) {
         return password.equals(target.password);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", accountId='" + accountId + '\'' +
+                ", password='" + password + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", email='" + email + '\'' +
+                ", introduction='" + introduction + '\'' +
+                '}';
     }
 }

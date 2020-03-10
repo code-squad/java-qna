@@ -9,6 +9,7 @@
       <div class="panel panel-default qna-list">
           <ul class="list">
               {{#each questions}}
+              {{^deleted}}
               <li>
                   <div class="wrap">
                       <div class="main">
@@ -17,16 +18,17 @@
                           </strong>
                           <div class="auth-info">
                               <i class="icon-add-comment"></i>
-                              <span class="time">{{postingTime}}</span>
-                              <a href="/users/profile" class="author">{{writer.name}}</a>
+                              <span class="time">{{formattedPostingTime}}</span>
+                              <a href="/users/{{writer.id}}" class="author">{{writer.name}}</a>
                           </div>
                           <div class="reply" title="댓글">
                               <i class="icon-reply"></i>
-                              <span class="point">{{id}}</span>
+                              <span class="point">{{answersCount}}</span>
                           </div>
                       </div>
                   </div>
               </li>
+              {{/deleted}}
               {{/each}}
           </ul>
           <div class="row">

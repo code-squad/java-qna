@@ -1,15 +1,24 @@
 package com.codessquad.qna;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
+
+import static com.codessquad.qna.HttpSessionUtils.isLogin;
+import static com.codessquad.qna.HttpSessionUtils.getUserFromSession;
+import static com.codessquad.qna.HttpSessionUtils.USER_SESSION_KEY;
 
 @Controller
 @RequestMapping("/users")
 public class UserController {
+    private static final Logger log = LoggerFactory.getLogger(HomeController.class);
+
     @Autowired
     private UserRepository userRepository;
 
@@ -32,20 +41,20 @@ public class UserController {
     @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
         try {
-            User user = userRepository.findByUserId(userId);
+            User user = findUser(userId);
             if (!user.isPasswordEquals(password)) {
                 return "redirect:/users/loginForm";
             }
-            session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
+            session.setAttribute(USER_SESSION_KEY, user);
             return "redirect:/";
-        } catch (NullPointerException e) {
-            return "redirect:/users/loginForm";
+        } catch (EntityNotFoundException e) {
+            return e.getMessage();
         }
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
+        session.removeAttribute(USER_SESSION_KEY);
         return "redirect:/";
     }
 
@@ -60,8 +69,8 @@ public class UserController {
         try {
             model.addAttribute("user", getSessionUser(id, session));
             return "/users/profile";
-        } catch (NullPointerException | IllegalAccessException e) {
-            System.out.println("ERROR CODE > " + e.toString());
+        } catch (IllegalAccessException e) {
+            log.info("Error Code > " + e.toString());
             return e.getMessage();
         }
     }
@@ -71,8 +80,8 @@ public class UserController {
         try {
             model.addAttribute("user", getSessionUser(id, session));
             return "/users/updateForm";
-        } catch (NullPointerException | IllegalAccessException e) {
-            System.out.println("ERROR CODE > " + e.toString());
+        } catch (IllegalAccessException e) {
+            log.info("Error Code > " + e.toString());
             return e.getMessage();
         }
     }
@@ -87,19 +96,27 @@ public class UserController {
             user.update(name, email);
             userRepository.save(user);
             return "redirect:/users";
-        } catch (NullPointerException | IllegalAccessException e) {
-            System.out.println("ERROR CODE > " + e.toString());
+        } catch (IllegalAccessException e) {
+            log.info("Error Code > " + e.toString());
             return e.getMessage();
         }
     }
 
-    private User getSessionUser(Long id, HttpSession session) throws IllegalAccessException {
-        if (!HttpSessionUtils.isLogin(session)) {
-            throw new NullPointerException("/error/unauthorized");
+    private User findUser(String userId) {
+        User user = userRepository.findByUserId(userId);
+        if (user == null) {
+            throw new EntityNotFoundException("redirect:/users/loginForm");
         }
-        User sessionUser = HttpSessionUtils.getUserFromSession(session);
-        if (!sessionUser.isIdEquals(id)) {
+        return user;
+    }
+
+    private User getSessionUser(Long id, HttpSession session) throws IllegalAccessException {
+        if (!isLogin(session)) {
             throw new IllegalAccessException("/error/unauthorized");
+        }
+        User sessionUser = getUserFromSession(session);
+        if (!sessionUser.isIdEquals(id)) {
+            throw new IllegalAccessException("/error/forbidden");
         }
         return sessionUser;
     }

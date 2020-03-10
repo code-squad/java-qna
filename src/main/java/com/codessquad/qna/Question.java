@@ -1,10 +1,13 @@
 package com.codessquad.qna;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import javax.persistence.*;
-import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Entity
 public class Question {
@@ -21,8 +24,14 @@ public class Question {
 
     @NotEmpty
     private String contents;
+
+    private boolean deleted;
     private LocalDateTime postingTime;
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
+
+    @OneToMany(mappedBy = "question")
+    @OrderBy("id ASC")
+    private List<Answer> answers;
 
     public Question() {}
 
@@ -30,6 +39,7 @@ public class Question {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
+        this.deleted = false;
         this.postingTime = LocalDateTime.now();
     }
 
@@ -55,12 +65,24 @@ public class Question {
         return contents;
     }
 
-    public String getPostingTime() {
+    public boolean getDeleted() {
+        return deleted;
+    }
+
+    public LocalDateTime getPostingTime() {
+        return postingTime;
+    }
+
+    public String getFormattedPostingTime() {
         return postingTime.format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT));
     }
 
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
     public boolean isWriterEquals(User sessionUser) {
-        return sessionUser.getId().equals(writer.getId());
+        return sessionUser.equals(writer);
     }
 
     public void update(String title, String contents) {
@@ -68,9 +90,26 @@ public class Question {
         this.contents = contents;
     }
 
+    public void delete() throws IllegalAccessException {
+        for (Answer answer : answers) {
+            if (!answer.isDeletable(this.writer)) {
+                throw new IllegalAccessException("/error/forbidden");
+            }
+            answer.delete();
+        }
+        this.deleted = true;
+    }
+
+    public int getAnswersCount() {
+        int count = 0;
+        for (Answer answer : answers) {
+            if (!answer.isDeleted()) count++;
+        }
+        return count;
+    }
+
     @Override
     public String toString() {
-        return "writer: " + writer + "\ntitle: " + title + "\ncontents: " + contents +
-                "\npostingTime: " + postingTime + "\n";
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
     }
 }

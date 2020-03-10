@@ -1,22 +1,29 @@
 package com.codessquad.qna;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
-import java.util.NoSuchElementException;
+
+import static com.codessquad.qna.HttpSessionUtils.isLogin;
+import static com.codessquad.qna.HttpSessionUtils.getUserFromSession;
 
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
+    private static final Logger log = LoggerFactory.getLogger(HomeController.class);
+
     @Autowired
     private QuestionRepository questionRepository;
 
     @GetMapping("/form")
     public String viewQuestionForm(HttpSession session) {
-        if (!HttpSessionUtils.isLogin(session)) {
+        if (!isLogin(session)) {
             return "/users/loginForm";
         }
         return "/qna/form";
@@ -24,10 +31,10 @@ public class QuestionController {
 
     @PostMapping("")
     public String createQuestion(String title, String contents, HttpSession session) {
-        if (!HttpSessionUtils.isLogin(session)) {
+        if (!isLogin(session)) {
             return "/users/loginForm";
         }
-        User sessionUser = HttpSessionUtils.getUserFromSession(session);
+        User sessionUser = getUserFromSession(session);
         Question question = new Question(sessionUser, title, contents);
         questionRepository.save(question);
         return "redirect:/";
@@ -36,11 +43,11 @@ public class QuestionController {
     @GetMapping("/{id}")
     public String viewQuestionContents(@PathVariable Long id, Model model) {
         try {
-            checkNotFound(id);
-            model.addAttribute("question", questionRepository.findById(id).get());
+            Question question = findQuestion(id);
+            model.addAttribute("question", question);
             return "/qna/show";
-        } catch (NoSuchElementException e) {
-            System.out.println("ERROR CODE > " + e.toString());
+        } catch (EntityNotFoundException e) {
+            log.info("Error Code > " + e.toString());
             return e.getMessage();
         }
     }
@@ -50,8 +57,8 @@ public class QuestionController {
         try {
             model.addAttribute("question", getVerifiedQuestion(id, session));
             return "/qna/updatedForm";
-        } catch (NullPointerException | IllegalAccessException | NoSuchElementException e) {
-            System.out.println("ERROR CODE > " + e.toString());
+        } catch (IllegalAccessException | EntityNotFoundException e) {
+            log.info("Error Code > " + e.toString());
             return e.getMessage();
         }
     }
@@ -63,8 +70,8 @@ public class QuestionController {
             question.update(title, contents);
             questionRepository.save(question);
             return "redirect:/questions/" + id;
-        } catch (NullPointerException | IllegalAccessException | NoSuchElementException e) {
-            System.out.println("ERROR CODE > " + e.toString());
+        } catch (IllegalAccessException | EntityNotFoundException e) {
+            log.info("Error Code > " + e.toString());
             return e.getMessage();
         }
     }
@@ -73,29 +80,27 @@ public class QuestionController {
     public String deleteQuestion(@PathVariable Long id, HttpSession session) {
         try {
             Question question = getVerifiedQuestion(id, session);
-            questionRepository.delete(question);
+            question.delete();
+            questionRepository.save(question);
             return "redirect:/";
-        } catch (NullPointerException | IllegalAccessException | NoSuchElementException e) {
-            System.out.println("ERROR CODE > " + e.toString());
+        } catch (IllegalAccessException | EntityNotFoundException e) {
+            log.info("Error Code > " + e.toString());
             return e.getMessage();
         }
     }
 
-    private void checkNotFound(Long id) {
-        if (!questionRepository.findById(id).isPresent()) {
-            throw new NoSuchElementException("/error/notFound");
-        }
+    private Question findQuestion(Long id) {
+        return questionRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("/error/notFound"));
     }
 
     private Question getVerifiedQuestion(Long id, HttpSession session) throws IllegalAccessException {
-        checkNotFound(id);
-        if (!HttpSessionUtils.isLogin(session)) {
-            throw new NullPointerException("/error/unauthorized");
-        }
-        User sessionUser = HttpSessionUtils.getUserFromSession(session);
-        Question question = questionRepository.findById(id).get();
-        if (!question.isWriterEquals(sessionUser)) {
+        if (!isLogin(session)) {
             throw new IllegalAccessException("/error/unauthorized");
+        }
+        User sessionUser = getUserFromSession(session);
+        Question question = findQuestion(id);
+        if (!question.isWriterEquals(sessionUser)) {
+            throw new IllegalAccessException("/error/forbidden");
         }
         return question;
     }

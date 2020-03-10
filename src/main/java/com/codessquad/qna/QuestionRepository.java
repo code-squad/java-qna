@@ -8,9 +8,9 @@ import java.util.Optional;
 
 public interface QuestionRepository extends CrudRepository<Question, Long> {
 
-    @Query("SELECT q FROM Question q WHERE q.deleted = false")
+    @Query("SELECT question FROM Question question WHERE question.deleted = false")
     List<Question> findAllActiveQuestion();
 
-    @Query("SELECT q FROM Question q WHERE q.deleted = false and q.id = :id")
+    @Query("SELECT question FROM Question question WHERE question.deleted = false and question.id = :id")
     Optional<Question> findActiveQuestionById(Long id);
 }

@@ -50,10 +50,12 @@ public class QuestionController {
             return "redirect:/login";
         }
 
-        Optional<Answer> optionalAnswer = answerRepository.findById(id);
+        Optional<Answer> optionalAnswer = answerRepository.findActiveAnswerById(id);
         optionalAnswer.ifPresent(answer -> {
             if (answer.getWriter().equals(HttpSessionUtils.getUserFromSession(session))) {
-                answerRepository.deleteById(id);
+                System.out.println("answer deleted!");
+                answer.delete();
+                answerRepository.save(answer);
             }
         });
 
@@ -66,7 +68,7 @@ public class QuestionController {
             return "redirect:/login";
         }
 
-        Optional<Answer> optionalAnswer = answerRepository.findById(id);
+        Optional<Answer> optionalAnswer = answerRepository.findActiveAnswerById(id);
         optionalAnswer.ifPresent(answer -> {
             if (answer.getWriter().equals(HttpSessionUtils.getUserFromSession(session))) {
                 answer.update(updatedAnswer);
@@ -103,10 +105,10 @@ public class QuestionController {
             return "redirect:/";
         }
 
-        List<Answer> answers = answerRepository.findByQuestionId(id);
+        List<Answer> answers = answerRepository.findActiveAnswerByQuestionId(id);
 
         model.addAttribute("question", optionalQuestion.get());
-        model.addAttribute("answers", answers);
+        model.addAttribute("answerList", answers);
         model.addAttribute("answerLength", answers.size());
         return "qna/show";
     }

@@ -51,13 +51,17 @@ public class QuestionController {
         }
 
         Optional<Answer> optionalAnswer = answerRepository.findActiveAnswerById(id);
-        optionalAnswer.ifPresent(answer -> {
-            if (answer.getWriter().equals(HttpSessionUtils.getUserFromSession(session))) {
-                System.out.println("answer deleted!");
-                answer.delete();
-                answerRepository.save(answer);
-            }
-        });
+        if (!optionalAnswer.isPresent()) {
+            throw new ProductNotfoundException();
+        }
+
+        Answer answer = optionalAnswer.get();
+        if (!answer.getWriter().equals(HttpSessionUtils.getUserFromSession(session))) {
+            throw new UnauthorizedException();
+        }
+
+        answer.delete();
+        answerRepository.save(answer);
 
         return "redirect:/questions/" + questionId;
     }
@@ -69,12 +73,16 @@ public class QuestionController {
         }
 
         Optional<Answer> optionalAnswer = answerRepository.findActiveAnswerById(id);
-        optionalAnswer.ifPresent(answer -> {
-            if (answer.getWriter().equals(HttpSessionUtils.getUserFromSession(session))) {
-                answer.update(updatedAnswer);
-                answerRepository.save(answer);
-            }
-        });
+        if (!optionalAnswer.isPresent()) {
+            throw new ProductNotfoundException();
+        }
+
+        Answer answer = optionalAnswer.get();
+        if (!answer.getWriter().equals(HttpSessionUtils.getUserFromSession(session))) {
+            throw new UnauthorizedException();
+        }
+        answer.update(updatedAnswer);
+        answerRepository.save(answer);
 
         return "redirect:/questions/" + questionId;
     }

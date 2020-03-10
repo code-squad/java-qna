@@ -32,6 +32,10 @@ const index = {
 
     $('#btn-answer-update').on('click', function () {
       _this.answerUpdate();
+    });
+
+    $('#btn-answer-delete').on('click', function () {
+      _this.answerDelete();
     })
   },
 
@@ -121,8 +125,27 @@ const index = {
     })
   },
 
+  delete: function () {
+    const data = {
+      deleteStatus: true
+    };
+    const Id = $('#Id').val();
+
+    $.ajax({
+      type: 'PUT',
+      url: '/api/v1/posts/delete/' + Id,
+      dataType: 'json',
+      contentType: 'application/json; charset=utf-8',
+      data: JSON.stringify(data)
+    }).done(function () {
+      alert('글이 삭제되었습니다.');
+      window.location.href = '/';
+    }).fail(function (error) {
+      alert(JSON.stringify(error));
+    })
+  },
+
   answerSubmit: function () {
-    debugger;
     const data = {
       content: $('#answer-content').val(),
       postId: $('#postId').val()
@@ -156,7 +179,27 @@ const index = {
       data: JSON.stringify(data)
     }).done(function () {
       alert('답변이 수정되었습니다.');
-      window.location.href = '/posts/show' + postId;
+      window.location.href = '/posts/show/' + postId;
+    }).fail(function (error) {
+      alert(JSON.stringify(error));
+    })
+  },
+
+  answerDelete: function () {
+    const data = {
+      deleteStatus: true
+    };
+    const answerId = $('#answerId').val();
+
+    $.ajax({
+      type: 'PUT',
+      url: '/api/v1/answers/delete/' + answerId,
+      dataType: 'json',
+      contentType: 'application/json; charset=utf-8',
+      data: JSON.stringify(data)
+    }).done(function () {
+      alert('답변이 삭제되었습니다.');
+      window.location.href = '/';
     }).fail(function (error) {
       alert(JSON.stringify(error));
     })

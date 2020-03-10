@@ -36,7 +36,7 @@ public class AnswersService {
   public Long update(Long id, AnswersUpdateRequestDto requestDto) {
     Answers answers = answersRepository.findById(id).orElseThrow(
         () -> new IllegalArgumentException("no such post." + " id = " + id));
-    answers.update(requestDto.getTitle(), requestDto.getContent());
+    answers.update(requestDto.getContent());
     return id;
   }
 

@@ -5,16 +5,15 @@ import com.codessquad.qna.domain.Users;
 import javax.servlet.http.HttpSession;
 
 public class AnswersSaveRequestDto {
-  private String title;
+
+  private Users author;
   private String content;
   private Long postId;
-  private Users author;
 
-  public AnswersSaveRequestDto(String title, String content, Long postId, Users author) {
-    this.title = title;
+  public AnswersSaveRequestDto(Users author, String content, Long postId) {
+    this.author = author;
     this.content = content;
     this.postId = postId;
-    this.author = author;
   }
 
   public AnswersSaveRequestDto() {
@@ -26,34 +25,35 @@ public class AnswersSaveRequestDto {
 
   public Answers toEntity() {
     return Answers.builder()
-        .title(title)
         .author()
-        .content(content)
         .question(postId)
+        .content(content)
         .build();
-  }
-
-  public String getTitle() {
-    return this.title;
   }
 
   public String getContent() {
     return this.content;
   }
 
+  public void setContent(String content) {
+    this.content = content;
+  }
+
+  public Long getPostId() {
+    return postId;
+  }
+
+  public void setPostId(Long postId) {
+    this.postId = postId;
+  }
+
   public static class AnswersSaveRequestDtoBuilder {
 
-    private String title;
     private Users author;
     private String content;
     private Long postId;
 
     AnswersSaveRequestDtoBuilder() {
-    }
-
-    public AnswersSaveRequestDto.AnswersSaveRequestDtoBuilder title(String title) {
-      this.title = title;
-      return this;
     }
 
     public AnswersSaveRequestDto.AnswersSaveRequestDtoBuilder author(HttpSession httpSession) {
@@ -72,14 +72,13 @@ public class AnswersSaveRequestDto {
     }
 
     public AnswersSaveRequestDto build() {
-      return new AnswersSaveRequestDto(title, content, postId, author);
+      return new AnswersSaveRequestDto(author, content, postId);
     }
 
     @Override
     public String toString() {
       return "AnswersSaveRequestDtoBuilder{" +
-          "title='" + title + '\'' +
-          ", author=" + author +
+          "author=" + author +
           ", content='" + content + '\'' +
           ", postId=" + postId +
           '}';

@@ -1,13 +1,11 @@
 package com.codesquad.qna.domain;
 
+import com.codesquad.qna.web.DateTimeFormatConstants;
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Answer {
-    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -76,7 +74,7 @@ public class Answer {
     }
 
     public String getFormattedCreatedTime() {
-        return this.createdTime == null ? "" : this.createdTime.format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT));
+        return this.createdTime.format(DateTimeFormatConstants.BOARD_DATA_DATE_TIME_FORMAT);
     }
 
     public boolean matchUser(User sessionUser) {

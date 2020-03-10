@@ -1,0 +1,62 @@
+{{>layout/header}}
+<h1>게시글 보기</h1>
+<div class="col-md-12">
+  <div class="col-md-4">
+    <form>
+      <div class="form-group">
+        <label for="title">게시글 고유번호</label>
+        <input type="text" class="form-control" id="postId" value="{{posts.Id}}" readonly>
+      </div>
+      <div class="form-group">
+        <label for="title">게시글 제목</label>
+        <input type="text" class="form-control" id="title" value="{{posts.title}}" readonly>
+      </div>
+      <div class="form-group">
+        <label for="title">게시글 작성자</label>
+        <input type="text" class="form-control" id="author" value="{{posts.author.userId}}" readonly>
+      </div>
+      <div class="form-group">
+        <label for="title">게시글 내용</label>
+        <input type="text" class="form-control" id="content" value="{{posts.content}}" readonly>
+      </div>
+    </form>
+    <a href="/posts/update/{{posts.Id}}" role="button" class="btn btn-secondary">글 수정하기</a>
+  </div>
+  <!-- 답변 출력 영역 -->
+  <table class="table table-dark table-bordered">
+    <tbody id="tbody">
+    <thead class="thead-strong">
+    <tr>
+      <th>답변 작성 번호</th>
+      <th>내용</th>
+      <th>작성자</th>
+      <th>최종 수정일</th>
+    </tr>
+    </thead>
+    <h5>답글 {{posts.answers_length}} 개 </h5>
+    {{#posts.answers}}
+      <tr>
+        <td>{{Id}}</td>
+        <td><a href="/answers/update/{{Id}}">{{content}}</td>
+        <td>{{author.userId}}</td>
+        <td>{{modifiedDate}}</td>
+      </tr>
+    {{/posts.answers}}
+    {{^posts.answers}}
+      <h4>아직 아무런 답변이 없어요. 하나 등록하쉴?</h4>
+    {{/posts.answers}}
+  </table>
+  {{^sessionUser}}
+    <h2>답변을 작성하시려면 로그인을 해주세요.</h2>
+    <a href="/users/login" role="button" class="btn btn-secondary">로그인 하기</a>
+  {{/sessionUser}}
+  {{#sessionUser}}
+  <div class="form-group" style="padding:14px;">
+    <h2>답변을 입력해주세요.</h2>
+    <textarea class="form-control" id="answer-content" placeholder="답변을 입력하세요."></textarea>
+  </div>
+  <input type="submit" class="btn btn-success pull-right" id="btn-answer-submit" value="답변하기">
+  <div class="clearfix"/>
+  {{/sessionUser}}
+</div>
+{{>layout/footer}}

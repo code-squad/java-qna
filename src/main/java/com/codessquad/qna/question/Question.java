@@ -29,16 +29,23 @@ public class Question {
   private LocalDateTime createdDateTime;
   @Column(nullable = false)
   private LocalDateTime lastModifiedDateTime;
+  @Column(nullable = false)
+  private boolean deleted;
 
   public Question() {
     this.createdDateTime = LocalDateTime.now();
     this.lastModifiedDateTime = LocalDateTime.now();
+    this.deleted = false;
   }
 
   public void update(Question question) {
     this.title = question.title;
     this.contents = question.contents;
     this.lastModifiedDateTime = LocalDateTime.now();
+  }
+
+  public void delete() {
+    this.deleted = true;
   }
 
   public String getLastModifiedDateTime() {

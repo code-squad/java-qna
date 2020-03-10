@@ -32,10 +32,17 @@ public class Answer {
   private LocalDateTime createdDateTime;
   @Column(nullable = false)
   private LocalDateTime lastModifiedDateTime;
+  @Column(nullable = false)
+  private boolean deleted;
 
   public Answer() {
     this.createdDateTime = LocalDateTime.now();
     this.lastModifiedDateTime = LocalDateTime.now();
+    this.deleted = false;
+  }
+
+  public void delete() {
+    this.deleted = true;
   }
 
   public String getLastModifiedDateTime() {

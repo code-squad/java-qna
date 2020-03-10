@@ -31,7 +31,7 @@ public class CommonUtils {
    * Return : id 에 매칭되는 question
    */
   public static Question getQuestionOrError(QuestionRepository questionRepository, Long id) {
-    Optional<Question> optionalQuestion = questionRepository.findById(id);
+    Optional<Question> optionalQuestion = questionRepository.findByIdAndDeleted(id, false);
     Question question = optionalQuestion.orElseThrow(() -> new QuestionException(CustomErrorCode.QUESTION_NOT_EXIST));
 
     return question;
@@ -43,7 +43,7 @@ public class CommonUtils {
    * Return : id 에 매칭되는 answer
    */
   public static Answer getAnswerOrError(AnswerRepository answerRepository, Long id) {
-    Optional<Answer> optionalAnswer = answerRepository.findById(id);
+    Optional<Answer> optionalAnswer = answerRepository.findByIdAndDeleted(id, false);
     Answer answer = optionalAnswer.orElseThrow(() -> new QuestionException(CustomErrorCode.ANSWER_NOT_EXIST));
 
     return answer;

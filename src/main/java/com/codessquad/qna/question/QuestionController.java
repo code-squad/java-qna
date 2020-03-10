@@ -82,7 +82,7 @@ public class QuestionController {
   public String show(@PathVariable Long id, Model model) {
     log.info("### show()");
     Question question = getQuestionOrError(questionRepository, id);
-    Iterable<Answer> answers = answerRepository.findByQuestionId(id);
+    Iterable<Answer> answers = answerRepository.findByQuestionIdAndDeleted(id, false);
     model.addAttribute("question", question);
     model.addAttribute("answers", answers);
 
@@ -116,7 +116,8 @@ public class QuestionController {
     Question question = getQuestionOrError(questionRepository, id);
 
     if (sessionedUser.equals(question.getUser())) {
-      questionRepository.delete(question);
+      question.delete();
+      questionRepository.save(question);
       return "redirect:/";
     }
 

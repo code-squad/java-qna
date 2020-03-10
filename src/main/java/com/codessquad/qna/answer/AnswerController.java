@@ -57,7 +57,8 @@ public class AnswerController {
     Answer answer = getAnswerOrError(answerRepository, id);
 
     if (sessionedUser.equals(answer.getUser())) {
-      answerRepository.delete(answer);
+      answer.delete();
+      answerRepository.save(answer);
       return "redirect:/questions/" + questionId;
     }
 

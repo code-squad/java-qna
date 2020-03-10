@@ -20,11 +20,14 @@ function addAnswer(e) {
     });
 }
 
-function onError() {
+function onError(error, status) {
+console.log("> " + status);
+    console.log(error);
+
 }
 
 function onSuccess(data, status) {
-    console.log("11111");
+    console.log("> " + status);
     console.log(data);
 }
 

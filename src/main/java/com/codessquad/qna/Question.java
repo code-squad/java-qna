@@ -1,5 +1,6 @@
 package com.codessquad.qna;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -39,6 +40,7 @@ public class Question {
 
     @OneToMany(mappedBy = "question")
     @OrderBy("id ASC")
+    @JsonIgnore
     private List<Answer> answers;
 
     public Question() {}

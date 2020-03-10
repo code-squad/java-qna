@@ -2,6 +2,7 @@ package com.codessquad.qna.service.posts;
 
 import com.codessquad.qna.controller.posts.PostsRepository;
 import com.codessquad.qna.domain.Posts;
+import com.codessquad.qna.web.dto.posts.PostsDeleteRequestDto;
 import com.codessquad.qna.web.dto.posts.PostsListResponseDto;
 import com.codessquad.qna.web.dto.posts.PostsResponseDto;
 import com.codessquad.qna.web.dto.posts.PostsSaveRequestDto;
@@ -37,6 +38,17 @@ public class PostsService {
     Posts posts = postsRepository.findById(id).orElseThrow(
         () -> new IllegalArgumentException("no such post." + " id = " + id));
     posts.update(requestDto.getTitle(), requestDto.getContent());
+    return id;
+  }
+
+  @Transactional
+  public Long delete(Long id, PostsDeleteRequestDto requestDto) {
+    Posts posts = postsRepository.findById(id).orElseThrow(
+        () -> new IllegalArgumentException("no such post." + " id = " + id));
+    if (posts.isDeleted()) {
+      throw new IllegalArgumentException("this answer is already deleted.");
+    }
+    posts.deletePost(requestDto.deleteStatusQuo());
     return id;
   }
 

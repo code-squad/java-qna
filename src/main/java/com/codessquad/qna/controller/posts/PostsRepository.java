@@ -7,8 +7,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 public interface PostsRepository extends CrudRepository<Posts, Long> {
-  @Query("SELECT p FROM Posts p ORDER BY p.Id DESC")
+  @Query("SELECT p FROM Posts p where p.deleteStatus = false ORDER BY p.Id DESC")
   List<Posts> findAllDesc();
-  @Query("SELECT p FROM Posts p where p.Id = :Id")
+  @Query("SELECT p FROM Posts p where p.Id = :Id AND p.deleteStatus = false")
   Posts findByPostId(@Param("Id") Long Id);
 }

@@ -1,5 +1,6 @@
 package com.codessquad.qna.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,14 +26,27 @@ public class Posts extends BaseTimeEntity {
   @JoinColumn(name = "AUTHOR_ID")
   private Users author;
 
-  @OneToMany(mappedBy="posts")
+  @OneToMany(mappedBy = "posts")
   @OrderBy("Id asc")
   private List<Answers> answers;
 
   private boolean deleteStatus;
 
   public List<Answers> getAnswers() {
-    return answers;
+    return answers; //여기 자체에서 isDeleted = false 인 친구들만 꺼내게 할 수 없을까?
+    //하려고 하면 'Basic' attribute type should not be a container 오류가 나타난다.
+    //OneToMany를 설정하면 ArrayList는 설정이 안된다고 오류가 나타난다.
+  }
+
+  public ArrayList<Answers> getUndeletedAnswers() {
+    ArrayList<Answers> UndeletedAnswers = new ArrayList<>();
+    answers.stream().filter(answer -> !answer.isDeleted())
+        .forEach(answer -> UndeletedAnswers.add(answer));
+    return UndeletedAnswers;
+  }
+
+  public int getCountOfUndeletedAnswers() {
+    return getUndeletedAnswers().size();
   }
 
   public void setAnswers(List<Answers> answers) {
@@ -81,16 +95,8 @@ public class Posts extends BaseTimeEntity {
     return deleteStatus;
   }
 
-  public void setDeleted(boolean deletestatus) {
-    this.deleteStatus = deletestatus;
-  }
-
-  public void deletePost() {
-    this.deleteStatus = true;
-  }
-
-  public void recoverPost() {
-    this.deleteStatus = false;
+  public void deletePost(boolean deleteStatus) {
+    this.deleteStatus = deleteStatus;
   }
 
   public long getCountOfAnswers() {
@@ -135,7 +141,8 @@ public class Posts extends BaseTimeEntity {
     }
 
     public static HttpSession getHttpSession() {
-      ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+      ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder
+          .getRequestAttributes();
       return attr.getRequest().getSession(true);
     }
 

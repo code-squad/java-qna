@@ -1,6 +1,7 @@
 package com.codessquad.qna.controller.posts;
 
 import com.codessquad.qna.service.posts.PostsService;
+import com.codessquad.qna.web.dto.posts.PostsDeleteRequestDto;
 import com.codessquad.qna.web.dto.posts.PostsSaveRequestDto;
 import com.codessquad.qna.web.dto.posts.PostsUpdateRequestDto;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,5 +26,10 @@ public class PostsAPIController {
   @PutMapping("/api/v1/posts/{Id}")
   public Long update(@PathVariable Long Id, @RequestBody PostsUpdateRequestDto requestDto) {
     return postsService.update(Id, requestDto);
+  }
+
+  @PutMapping("/api/v1/posts/delete/{Id}")
+  public Long delete(@PathVariable Long Id, @RequestBody PostsDeleteRequestDto requestDto) {
+    return postsService.delete(Id, requestDto);
   }
 }

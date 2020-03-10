@@ -19,8 +19,8 @@ public class PostsResponseDto {
     this.title = entity.getTitle();
     this.content = entity.getContent();
     this.author = entity.getAuthor();
-    this.answers = entity.getAnswers();
-    this.answers_length = entity.getAnswers().size();
+    this.answers = entity.getUndeletedAnswers();
+    this.answers_length = entity.getCountOfUndeletedAnswers();
   }
 
   public PostsResponseDto() {

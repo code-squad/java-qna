@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
 
 @Controller
@@ -44,7 +45,7 @@ public class QuestionController {
 
     @GetMapping("/{id}")
     public String show(Model model, @PathVariable Long id) {
-        model.addAttribute("question", questionRepository.findById(id).orElseThrow(NullPointerException::new));
+        model.addAttribute("question", questionRepository.findById(id).orElseThrow(EntityNotFoundException::new));
         model.addAttribute("answers", answerRepository.findAll());
         return "/question/show";
     }
@@ -63,7 +64,7 @@ public class QuestionController {
 
     @GetMapping("/{id}/form")
     public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
-        Question question = questionRepository.findById(id).orElseThrow(NullPointerException::new);
+        Question question = questionRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         Result result = valid(session,question);
         if (!result.isValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());
@@ -75,7 +76,7 @@ public class QuestionController {
 
     @PutMapping("/{id}")
     public String update(@PathVariable Long id, String title, String contents, Model model, HttpSession session) {
-        Question question = questionRepository.findById(id).orElseThrow(NullPointerException::new);
+        Question question = questionRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         Result result = valid(session,question);
         if (!result.isValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());
@@ -88,7 +89,7 @@ public class QuestionController {
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id, Model model, HttpSession session) {
-        Question question = questionRepository.findById(id).orElseThrow(NullPointerException::new);
+        Question question = questionRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         Result result = valid(session,question);
         if (!result.isValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());

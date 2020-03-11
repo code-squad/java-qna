@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
 
 @Controller
@@ -75,7 +76,7 @@ public class UserController {
             throw new IllegalStateException("자신의 정보만 수정할 수 있습니다.");
         }
 
-        model.addAttribute("user", userRepository.findById(id).orElseThrow(NullPointerException::new));
+        model.addAttribute("user", userRepository.findById(id).orElseThrow(EntityNotFoundException::new));
         return "/user/updateform";
     }
 
@@ -91,7 +92,7 @@ public class UserController {
         }
 
 //        model.addAttribute("user", userRepository.findById(id).orElse(null));
-        User user = userRepository.findById(id).orElseThrow(NullPointerException::new);
+        User user = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         user.update(updateUser);
         userRepository.save(user);
         return "redirect:/users";

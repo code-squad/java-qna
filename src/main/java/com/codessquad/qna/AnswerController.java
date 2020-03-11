@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
 
 @Controller
@@ -26,7 +27,7 @@ public class AnswerController {
         }
 
         User loginUser = HttpSessionUtils.getUserFromSession(session);
-        Question question = questionRepository.findById(questionId).orElseThrow(NullPointerException::new);
+        Question question = questionRepository.findById(questionId).orElseThrow(EntityNotFoundException::new);
         Answer answer = new Answer(loginUser, question, contents);
         answerRepository.save(answer);
         return String.format("redirect:/questions/%d", questionId);

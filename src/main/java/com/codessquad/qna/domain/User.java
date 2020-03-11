@@ -1,6 +1,10 @@
 package com.codessquad.qna.domain;
 
+import com.codessquad.qna.exceptions.UnauthorizedException;
+
 import javax.persistence.*;
+
+import static com.codessquad.qna.exceptions.UnauthorizedException.NO_MATCH_PASSWORD;
 
 @Entity
 public class User {
@@ -72,19 +76,9 @@ public class User {
         return this;
     }
 
-    public boolean verify(User target) {
-        return password.equals(target.password);
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", accountId='" + accountId + '\'' +
-                ", password='" + password + '\'' +
-                ", nickName='" + nickName + '\'' +
-                ", email='" + email + '\'' +
-                ", introduction='" + introduction + '\'' +
-                '}';
+    public void verify(User candidate) {
+        if(!password.equals(candidate.password)) {
+            throw new UnauthorizedException(NO_MATCH_PASSWORD);
+        }
     }
 }

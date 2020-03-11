@@ -38,16 +38,16 @@ public class UserController {
         User user = userRepository.findByUserId(userId);
 
         if (user == null) {
-            LOGGER.warn("Login Failure1!");
+            LOGGER.warn("Login failure. User is not existed. id = '1'");
             return "redirect:/users/loginForm";
         }
 
         if (!user.matchPassword(password)) {
-            LOGGER.warn("Login Failure2!");
+            LOGGER.warn("Login failure. password does not matched");
             return "redirect:/users/loginForm";
         }
 
-        LOGGER.info("Login Success");
+        LOGGER.info("Login success!");
         session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
 
         return "redirect:/";

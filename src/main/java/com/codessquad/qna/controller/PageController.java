@@ -18,34 +18,25 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class PageController {
 
   private static Logger log = LoggerFactory.getLogger(PageController.class);
+  private static final int PAGE_SIZE = 4;
 
   @Autowired
   private QnaRepository qnaRepository;
 
   @GetMapping(value = "/")
   public String index(Model model, Optional<Integer> page) {
-    int pageNumber = page.isPresent() ? page.get() - 1 : 1;
-    Page<Question> questions = qnaRepository
-        .findAll(PageRequest.of(pageNumber, 5, Direction.DESC, "createdTime"));
-    int current = questions.getNumber() + 1;
-    int total = questions.getTotalPages();
+    int pageNumber = page.isPresent() ? page.get() - 1 : 0;
 
-    log.debug(
-        "총 element 수 : {},"
-            + " 전체 page 수 : {}, "
-            + "페이지에 표시할 element 수 : {}, "
-            + "현재 페이지 index : {}, "
-            + "현재 페이지의 element 수 : {}",
-        questions.getTotalElements(),
-        questions.getTotalPages(),
-        questions.getSize(),
-        questions.getNumber(),
-        questions.getNumberOfElements()
-    );
+    Page<Question> questions = qnaRepository
+        .findAll(PageRequest.of(pageNumber, PAGE_SIZE, Direction.DESC, "id"));
+
+    int current = questions.getNumber() + 1;
+    int totalPages = questions.getTotalPages();
+    int index = questions.getNumber();
 
     model.addAttribute("questions", questions.getContent());
     model.addAttribute("pageUtil",
-        new PageUtil(current, total));
+        new PageUtil(current, index, totalPages));
     return "index";
   }
 

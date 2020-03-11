@@ -97,13 +97,6 @@ public class QnaController {
     return "/qna/show";
   }
 
-  @GetMapping(value = "")
-  public String index(Model model) {
-    model.addAttribute("questions", qnaRepository.findAll());
-    return "index";
-  }
-
-
   private Result valid(HttpSession httpSession, Question question) {
     if (!HttpSessionUtils.isLoginUser(httpSession)) {
       return Result.fail("로그인이 필요합니다");

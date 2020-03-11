@@ -25,9 +25,9 @@ public class ApiAnswerController {
   QuestionRepository questionRepository;
 
   /**
-   * Feat : Answer 를 작성합니다.
-   * Desc : getSessionedUser() 를 통해 로그인되지 않은 사용자일 경우 에러가 발생합니다.
-   * Return : /questions/ + questionId
+   * Feat : Answer 를 create 합니다.
+   * Desc :
+   * Return : create 된 Answer
    */
   @PostMapping("")
   public Answer createAnswer(@PathVariable Long questionId, Answer answer, HttpSession session) {
@@ -38,17 +38,16 @@ public class ApiAnswerController {
     answer.setQuestion(question);
     answerRepository.save(answer);
 
-    //    return "redirect:/questions/" + questionId;
     return answer;
   }
 
   /**
-   * Feat : Answer 을 delete 합니다.
-   * Desc : getQuestion() 을 통해 Question 존재 여부를 검증합니다.
+   * Feat : Answer 를 delete 합니다.
+   * Desc : sessionedUser 와 answer 의 작성자가 다른 경우 에러를 발생시킵니다.
    * Return : /questions/show
    */
   @DeleteMapping("/{id}")
-  public Result delete(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
+  public Result delete(@PathVariable Long id, HttpSession session) {
     log.info("### delete()");
 
     User sessionedUser = getSessionedUserOrError(session);

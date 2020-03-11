@@ -20,6 +20,17 @@ INSERT INTO QUESTION (id, created_time, modified_time, contents, title,count_of_
 INSERT INTO QUESTION (id, created_time, modified_time, contents, title,count_of_answer, writer_id) VALUES (17, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '페이지테스트15', '페이지테스트15',0, 1);
 INSERT INTO QUESTION (id, created_time, modified_time, contents, title,count_of_answer, writer_id) VALUES (18, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '페이지테스트16', '페이지테스트16',0, 1);
 INSERT INTO QUESTION (id, created_time, modified_time, contents, title,count_of_answer, writer_id) VALUES (19, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '페이지테스트17', '페이지테스트17',0, 1);
+INSERT INTO QUESTION (id, created_time, modified_time, contents, title,count_of_answer, writer_id) VALUES (20, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '페이지테스트18', '페이지테스트18',0, 1);
+INSERT INTO QUESTION (id, created_time, modified_time, contents, title,count_of_answer, writer_id) VALUES (21, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '페이지테스트19', '페이지테스트19',0, 1);
+INSERT INTO QUESTION (id, created_time, modified_time, contents, title,count_of_answer, writer_id) VALUES (22, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '페이지테스트20', '페이지테스트20',0, 1);
+INSERT INTO QUESTION (id, created_time, modified_time, contents, title,count_of_answer, writer_id) VALUES (23, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '페이지테스트21', '페이지테스트21',0, 1);
+INSERT INTO QUESTION (id, created_time, modified_time, contents, title,count_of_answer, writer_id) VALUES (24, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '페이지테스트22', '페이지테스트22',0, 1);
+INSERT INTO QUESTION (id, created_time, modified_time, contents, title,count_of_answer, writer_id) VALUES (25, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '페이지테스트23', '페이지테스트23',0, 1);
+INSERT INTO QUESTION (id, created_time, modified_time, contents, title,count_of_answer, writer_id) VALUES (26, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '페이지테스트24', '페이지테스트24',0, 1);
+INSERT INTO QUESTION (id, created_time, modified_time, contents, title,count_of_answer, writer_id) VALUES (27, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '페이지테스트25', '페이지테스트25',0, 1);
+INSERT INTO QUESTION (id, created_time, modified_time, contents, title,count_of_answer, writer_id) VALUES (28, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '페이지테스트26', '페이지테스트26',0, 1);
+INSERT INTO QUESTION (id, created_time, modified_time, contents, title,count_of_answer, writer_id) VALUES (29, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '페이지테스트27', '페이지테스트27',0, 1);
+
 
 INSERT INTO ANSWER (id, created_time, modified_time, contents, question_id, writer_id) VALUES (1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '테스트 댓글 입니다1', 1, 1);
 INSERT INTO ANSWER (id, created_time, modified_time, contents, question_id, writer_id) VALUES (2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '테스트 댓글 입니다2', 1, 2);

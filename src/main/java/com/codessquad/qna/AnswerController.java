@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
@@ -35,26 +36,29 @@ public class AnswerController {
     }
 
     @GetMapping("/{id}/form")
-    public String viewUpdateForm(@PathVariable Long id, Model model, HttpSession session) {
+    public ModelAndView viewUpdateForm(@PathVariable Long id, Model model, HttpSession session) {
         try {
             model.addAttribute("answer", getVerifiedAnswer(id, session));
-            return "/qna/updatedAnswerForm";
+            ModelAndView mav = new ModelAndView("/qna/updatedAnswerForm");
+            return mav;//"/qna/updatedAnswerForm";
         } catch (IllegalAccessException | EntityNotFoundException e) {
             log.info("Error Code > " + e.toString());
-            return e.getMessage();
+            return null;
+            //return e.getMessage();
         }
     }
 
     @PutMapping("/{id}/form")
-    public String updateAnswer(@PathVariable Long questionId, @PathVariable Long id, String contents, HttpSession session) {
+    public Answer updateAnswer(@PathVariable Long questionId, @PathVariable Long id, String contents, HttpSession session) {
         try {
             Answer answer = getVerifiedAnswer(id, session);
             answer.update(contents);
-            answerRepository.save(answer);
-            return "redirect:/questions/" + questionId;
+            return answerRepository.save(answer);
+            //return "redirect:/questions/" + questionId;
         } catch (IllegalAccessException | EntityNotFoundException e) {
             log.info("Error Code > " + e.toString());
-            return e.getMessage();
+            return null;
+            //return e.getMessage();
         }
     }
 

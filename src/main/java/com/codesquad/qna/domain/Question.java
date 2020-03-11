@@ -33,8 +33,11 @@ public class Question {
     @OrderBy("id ASC")
     private List<Answer> answers;
 
-    @Formula("(select count(*) from answer a where a.question_id = id)")
-    private int countOfAnswers = 0;
+    @Formula("(select count(*) from answer a where a.question_id = id and a.deleted = false)")
+    private int countOfAnswers;
+
+    @Column(nullable = false)
+    private boolean deleted = false;
 
     public Question() {
         setCreatedTimeNow();
@@ -91,6 +94,10 @@ public class Question {
         this.countOfAnswers = countOfAnswers;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
     public void setCreatedTimeNow() {
         setCreatedTime(LocalDateTime.now());
     }
@@ -107,5 +114,42 @@ public class Question {
 
     public boolean matchUser(User sessionUser) {
         return this.writer.equals(sessionUser);
+    }
+
+    public boolean delete() {
+        if (isNotErasable()) {
+            return false;
+        }
+
+        return (this.deleted = true);
+    }
+
+    public boolean isNotErasable() {
+        for (Answer answer : answers) {
+            if (!answer.matchUser(this.writer)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void deleteAnswers() {
+        for (Answer answer : answers) {
+            answer.delete();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "id=" + id +
+                ", writer=" + writer +
+                ", title='" + title + '\'' +
+                ", contents='" + contents + '\'' +
+                ", createdTime=" + createdTime +
+                ", answers=" + answers +
+                ", countOfAnswers=" + countOfAnswers +
+                ", deleted=" + deleted +
+                '}';
     }
 }

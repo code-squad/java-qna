@@ -24,6 +24,9 @@ public class Answer {
     @Column(nullable = false)
     private LocalDateTime createdTime;
 
+    @Column(nullable = false)
+    private boolean deleted = false;
+
     public Answer() { }
 
     public Answer(User writer, Question question, String comment) {
@@ -67,6 +70,14 @@ public class Answer {
 
     public void setCreatedTime(LocalDateTime createdTime) {
         this.createdTime = createdTime;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void delete() {
+        this.deleted = true;
     }
 
     public void setCreatedTimeNow() {

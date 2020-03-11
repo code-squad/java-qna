@@ -109,7 +109,7 @@ public class QuestionController {
 
     @DeleteMapping("/{id}")
     public String removeQuestion(Question deleteQuestion, @PathVariable Long id, HttpSession session) {
-        if(!HttpSessionUtils.isLoginUser(session)) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/users/login";
         }
         User sessionUser = HttpSessionUtils.getUserFromSession(session);
@@ -121,17 +121,26 @@ public class QuestionController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
 
-        if(!currentQuestion.matchUser(sessionUser)) {
+        if (!currentQuestion.matchUser(sessionUser)) {
             throw new IllegalStateException("자기 글만 삭제할 수 있어요!!!");
         }
 
-        questionRepostory.delete(currentQuestion);
+        if (currentQuestion.getCountOfAnswers() != 0 && currentQuestion.isNotErasable()) {
+            throw new IllegalStateException("답변이 달린 게시글은 삭제할 수 없습니다.");
+        }
+
+        if (currentQuestion.delete()) {
+            currentQuestion.deleteAnswers(); //남아있는 댓글 delete
+            questionRepostory.save(currentQuestion);
+        } else {
+            throw new IllegalStateException("답변 삭제 실패");
+        }
         return "redirect:/questions";
     }
 
     @GetMapping("")
     public String viewQnaList(Model model) {
-        model.addAttribute("questions", questionRepostory.findAll());
+        model.addAttribute("questions", questionRepostory.findByDeletedFalse());
         return "/questions/list";
     }
 

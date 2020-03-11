@@ -32,8 +32,6 @@ public class Answer {
 
     @JsonProperty
     private boolean deleted;
-
-    @JsonProperty
     private LocalDateTime postingTime;
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
 

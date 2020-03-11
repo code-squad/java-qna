@@ -20,14 +20,30 @@ function addAnswer(e) {
     });
 }
 
-function onError(error, status) {
-console.log("> " + status);
-    console.log(error);
-
-}
-
 function onSuccess(data, status) {
     console.log("> " + status);
     console.log(data);
+    createTemplate(data);
 }
 
+function createTemplate(data) {
+    var answerTemplate = $("#answerTemplate").html();
+    var template = answerTemplate.format(data.writer.name, data.postingTime, data.contents, data.question.id, data.id);
+    $(".qna-comment-slipp-articles").append(template);
+    $(".answer-write textarea").val("");
+}
+
+function onError(error, status) {
+    console.log("> " + status);
+    console.log(error);
+}
+
+String.prototype.format = function() {
+  var args = arguments;
+  return this.replace(/{(\d+)}/g, function(match, number) {
+    return typeof args[number] != 'undefined'
+        ? args[number]
+        : match
+        ;
+  });
+};

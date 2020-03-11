@@ -28,68 +28,6 @@ public class QuestionController {
         return Result.ok();
     }
 
-    @PostMapping("/questions/{questionId}/answers")
-    public String createAnswer(@PathVariable("questionId") Long questionId, HttpSession session, Answer answer) {
-        if (!HttpSessionUtils.isUserLogin(session)) {
-            return "redirect:/login";
-        }
-
-        Optional<Question> optionalQuestion = questionRepository.findActiveQuestionById(questionId);
-
-        optionalQuestion.orElseThrow(ProductNotfoundException::new);
-
-        optionalQuestion.ifPresent(question -> {
-            answer.setQuestion(question);
-            answer.setWriter(HttpSessionUtils.getUserFromSession(session));
-            answerRepository.save(answer);
-        });
-
-        return "redirect:/questions/" + questionId;
-    }
-
-    @DeleteMapping("questions/{questionId}/answers/{id}")
-    public String deleteAnswer(@PathVariable("questionId") Long questionId, @PathVariable("id") Long id, HttpSession session) {
-        if (!HttpSessionUtils.isUserLogin(session)) {
-            return "redirect:/login";
-        }
-
-        Optional<Answer> optionalAnswer = answerRepository.findActiveAnswerById(id);
-        if (!optionalAnswer.isPresent()) {
-            throw new ProductNotfoundException();
-        }
-
-        Answer answer = optionalAnswer.get();
-        if (!answer.getWriter().equals(HttpSessionUtils.getUserFromSession(session))) {
-            throw new UnauthorizedException();
-        }
-
-        answer.delete();
-        answerRepository.save(answer);
-
-        return "redirect:/questions/" + questionId;
-    }
-
-    @PutMapping("/questions/{questionId}/answers/{id}")
-    public String updateAnswer(@PathVariable("questionId") Long questionId, @PathVariable("id") Long id, HttpSession session, Answer updatedAnswer) {
-        if (!HttpSessionUtils.isUserLogin(session)) {
-            return "redirect:/login";
-        }
-
-        Optional<Answer> optionalAnswer = answerRepository.findActiveAnswerById(id);
-        if (!optionalAnswer.isPresent()) {
-            throw new ProductNotfoundException();
-        }
-
-        Answer answer = optionalAnswer.get();
-        if (!answer.getWriter().equals(HttpSessionUtils.getUserFromSession(session))) {
-            throw new UnauthorizedException();
-        }
-        answer.update(updatedAnswer);
-        answerRepository.save(answer);
-
-        return "redirect:/questions/" + questionId;
-    }
-
     @PostMapping("/qna/form")
     public String question(Question question, HttpSession session) {
         if (!HttpSessionUtils.isUserLogin(session)) {

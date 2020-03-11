@@ -1,5 +1,8 @@
-$(".answer-write input[type=submit]").click(addAnswer);
-$(".delete-answer-form").click(deleteAnswer);
+//$(".answer-write input[type=submit]").click(addAnswer);
+//$(".delete-answer-form").click(deleteAnswer);
+
+$(".answer-write input[type='submit']").on("click", addAnswer);
+$(".qna-comment-slipp-articles").on("click", ".delete-answer-form button[type='submit']", deleteAnswer);
 
 function addAnswer(e) {
     e.preventDefault();
@@ -11,7 +14,7 @@ function addAnswer(e) {
     var url = $(".answer-write").attr("action");
     console.log("url : " + url);
 
-    // 클라이언트(리퀘스트)에서 서버로 준 데이터
+    // 클라이언트(리퀘스트)에서 서버로 준 데이터 (data -> queryString -> contents="타이핑 값")
     $.ajax({
         type : 'post',
         url : url,
@@ -26,7 +29,7 @@ function deleteAnswer(e) {
     e.preventDefault();
 
     var deleteBtn = $(this);
-    var url = deleteBtn.attr("action");
+    var url = deleteBtn.parent().attr("action");
     console.log("url : " + url)
 
     $.ajax({
@@ -38,12 +41,12 @@ function deleteAnswer(e) {
         });
 }
 
-// 서버에서 클라이언트로 준 데이터
+// 서버에서 클라이언트로 준 데이터 (data -> createAnswer 메서드의 Answer return 객체값)
 function createTemplate(data) {
     console.log("> " + status);
     console.log(data);
     var answerTemplate = $("#answerTemplate").html();
-    var template = answerTemplate.format(data.writer.name, data.postingTime, data.contents, data.question.id, data.id);
+    var template = answerTemplate.format(data.writer.name, data.postingTime, data.contents, data.question.id, data.id, data.writer.id);
     $(".qna-comment-slipp-articles").append(template);
     $(".answer-write textarea").val("");
 }

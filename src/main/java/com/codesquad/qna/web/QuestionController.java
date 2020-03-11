@@ -61,87 +61,68 @@ public class QuestionController {
 
     @GetMapping("/{id}/modify")
     public String moveUpdateForm(Model model, @PathVariable Long id, HttpSession session) {
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            return "redirect:/users/login";
-        }
-
-        User sessionUser = HttpSessionUtils.getUserFromSession(session);
-        Question currentQuestion;
-
         try {
-            currentQuestion = questionRepostory.findById(id).orElseThrow(() -> new NotFoundException("게시물 없어욧!!"));
+            Question currentQuestion = questionRepostory.findById(id).orElseThrow(() -> new NotFoundException("게시물 없어욧!!"));
+            hasPermission(session, currentQuestion);
+            model.addAttribute("currentQuestion", currentQuestion);
+            return "/questions/updateForm";
         } catch (NotFoundException e) {
-            e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/error";
         }
-
-        model.addAttribute("currentQuestion", currentQuestion);
-        if(!currentQuestion.matchUser(sessionUser)) {
-            throw new IllegalStateException("자신의 게시글만 수정할 수 있는뎅??");
-        }
-        return "/questions/updateForm";
     }
 
     @PutMapping("/{id}")
-    public String updateQuestion(Question updateQuestion, @PathVariable Long id, HttpSession session) {
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            return "redirect:/users/login";
-        }
-
-        User sessionUser = HttpSessionUtils.getUserFromSession(session);
-        Question currentQuestion = null;
-
+    public String updateQuestion(Question updateQuestion, @PathVariable Long id, Model model, HttpSession session) {
         try {
-            currentQuestion = questionRepostory.findById(id).orElseThrow(() -> new NotFoundException("게시물 없어영~!"));
+            Question currentQuestion = questionRepostory.findById(id).orElseThrow(() -> new NotFoundException("게시물 없어영~!"));
+            hasPermission(session, currentQuestion);
+            currentQuestion.update(updateQuestion);
+            questionRepostory.save(currentQuestion);
+            return String.format("redirect:/questions/%d", id);
         } catch (NotFoundException e) {
-            e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/error";
         }
-
-        if (!currentQuestion.matchUser(sessionUser)) {
-            throw new IllegalStateException("자신의 게시글만 수정할 수 있는뎅??");
-        }
-
-        currentQuestion.update(updateQuestion);
-        questionRepostory.save(currentQuestion);
-        return String.format("redirect:/questions/%d", id);
     }
 
     @DeleteMapping("/{id}")
-    public String removeQuestion(Question deleteQuestion, @PathVariable Long id, HttpSession session) {
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            return "redirect:/users/login";
-        }
-        User sessionUser = HttpSessionUtils.getUserFromSession(session);
-        Question currentQuestion;
-
+    public String removeQuestion(Question deleteQuestion, @PathVariable Long id, Model model, HttpSession session) {
         try {
-            currentQuestion = questionRepostory.findById(id).orElseThrow(() -> new NotFoundException("게시글 없는데요??!!!"));
+            Question currentQuestion = questionRepostory.findById(id).orElseThrow(() -> new NotFoundException("게시글 없는데요??!!!"));
+            hasPermission(session, currentQuestion);
+            currentQuestion.delete();
+            questionRepostory.save(currentQuestion);
+            return "redirect:/questions";
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/error";
         }
-
-        if (!currentQuestion.matchUser(sessionUser)) {
-            throw new IllegalStateException("자기 글만 삭제할 수 있어요!!!");
-        }
-
-        if (currentQuestion.getCountOfAnswers() != 0 && currentQuestion.isNotErasable()) {
-            throw new IllegalStateException("답변이 달린 게시글은 삭제할 수 없습니다.");
-        }
-
-        if (currentQuestion.delete()) {
-            currentQuestion.deleteAnswers(); //남아있는 댓글 delete
-            questionRepostory.save(currentQuestion);
-        } else {
-            throw new IllegalStateException("답변 삭제 실패");
-        }
-        return "redirect:/questions";
     }
 
     @GetMapping("")
     public String viewQnaList(Model model) {
         model.addAttribute("questions", questionRepostory.findByDeletedFalse());
         return "/questions/list";
+    }
+
+    private boolean hasPermission(HttpSession session, Question currentQuestion) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            throw new IllegalStateException("로그인이 필요합니다.");
+        }
+
+        User sessionUser = HttpSessionUtils.getUserFromSession(session);
+        if(!currentQuestion.matchUser(sessionUser)) {
+            throw new IllegalStateException("자신의 게시글만 수정할 수 있습니다.");
+        }
+
+        return true;
     }
 
 }

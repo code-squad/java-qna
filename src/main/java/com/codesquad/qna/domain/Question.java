@@ -116,12 +116,13 @@ public class Question {
         return this.writer.equals(sessionUser);
     }
 
-    public boolean delete() {
-        if (isNotErasable()) {
-            return false;
+    public void delete() {
+        if (getCountOfAnswers() != 0 && isNotErasable()) {
+            throw new IllegalStateException("답변이 달린 게시글은 삭제할 수 없습니다.");
         }
 
-        return (this.deleted = true);
+        deleteAnswers(); //남아있는 댓글 delete
+        this.deleted = true;
     }
 
     public boolean isNotErasable() {

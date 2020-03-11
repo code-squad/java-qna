@@ -35,7 +35,7 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
-        User user = userRepository.findByUserId(userId);
+        User user = userRepository.findByUserId(userId).orElseThrow(EntityNotFoundException::new);
 
         if (user == null) {
             LOGGER.warn("Login failure. User is not existed. id = '1'");

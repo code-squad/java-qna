@@ -3,10 +3,13 @@ package com.codessquad.qna.web.question;
 import com.codessquad.qna.common.error.exception.LoginRequiredException;
 import com.codessquad.qna.common.error.exception.QuestionNotFoundException;
 import com.codessquad.qna.common.utils.HttpSessionUtils;
-import com.codessquad.qna.web.user.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.codessquad.qna.domain.question.Answer;
+import com.codessquad.qna.domain.question.AnswerRepository;
+import com.codessquad.qna.domain.question.Question;
+import com.codessquad.qna.domain.question.QuestionRepository;
+import com.codessquad.qna.domain.user.User;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,28 +20,39 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
+@RequestMapping("/questions")
 public class QuestionController {
 
-    private static Logger log = LoggerFactory.getLogger(QuestionController.class);
+    private final QuestionRepository questionRepository;
+    private final AnswerRepository answerRepository;
 
-    @Autowired
-    private QuestionRepository questionRepository;
+    public QuestionController(QuestionRepository questionRepository, AnswerRepository answerRepository) {
+        this.questionRepository = questionRepository;
+        this.answerRepository = answerRepository;
+    }
 
-    @Autowired
-    private AnswerRepository answerRepository;
+    @GetMapping("")
+    public String goQuestionPage(Model model, @RequestParam(defaultValue = "1", required = false) int page) {
+        final int totalCount = questionRepository.countByIsDeletedFalse();
+        final int size = 15;
+        final int maxPage = totalCount / size + (totalCount % size == 0 ? 0 : 1);
 
-    @GetMapping("/")
-    public String goIndexPage(Model model) {
-        model.addAttribute("questions", questionRepository.findAllByIsDeletedFalseOrderByCreatedDateTimeDesc());
+        if (page > maxPage || page < 1) {
+            return "redirect:/questions?page=" + maxPage;
+        }
+
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("createdDateTime").descending());
+        model.addAttribute("questions", questionRepository.findAllByIsDeletedFalse(pageRequest).getContent());
+        model.addAttribute("maxPage", maxPage);
         return "main";
     }
 
-    @GetMapping("/questions/form")
+    @GetMapping("/form")
     public String goQuestionForm() {
         return "questions/form";
     }
 
-    @PostMapping("/questions")
+    @PostMapping("")
     public String createQuestion(HttpSession session, @RequestParam String title, @RequestParam String contents) {
         User loginUser = HttpSessionUtils.getUserFromSession(session).orElseThrow(LoginRequiredException::new);
         Question question = new Question(loginUser, title, contents);
@@ -46,7 +60,7 @@ public class QuestionController {
         return "redirect:/";
     }
 
-    @GetMapping("/questions/{id}")
+    @GetMapping("/{id}")
     public String showQuestion(@PathVariable Long id, Model model, HttpSession session) {
         User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
         Question question = getQuestionIfExist(id);
@@ -59,7 +73,7 @@ public class QuestionController {
         return "questions/show";
     }
 
-    @GetMapping("/questions/{id}/form")
+    @GetMapping("/{id}/form")
     public String goQuestionModifyForm(@PathVariable Long id, Model model, HttpSession session) {
         User loginUser = HttpSessionUtils.getUserFromSession(session).orElseThrow(LoginRequiredException::new);
         Question question = getQuestionIfExist(id);
@@ -72,7 +86,7 @@ public class QuestionController {
         return "questions/modify-form";
     }
 
-    @PutMapping("/questions/{id}")
+    @PutMapping("/{id}")
     public String updateQuestion(@PathVariable Long id,
                                  HttpSession session,
                                  @RequestParam String title,
@@ -89,7 +103,7 @@ public class QuestionController {
         return "redirect:/questions/" + id;
     }
 
-    @DeleteMapping("/questions/{id}")
+    @DeleteMapping("/{id}")
     @Transactional
     public String deleteQuestion(@PathVariable Long id, HttpSession session) {
         User loginUser = HttpSessionUtils.getUserFromSession(session).orElseThrow(LoginRequiredException::new);
@@ -108,7 +122,7 @@ public class QuestionController {
     }
 
     private Question getQuestionIfExist(Long id) {
-        return questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
+        return questionRepository.findByIdAndIsDeleted(id, false).orElseThrow(QuestionNotFoundException::new);
     }
 
 }

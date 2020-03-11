@@ -1,7 +1,7 @@
 package com.codessquad.qna.common.utils;
 
 import com.codessquad.qna.common.constants.CommonConstants;
-import com.codessquad.qna.web.user.User;
+import com.codessquad.qna.domain.user.User;
 
 import javax.servlet.http.HttpSession;
 import java.util.Optional;

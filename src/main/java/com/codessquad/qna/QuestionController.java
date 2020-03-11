@@ -4,6 +4,8 @@ import com.codessquad.qna.domain.AnswerRepository;
 import com.codessquad.qna.domain.Question;
 import com.codessquad.qna.domain.QuestionRepository;
 import com.codessquad.qna.domain.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +16,8 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
+    private static final Logger logger = LoggerFactory.getLogger(QuestionController.class);
+
     @Autowired
     private QuestionRepository questionRepository;
     @Autowired
@@ -23,6 +27,7 @@ public class QuestionController {
     public String form(HttpSession httpSession, Model model) {
         try {
             hasPermission(httpSession);
+            logger.debug("This is DEBUG Log!");
             return "question/questionForm";
         } catch (IllegalStateException e) {
             model.addAttribute("errorMessage", e.getMessage());

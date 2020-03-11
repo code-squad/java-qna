@@ -26,6 +26,22 @@ function onError(data, status) {
 
 function onSuccess(data, status) {
   console.log("Success");
-  console.log("data : " + data);
+  console.log("data : ");
+  console.log(data);
   console.log("status : " + status);
+
+  var answerTemplate = $("#answerTemplate").html();
+  var template = answerTemplate.format(data.user.userId, data.lastModifiedDateTime, data.contents, data.question.id, data.id);
+  $(".qna-comment-slipp-articles").prepend(template);
+  $("textarea[name=contents]").val("");
 }
+
+String.prototype.format = function () {
+  var args = arguments;
+  return this.replace(/{(\d+)}/g, function (match, number) {
+    return typeof args[number] != 'undefined'
+        ? args[number]
+        : match
+        ;
+  });
+};

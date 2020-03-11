@@ -59,15 +59,15 @@ public class AnswerController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteAnswer(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
+    public boolean deleteAnswer(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
         try {
             Answer answer = getVerifiedAnswer(id, session);
             answer.delete();
             answerRepository.save(answer);
-            return "redirect:/questions/" + questionId;
+            return answer.isDeleted();
         } catch (IllegalAccessException | EntityNotFoundException e) {
             log.info("Error Code > " + e.toString());
-            return e.getMessage();
+            return false;
         }
     }
 

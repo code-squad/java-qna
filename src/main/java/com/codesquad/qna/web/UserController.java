@@ -30,9 +30,7 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
-        User sessionUser = userRepository.findByUserId(userId).orElseThrow(() -> {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user가 없어요!!");
-        });
+        User sessionUser = userRepository.findByUserId(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user가 없어요!!"));
 
         if (!sessionUser.matchPassword(password)) {
             log.debug("Login Fail!! not match password");

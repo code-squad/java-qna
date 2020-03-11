@@ -66,15 +66,15 @@ public class User {
         this.email = email;
     }
 
-    public void update(String password, String name, String email) {
-        if (password.length() != 0) {
-            this.password = password;
+    public void update(User updateUser) {
+        if (updateUser.getPassword().length() != 0) {
+            this.password = updateUser.getPassword();
         }
-        if (name.length() != 0) {
-            this.name = name;
+        if (updateUser.getName().length() != 0) {
+            this.name = updateUser.getName();
         }
-        if (email.length() != 0) {
-            this.email = email;
+        if (updateUser.getEmail().length() != 0) {
+            this.email = updateUser.getEmail();
         }
     }
 

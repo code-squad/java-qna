@@ -3,10 +3,7 @@ package com.codessquad.qna;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
@@ -73,13 +70,13 @@ public class UserController {
 
     // 개인정보 수정 페이지에서 userID를 제외한 값들을 수정할 수 있다. password,name,email 값을 user클래스의 update함수를 통해서 값을 전달하고
     // user 클래스 안에서 각 변수의 길이가 0 이상일 때, 값을 저장한다음, userRepository에 값을 변경한다.
-    @PostMapping("/update")
-    public String infoChange(String password, String name, String email, HttpSession session) {
+    @PutMapping("/{id}")
+    public String infoChange(@PathVariable Long id, User updateUser, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "/user/login_failed";
         }
         User loginUser = HttpSessionUtils.getUserFromSession(session);
-        loginUser.update(password, name, email);
+        loginUser.update(updateUser);
         userRepository.save(loginUser);
         return "redirect:/users";
     }
@@ -107,4 +104,11 @@ public class UserController {
         return "/user/not_qualified";
     }
 
+//    @PutMapping("/{id}/update")
+//    public String infoChange(@PathVariable Long id, String password, String name, String email) {
+//        User user = userRepository.findById(id).orElse(null);
+//        user.update(password, name, email);
+//        userRepository.save(user);
+//        return "redirect:/users";
+//    }
 }

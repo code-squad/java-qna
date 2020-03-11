@@ -1,9 +1,6 @@
 package com.codessquad.qna;
 
-import com.codessquad.qna.domain.AnswerRepository;
-import com.codessquad.qna.domain.Question;
-import com.codessquad.qna.domain.QuestionRepository;
-import com.codessquad.qna.domain.User;
+import com.codessquad.qna.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -52,55 +49,52 @@ public class QuestionController {
         return "/question/show";
     }
 
-    private void hasPermission(HttpSession session, Question question) {
+    private Result valid(HttpSession session, Question question) {
         if (!HttpSessionUtils.isLoginUser(session)) {
-            throw new IllegalStateException("로그인이 필요합니다.");
+            return Result.fail("로그인이 필요합니다.");
         }
 
         User loginUser = HttpSessionUtils.getUserFromSession(session);
         if (!question.isSameWriter(loginUser)) {
-            throw new IllegalStateException("자신이 쓴 글만 수정, 삭제가 가능합니다.");
+            return Result.fail("자신이 쓴 글만 수정, 삭제가 가능합니다.");
         }
+        return Result.ok();
     }
 
     @GetMapping("/{id}/form")
     public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
-        try {
-            Question question = questionRepository.findById(id).orElseThrow(NullPointerException::new);
-            hasPermission(session, question);
-            model.addAttribute("question", question);
-            return "/question/updateForm";
-        } catch (IllegalStateException e) {
-            model.addAttribute("errorMessage", e.getMessage());
+        Question question = questionRepository.findById(id).orElseThrow(NullPointerException::new);
+        Result result = valid(session,question);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
             return "/user/login";
         }
+        model.addAttribute("question", question);
+        return "/question/updateForm";
     }
 
     @PutMapping("/{id}")
     public String update(@PathVariable Long id, String title, String contents, Model model, HttpSession session) {
-        try {
-            Question question = questionRepository.findById(id).orElseThrow(NullPointerException::new);
-            hasPermission(session, question);
-            question.update(title, contents);
-            questionRepository.save(question);
-            return String.format("redirect:/questions/%d", id);
-        } catch (IllegalStateException e) {
-            model.addAttribute("errorMessage", e.getMessage());
+        Question question = questionRepository.findById(id).orElseThrow(NullPointerException::new);
+        Result result = valid(session,question);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
             return "/user/login";
         }
+        question.update(title, contents);
+        questionRepository.save(question);
+        return String.format("redirect:/questions/%d", id);
     }
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id, Model model, HttpSession session) {
-        try {
-            Question question = questionRepository.findById(id).orElseThrow(NullPointerException::new);
-            hasPermission(session, question);
-            questionRepository.deleteById(id);
-            return "redirect:/";
-        } catch (IllegalStateException e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            System.out.println(e.getMessage());
+        Question question = questionRepository.findById(id).orElseThrow(NullPointerException::new);
+        Result result = valid(session,question);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
             return "/user/login";
         }
+        questionRepository.deleteById(id);
+        return "redirect:/";
     }
 }

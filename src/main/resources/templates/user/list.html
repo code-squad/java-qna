@@ -21,7 +21,10 @@
           <td>{{userId}}</td>
           <td>{{name}}</td>
           <td>{{email}}</td>
-          <td><a href="/users/{{userId}}" class="btn btn-success" role="button">프로필</a></td>
+          <td>
+            <a href="/users/{{userId}}" class="btn btn-success" role="button">프로필</a>
+            <a href="/users/{{userId}}/update" class="btn btn-success" role="button">회원정보수정</a>
+          </td>
         </tr>
         {{/users}}
         </tbody>

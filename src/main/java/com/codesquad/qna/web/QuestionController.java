@@ -1,9 +1,6 @@
 package com.codesquad.qna.web;
 
-import com.codesquad.qna.domain.AnswerRepository;
-import com.codesquad.qna.domain.Question;
-import com.codesquad.qna.domain.QuestionRepostory;
-import com.codesquad.qna.domain.User;
+import com.codesquad.qna.domain.*;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,49 +58,66 @@ public class QuestionController {
 
     @GetMapping("/{id}/modify")
     public String moveUpdateForm(Model model, @PathVariable Long id, HttpSession session) {
+        Question currentQuestion;
         try {
-            Question currentQuestion = questionRepostory.findById(id).orElseThrow(() -> new NotFoundException("게시물 없어욧!!"));
-            hasPermission(session, currentQuestion);
-            model.addAttribute("currentQuestion", currentQuestion);
-            return "/questions/updateForm";
+            currentQuestion = questionRepostory.findById(id).orElseThrow(() -> new NotFoundException("게시물 없어욧!!"));
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (IllegalStateException e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "/error";
         }
+
+        ValidationResult validationResult = validate(session, currentQuestion);
+        if (!validationResult.isValid()) {
+        model.addAttribute("errorMessage", validationResult.getErrorMessage());
+        return "/error";
+        }
+
+        model.addAttribute("currentQuestion", currentQuestion);
+        return "/questions/updateForm";
     }
 
     @PutMapping("/{id}")
     public String updateQuestion(Question updateQuestion, @PathVariable Long id, Model model, HttpSession session) {
+        Question currentQuestion;
         try {
-            Question currentQuestion = questionRepostory.findById(id).orElseThrow(() -> new NotFoundException("게시물 없어영~!"));
-            hasPermission(session, currentQuestion);
-            currentQuestion.update(updateQuestion);
-            questionRepostory.save(currentQuestion);
-            return String.format("redirect:/questions/%d", id);
+            currentQuestion = questionRepostory.findById(id).orElseThrow(() -> new NotFoundException("게시물 없어영~!"));
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (IllegalStateException e) {
-            model.addAttribute("errorMessage", e.getMessage());
+        }
+
+        ValidationResult validationResult = validate(session, currentQuestion);
+        if (!validationResult.isValid()) {
+            model.addAttribute("errorMessage", validationResult.getErrorMessage());
             return "/error";
         }
+
+        currentQuestion.update(updateQuestion);
+        questionRepostory.save(currentQuestion);
+        return String.format("redirect:/questions/%d", id);
     }
 
     @DeleteMapping("/{id}")
     public String removeQuestion(Question deleteQuestion, @PathVariable Long id, Model model, HttpSession session) {
+        Question currentQuestion;
         try {
-            Question currentQuestion = questionRepostory.findById(id).orElseThrow(() -> new NotFoundException("게시글 없는데요??!!!"));
-            hasPermission(session, currentQuestion);
-            currentQuestion.delete();
-            questionRepostory.save(currentQuestion);
-            return "redirect:/questions";
+            currentQuestion = questionRepostory.findById(id).orElseThrow(() -> new NotFoundException("게시물 없어영~!"));
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+
+        ValidationResult validationResult = validate(session, currentQuestion);
+        if (!validationResult.isValid()) {
+            model.addAttribute("errorMessage", validationResult.getErrorMessage());
+            return "/error";
+        }
+
+        try {
+            currentQuestion.delete();
         } catch (IllegalStateException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "/error";
         }
+        questionRepostory.save(currentQuestion);
+        return "redirect:/questions";
     }
 
     @GetMapping("")
@@ -112,17 +126,16 @@ public class QuestionController {
         return "/questions/list";
     }
 
-    private boolean hasPermission(HttpSession session, Question currentQuestion) {
+    private ValidationResult validate(HttpSession session, Question currentQuestion) {
         if (!HttpSessionUtils.isLoginUser(session)) {
-            throw new IllegalStateException("로그인이 필요합니다.");
+            return ValidationResult.fail("로그인이 필요합니다.");
         }
 
         User sessionUser = HttpSessionUtils.getUserFromSession(session);
-        if(!currentQuestion.matchUser(sessionUser)) {
-            throw new IllegalStateException("자신의 게시글만 수정할 수 있습니다.");
+        if (!currentQuestion.matchUser(sessionUser)) {
+            return ValidationResult.fail("자신의 게시글만 수정 및 삭제할 수 있습니다.");
         }
 
-        return true;
+        return ValidationResult.ok();
     }
-
 }

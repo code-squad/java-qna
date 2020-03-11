@@ -1,5 +1,6 @@
 package com.codesquad.qna.web;
 
+import com.codesquad.qna.domain.ValidationResult;
 import com.codesquad.qna.domain.User;
 import com.codesquad.qna.domain.UserRepository;
 import javassist.NotFoundException;
@@ -80,17 +81,18 @@ public class UserController {
 
     @GetMapping("/{id}/modify")
     public String moveUpdateForm(Model model, @PathVariable Long id, HttpSession session) {
+        ValidationResult validationResult = validate(session, id);
+        if (!validationResult.isValid()) {
+            model.addAttribute("errorMessage", validationResult.getErrorMessage());
+            return "/error";
+        }
+
         try {
-            hasPermission(session, id);
             User sessionUser = HttpSessionUtils.getUserFromSession(session);
-            //session에 들어있는 사용자의 id 값으로 데이터를 가져와서 모델에 담아줌 -> 자신의 정보만 수정가능
             model.addAttribute("currentUser", userRepository.findById(sessionUser.getId()).orElseThrow(() -> new NotFoundException("그런 회원 없는뎅")));
             return "/users/modify";
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (IllegalStateException e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "/error";
         }
     }
 
@@ -101,11 +103,13 @@ public class UserController {
         try {
             User sessionUser = HttpSessionUtils.getUserFromSession(session);
             currentUser = userRepository.findById(sessionUser.getId()).orElseThrow(() -> new NotFoundException("그런 회원 없는뎅"));
-            hasPermission(session, id);
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (IllegalStateException e) {
-            model.addAttribute("errorMessage", e.getMessage());
+        }
+
+        ValidationResult validationResult = validate(session, id);
+        if (!validationResult.isValid()) {
+            model.addAttribute("errorMessage", validationResult.getErrorMessage());
             return "/error";
         }
 
@@ -119,16 +123,16 @@ public class UserController {
         return "redirect:/users";
     }
 
-    private boolean hasPermission(HttpSession session, Long id) {
+    private ValidationResult validate(HttpSession session, Long id) {
         if (!HttpSessionUtils.isLoginUser(session)) {
-            throw new IllegalStateException("로그인이 필요합니다.");
+            return ValidationResult.fail("로그인이 필요합니다.");
         }
 
         User sessionUser = HttpSessionUtils.getUserFromSession(session);
         if (!sessionUser.matchId(id)) {
-            throw new IllegalStateException("자신의 정보만 수정할 수 있습니다.");
+            return ValidationResult.fail("자신의 정보만 수정할 수 있습니다.");
         }
 
-        return true;
+        return ValidationResult.ok();
     }
 }

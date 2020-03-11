@@ -1,5 +1,6 @@
 package com.codessquad.qna.web.services;
 
+import com.codessquad.qna.domain.Question;
 import com.codessquad.qna.domain.User;
 import com.codessquad.qna.domain.UserRepository;
 import com.codessquad.qna.exceptions.UnauthorizedException;
@@ -15,7 +16,9 @@ import static com.codessquad.qna.exceptions.UnauthorizedException.NO_MATCH_USER;
 
 @Service
 public class AuthService {
-    private static final int AUTHOR_TIME_OUT = 60 * 60;
+    public static final String AUTHENTICATION_ID = "authenticationId";
+    private static final int AUTHENTICATION_TIME_OUT = 60 * 60;
+
     private final UserRepository userRepository;
 
     public AuthService(UserRepository userRepository) {
@@ -37,8 +40,8 @@ public class AuthService {
         origin.verify(entrant);
 
         HttpSession session = request.getSession(true);
-        session.setAttribute("authenticationId", origin.getId());
-        session.setMaxInactiveInterval(AUTHOR_TIME_OUT);
+        session.setAttribute(AUTHENTICATION_ID, origin.getId());
+        session.setMaxInactiveInterval(AUTHENTICATION_TIME_OUT);
     }
 
     public void expireAuthentication(HttpServletRequest request, HttpServletResponse response) {

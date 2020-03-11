@@ -71,8 +71,12 @@ public class Question {
         this.questionIndex += questionIndex;
     }
 
-    public boolean authorizeUser(Long userId) {
-        if (this.writerId == userId) {
+    public Long getWriterId() {
+        return writerId;
+    }
+    public boolean authorizeUser(User loginUser) {
+        Long userId = loginUser.getId();
+        if (this.writerId.equals(userId)) {
             return true;
         }
         return false;

@@ -45,14 +45,14 @@ public class QuestionController {
         }
         User loginUser = HttpSessionUtils.getUserFromSession(session);
         Question question = questionRepository.getOne(questionIndex);
-        if (question.authorizeUser(loginUser.getId())) {
+        if (question.authorizeUser(loginUser)) {
             model.addAttribute("question", question);
             return "/qna/modify_form";
         }
         return "/qna/not_qualified";
     }
 
-    @PostMapping("/{questionIndex}/updateQuestion")
+    @PutMapping("/{questionIndex}/updateQuestion")
     public String updateQuestion(@PathVariable Long questionIndex, String title, String contents) {
         Question question = questionRepository.getOne(questionIndex);
         question.updateQuestion(title, contents);
@@ -60,11 +60,11 @@ public class QuestionController {
         return "redirect:/";
     }
 
-    @PostMapping("/{questionIndex}/delete")
+    @DeleteMapping("/{questionIndex}/delete")
     public String deleteQuestion(@PathVariable Long questionIndex, HttpSession session) {
         Question question = questionRepository.getOne(questionIndex);
         User loginUser = HttpSessionUtils.getUserFromSession(session);
-        if (question.authorizeUser(loginUser.getId())) {
+        if (question.authorizeUser(loginUser)) {
             questionRepository.delete(question);
             return "redirect:/";
         }

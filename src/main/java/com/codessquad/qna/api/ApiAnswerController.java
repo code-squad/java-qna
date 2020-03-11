@@ -1,7 +1,8 @@
-package com.codessquad.qna.answer;
+package com.codessquad.qna.api;
 
-import com.codessquad.qna.commons.CustomErrorCode;
-import com.codessquad.qna.errors.QuestionException;
+import com.codessquad.qna.answer.Answer;
+import com.codessquad.qna.answer.AnswerRepository;
+import com.codessquad.qna.commons.CustomMessage;
 import com.codessquad.qna.question.Question;
 import com.codessquad.qna.question.QuestionRepository;
 import com.codessquad.qna.user.User;
@@ -47,7 +48,7 @@ public class ApiAnswerController {
    * Return : /questions/show
    */
   @DeleteMapping("/{id}")
-  public String delete(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
+  public Result delete(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
     log.info("### delete()");
 
     User sessionedUser = getSessionedUserOrError(session);
@@ -56,9 +57,9 @@ public class ApiAnswerController {
     if (sessionedUser.equals(answer.getUser())) {
       answer.delete();
       answerRepository.save(answer);
-      return "redirect:/questions/" + questionId;
+      return Result.ok();
     }
 
-    throw new QuestionException(CustomErrorCode.USER_NOT_MATCHED);
+    return Result.fail(CustomMessage.USER_NOT_MATCHED);
   }
 }

@@ -1,4 +1,5 @@
 $(".answer-write button[type=submit]").click(addAnswer);
+$(".qna-comment-slipp-articles").on("click", "a.link-delete-article", deleteAnswer);
 
 function addAnswer(e) {
   e.preventDefault();
@@ -15,6 +16,31 @@ function addAnswer(e) {
     dataType: 'json',
     error: onError,
     success: onSuccess,
+  });
+}
+
+function deleteAnswer(e) {
+  e.preventDefault();
+
+  var cur = $(this);
+  var url = cur.attr("href");
+  console.log("url : " + url);
+
+  $.ajax({
+    type: 'delete',
+    url: url,
+    dataType: 'json',
+    error: function (xhr, status) {
+      console.log("error");
+    },
+    success: function (data, status) {
+      console.log(data);
+      if (data.valid) {
+        cur.closest("article").remove();
+      } else {
+        alert(data.errorMessage);
+      }
+    }
   });
 }
 

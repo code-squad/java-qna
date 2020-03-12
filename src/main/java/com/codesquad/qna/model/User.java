@@ -1,5 +1,7 @@
 package com.codesquad.qna.model;
 
+import com.codesquad.qna.model.base.BaseEntity;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -7,7 +9,7 @@ import javax.validation.constraints.NotEmpty;
 import java.util.Objects;
 
 @Entity
-public class User {
+public class User extends BaseEntity {
     @Id
     private String userId;
 
@@ -69,6 +71,7 @@ public class User {
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
+                ", " + super.toString() +
                 '}';
     }
 
@@ -83,6 +86,6 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, password, name, email);
+        return Objects.hash(userId, password);
     }
 }

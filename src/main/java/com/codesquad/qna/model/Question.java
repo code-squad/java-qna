@@ -1,16 +1,15 @@
 package com.codesquad.qna.model;
 
-import com.codesquad.qna.util.DateTimeFormatUtils;
+import com.codesquad.qna.model.base.BaseEntity;
 import com.codesquad.qna.util.HtmlDocumentUtils;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-public class Question {
+public class Question extends BaseEntity {
     @Id
     @GeneratedValue
     private Long id;
@@ -25,10 +24,8 @@ public class Question {
     @NotEmpty
     private String title;
 
+    @Lob
     private String contents;
-
-    @Column(nullable = false)
-    private LocalDateTime createdDateTime;
 
     @Formula("(select count(*) from answer a where a.question_id = id and a.deleted = false)")
     private int countOfAnswers;
@@ -42,7 +39,6 @@ public class Question {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-        this.createdDateTime = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -63,10 +59,6 @@ public class Question {
 
     public String getContentsWithBr() {
         return HtmlDocumentUtils.getEntertoBrTag(contents);
-    }
-
-    public String getCreatedDateTimetoString() {
-        return DateTimeFormatUtils.getFormattedLocalDateTime(createdDateTime);
     }
 
     public int getCountOfAnswers() {
@@ -104,7 +96,7 @@ public class Question {
                 ", writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
-                ", createdDateTime=" + getCreatedDateTimetoString() +
+                ", " + super.toString() +
                 '}';
     }
 }

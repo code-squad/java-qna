@@ -56,31 +56,6 @@ function deleteTemplate(deleteBtn) {
     }
 }
 
-//$(".answer-btn").click(updateAnswer);
-//
-//function updateAnswer(e) {
-//    e.preventDefault();
-//    var queryString = $(".form-control").serialize();
-//    var updateBtn = $(this);
-//    var url = updateBtn.attr("action");
-//    console.log("url : " + url);
-//    console.log("queryString : " +queryString);
-//
-//    $.ajax({
-//        type : 'put',
-//        url : url,
-//        data : queryString,
-//        dateType : 'json',
-//        error : onError,
-//        success : updateTemplate
-//    });
-//}
-//
-//function updateTemplate(data, status) {
-//    console.log("> " + status);
-//    console.log(data);
-//}
-
 function onError(error, status) {
     console.log("> " + status);
     console.log(error);

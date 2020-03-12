@@ -42,7 +42,7 @@ public class AnswerController {
             return new ModelAndView("/qna/updatedAnswerForm");
         } catch (IllegalAccessException | EntityNotFoundException e) {
             log.info("Error Code > " + e.toString());
-            return null;
+            return new ModelAndView(e.getMessage());
         }
     }
 
@@ -55,7 +55,7 @@ public class AnswerController {
             return new ModelAndView("redirect:/questions/" + questionId);
         } catch (IllegalAccessException | EntityNotFoundException e) {
             log.info("Error Code > " + e.toString());
-            return null;
+            return new ModelAndView(e.getMessage());
         }
     }
 

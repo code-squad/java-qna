@@ -19,7 +19,7 @@
                         <div class="article-header-text">
                             <a href="/users/92/kimmunsu" class="article-author-name">{{question.writer.name}}</a>
                             <a href="/questions/413" class="article-header-time" title="퍼머링크">
-                                {{question.date}}
+                                {{question.formattedCreatedDate}}
                                 <i class="icon-link"></i>
                             </a>
                         </div>
@@ -41,7 +41,7 @@
                                 </form>
                             </li>
                             <li>
-                                <a class="link-modify-article" href="/templates/index.html">목록</a>
+                                <a class="link-modify-article" href="/">목록</a>
                             </li>
                         </ul>
                     </div>
@@ -49,8 +49,8 @@
 
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
-                        <p class="qna-comment-count"><strong>2</strong>개의 의견</p>
-                        {{#each answers}}
+                        <p class="qna-comment-count"><strong>{{question.countOfAnswers}}</strong>개의 의견</p>
+                        {{#answers}}
                         <div class="qna-comment-slipp-articles">
                             <article class="article" id="answer-1405">
                                 <div class="article-header">
@@ -61,7 +61,7 @@
                                     <div class="article-header-text">
                                         <a href="/users/1/자바지기" class="article-author-name">{{writer.name}}</a>
                                         <a href="#answer-1434" class="article-header-time"
-                                           title="퍼머링크">{{createdDate}}</a>
+                                           title="퍼머링크">{{formattedCreatedDate}}</a>
                                     </div>
                                 </div>
                                 <div class="article-doc comment-doc">
@@ -84,7 +84,7 @@
                                     </ul>
                                 </div>
                             </article>
-                            {{/each}}
+                            {{/answers}}
                             <form class="submit-write" action="/questions/{{question.id}}/answers" method="post">
                                 <div class="form-group" style="padding:14px;">
                                     <textarea class="form-control" id="contents" name="contents"

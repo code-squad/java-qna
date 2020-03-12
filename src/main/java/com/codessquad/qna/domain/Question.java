@@ -2,6 +2,8 @@ package com.codessquad.qna.domain;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Entity
 public class Question {
@@ -12,10 +14,18 @@ public class Question {
     @Column(nullable = false)
     private String title;
     private LocalDateTime createdDate;
+
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     private User writer;
+
+    @OneToMany(mappedBy = "question")
+    @OrderBy("id asc")
+    private List<Answer> answers;
+
+    @Lob
     private String contents;
+    private boolean deleted;
 
     public Question() {
     }
@@ -25,6 +35,15 @@ public class Question {
         this.title = title;
         this.contents = contents;
         createdDate = LocalDateTime.now();
+        deleted = false;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     public Long getId() {
@@ -47,8 +66,8 @@ public class Question {
         return createdDate;
     }
 
-    public void setCreatedDate(LocalDateTime date) {
-        this.createdDate = date;
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
     }
 
     public User getWriter() {
@@ -59,6 +78,14 @@ public class Question {
         this.writer = writer;
     }
 
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
+    }
+
     public String getContents() {
         return contents;
     }
@@ -67,13 +94,18 @@ public class Question {
         this.contents = contents;
     }
 
+    public long getCountOfAnswers() {
+        return answers.stream().filter(answer -> !answer.isDeleted()).count();
+    }
+
     @Override
     public String toString() {
         return "Question{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                ", date=" + createdDate +
-                ", writer='" + writer.getName() + '\'' +
+                ", createdDate=" + createdDate +
+                ", writer=" + writer +
+                ", answers=" + answers +
                 ", contents='" + contents + '\'' +
                 '}';
     }
@@ -82,5 +114,27 @@ public class Question {
         this.title = title;
         this.contents = contents;
         this.createdDate = LocalDateTime.now();
+    }
+
+    public String getFormattedCreatedDate() {
+        if (createdDate == null) {
+            return "";
+        }
+        return createdDate.format(DateTimeFormatter.ofPattern("YYYY-MM-SS HH:mm:ss"));
+    }
+
+    public boolean isNoAnswers() {
+        return answers.isEmpty();
+    }
+
+    public boolean isSameBetweenWritersOfAnswers() {
+        long countOfSameWriter = answers.stream()
+                .filter(answer -> answer.getWriter() == writer).count();
+        return countOfSameWriter == answers.size();
+    }
+
+    public void delete() {
+        deleted = true;
+        answers.forEach(Answer::delete);
     }
 }

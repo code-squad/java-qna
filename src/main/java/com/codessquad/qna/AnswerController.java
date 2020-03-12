@@ -18,18 +18,20 @@ public class AnswerController {
 
     @PostMapping("/{questionId}/answers")
     public String answer(@PathVariable Long questionId,
-                         @RequestParam String contents,
-                         HttpSession httpSession) {
-        User sessionedUser = HttpSessionUtils.getUserFromSession(httpSession);
-
-        if (!HttpSessionUtils.isLoginUser(sessionedUser)) {
-            return "redirect:/users/loginForm";
+                         String contents,
+                         HttpSession httpSession,
+                         Model model) {
+        try {
+            User sessionedUser = HttpSessionUtils.getUserFromSession(httpSession);
+            hasPermission(httpSession);
+            Question question = findQuestionById(questionRepository, questionId);
+            Answer answer = new Answer(question, contents, sessionedUser);
+            answerRepository.save(answer);
+            return String.format("redirect:/questions/%d", questionId);
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/user/login";
         }
-
-        Question question = findQuestion(questionRepository, questionId);
-        Answer answer = new Answer(question, contents, sessionedUser);
-        answerRepository.save(answer);
-        return "redirect:/questions/{questionId}";
     }
 
     @GetMapping("/{questionId}/answers/{id}/{writer}/form")
@@ -38,61 +40,77 @@ public class AnswerController {
                              @PathVariable String writer,
                              HttpSession httpSession,
                              Model model) {
-        User sessionedUser = HttpSessionUtils.getUserFromSession(httpSession);
-
-        if (!HttpSessionUtils.isLoginUser(sessionedUser)) {
-            return "redirect:/users/loginForm";
+        try {
+            hasPermission(httpSession, writer);
+            model.addAttribute("question", findQuestionById(questionRepository, questionId));
+            model.addAttribute("answer", findAnswerById(answerRepository, answerId));
+            return "answer/updateForm";
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/user/login";
         }
-
-        if (sessionedUser.notMatchWriter(writer)) {
-            return "redirect:/users/loginForm";
-        }
-
-        model.addAttribute("question", findQuestion(questionRepository, questionId));
-        model.addAttribute("answer", findAnswer(answerRepository, answerId));
-        return "answer/updateForm";
     }
 
     @PutMapping("/{questionId}/answers/{answer.id}/update")
     public String update(@PathVariable("answer.id") Long answerId,
                          String contents,
-                         HttpSession httpSession) {
-        User user = HttpSessionUtils.getUserFromSession(httpSession);
-
-        if (!HttpSessionUtils.isLoginUser(user)) {
-            return "redirect:/users/loginForm";
+                         HttpSession httpSession,
+                         Model model) {
+        try {
+            hasPermission(httpSession);
+            Answer answer = findAnswerById(answerRepository, answerId);
+            answer.update(contents);
+            answerRepository.save(answer);
+            return "redirect:/questions/{questionId}";
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/user/login";
         }
-
-        Answer answer = findAnswer(answerRepository, answerId);
-        answer.update(contents);
-        answerRepository.save(answer);
-        return "redirect:/questions/{questionId}";
     }
 
     @DeleteMapping("/{questionId}/answers/{id}/{writer}/delete")
     public String delete(@PathVariable("id") Long answerId,
                          @PathVariable String writer,
-                         HttpSession httpSession) {
+                         HttpSession httpSession,
+                         Model model) {
+        try {
+            hasPermission(httpSession, writer);
+            Answer answer = findAnswerById(answerRepository, answerId);
+            answer.delete();
+            answerRepository.save(answer);
+            return "redirect:/questions/{questionId}";
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/user/login";
+        }
+    }
+
+    private void hasPermission(HttpSession httpSession, String writer) {
         User sessionedUser = HttpSessionUtils.getUserFromSession(httpSession);
 
         if (!HttpSessionUtils.isLoginUser(sessionedUser)) {
-            return "redirect:/users/loginForm";
+            throw new IllegalStateException("일치하는 아이디가 없습니다.");
         }
 
         if (sessionedUser.notMatchWriter(writer)) {
-            return "redirect:/users/loginForm";
+            throw new IllegalStateException("작성자만 삭제할 수 있습니다.");
         }
-
-        answerRepository.delete(findAnswer(answerRepository, answerId));
-        return "redirect:/questions/{questionId}";
     }
 
-    private Answer findAnswer(AnswerRepository answerRepository, Long answerId) {
+    private void hasPermission(HttpSession httpSession) {
+        User sessionedUser = HttpSessionUtils.getUserFromSession(httpSession);
+
+        if (!HttpSessionUtils.isLoginUser(sessionedUser)) {
+            throw new IllegalStateException("로그인이 필요합니다.");
+        }
+    }
+
+    private Answer findAnswerById(AnswerRepository answerRepository, Long answerId) {
         return answerRepository.findById(answerId).orElseThrow(() ->
                 new IllegalStateException("There is no answer"));
     }
 
-    private Question findQuestion(QuestionRepository questionRepository, Long questionId) {
+    private Question findQuestionById(QuestionRepository questionRepository, Long questionId) {
         return questionRepository.findById(questionId).orElseThrow(() ->
                 new IllegalStateException("There is no question."));
     }

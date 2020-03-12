@@ -2,6 +2,7 @@ package com.codessquad.qna.domain;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Answer {
@@ -9,23 +10,37 @@ public class Answer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
     private User writer;
+
+    @Lob
     private String contents;
-    private LocalDateTime CreatedDate;
+    private LocalDateTime createdDate;
+
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_question"))
     private Question question;
+    private boolean deleted;
 
     public Answer() {
     }
 
     public Answer(Question question, String contents, User writer) {
+        this.question = question;
         this.contents = contents;
         this.writer = writer;
-        this.question = question;
-        this.CreatedDate = LocalDateTime.now();
+        this.createdDate = LocalDateTime.now();
+        deleted = false;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     public Long getId() {
@@ -53,11 +68,11 @@ public class Answer {
     }
 
     public LocalDateTime getCreatedDate() {
-        return CreatedDate;
+        return createdDate;
     }
 
-    public void setCreatedDate(LocalDateTime date) {
-        this.CreatedDate = date;
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
     }
 
     public Question getQuestion() {
@@ -70,6 +85,17 @@ public class Answer {
 
     public void update(String contents) {
         this.contents = contents;
-        this.CreatedDate = LocalDateTime.now();
+        this.createdDate = LocalDateTime.now();
+    }
+
+    public String getFormattedCreatedDate() {
+        if (createdDate == null) {
+            return "";
+        }
+        return createdDate.format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:ss"));
+    }
+
+    public void delete() {
+        deleted = true;
     }
 }

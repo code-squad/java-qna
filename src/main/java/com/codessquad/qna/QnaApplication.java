@@ -11,7 +11,12 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 public class QnaApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(QnaApplication.class, args);
+
+		try {
+			SpringApplication.run(QnaApplication.class, args);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

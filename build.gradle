@@ -40,4 +40,6 @@ dependencies { //특정 버전을 명시하지 않으면 ${springBootVersion}에
 	compile ('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile ('org.springframework.boot:spring-boot-starter-mustache')
 	testCompile ('org.springframework.boot:spring-boot-starter-test')
+	compileOnly("ch.qos.logback.contrib:logback-jackson:0.1.5")
+	compileOnly("ch.qos.logback.contrib:logback-json-classic:0.1.5")
 }

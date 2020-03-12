@@ -17,25 +17,39 @@ public class Question {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false, length = 20)
-  private String userId;
+  @ManyToOne
+  @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_to_user"))
+  private User user;
+
+  @Column(nullable = false)
   private String title;
+  @Column(nullable = false)
   private String contents;
+  @Column(nullable = false)
   private LocalDateTime createdDateTime;
+  @Column(nullable = false)
+  private LocalDateTime lastModifiedDateTime;
+  @Column(nullable = false)
+  private boolean deleted;
 
   public Question() {
     this.createdDateTime = LocalDateTime.now();
+    this.lastModifiedDateTime = LocalDateTime.now();
+    this.deleted = false;
   }
 
   public void update(Question question) {
-    this.userId = question.userId;
     this.title = question.title;
     this.contents = question.contents;
-    this.createdDateTime = question.createdDateTime;
+    this.lastModifiedDateTime = LocalDateTime.now();
   }
 
-  public String getCreatedDateTime() {
+  public void delete() {
+    this.deleted = true;
+  }
+
+  public String getLastModifiedDateTime() {
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    return createdDateTime.format(dateTimeFormatter);
+    return lastModifiedDateTime.format(dateTimeFormatter);
   }
 }

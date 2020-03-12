@@ -1,12 +1,14 @@
 package com.codessquad.qna.commons;
 
 import com.codessquad.qna.question.QuestionRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+@Slf4j
 @Controller
 public class CommonController {
 
@@ -20,8 +22,7 @@ public class CommonController {
    */
   @GetMapping(value = {"/", ""})
   public String welcomeGet(Model model) {
-    model.addAttribute("questions", questionRepository.findAll());
-
+    model.addAttribute("questions", questionRepository.findAllByDeleted(false));
     return "/welcome";
   }
 
@@ -32,7 +33,8 @@ public class CommonController {
    */
   @PostMapping("/welcome")
   public String welcomePost(Model model) {
-    model.addAttribute("questions", questionRepository.findAll());
+    log.debug("### /welcome");
+    model.addAttribute("questions", questionRepository.findAllByDeleted(false));
 
     return "/welcome";
   }

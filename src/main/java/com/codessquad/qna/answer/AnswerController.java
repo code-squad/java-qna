@@ -1,6 +1,5 @@
 package com.codessquad.qna.answer;
 
-import com.codessquad.qna.commons.CommonUtils;
 import com.codessquad.qna.commons.CustomErrorCode;
 import com.codessquad.qna.errors.QuestionException;
 import com.codessquad.qna.question.Question;
@@ -15,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpSession;
+
+import static com.codessquad.qna.commons.CommonUtils.*;
 
 @Slf4j
 @Controller
@@ -33,10 +34,10 @@ public class AnswerController {
    */
   @PostMapping("")
   public String createAnswer(@PathVariable Long questionId, Answer answer, HttpSession session) {
-    User sessionedUser = CommonUtils.getSessionedUser(session);
-    Question question = CommonUtils.getQuestion(questionRepository, questionId);
+    User sessionedUser = getSessionedUserOrError(session);
+    Question question = getQuestionOrError(questionRepository, questionId);
 
-    answer.setUserId(sessionedUser.getUserId());
+    answer.setUser(sessionedUser);
     answer.setQuestion(question);
     answerRepository.save(answer);
 
@@ -52,11 +53,12 @@ public class AnswerController {
   public String delete(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
     log.info("### delete()");
 
-    User sessionedUser = CommonUtils.getSessionedUser(session);
-    Answer answer = CommonUtils.getAnswer(answerRepository, id);
+    User sessionedUser = getSessionedUserOrError(session);
+    Answer answer = getAnswerOrError(answerRepository, id);
 
-    if (sessionedUser.validateUserId(answer.getUserId())) {
-      answerRepository.delete(answer);
+    if (sessionedUser.equals(answer.getUser())) {
+      answer.delete();
+      answerRepository.save(answer);
       return "redirect:/questions/" + questionId;
     }
 

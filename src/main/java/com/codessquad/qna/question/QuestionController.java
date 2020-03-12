@@ -1,7 +1,7 @@
 package com.codessquad.qna.question;
 
+import com.codessquad.qna.answer.Answer;
 import com.codessquad.qna.answer.AnswerRepository;
-import com.codessquad.qna.commons.CommonUtils;
 import com.codessquad.qna.commons.CustomErrorCode;
 import com.codessquad.qna.errors.QuestionException;
 import com.codessquad.qna.user.User;
@@ -12,6 +12,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.Iterator;
+
+import static com.codessquad.qna.commons.CommonUtils.*;
 
 @Slf4j
 @Controller
@@ -30,9 +33,9 @@ public class QuestionController {
    * Return : /questions/form
    */
   @GetMapping("/form")
-  public String form(Model model, HttpSession session) {
-    log.info("### sessionedUser : " + session.getAttribute("sessionedUser"));
-    CommonUtils.getSessionedUser(session);
+  public String form(HttpSession session) {
+    log.info("### form");
+    getSessionedUserOrError(session);
 
     return "/questions/form";
   }
@@ -44,12 +47,12 @@ public class QuestionController {
    */
   @GetMapping("/{id}/form")
   public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
-    log.info("### sessionedUser : " + session.getAttribute("sessionedUser"));
+    log.info("### updateForm");
 
-    User sessionedUser = CommonUtils.getSessionedUser(session);
-    Question question = CommonUtils.getQuestion(questionRepository, id);
+    User sessionedUser = getSessionedUserOrError(session);
+    Question question = getQuestionOrError(questionRepository, id);
 
-    if (sessionedUser.validateUserId(question.getUserId())) {
+    if (sessionedUser.equals(question.getUser())) {
       model.addAttribute("question", question);
       return "/questions/update";
     }
@@ -64,23 +67,24 @@ public class QuestionController {
    */
   @PostMapping("")
   public String create(Question question, HttpSession session) {
-    CommonUtils.getSessionedUser(session);
+    getSessionedUserOrError(session);
     questionRepository.save(question);
 
     return "redirect:/";
   }
 
   /**
-   * Feat : Question 상세 내용을 보여주는 .hbs 로 이동합니다.
+   * Feat : Question 상세 내용과 Answers 를 보여주는 .hbs 로 이동합니다.
    * Desc : getQuestion() 을 통해 Question 존재 여부를 검증합니다.
    * Return : /questions/show
    */
   @GetMapping("/{id}")
   public String show(@PathVariable Long id, Model model) {
     log.info("### show()");
-    Question question = CommonUtils.getQuestion(questionRepository, id);
+    Question question = getQuestionOrError(questionRepository, id);
+    Iterable<Answer> answers = answerRepository.findByQuestionIdAndDeleted(id, false);
     model.addAttribute("question", question);
-    model.addAttribute("answers", answerRepository.findByQuestionId(question.getId()));
+    model.addAttribute("answers", answers);
 
     return "/questions/show";
   }
@@ -91,32 +95,46 @@ public class QuestionController {
    * Return : /questions/show
    */
   @PutMapping("/{id}")
-  public String update(@PathVariable Long id, Question question, Model model) {
+  public String update(@PathVariable Long id, Question question) {
     log.info("### update()");
-    Question origin = CommonUtils.getQuestion(questionRepository, id);
-    origin.update(question);
-    questionRepository.save(question);
+    Question originQuestion = getQuestionOrError(questionRepository, id);
+    originQuestion.update(question);
+    questionRepository.save(originQuestion);
 
-    return "/questions/show";
+    return "redirect:/questions/" + id;
   }
 
   /**
    * Feat : Question 을 delete 합니다.
    * Desc : getQuestion() 을 통해 Question 존재 여부를 검증합니다.
+   * 로그인된 유저와 작성자가 다르거나, 로그인된 유저가 작성하지 않은 답변이 있는 경우 삭제되지 않습니다.
    * Return : /questions/show
    */
   @DeleteMapping("/{id}")
   public String delete(@PathVariable Long id, HttpSession session) {
     log.info("### delete()");
+    User sessionedUser = getSessionedUserOrError(session);
+    Question question = getQuestionOrError(questionRepository, id);
+    Iterator<Answer> answers = getAnswers(answerRepository, question).iterator();
 
-    User sessionedUser = CommonUtils.getSessionedUser(session);
-    Question question = CommonUtils.getQuestion(questionRepository, id);
-
-    if (sessionedUser.validateUserId(question.getUserId())) {
-      questionRepository.delete(question);
-      return "redirect:/";
+    if (!sessionedUser.equals(question.getUser())) {
+      throw new QuestionException(CustomErrorCode.USER_NOT_MATCHED);
     }
 
-    throw new QuestionException(CustomErrorCode.USER_NOT_MATCHED);
+    answers.forEachRemaining(answer -> {
+      if (!answer.getUser().equals(sessionedUser)) {
+        throw new QuestionException(CustomErrorCode.USER_NOT_MATCHED);
+      }
+    });
+
+    answers = getAnswers(answerRepository, question).iterator();
+    answers.forEachRemaining(answer -> {
+      answer.delete();
+      answerRepository.save(answer);
+    });
+
+    question.delete();
+    questionRepository.save(question);
+    return "redirect:/";
   }
 }

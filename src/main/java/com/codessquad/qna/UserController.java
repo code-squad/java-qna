@@ -70,7 +70,7 @@ public class UserController {
             model.addAttribute("user", getSessionUser(id, session));
             return "/users/profile";
         } catch (IllegalAccessException e) {
-            log.info("Error Code > " + e.toString());
+            log.info("Error Code > {} ", e.toString());
             return e.getMessage();
         }
     }
@@ -81,7 +81,7 @@ public class UserController {
             model.addAttribute("user", getSessionUser(id, session));
             return "/users/updateForm";
         } catch (IllegalAccessException e) {
-            log.info("Error Code > " + e.toString());
+            log.info("Error Code > {} ", e.toString());
             return e.getMessage();
         }
     }
@@ -97,7 +97,7 @@ public class UserController {
             userRepository.save(user);
             return "redirect:/users";
         } catch (IllegalAccessException e) {
-            log.info("Error Code > " + e.toString());
+            log.info("Error Code > {} ", e.toString());
             return e.getMessage();
         }
     }

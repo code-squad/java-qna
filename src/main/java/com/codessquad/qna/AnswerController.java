@@ -41,7 +41,7 @@ public class AnswerController {
             model.addAttribute("answer", getVerifiedAnswer(id, session));
             return new ModelAndView("/qna/updatedAnswerForm");
         } catch (IllegalAccessException | EntityNotFoundException e) {
-            log.info("Error Code > " + e.toString());
+            log.info("Error Code > {} ", e.toString());
             return new ModelAndView(e.getMessage());
         }
     }
@@ -54,7 +54,7 @@ public class AnswerController {
             answerRepository.save(answer);
             return new ModelAndView("redirect:/questions/" + questionId);
         } catch (IllegalAccessException | EntityNotFoundException e) {
-            log.info("Error Code > " + e.toString());
+            log.info("Error Code > {} ", e.toString());
             return new ModelAndView(e.getMessage());
         }
     }
@@ -67,7 +67,7 @@ public class AnswerController {
             answerRepository.save(answer);
             return answer.isDeleted();
         } catch (IllegalAccessException | EntityNotFoundException e) {
-            log.info("Error Code > " + e.toString());
+            log.info("Error Code > {} ", e.toString());
             return false;
         }
     }

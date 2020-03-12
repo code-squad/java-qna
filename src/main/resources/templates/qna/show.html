@@ -16,8 +16,10 @@
                       <div class="article-header-text">
                           <a href="/users/{{question.writer}}" class="article-author-name">{{question.writer}}</a>
                           <a href="#" class="article-header-time" title="퍼머링크">
-                              {{question.createdDateTimetoString}}
-                              <i class="icon-link"></i>
+                              작성일 {{question.createdDateTimetoString}}
+                          </a>
+                          <a href="#" class="article-header-time" title="퍼머링크">
+                              수정일 {{question.modifiedDateTimetoString}}
                           </a>
                       </div>
                   </div>
@@ -36,7 +38,7 @@
                               </form>
                           </li>
                           <li>
-                              <a class="link-modify-article" href="/">목록</a>
+                              <a href="/">목록</a>
                           </li>
                       </ul>
                   </div>
@@ -55,7 +57,10 @@
                                       <div class="article-header-text">
                                           <a href="/users/{{writer}}" class="article-author-name">{{writer}}</a>
                                           <a href="#" class="article-header-time" title="퍼머링크">
-                                              {{createDateTimeToString}}
+                                              작성일 {{createdDateTimetoString}}
+                                          </a>
+                                          <a href="#" class="article-header-time" title="퍼머링크">
+                                              수정일 {{modifiedDateTimetoString}}
                                           </a>
                                       </div>
                                   </div>
@@ -65,16 +70,17 @@
                                   <div class="article-util">
                                       <ul class="article-util-list">
                                           <li>
-                                              <a class="link-modify-article" href="/api/questions/{{question.id}}/answers/{{id}}">수정</a>
+                                              <a class="link-modify-comment" href="/api/questions/{{question.id}}/answers/{{id}}/form">수정</a>
                                           </li>
                                           <li>
-                                              <a class="link-delete-article" href="/api/questions/{{question.id}}/answers/{{id}}">삭제</a>
+                                              <a class="link-delete-comment" href="/api/questions/{{question.id}}/answers/{{id}}">삭제</a>
                                           </li>
                                       </ul>
                                   </div>
                               </article>
                               {{/answers}}
                           </div>
+                          <div class="comment-form">
                           {{#sessionedUser}}
                           <form name = "answer" method="post" action="/api/questions/{{question.id}}/answers/" class="answer-write">
                               <div class="form-group" style="padding:14px;">
@@ -84,6 +90,7 @@
                               <div class="clearfix" />
                           </form>
                           {{/sessionedUser}}
+                          </div>
                       </div>
                   </div>
               </div>
@@ -100,7 +107,8 @@
 			</div>
 			<div class="article-header-text">
 				<a href="#" class="article-author-name">\{{writer}}</a>
-				<div class="article-header-time">\{{createDateTimeToString}}</div>
+				<div class="article-header-time">작성일 \{{createdDateTimetoString}}</div>
+                <div class="article-header-time">수정일 \{{modifiedDateTimetoString}}</div>
 			</div>
 		</div>
 		<div class="article-doc comment-doc">
@@ -109,15 +117,29 @@
 		<div class="article-util">
 		<ul class="article-util-list">
 			<li>
-				<a class="link-modify-article" href="/api/questions/\{{question.id}}/answers/\{{id}}">수정</a>
+				<a class="link-modify-comment" href="/api/questions/\{{question.id}}/answers/\{{id}}/form">수정</a>
 			</li>
 			<li>
-                <a class="link-delete-article" href="/api/questions/\{{question.id}}/answers/\{{id}}">삭제</a>
+                <a class="link-delete-comment" href="/api/questions/\{{question.id}}/answers/\{{id}}">삭제</a>
 			</li>
 		</ul>
 		</div>
 	</article>
 </script>
+
+<script type="text/x-handlebars-template" id="comment-form">
+    <div class="comment-form">
+        <form name = "answer" method="post" action="/questions/{{question.id}}/answers/\{{id}}" class="answer-write">
+            <input type="hidden" name="_method" value="put"/>
+            <div class="form-group" style="padding:14px;">
+                <textarea name = "contents" class="form-control" placeholder="Update your status">{\{{contentsWithBr}}}</textarea>
+            </div>
+            <button type="submit" class="btn btn-success pull-right">수정하기</button>
+            <div class="clearfix" />
+        </form>
+    </div>
+</script>
+
 {{/partial}}
 {{> partials/base}}
 </html>

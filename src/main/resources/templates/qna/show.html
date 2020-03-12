@@ -60,18 +60,15 @@
                                       </div>
                                   </div>
                                   <div class="article-doc comment-doc">
-                                      <p>{{contents}}</p>
+                                      {{contents}}
                                   </div>
                                   <div class="article-util">
                                       <ul class="article-util-list">
                                           <li>
-                                              <a class="link-modify-article" href="#">수정</a>
+                                              <a class="link-modify-article" href="/api/questions/{{question.id}}/answers/{{id}}">수정</a>
                                           </li>
                                           <li>
-                                              <form class="delete-answer-form" action="/questions/{{question.id}}/answers/{{id}}" method="POST">
-                                                  <input type="hidden" name="_method" value="DELETE">
-                                                  <button type="submit" class="delete-answer-button">삭제</button>
-                                              </form>
+                                              <a class="link-delete-article" href="/api/questions/{{question.id}}/answers/{{id}}">삭제</a>
                                           </li>
                                       </ul>
                                   </div>
@@ -107,7 +104,7 @@
 			</div>
 		</div>
 		<div class="article-doc comment-doc">
-            <p>\{{contents}}</p>
+            {\{{contentsWithBr}}}
 		</div>
 		<div class="article-util">
 		<ul class="article-util-list">
@@ -115,10 +112,7 @@
 				<a class="link-modify-article" href="/api/questions/\{{question.id}}/answers/\{{id}}">수정</a>
 			</li>
 			<li>
-				<form class="delete-answer-form" action="/api/questions/\{{question.id}}/answers/\{{id}}" method="POST">
-					<input type="hidden" name="_method" value="DELETE">
-                     <button type="submit" class="delete-answer-button">삭제</button>
-				</form>
+                <a class="link-delete-article" href="/api/questions/\{{question.id}}/answers/\{{id}}">삭제</a>
 			</li>
 		</ul>
 		</div>

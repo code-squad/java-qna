@@ -28,14 +28,14 @@ public class AnswerController {
     }
 
     @DeleteMapping("/{answerId}")
-    public String delete(@PathVariable Long questionId, @PathVariable Long answerId, @RequestAttribute User sessionedUser) {
+    public Result delete(@PathVariable Long questionId, @PathVariable Long answerId, @RequestAttribute User sessionedUser) {
         Answer answer = findAnswer(answerId);
         if (!answer.matchWriter(sessionedUser))
-            throw new RequestNotAllowedException(ErrorCode.FORBIDDEN);
+            return Result.fail("삭제 권한이 없습니다.");
 
         answer.setDeleted(true);
         answerRepository.save(answer);
-        return String.format("redirect:/questions/%d", questionId);
+        return Result.ok();
     }
 
     private Question findQuestion(Long questionId) {

@@ -300,13 +300,41 @@ public String viewQnaList(Model model) {
 
 
 
-방법 1. Exception을 이용해서 중복 제거
+리팩토링
+
+1. Exception을 이용해서 중복 제거
 
 ​				권한이 있는지 여부를 확인하는 메소드(`hasPermission`)를 생성
 
-방법2. 권한만 체크해서 가져오는 것이 아니라 아예 결과를 return해주도록 별도의 클래스 생성 (결과 객체)
+2. 권한만 체크해서 가져오는 것이 아니라 아예 결과를 return해주도록 별도의 클래스 생성 (결과 객체)
 
-방법3. try ~ catch 문을 없애주기위해 `@ExceptionHandler` 어노테이션으로 전역에 발생한 에러를 잡아서 처리해주도록 한다.
+3. try ~ catch 문을 없애주기위해 `@ExceptionHandler` 어노테이션으로 전역에 발생한 에러를 잡아서 처리해주도록 한다.
 
 ​	`@ExceptionHandler` 는 별도로 catch되지 않은 전역에 발생한 에러를 잡아준다.
+
+
+
+* 존재하지 않는 데이터 요청 시 404 리턴
+
+![image-20200312114719399](https://tva1.sinaimg.cn/large/00831rSTgy1gcqya2tlroj30y40u04ct.jpg)
+
+
+
+* 권한없는 요청 시 403 리턴 
+
+![image-20200312114519607](https://tva1.sinaimg.cn/large/00831rSTgy1gcqy802qpuj30y70u07jj.jpg)
+
+
+
+### Todo list
+
+- [ ] `ValidationResult` 객체로 리턴한 부분은 200 상태코드를 넘기고 있다. 상태코드 바꿔주기
+
+  ![image-20200312113839839](https://tva1.sinaimg.cn/large/00831rSTgy1gcqy14uxt8j30y80u0k5r.jpg)
+
+- [ ] @ControllerAdvice를 이용한 Exception 헨들링
+
+  클리스마다 `@ExceptionHandler`로 에러 헨들링하는 코드가 중복되어 있어서 전역에서 발생하는 에러를 잡아주기위해 별도의 컨트롤러 이용
+
+- [ ] 에러메시지 enum으로 만들기
 

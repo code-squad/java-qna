@@ -29,8 +29,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(String userId, String password, HttpSession session) {
-        User sessionUser = userRepository.findByUserId(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user가 없어요!!"));
+    public String login(String userId, String password, HttpSession session) throws NotFoundException {
+        User sessionUser = userRepository.findByUserId(userId).orElseThrow(() -> new NotFoundException("user가 없어요!!"));
 
         if (!sessionUser.matchPassword(password)) {
             log.debug("Login Fail!! not match password");
@@ -67,44 +67,28 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public String viewProfile(@PathVariable long id, Model model) {
-        try {
-            model.addAttribute("currentUser", userRepository.findById(id).orElseThrow(() -> new NotFoundException("그런 회원 없어욧")));
-            return "/users/profile";
-        } catch (NotFoundException e) {
-            e.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+    public String viewProfile(@PathVariable long id, Model model) throws NotFoundException{
+        model.addAttribute("currentUser", userRepository.findById(id).orElseThrow(() -> new NotFoundException("그런 회원 없어욧")));
+        return "/users/profile";
     }
 
     @GetMapping("/{id}/modify")
-    public String moveUpdateForm(Model model, @PathVariable Long id, HttpSession session) {
+    public String moveUpdateForm(Model model, @PathVariable Long id, HttpSession session) throws NotFoundException{
         ValidationResult validationResult = validate(session, id);
         if (!validationResult.isValid()) {
             model.addAttribute("errorMessage", validationResult.getErrorMessage());
             return "/error";
         }
 
-        try {
-            User sessionUser = HttpSessionUtils.getUserFromSession(session);
-            model.addAttribute("currentUser", userRepository.findById(sessionUser.getId()).orElseThrow(() -> new NotFoundException("그런 회원 없는뎅")));
-            return "/users/modify";
-        } catch (NotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        User sessionUser = HttpSessionUtils.getUserFromSession(session);
+        model.addAttribute("currentUser", userRepository.findById(sessionUser.getId()).orElseThrow(() -> new NotFoundException("그런 회원 없는뎅")));
+        return "/users/modify";
     }
 
     @PutMapping("/{id}")
-    public String updateUser(User updatedUser, String newPassword , @PathVariable Long id, Model model, HttpSession session) throws ResponseStatusException {
-        User currentUser;
-
-        try {
-            User sessionUser = HttpSessionUtils.getUserFromSession(session);
-            currentUser = userRepository.findById(sessionUser.getId()).orElseThrow(() -> new NotFoundException("그런 회원 없는뎅"));
-        } catch (NotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
-
+    public String updateUser(User updatedUser, String newPassword , @PathVariable Long id, Model model, HttpSession session) throws NotFoundException {
+        User sessionUser = HttpSessionUtils.getUserFromSession(session);
+        User currentUser = userRepository.findById(sessionUser.getId()).orElseThrow(() -> new NotFoundException("그런 회원 없는뎅"));
         ValidationResult validationResult = validate(session, id);
         if (!validationResult.isValid()) {
             model.addAttribute("errorMessage", validationResult.getErrorMessage());
@@ -132,5 +116,13 @@ public class UserController {
         }
 
         return ValidationResult.ok();
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND) //Response 헤더의 상태코드값 설정
+    protected String catchNotFoundException(Model model, NotFoundException e) {
+        log.debug("catchNotFoundException!!!!!!!!!!!!!!!!!!!");
+        model.addAttribute("errorMessage", e.getMessage());
+        return "/error";
     }
 }

@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpSession;
 
@@ -45,26 +44,15 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}")
-    public String viewQuestion(@PathVariable long id, Model model) {
-        try {
-            model.addAttribute("currentQuestion", questionRepostory.findById(id).orElseThrow(() -> new NotFoundException("자료가 없어용")));
-            model.addAttribute("answers", answerRepository.findAllByQuestionId(id));
-            return "/questions/show";
-        } catch (NotFoundException e) {
-            e.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+    public String viewQuestion(@PathVariable long id, Model model) throws NotFoundException {
+        model.addAttribute("currentQuestion", questionRepostory.findById(id).orElseThrow(() -> new NotFoundException("게시글 없는데요??!!!")));
+        model.addAttribute("answers", answerRepository.findAllByQuestionId(id));
+        return "/questions/show";
     }
 
     @GetMapping("/{id}/modify")
-    public String moveUpdateForm(Model model, @PathVariable Long id, HttpSession session) {
-        Question currentQuestion;
-        try {
-            currentQuestion = questionRepostory.findById(id).orElseThrow(() -> new NotFoundException("게시물 없어욧!!"));
-        } catch (NotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
-
+    public String moveUpdateForm(Model model, @PathVariable Long id, HttpSession session) throws NotFoundException {
+        Question currentQuestion = questionRepostory.findById(id).orElseThrow(() -> new NotFoundException("게시글 없는데요??!!!"));
         ValidationResult validationResult = validate(session, currentQuestion);
         if (!validationResult.isValid()) {
         model.addAttribute("errorMessage", validationResult.getErrorMessage());
@@ -76,14 +64,8 @@ public class QuestionController {
     }
 
     @PutMapping("/{id}")
-    public String updateQuestion(Question updateQuestion, @PathVariable Long id, Model model, HttpSession session) {
-        Question currentQuestion;
-        try {
-            currentQuestion = questionRepostory.findById(id).orElseThrow(() -> new NotFoundException("게시물 없어영~!"));
-        } catch (NotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
-
+    public String updateQuestion(Question updateQuestion, @PathVariable Long id, Model model, HttpSession session) throws NotFoundException {
+        Question currentQuestion = questionRepostory.findById(id).orElseThrow(() -> new NotFoundException("게시글 없는데요??!!!"));
         ValidationResult validationResult = validate(session, currentQuestion);
         if (!validationResult.isValid()) {
             model.addAttribute("errorMessage", validationResult.getErrorMessage());
@@ -96,26 +78,15 @@ public class QuestionController {
     }
 
     @DeleteMapping("/{id}")
-    public String removeQuestion(Question deleteQuestion, @PathVariable Long id, Model model, HttpSession session) {
-        Question currentQuestion;
-        try {
-            currentQuestion = questionRepostory.findById(id).orElseThrow(() -> new NotFoundException("게시물 없어영~!"));
-        } catch (NotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
-
+    public String removeQuestion(Question deleteQuestion, @PathVariable Long id, Model model, HttpSession session) throws NotFoundException {
+        Question currentQuestion = questionRepostory.findById(id).orElseThrow(() -> new NotFoundException("게시글 없는데요??!!!"));
         ValidationResult validationResult = validate(session, currentQuestion);
         if (!validationResult.isValid()) {
             model.addAttribute("errorMessage", validationResult.getErrorMessage());
             return "/error";
         }
 
-        try {
-            currentQuestion.delete();
-        } catch (IllegalStateException e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "/error";
-        }
+        currentQuestion.delete();
         questionRepostory.save(currentQuestion);
         return "redirect:/questions";
     }
@@ -137,5 +108,21 @@ public class QuestionController {
         }
 
         return ValidationResult.ok();
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND) //Response 헤더의 상태코드값 설정
+    protected String catchNotFoundException(Model model, NotFoundException e) {
+        log.debug("catchNotFoundException!!!!!!!!!!!!!!!!!!!");
+        model.addAttribute("errorMessage", e.getMessage());
+        return "/error";
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    protected String catchIllegalStateException(Model model, IllegalStateException e) {
+        log.debug("catchIllegalStateException!!!!!!!!!!!!!!!!!");
+        model.addAttribute("errorMessage", e.getMessage());
+        return "/error";
     }
 }

@@ -12,7 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.Iterator;
 import java.util.List;
 
 import static com.codessquad.qna.commons.CommonUtils.*;
@@ -116,26 +115,18 @@ public class QuestionController {
     log.info("### delete()");
     User sessionedUser = getSessionedUser(session);
     Question question = getQuestion(questionRepository, id);
-    Iterator<Answer> answers = getAnswers(answerRepository, question).iterator();
 
-    if (!sessionedUser.equals(question.getUser())) {
-      throw new QuestionException(CustomErrorCode.USER_NOT_MATCHED);
+    if (sessionedUser.equals(question.getUser()) && question.checkAnswersWriter()) {
+      for (Answer answer : getAnswers(answerRepository, question)) {
+        answer.delete();
+        answerRepository.save(answer);
+      }
+
+      question.delete();
+      questionRepository.save(question);
+      return "redirect:/";
     }
 
-    answers.forEachRemaining(answer -> {
-      if (!answer.getUser().equals(sessionedUser)) {
-        throw new QuestionException(CustomErrorCode.USER_NOT_MATCHED);
-      }
-    });
-
-    answers = getAnswers(answerRepository, question).iterator();
-    answers.forEachRemaining(answer -> {
-      answer.delete();
-      answerRepository.save(answer);
-    });
-
-    question.delete();
-    questionRepository.save(question);
-    return "redirect:/";
+    throw new QuestionException(CustomErrorCode.USER_NOT_MATCHED);
   }
 }

@@ -7,14 +7,19 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false, length = 20)
+
+    @Column(nullable = false, length = 20, unique = true)
     private String userId;
+
     @Column(nullable = false, length = 20)
     private String password;
+
     @Column(nullable = false)
     private String name;
+
     @Column(nullable = false)
     private String email;
+
     @Transient
     private String updatedPassword;
 
@@ -67,16 +72,32 @@ public class User {
     }
 
     public void update(User updatedUser) {
-        this.password = checkPassword(updatedUser);
-        this.name = updatedUser.getName();
-        this.email = updatedUser.getEmail();
+        password = checkPassword(updatedUser);
+        name = updatedUser.name;
+        email = updatedUser.email;
     }
 
     private String checkPassword(User updatedUser) {
-        if(updatedUser.getUpdatedPassword().length()!=0){
-            return updatedUser.getUpdatedPassword();
+        if(updatedUser.updatedPassword.length()>0){
+            return updatedUser.updatedPassword;
         }
-        return updatedUser.getPassword();
+        return updatedUser.password;
+    }
+
+    public boolean matchPassword(User inputUser) {
+        return password.equals(inputUser.password);
+    }
+
+    public boolean matchPassword(String inputPassword) {
+        return password.equals(inputPassword);
+    }
+
+    public boolean matchId(Long inputId) {
+        return id.equals(inputId);
+    }
+
+    public boolean matchName(String writer) {
+        return name.equals(writer);
     }
 
     @Override

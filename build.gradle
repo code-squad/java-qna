@@ -30,11 +30,6 @@ dependencies {
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
-
-	compile group: 'org.springframework.boot', name: 'spring-boot-starter-log4j2', version: '2.2.4.RELEASE'
-	configurations {
-		compile.exclude module: 'spring-boot-starter-logging'
-	}
 }
 
 test {

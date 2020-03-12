@@ -1,8 +1,8 @@
 package com.codessquad.qna.web.services;
 
-import com.codessquad.qna.domain.Question;
 import com.codessquad.qna.domain.User;
 import com.codessquad.qna.domain.UserRepository;
+import com.codessquad.qna.exceptions.PermissionDeniedException;
 import com.codessquad.qna.exceptions.UnauthorizedException;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
+import static com.codessquad.qna.exceptions.UnauthorizedException.NOT_LOGIN;
 import static com.codessquad.qna.exceptions.UnauthorizedException.NO_MATCH_USER;
 
 @Service
@@ -54,5 +55,17 @@ public class AuthService {
         cookie.setMaxAge(0);
         cookie.setPath("/");
         response.addCookie(cookie);
+    }
+
+    public void hasAuthorization(HttpServletRequest request, User targetUser) {
+        try {
+            Long userId = (Long)request.getSession(false).getAttribute(AUTHENTICATION_ID);
+
+            if(!userId.equals(targetUser.getId())) {
+                throw new PermissionDeniedException();
+            }
+        }catch (NullPointerException exception) {
+            throw new UnauthorizedException(NOT_LOGIN);
+        }
     }
 }

@@ -12,9 +12,11 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping("/users")
 public class UserController {
+    private final AuthService authService;
     private final UserService userService;
 
-    public UserController(UserService userService) {
+    public UserController(AuthService authService, UserService userService) {
+        this.authService = authService;
         this.userService = userService;
     }
 
@@ -37,8 +39,8 @@ public class UserController {
 
     @GetMapping("/{id}/updateForm")
     public String updateFormPage(HttpServletRequest request, @PathVariable("id") Long targetUserId, Model model) {
-        userService.isOwner(request, targetUserId);
         User targetUser = userService.getUserById(targetUserId);
+        authService.hasAuthorization(request, targetUser);
         model.addAttribute("user", targetUser);
         return "users/updateForm";
     }
@@ -51,7 +53,9 @@ public class UserController {
 
     @PutMapping("/{id}")
     public String updateUser(HttpServletRequest request, @PathVariable("id") Long targetUserId, User newUser) {
-        userService.edit(request, targetUserId, newUser);
+        User targetUser = userService.getUserById(targetUserId);
+        authService.hasAuthorization(request, targetUser);
+        userService.edit(targetUser, newUser);
         return "redirect:/users";
     }
 }

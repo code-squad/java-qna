@@ -36,7 +36,7 @@ public class QuestionController {
   @GetMapping("/form")
   public String form(HttpSession session) {
     log.info("### form");
-    getSessionedUserOrError(session);
+    checkLoginOrError(session);
 
     return "/questions/form";
   }
@@ -50,8 +50,8 @@ public class QuestionController {
   public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
     log.info("### updateForm");
 
-    User sessionedUser = getSessionedUserOrError(session);
-    Question question = getQuestionOrError(questionRepository, id);
+    User sessionedUser = getSessionedUser(session);
+    Question question = getQuestion(questionRepository, id);
 
     if (sessionedUser.equals(question.getUser())) {
       model.addAttribute("question", question);
@@ -68,7 +68,7 @@ public class QuestionController {
    */
   @PostMapping("")
   public String create(Question question, HttpSession session) {
-    getSessionedUserOrError(session);
+    getSessionedUser(session);
     questionRepository.save(question);
 
     return "redirect:/";
@@ -82,7 +82,7 @@ public class QuestionController {
   @GetMapping("/{id}")
   public String show(@PathVariable Long id, Model model) {
     log.info("### show()");
-    Question question = getQuestionOrError(questionRepository, id);
+    Question question = getQuestion(questionRepository, id);
     List<Answer> answers = answerRepository.findByQuestionIdAndDeleted(id, false);
     model.addAttribute("question", question);
     model.addAttribute("answers", answers);
@@ -98,7 +98,7 @@ public class QuestionController {
   @PutMapping("/{id}")
   public String update(@PathVariable Long id, Question question) {
     log.info("### update()");
-    Question originQuestion = getQuestionOrError(questionRepository, id);
+    Question originQuestion = getQuestion(questionRepository, id);
     originQuestion.update(question);
     questionRepository.save(originQuestion);
 
@@ -114,8 +114,8 @@ public class QuestionController {
   @DeleteMapping("/{id}")
   public String delete(@PathVariable Long id, HttpSession session) {
     log.info("### delete()");
-    User sessionedUser = getSessionedUserOrError(session);
-    Question question = getQuestionOrError(questionRepository, id);
+    User sessionedUser = getSessionedUser(session);
+    Question question = getQuestion(questionRepository, id);
     Iterator<Answer> answers = getAnswers(answerRepository, question).iterator();
 
     if (!sessionedUser.equals(question.getUser())) {

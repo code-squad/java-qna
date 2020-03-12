@@ -31,8 +31,8 @@ public class ApiAnswerController {
    */
   @PostMapping("")
   public Answer createAnswer(@PathVariable Long questionId, Answer answer, HttpSession session) {
-    User sessionedUser = getSessionedUserOrError(session);
-    Question question = getQuestionOrError(questionRepository, questionId);
+    User sessionedUser = getSessionedUser(session);
+    Question question = getQuestion(questionRepository, questionId);
 
     answer.setUser(sessionedUser);
     answer.setQuestion(question);
@@ -50,8 +50,8 @@ public class ApiAnswerController {
   public Result delete(@PathVariable Long id, HttpSession session) {
     log.info("### delete()");
 
-    User sessionedUser = getSessionedUserOrError(session);
-    Answer answer = getAnswerOrError(answerRepository, id);
+    User sessionedUser = getSessionedUser(session);
+    Answer answer = getAnswer(answerRepository, id);
 
     if (sessionedUser.equals(answer.getUser())) {
       answer.delete();

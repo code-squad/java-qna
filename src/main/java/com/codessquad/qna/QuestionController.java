@@ -26,7 +26,7 @@ public class QuestionController {
     @PostMapping("/form")
     public String makeQuestion(String title, String contents, HttpSession session) {
         User loginUser = HttpSessionUtils.getUserFromSession(session);
-        Question question = new Question(loginUser.getName(), title, contents, loginUser.getId());
+        Question question = new Question(loginUser, title, contents);
         questionRepository.save(question);
         return "redirect:/";
     }

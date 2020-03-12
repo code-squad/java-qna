@@ -18,7 +18,7 @@ public class UserInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        log.info("preHandle enter : {}, method : {}", request.getRequestURI(), request.getMethod());
+        log.debug("preHandle enter : {}, method : {}", request.getRequestURI(), request.getMethod());
         if (matchQuestionURI(request.getRequestURI(), request.getMethod()))
             return true;
 
@@ -29,7 +29,7 @@ public class UserInterceptor implements HandlerInterceptor {
         }
 
         request.setAttribute("sessionedUser", HttpSessionUtils.getUserFromSession(session));
-        log.info("preHandle out");
+        log.debug("preHandle out");
         return true;
     }
 

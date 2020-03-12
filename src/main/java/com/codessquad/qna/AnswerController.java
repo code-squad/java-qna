@@ -39,26 +39,23 @@ public class AnswerController {
     public ModelAndView viewUpdateForm(@PathVariable Long id, Model model, HttpSession session) {
         try {
             model.addAttribute("answer", getVerifiedAnswer(id, session));
-            ModelAndView mav = new ModelAndView("/qna/updatedAnswerForm");
-            return mav;//"/qna/updatedAnswerForm";
+            return new ModelAndView("/qna/updatedAnswerForm");
         } catch (IllegalAccessException | EntityNotFoundException e) {
             log.info("Error Code > " + e.toString());
             return null;
-            //return e.getMessage();
         }
     }
 
     @PutMapping("/{id}/form")
-    public Answer updateAnswer(@PathVariable Long questionId, @PathVariable Long id, String contents, HttpSession session) {
+    public ModelAndView updateAnswer(@PathVariable Long questionId, @PathVariable Long id, String contents, HttpSession session) {
         try {
             Answer answer = getVerifiedAnswer(id, session);
             answer.update(contents);
-            return answerRepository.save(answer);
-            //return "redirect:/questions/" + questionId;
+            answerRepository.save(answer);
+            return new ModelAndView("redirect:/questions/" + questionId);
         } catch (IllegalAccessException | EntityNotFoundException e) {
             log.info("Error Code > " + e.toString());
             return null;
-            //return e.getMessage();
         }
     }
 

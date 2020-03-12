@@ -1,9 +1,5 @@
-//$(".answer-write input[type=submit]").click(addAnswer);
-//$(".delete-answer-form").click(deleteAnswer);
-
 $(".answer-write input[type='submit']").on("click", addAnswer);
 $(".qna-comment-slipp-articles").on("click", ".delete-answer-form button[type='submit']", deleteAnswer);
-//$(".qna-comment-slipp-articles").on("click", ".link-modify-article", updateAnswer);
 
 function addAnswer(e) {
     e.preventDefault();
@@ -24,7 +20,7 @@ function addAnswer(e) {
 }
 
 // 서버에서 클라이언트로 준 데이터 (data -> createAnswer 메서드의 Answer return 객체값)
-function createTemplate(data) {
+function createTemplate(data, status) {
     console.log("> " + status);
     console.log(data);
     var answerTemplate = $("#answerTemplate").html();
@@ -60,11 +56,29 @@ function deleteTemplate(deleteBtn) {
     }
 }
 
+//$(".answer-btn").click(updateAnswer);
+//
 //function updateAnswer(e) {
 //    e.preventDefault();
+//    var queryString = $(".form-control").serialize();
 //    var updateBtn = $(this);
-//    var url = updateBtn.parent().attr("href");
-//    alert("url > " + url);
+//    var url = updateBtn.attr("action");
+//    console.log("url : " + url);
+//    console.log("queryString : " +queryString);
+//
+//    $.ajax({
+//        type : 'put',
+//        url : url,
+//        data : queryString,
+//        dateType : 'json',
+//        error : onError,
+//        success : updateTemplate
+//    });
+//}
+//
+//function updateTemplate(data, status) {
+//    console.log("> " + status);
+//    console.log(data);
 //}
 
 function onError(error, status) {

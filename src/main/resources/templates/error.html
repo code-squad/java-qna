@@ -1,0 +1,15 @@
+{{#partial "title"}}
+<title>에러 페이지</title>
+{{/partial}}
+
+{{#partial "main"}}
+<h1 class="cover-heading">{{status}}</h1>
+<p class="lead">{{exception.message}}</p>
+<p>
+    {{#exception.stackTrace}}
+    {{this}}
+    {{/exception.stackTrace}}
+</p>
+{{/partial}}
+
+{{> layout/base}}

@@ -4,7 +4,9 @@
 
 {{#partial "alert"}}
 <div class="alert alert-danger" role="alert">
-    일치하는 회원정보가 존재하지 않는다.
+
+    {{exception.message}}
+    
 </div>
 {{/partial}}
 

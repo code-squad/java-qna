@@ -3,6 +3,7 @@ package com.codessquad.qna.question;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface QuestionRepository extends CrudRepository<Question, Long> {
@@ -10,5 +11,5 @@ public interface QuestionRepository extends CrudRepository<Question, Long> {
   Optional<Question> findByIdAndDeleted(Long questionId, boolean deleted);
 
   @Transactional(readOnly = true)
-  Iterable<Question> findAllByDeleted(boolean deleted);
+  List<Question> findAllByDeleted(boolean deleted);
 }

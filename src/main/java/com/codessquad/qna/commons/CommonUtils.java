@@ -9,6 +9,7 @@ import com.codessquad.qna.question.QuestionRepository;
 import com.codessquad.qna.user.User;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 import java.util.Optional;
 
 public class CommonUtils {
@@ -54,7 +55,7 @@ public class CommonUtils {
    * Desc :
    * Return : Question 에 매칭되는  answers
    */
-  public static Iterable<Answer> getAnswers(AnswerRepository answerRepository, Question question) {
+  public static List<Answer> getAnswers(AnswerRepository answerRepository, Question question) {
     return answerRepository.findByQuestionIdAndDeleted(question.getId(), false);
   }
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.Iterator;
+import java.util.List;
 
 import static com.codessquad.qna.commons.CommonUtils.*;
 
@@ -82,7 +83,7 @@ public class QuestionController {
   public String show(@PathVariable Long id, Model model) {
     log.info("### show()");
     Question question = getQuestionOrError(questionRepository, id);
-    Iterable<Answer> answers = answerRepository.findByQuestionIdAndDeleted(id, false);
+    List<Answer> answers = answerRepository.findByQuestionIdAndDeleted(id, false);
     model.addAttribute("question", question);
     model.addAttribute("answers", answers);
 

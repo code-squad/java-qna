@@ -21,9 +21,12 @@ public class AnswerController {
 
     @PostMapping("")
     public Answer create(@PathVariable Long questionId, String contents, @RequestAttribute User sessionedUser) {
-        log.info("api create : {} ", contents);
         Question answeredQuestion = findQuestion(questionId);
         Answer newAnswer = new Answer(answeredQuestion, sessionedUser, contents);
+        // @Formula로 가져온 값은 새로운 답변 추가가 반영되기 전이니까 임시 방편으로 여기서 추가해준다.
+        // deleteAnswer()는 필요 없다.
+        answeredQuestion.addAnswer();
+        log.debug("count of Answers : {}", answeredQuestion.getCountOfAnswers());
         return answerRepository.save(newAnswer);
     }
 

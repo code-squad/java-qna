@@ -62,11 +62,11 @@ public class Question {
     }
 
     public String getContentsWithBr() {
-        return HtmlDocumentUtils.getEntertoBrTag(this.contents);
+        return HtmlDocumentUtils.getEntertoBrTag(contents);
     }
 
     public String getCreatedDateTimetoString() {
-        return DateTimeFormatUtils.getFormattedLocalDateTime(this.createdDateTime);
+        return DateTimeFormatUtils.getFormattedLocalDateTime(createdDateTime);
     }
 
     public int getCountOfAnswers() {
@@ -74,7 +74,7 @@ public class Question {
     }
 
     public boolean matchWriter(User sessionedUser) {
-        return this.writer.equals(sessionedUser);
+        return writer.equals(sessionedUser);
     }
 
     public void update(String title, String contents) {
@@ -91,6 +91,10 @@ public class Question {
                 return false;
         }
         return (this.deleted = true);
+    }
+
+    public void addAnswer() {
+        countOfAnswers++;
     }
 
     @Override

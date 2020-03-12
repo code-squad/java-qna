@@ -28,6 +28,8 @@ $(".qna-comment-slipp-articles").on("click", "a[class='link-delete-article']", f
        success: function(result) {
            if (result.valid) {
                deleteBtn.closest("article").remove();
+               var countOfAnswers = Number($(".qna-comment-count strong").text());
+               $(".qna-comment-count strong").text(countOfAnswers - 1);
                return;
            }
            alert(result.errorMessage);
@@ -43,6 +45,6 @@ function onCreationSuccess(data) {
     $(".answer-article-ajax").append(html);
     $(".form-control").val("");
 
-    $(".qna-comment-count").text(data.question.countOfAnswers + 1 + '개의 의견');
+    $(".qna-comment-count").text(data.question.countOfAnswers + '개의 의견');
 }
 

@@ -53,15 +53,15 @@ public class Answer {
     }
 
     public String getContents() {
-        return this.contents;
+        return contents;
     }
 
     public String getContentsWithBr() {
-        return HtmlDocumentUtils.getEntertoBrTag(this.contents);
+        return HtmlDocumentUtils.getEntertoBrTag(contents);
     }
 
     public String getCreateDateTimeToString() {
-        return DateTimeFormatUtils.getFormattedLocalDateTime(this.createDateTime);
+        return DateTimeFormatUtils.getFormattedLocalDateTime(createDateTime);
     }
 
     public boolean isDeleted() {
@@ -69,7 +69,7 @@ public class Answer {
     }
 
     public boolean matchWriter(User user) {
-        return this.writer.equals(user);
+        return writer.equals(user);
     }
 
     public boolean checkDeleteCondition(User user) {

@@ -18,9 +18,7 @@ public class QuestionService {
     }
 
     public Question getQuestionById(Long id) {
-        return questionRepository.findById(id).orElseThrow(() -> {
-            throw new NotFoundException(id);
-        });
+        return questionRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
     }
 
     public void register(Question newQuestion) {

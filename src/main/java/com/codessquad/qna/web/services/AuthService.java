@@ -35,9 +35,9 @@ public class AuthService {
          * 아래 코드애서 UnauthorizedException::new 함수를 사용할 수 없다.
          */
         Optional<User> optionalOrigin = userRepository.findByAccountId(entrant.getAccountId());
-        User origin = optionalOrigin.orElseThrow(() -> {
-            throw new UnauthorizedException(NO_MATCH_USER);
-        });
+
+
+        User origin = optionalOrigin.orElseThrow(() -> new UnauthorizedException(NO_MATCH_USER));
         origin.verify(entrant);
 
         HttpSession session = request.getSession(true);
@@ -57,13 +57,11 @@ public class AuthService {
         response.addCookie(cookie);
     }
 
-    public User getRequester(HttpServletRequest request) {
+    public User getRequester(HttpServletRequest request) throws RuntimeException {
         try {
             Long requesterId = (Long) request.getSession(false).getAttribute(AUTHENTICATION_ID);
 
-            return userRepository.findById(requesterId).orElseThrow(() -> {
-                throw new RuntimeException("이런 문제가 가능할까?");
-            });
+            return userRepository.findById(requesterId).orElseThrow(() -> new RuntimeException("이런 문제가 가능할까?"));
         } catch (NullPointerException exception) {
             throw new UnauthorizedException(NOT_LOGIN);
         }

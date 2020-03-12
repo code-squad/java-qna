@@ -18,9 +18,7 @@ public class UserService {
     }
 
     public User getUserById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> {
-            throw new NotFoundException(id);
-        });
+        return userRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
     }
 
     public void register(User newUser) {

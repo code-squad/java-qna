@@ -7,4 +7,8 @@ public class UserException extends RuntimeException {
   public UserException(CustomErrorCode customErrorCode) {
     super(customErrorCode.getMsg());
   }
+
+  public UserException(String CustomMessage) {
+    super(CustomMessage);
+  }
 }

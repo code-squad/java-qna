@@ -1,9 +1,11 @@
-package com.codessquad.qna.api;
+package com.codessquad.qna.commons;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class Result {
+public class Result implements Serializable {
   private boolean valid;
   private String errorMessage;
   private Object object;
@@ -16,6 +18,12 @@ public class Result {
   private Result(boolean valid, String errorMessage, Object object) {
     this.valid = valid;
     this.errorMessage = errorMessage;
+    this.object = object;
+  }
+
+  public Result(Object valid, Object errorMessage, Object object) {
+    this.valid = (boolean) valid;
+    this.errorMessage = (String) errorMessage;
     this.object = object;
   }
 

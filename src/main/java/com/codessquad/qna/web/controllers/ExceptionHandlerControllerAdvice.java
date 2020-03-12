@@ -51,7 +51,19 @@ public class ExceptionHandlerControllerAdvice {
 
         ModelAndView mav = new ModelAndView();
         mav.addObject("status", HttpStatus.FORBIDDEN);
-        mav.addObject( "exception", exception);
+        mav.addObject("exception", exception);
+        mav.setViewName("error");
+
+        return mav;
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ModelAndView handleException(Exception exception) {
+        logger.error(exception);
+
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("status", HttpStatus.INTERNAL_SERVER_ERROR);
+        mav.addObject("exception", exception);
         mav.setViewName("error");
 
         return mav;

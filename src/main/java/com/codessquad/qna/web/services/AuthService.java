@@ -57,15 +57,23 @@ public class AuthService {
         response.addCookie(cookie);
     }
 
-    public void hasAuthorization(HttpServletRequest request, User targetUser) {
+    public User getRequester(HttpServletRequest request) {
         try {
-            Long userId = (Long)request.getSession(false).getAttribute(AUTHENTICATION_ID);
+            Long requesterId = (Long) request.getSession(false).getAttribute(AUTHENTICATION_ID);
 
-            if(!userId.equals(targetUser.getId())) {
-                throw new PermissionDeniedException();
-            }
-        }catch (NullPointerException exception) {
+            return userRepository.findById(requesterId).orElseThrow(() -> {
+                throw new RuntimeException("이런 문제가 가능할까?");
+            });
+        } catch (NullPointerException exception) {
             throw new UnauthorizedException(NOT_LOGIN);
+        }
+    }
+
+    public void hasAuthorization(HttpServletRequest request, User targetUser) {
+        User requester = getRequester(request);
+
+        if (!requester.equals(targetUser)) {
+            throw new PermissionDeniedException();
         }
     }
 }

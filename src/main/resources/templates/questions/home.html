@@ -5,6 +5,7 @@
         <th scope="col">#</th>
         <th scope="col">제목</th>
         <th scope="col">작성날짜</th>
+        <th scope="col">작성자</th>
     </tr>
     </thead>
     <tbody>
@@ -13,6 +14,7 @@
         <th scope="row">{{id}}</th>
         <td><a href="/questions/{{id}}">{{title}}</a></td>
         <td>{{createdTime}}</td>
+        <td><a href="/users/{{this.writer.id}}">{{this.writer.accountId}}</a></td>
     </tr>
     {{/questions}}
     </tbody>

@@ -1,9 +1,24 @@
 package com.codessquad.qna.repository;
 
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
-import java.util.ArrayList;
+import javax.transaction.Transactional;
+import java.util.List;
 
 public interface AnswerRepository extends CrudRepository<Answer, Long> {
-    ArrayList<Answer> findByQuestionId(Long questionId);
+
+    List<Answer> findByQuestionIdAndDeletedFalse(Long questionId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE Answer SET deleted=true WHERE question=:question")
+    void deleteByQuestion(Question question);
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE Answer SET deleted=true WHERE id=:id")
+    void delete(Long id);
 }

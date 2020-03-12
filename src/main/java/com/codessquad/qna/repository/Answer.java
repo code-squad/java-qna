@@ -1,5 +1,8 @@
 package com.codessquad.qna.repository;
 
+import com.codessquad.qna.exception.CustomWrongFormatException;
+import com.codessquad.qna.util.ErrorMessageUtil;
+import com.codessquad.qna.util.PathUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.ObjectUtils;
@@ -25,9 +28,12 @@ public class Answer {
     private User writer;
 
     @Setter
+    @Lob
     @Column(nullable = false)
     private String contents;
     private LocalDateTime createdAt = LocalDateTime.now();
+    @Setter
+    private Boolean deleted = false;
 
     public Answer(){}
     public Answer(User user, Question question, String contents) {
@@ -36,22 +42,17 @@ public class Answer {
         this.contents = contents;
     }
 
-    public void update(Answer answer) {
-        this.writer = answer.writer;
-        this.question = answer.question;
-        this.contents = answer.contents;
-        this.createdAt = LocalDateTime.now();
+    public void update(Answer updateData) {
+        if (!isCorrectFormat(updateData))
+            throw new CustomWrongFormatException(PathUtil.BAD_REQUEST, ErrorMessageUtil.WRONG_FORMAT);
+        this.contents = updateData.contents;
     }
 
     public boolean isCorrectFormat(Answer answer) {
-        boolean writerIsExist = ObjectUtils.isNotEmpty(answer.writer);
-        boolean contentsIsExist = ObjectUtils.isNotEmpty(answer.contents);
-
-        return writerIsExist && contentsIsExist;
+        return ObjectUtils.isNotEmpty(answer.contents);
     }
 
     public boolean isCorrectWriter(User user) {
-        System.out.println();
-        return this.writer.getId().compareTo(user.getId()) == 0;
+        return this.writer.equals(user);
     }
 }

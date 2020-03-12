@@ -1,5 +1,8 @@
 package com.codessquad.qna.repository;
 
+import com.codessquad.qna.exception.CustomWrongFormatException;
+import com.codessquad.qna.util.ErrorMessageUtil;
+import com.codessquad.qna.util.PathUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.ObjectUtils;
@@ -33,10 +36,14 @@ public class User {
     @Setter
     private String email;
 
-    public void update(User updateUser) {
-        this.password = updateUser.password;
-        this.name = updateUser.name;
-        this.email = updateUser.email;
+    public void update(User updateData, String currentPassword) {
+        if (!isCorrectPassword(currentPassword))
+            throw new CustomWrongFormatException(PathUtil.BAD_REQUEST, ErrorMessageUtil.WRONG_PASSWORD);
+        if (!isCorrectFormat(updateData))
+            throw new CustomWrongFormatException(PathUtil.BAD_REQUEST, ErrorMessageUtil.WRONG_FORMAT);
+        this.password = updateData.password;
+        this.name = updateData.name;
+        this.email = updateData.email;
     }
 
     public boolean isCorrectPassword(String password) {
@@ -50,5 +57,30 @@ public class User {
         boolean emailIsExist = ObjectUtils.isNotEmpty(user.email);
 
         return userIdIsExist && nameIsExist && passwordIsExist && emailIsExist;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0: id.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        User other = (User) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
     }
 }

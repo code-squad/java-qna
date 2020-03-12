@@ -19,20 +19,23 @@ public class Question {
     private String contents;
     private String formattedWrittenTime;
 
-    public void setWriter(String writer) {
+    public Question() {
+    }
+
+    public Question(String writer, String title, String contents) {
+        super();
         this.writer = writer;
-    }
-
-    public void setTitle(String title) {
         this.title = title;
-    }
-
-    public void setContents(String contents) {
         this.contents = contents;
     }
 
     public void setFormattedWrittenTime(String formattedWrittenTime) {
         this.formattedWrittenTime = formattedWrittenTime;
+    }
+
+    public void update(String title, String contents) {
+        this.title = title;
+        this.contents = contents;
     }
 
     public Long getId() {
@@ -64,4 +67,6 @@ public class Question {
                 ", formattedWrittenTime='" + formattedWrittenTime + '\'' +
                 '}';
     }
+
+
 }

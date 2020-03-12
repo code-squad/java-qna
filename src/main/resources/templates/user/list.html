@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html lang="kr">
-<head>
-    {{> header}}
-</head>
-<body>
-{{> body}}
+{{#partial "contents"}}
+
 <div class="container" id="main">
     <div class="col-md-10 col-md-offset-1">
         <div class="panel panel-default">
@@ -25,7 +20,7 @@
                     <td><a href="/users/{{id}}">{{userId}}</a></td>
                     <td>{{name}}</td>
                     <td>{{email}}</td>
-                    <td><a href="/users/{{id}}/password" class="btn btn-success" role="button">수정</a></td>
+                    <td><a href="/users/{{id}}/form" class="btn btn-success" role="button">수정</a></td>
                 </tr>
                 {{/each}}
                 </tbody>
@@ -34,9 +29,5 @@
     </div>
 </div>
 
-<!-- script references -->
-<script src="../../static/js/jquery-2.2.0.min.js"></script>
-<script src="../../static/js/bootstrap.min.js"></script>
-<script src="../../static/js/scripts.js"></script>
-</body>
-</html>
+{{/partial}}
+{{> base}}

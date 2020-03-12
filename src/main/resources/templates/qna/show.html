@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html lang="kr">
-<head>
-    {{> header}}
-</head>
-<body>
-{{> body}}
+{{#partial "contents"}}
+
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-12">
         {{#question}}
@@ -33,16 +28,16 @@
                     <div class="article-util">
                         <ul class="article-util-list">
                             <li>
-                                <a class="link-modify-article" href="/questions/423/form">수정</a>
+                                <a class="link-modify-article" href="/questions/{{id}}/form">수정</a>
                             </li>
                             <li>
-                                <form class="form-delete" action="/questions/423" method="POST">
+                                <form class="form-delete" action="/questions/{{id}}" method="POST">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <button class="link-delete-article" type="submit">삭제</button>
                                 </form>
                             </li>
                             <li>
-                                <a class="link-modify-article" href="/templates/main.html">목록</a>
+                                <a class="link-modify-article" href="/">목록</a>
                             </li>
                         </ul>
                     </div>
@@ -163,9 +158,5 @@
     </article>
 </script>
 
-<!-- script references -->
-<script src="../../static/js/jquery-2.2.0.min.js"></script>
-<script src="../../static/js/bootstrap.min.js"></script>
-<script src="../../static/js/scripts.js"></script>
-</body>
-</html>
+{{/partial}}
+{{> base}}

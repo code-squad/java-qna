@@ -1,5 +1,6 @@
 package com.codessquad.qna.user;
 
+import com.codessquad.qna.sessionutils.HttpSessionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,36 @@ public class UserController {
     public String create(User user) {
         log.info("User :  '{}' ", user);
         userRepository.save(user);
-        return "redirect:/users/list";
+        return "redirect:/users";
+    }
+
+    @GetMapping("/loginForm")
+    public String loginForm() {
+        return "user/login";
+    }
+
+    @PostMapping("/login")
+    public String login(String userId, String password, HttpSession session) {
+        User user = userRepository.findByUserId(userId);
+        if (user == null) {
+            log.info("login null Failure");
+            return "redirect:/users/loginForm";
+        }
+        if (!user.matchPassword(password)) {
+            log.info("login Failure");
+            return "redirect:/users/loginForm";
+        }
+
+        log.info("login success");
+        session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
+
+        return "redirect:/";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
+        return "redirect:/";
     }
 
     @GetMapping("/form")
@@ -30,55 +60,47 @@ public class UserController {
         return "user/form";
     }
 
-    @GetMapping("/list")
+    @GetMapping("")
     public String userList(Model model) {
         model.addAttribute("users", userRepository.findAll());
         return "user/list";
     }
 
     @GetMapping("/{id}")
-    public ModelAndView showUser(@PathVariable Long id) {
+    public ModelAndView showUser(@PathVariable Long id) throws IllegalAccessException {
         ModelAndView showMav = new ModelAndView("user/profile");
-        showMav.addObject("user", userRepository.findById(id).get());
+        showMav.addObject("user", userRepository.findById(id).orElseThrow(IllegalAccessException::new));
         return showMav;
     }
 
-    @GetMapping("/{id}/password")
-    public ModelAndView passwordForm(@PathVariable Long id) {
-        ModelAndView passwordMav = new ModelAndView("user/password");
-        passwordMav.addObject("user", userRepository.findById(id).get());
-        log.info("passwordUser: '{}'", passwordMav);
-        return passwordMav;
-    }
-
-    @PostMapping("/{id}/password")
-    public String passwordCheck(@PathVariable Long id, String password, HttpSession session) {
-        User user = userRepository.findById(id).get();
-        log.info("check : '{}'", user);
-        if (user == null) {
-            return "redirect:/users/list";
-        }
-        if (!password.equals(user.getPassword())) {
-            return "redirect:/users/list";
-        }
-        session.setAttribute("user", user);
-
-        return "redirect:/users/{id}/form";
-    }
-
     @GetMapping("/{id}/form")
-    public ModelAndView updateForm(@PathVariable Long id) {
-        ModelAndView updateMav = new ModelAndView("user/updateForm");
-        updateMav.addObject("user", userRepository.findById(id).get());
-        return updateMav;
+    public String updateForm(@PathVariable Long id, Model model, HttpSession session) throws IllegalAccessException {
+        if (HttpSessionUtils.isNoneExistentUser(session)) {
+            return "redirect:/users/loginForm";
+        }
+        User sessionUser = HttpSessionUtils.getUserFromSession(session);
+        if (!sessionUser.matchId(id)) {
+            throw new IllegalStateException("자신의 정보만 수정하세요.");
+        }
+
+        User user = userRepository.findById(id).orElseThrow(IllegalAccessException::new);
+        model.addAttribute("user", user);
+        return "user/updateForm";
     }
 
-    @PostMapping("/{id}")
-    public String updateUser(@PathVariable Long id, User updateUser) {
-        User user = userRepository.findById(id).get();
+    @PutMapping("/{id}")
+    public String updateUser(@PathVariable Long id, User updateUser, HttpSession session) throws IllegalAccessException {
+        if (HttpSessionUtils.isNoneExistentUser(session)) {
+            return "redirect:/users/loginForm";
+        }
+        User sessionUser = HttpSessionUtils.getUserFromSession(session);
+        if (!sessionUser.matchId(id)) {
+            throw new IllegalStateException("자신의 정보만 수정하세요.");
+        }
+
+        User user = userRepository.findById(id).orElseThrow(IllegalAccessException::new);
         user.update(updateUser);
-        log.info("User : '{}'", updateUser);
         userRepository.save(user);
-        return "redirect:/users/list";
+        return "redirect:/users";
     }
 }

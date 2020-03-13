@@ -35,7 +35,6 @@ function addAnswer(e) {
         },
         success: onSuccess
     });
-
 }
 
 
@@ -47,6 +46,9 @@ function onSuccess(data, status) {
 
     $(".qna-comment-slipp-articles").prepend(template);
     $(".answer-writer textarea").val("");
+
+    const commentCountEl = $(".qna-comment-count strong");
+    commentCountEl.text(parseInt(commentCountEl.text()) + 1);
 }
 
 $(".qna-comment-slipp-articles").on('click', ".link-delete-answer", deleteAnswer);
@@ -67,6 +69,8 @@ function deleteAnswer(e) {
         success: function (data, status) {
             if (data.valid) {
                 deleteBtn.closest("article").remove();
+                const commentCountEl = $(".qna-comment-count strong");
+                commentCountEl.text(parseInt(commentCountEl.text()) - 1);
             } else {
                 alert(data.errorMessage);
             }

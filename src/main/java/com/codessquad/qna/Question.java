@@ -11,19 +11,32 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long questionIndex;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false)
     private String writer;
+
+    @Column(nullable = false)
+    private Long writerId;
 
     @Column(nullable = false)
     private String title;
     private String contents;
-    private String writtenTime;
+    private LocalDateTime writtenTime;
 
     public Question() {
+    }
+
+    public Question(String writer, String title, String contents, Long writerId) {
+        this.writer = writer;
+        this.title = title;
+        this.contents = contents;
+        this.writerId = writerId;
+        this.writtenTime = LocalDateTime.now();
+    }
+
+    public String getWrittenTime() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime localDateTime = LocalDateTime.now();
-        writtenTime = localDateTime.format(dateTimeFormatter);
-        System.out.println(writtenTime);
+        String writtenTimeToString = writtenTime.format(dateTimeFormatter);
+        return writtenTimeToString;
     }
 
     public String getWriter() {
@@ -50,16 +63,28 @@ public class Question {
         this.contents = contents;
     }
 
-    public String getWrittenTime() {
-        return writtenTime;
-    }
-
     public Long getQuestionIndex() {
         return questionIndex;
     }
 
     public void setQuestionIndex(Long questionIndex) {
         this.questionIndex += questionIndex;
+    }
+
+    public Long getWriterId() {
+        return writerId;
+    }
+    public boolean authorizeUser(User loginUser) {
+        Long userId = loginUser.getId();
+        if (this.writerId.equals(userId)) {
+            return true;
+        }
+        return false;
+    }
+
+    public void updateQuestion(String title, String contents) {
+        this.title = title;
+        this.contents = contents;
     }
 
     @Override

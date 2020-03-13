@@ -17,3 +17,36 @@ document.querySelectorAll("#answer__modify--btn").forEach((btn, index) => {
 });
 
 
+$(".answer-writer button[type=submit]").click(addAnswer);
+
+function addAnswer(e) {
+    console.log('click me');
+    e.preventDefault();
+
+    const queryString = $(".answer-writer").serialize();
+
+    const url = $(".answer-writer").attr("action");
+
+    $.ajax({
+        type: 'POST',
+        data: queryString,
+        dataType: 'json',
+        url: url,
+        error: function (xhr, status, error) {
+            console.log(error);
+        },
+        success: onSuccess
+    });
+
+}
+
+
+function onSuccess(data, status) {
+    const answerTemplate = $("#answerTemplate").html();
+
+    const {writer, createdAt, contents, id} = data;
+    const template = answerTemplate.format(writer.name, createdAt, contents, id, id);
+
+    $(".qna-comment-slipp-articles").prepend(template);
+    $(".answer-writer textarea").val("");
+}

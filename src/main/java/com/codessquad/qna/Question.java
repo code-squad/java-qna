@@ -24,6 +24,7 @@ public class Question {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @OrderBy("id DESC")
     @OneToMany(mappedBy = "question")
     private List<Answer> answers;
 

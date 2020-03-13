@@ -1,17 +1,15 @@
 package com.codessquad.qna;
 
 import com.codesquad.web.HttpSessionUtils;
+import com.codessquad.qna.dto.AnswerDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
-@Controller
+@RestController
+@RequestMapping("/api/questions/{questionId}/answers")
 public class AnswerController {
     @Autowired
     AnswerRepository answerRepository;
@@ -19,29 +17,28 @@ public class AnswerController {
     @Autowired
     QuestionRepository questionRepository;
 
-    @PostMapping("/questions/{questionId}/answers")
-    public String create(@PathVariable("questionId") Long questionId, HttpSession session, Answer answer) {
+    @PostMapping("")
+    public AnswerDto create(@PathVariable("questionId") Long questionId, HttpSession session, Answer answer) {
         if (!HttpSessionUtils.isUserLogin(session)) {
-            return "redirect:/login";
+            return null;
         }
 
         Optional<Question> optionalQuestion = questionRepository.findActiveQuestionById(questionId);
 
         optionalQuestion.orElseThrow(ProductNotfoundException::new);
 
-        optionalQuestion.ifPresent(question -> {
-            answer.setQuestion(question);
-            answer.setWriter(HttpSessionUtils.getUserFromSession(session));
-            answerRepository.save(answer);
-        });
+        Question question = optionalQuestion.get();
 
-        return "redirect:/questions/" + questionId;
+        answer.setQuestion(question);
+        answer.setWriter(HttpSessionUtils.getUserFromSession(session));
+        Answer responseAnswer = answerRepository.save(answer);
+
+        return new AnswerDto(responseAnswer);
     }
 
-    @DeleteMapping("questions/{questionId}/answers/{id}")
+    @DeleteMapping("")
     public String delete(@PathVariable("questionId") Long questionId, @PathVariable("id") Long id, HttpSession session) {
         if (!HttpSessionUtils.isUserLogin(session)) {
-            return "redirect:/login";
         }
 
         Optional<Answer> optionalAnswer = answerRepository.findActiveAnswerById(id);
@@ -60,7 +57,7 @@ public class AnswerController {
         return "redirect:/questions/" + questionId;
     }
 
-    @PutMapping("/questions/{questionId}/answers/{id}")
+    @PutMapping("")
     public String update(@PathVariable("questionId") Long questionId, @PathVariable("id") Long id, HttpSession session, Answer updatedAnswer) {
         if (!HttpSessionUtils.isUserLogin(session)) {
             return "redirect:/login";

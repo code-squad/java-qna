@@ -61,7 +61,7 @@
                               </div>
 
                               <div class="comment__modify--input hidden">
-                                  <form action="/questions/{{question.id}}/answers/{{id}}"
+                                  <form action="api/questions/{{question.id}}/answers/{{id}}"
                                         class="delete-answer-form"
                                         method="POST"
                                         name="answer">
@@ -81,7 +81,7 @@
                                           <a class="link-modify-article" href="#" id="answer__modify--btn">수정</a>
                                       </li>
                                       <li>
-                                          <form action="/questions/{{question.id}}/answers/{{id}}"
+                                          <form action="api/questions/{{question.id}}/answers/{{id}}"
                                                 class="delete-answer-form"
                                                 method="POST">
                                               <input type="hidden" name="_method" value="DELETE">
@@ -92,7 +92,8 @@
                               </div>
                           </article>
                           {{/each}}
-                          <form action="/questions/{{id}}/answers" class="submit-write" method="post" name="answer">
+                          <form action="/api/questions/{{id}}/answers" class="answer-writer" method="post"
+                                name="answer">
                               <div class="form-group" style="padding:14px;">
                                   <textarea class="form-control" name="contents"
                                             placeholder="Update your status"></textarea>

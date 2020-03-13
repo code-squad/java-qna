@@ -16,12 +16,15 @@ public class QuestionDto {
 
     private LocalDateTime createdAt;
 
+    private int countOfAnswer;
+
     public QuestionDto(Question question) {
         this.id = question.getId();
         this.writer = new UserDto(question.getWriter());
         this.title = question.getTitle();
         this.contents = question.getContents();
         this.createdAt = question.getCreated();
+        this.countOfAnswer = question.getCountOfAnswer();
     }
 
     public Long getId() {
@@ -42,6 +45,10 @@ public class QuestionDto {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public int getCountOfAnswer() {
+        return countOfAnswer;
     }
 
 }

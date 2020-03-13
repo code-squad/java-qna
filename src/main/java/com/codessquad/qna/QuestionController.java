@@ -56,7 +56,6 @@ public class QuestionController {
 
         model.addAttribute("question", optionalQuestion.get());
         model.addAttribute("answerList", answers);
-        model.addAttribute("answerLength", answers.size());
         return "qna/show";
     }
 

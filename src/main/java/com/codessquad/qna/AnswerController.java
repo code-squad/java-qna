@@ -28,7 +28,7 @@ public class AnswerController {
         optionalQuestion.orElseThrow(ProductNotfoundException::new);
 
         Question question = optionalQuestion.get();
-
+        question.addAnswer();
         answer.setQuestion(question);
         answer.setWriter(HttpSessionUtils.getUserFromSession(session));
         Answer responseAnswer = answerRepository.save(answer);
@@ -53,6 +53,7 @@ public class AnswerController {
         }
 
         answer.delete();
+        questionRepository.findById(questionId).ifPresent(Question::deleteAnswer);
         answerRepository.save(answer);
 
         return Result.ok();

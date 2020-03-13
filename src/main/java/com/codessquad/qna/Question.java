@@ -1,5 +1,7 @@
 package com.codessquad.qna;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,6 +32,9 @@ public class Question {
 
     @Column(nullable = false)
     private boolean deleted = false;
+
+    @JsonProperty
+    private Integer countOfAnswer = 0;
 
     public Question() {
         markCreatedTime();
@@ -71,6 +76,10 @@ public class Question {
         this.contents = contents;
     }
 
+    public int getCountOfAnswer() {
+        return this.countOfAnswer;
+    }
+
     private void markCreatedTime() {
         this.createdAt = LocalDateTime.now();
     }
@@ -106,6 +115,14 @@ public class Question {
         }
 
         return this.answers.stream().map(answer -> answer.getWriter().equals(this.writer)).reduce(true, (acc, isSameWriter) -> acc && isSameWriter);
+    }
+
+    public void addAnswer() {
+        this.countOfAnswer += 1;
+    }
+
+    public void deleteAnswer() {
+        this.countOfAnswer -= 1;
     }
 
     @Override

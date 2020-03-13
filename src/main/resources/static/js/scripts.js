@@ -31,7 +31,7 @@ function addAnswer(e) {
         dataType: 'json',
         url: url,
         error: function (xhr, status, error) {
-            console.log(error);
+            console.log("failure");
         },
         success: onSuccess
     });

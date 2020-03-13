@@ -12,7 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.NoSuchElementException;
 
 @Controller
 @RequestMapping("/users") // 중복되는 prefix, 자원에 대해 명시해준다.
@@ -85,7 +84,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/form")
-    public String updateForm(@PathVariable Long id, Model model, HttpSession session) throws IllegalStateException {
+    public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
         LOGGER.debug("[page] : {}", "사용자 정보 수정 폼");
 
         if(!HttpSessionUtils.isLoginUser(session)) {
@@ -121,7 +120,7 @@ public class UserController {
 
         if(!user.matchPassword(updatedUser)){
             LOGGER.debug("[page] : {}", "비밀번호 불일치");
-            throw new NoSuchElementException("Not Match Password");
+            throw new IllegalArgumentException ("Not Match Password");
         }
 
         user.update(updatedUser);

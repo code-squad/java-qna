@@ -56,7 +56,6 @@ public class QuestionController {
             throw new IllegalStateException("글 작성자 아님");
         }
 
-
         if(question == null) {
             throw new InvalidInputException("입력값이 유효하지 않습니다.");
         }

@@ -3,6 +3,7 @@ package io.david215.forum.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,47 +39,45 @@ public class UserController {
 
     @GetMapping("/users/{userId}")
     public String profile(Model model, @PathVariable String userId) {
-        Optional<User> optionalUser = userRepository.findByUserId(userId);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            model.addAttribute("user", user);
-            return "user/profile";
-        }
-        model.addAttribute("userId", userId);
-        return "user/not-found";
+        User user = findUser(userId);
+        model.addAttribute("user", user);
+        return "user/profile";
     }
 
     @GetMapping("/users/{userId}/update")
     public String updateForm(Model model, @PathVariable String userId) {
-        Optional<User> optionalUser = userRepository.findByUserId(userId);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            model.addAttribute("user", user);
-            return "user/update";
-        }
-        model.addAttribute("userId", userId);
-        return "user/not-found";
+        User user = findUser(userId);
+        model.addAttribute("user", user);
+        return "user/update";
     }
 
     @PostMapping("/users/{userId}")
-    public String update(Model model, User newUserInfo, String oldPassword) {
-        String userId = newUserInfo.getUserId();
-        Optional<User> optionalUser = userRepository.findByUserId(userId);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            String password = user.getPassword();
-            if (oldPassword.equals(password)) {
-                user.setPassword(newUserInfo.getPassword());
-                user.setName(newUserInfo.getName());
-                user.setEmail(newUserInfo.getEmail());
-                userRepository.save(user);
-                return "redirect:/users";
-            } else {
-                model.addAttribute("userId", userId);
-                return "user/update-failed";
-            }
+    public String update(Model model, @PathVariable String userId, User newUserInfo, String oldPassword) {
+        User user = findUser(userId);
+        if (oldPassword.equals(user.getPassword())) {
+            user.updateUser(newUserInfo);
+            userRepository.save(user);
+            return "redirect:/users";
+        } else {
+            model.addAttribute("userId", userId);
+            return "user/update-failed";
         }
-        model.addAttribute("userId", userId);
+    }
+
+    private User findUser(String userId) {
+        Optional<User> optionalUser = userRepository.findByUserId(userId);
+        return optionalUser.orElseThrow(() -> new UserNotFoundException(userId));
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    private String handleUserNotFoundException(Model model, UserNotFoundException e) {
+        model.addAttribute("userId", e.getMessage());
         return "user/not-found";
+    }
+
+    private static class UserNotFoundException extends RuntimeException {
+        private UserNotFoundException(String message) {
+            super(message);
+        }
     }
 }

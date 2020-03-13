@@ -44,4 +44,10 @@ public class User {
     public String getEmail() {
         return email;
     }
+
+    public void updateUser(User newUserInfo) {
+        this.password = (newUserInfo.getPassword());
+        this.name = newUserInfo.getName();
+        this.email = newUserInfo.getEmail();
+    }
 }

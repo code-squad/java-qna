@@ -1,5 +1,7 @@
 package io.david215.forum.thread;
 
+import io.david215.forum.user.User;
+import io.david215.forum.user.UserController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,12 +37,21 @@ public class ThreadController {
 
     @GetMapping("/threads/{id}")
     public String show(Model model, @PathVariable long id) {
+        Thread thread = findThread(id);
+        model.addAttribute("thread", thread);
+        return "thread/show";
+    }
+
+    private Thread findThread(Long id) {
         Optional<Thread> optionalThread = threadRepository.findById(id);
-        if (optionalThread.isPresent()) {
-            Thread thread = optionalThread.get();
-            model.addAttribute("thread", thread);
-            return "thread/show";
-        }
-        return "thread/not-found";
+        return optionalThread.orElseThrow(ThreadNotFoundException::new);
+    }
+
+    @ExceptionHandler(ThreadNotFoundException.class)
+    private String handleUserNotFoundException() {
+        return "user/not-found";
+    }
+
+    private static class ThreadNotFoundException extends RuntimeException {
     }
 }

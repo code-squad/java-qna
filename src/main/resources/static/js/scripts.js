@@ -61,7 +61,7 @@ $(".qna-comment-slipp-articles").on("click", "a[class='link-modify-comment']", f
 });
 
 function errorForbidden(jqXHR) {
-    if (jqXHR.status === 200) {
+    if (jqXHR.status === 302) {
         var loginPageHeader = jqXHR.getResponseHeader("LoginPage");
         if (loginPageHeader !== "") {
             window.location.replace(loginPageHeader);

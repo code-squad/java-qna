@@ -4,6 +4,7 @@ import com.codesquad.qna.util.HttpSessionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -25,6 +26,7 @@ public class UserInterceptor implements HandlerInterceptor {
         HttpSession session = request.getSession();
         if (HttpSessionUtils.isNotLoggedIn(session)) {
             if (isXHR(request.getRequestURI())) {
+                response.setStatus(HttpStatus.FOUND.value());
                 response.setHeader("LoginPage", "/user/login");
                 return false;
             }

@@ -27,12 +27,7 @@ $(".qna-comment-slipp-articles").on("click", "a[class='link-delete-comment']", f
        method: "DELETE",
        url: url,
        dataType: "json",
-       error: function (jqXHR) {
-           var jsonData = JSON.parse(jqXHR.responseText);
-           if (jsonData.status === 405) {
-                window.location.replace(jsonData.path);
-           }
-       },
+       error: errorForbidden,
        success: function(result) {
            if (result.valid) {
                deleteBtn.closest("article").remove();
@@ -53,12 +48,7 @@ $(".qna-comment-slipp-articles").on("click", "a[class='link-modify-comment']", f
         method: "GET",
         url: url,
         dataType: "json",
-        error: function (jqXHR) {
-            var jsonData = JSON.parse(jqXHR.responseText);
-            if (jsonData.status === 405) {
-                window.location.replace(jsonData.path);
-            }
-        },
+        error: errorForbidden,
         success: function (data) {
             console.log(data);
             var commentFormTemplate = $('#comment-form').html();
@@ -69,3 +59,16 @@ $(".qna-comment-slipp-articles").on("click", "a[class='link-modify-comment']", f
         }
     });
 });
+
+function errorForbidden(jqXHR) {
+    if (jqXHR.status === 200) {
+        var loginPageHeader = jqXHR.getResponseHeader("LoginPage");
+        if (loginPageHeader !== "") {
+            window.location.replace(loginPageHeader);
+            return;
+        }
+    }
+    if (jqXHR.status === 403) {
+        alert("권한이 없습니다.");
+    }
+}

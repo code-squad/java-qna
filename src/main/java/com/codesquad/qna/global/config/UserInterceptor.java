@@ -24,6 +24,10 @@ public class UserInterceptor implements HandlerInterceptor {
 
         HttpSession session = request.getSession();
         if (HttpSessionUtils.isNotLoggedIn(session)) {
+            if (isXHR(request.getRequestURI())) {
+                response.setHeader("LoginPage", "/user/login");
+                return false;
+            }
             response.sendRedirect("/user/login");
             return false;
         }
@@ -35,5 +39,9 @@ public class UserInterceptor implements HandlerInterceptor {
 
     private boolean matchQuestionURI(String requestURI, String requestMethod) {
         return requestURI.matches("/questions/[0-9^/]+$") && HttpMethod.GET.matches(requestMethod);
+    }
+
+    private boolean isXHR(String requestURI) {
+        return requestURI.contains("/api/");
     }
 }

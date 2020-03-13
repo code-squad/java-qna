@@ -2,6 +2,7 @@ package com.codessquad.qna;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class Question {
@@ -23,8 +24,18 @@ public class Question {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @OneToMany(mappedBy = "question")
+    private List<Answer> answers;
+
+    @Column(nullable = false)
+    private boolean deleted = false;
+
     public Question() {
         markCreatedTime();
+    }
+
+    public List<Answer> getAnswers() {
+        return answers;
     }
 
     public Long getId() {
@@ -64,8 +75,36 @@ public class Question {
     }
 
     public void update(Question question) {
+        if (!isValid(question)) {
+            throw new RuntimeException("InvalidUpdateQuestion");
+        }
         this.contents = question.contents;
         this.title = question.title;
+    }
+
+    private boolean isValid(Question question) {
+        return question.contents != null && question.title != null;
+    }
+
+    public boolean isSameWriter(User loginUser) {
+        return this.writer.equals(loginUser);
+    }
+
+    public void delete() {
+        this.deleted = true;
+        this.deleteAnswers();
+    }
+
+    private void deleteAnswers() {
+        this.answers.forEach(Answer::delete);
+    }
+
+    public boolean canDelete() {
+        if (this.answers.size() == 0) {
+            return true;
+        }
+
+        return this.answers.stream().map(answer -> answer.getWriter().equals(this.writer)).reduce(true, (acc, isSameWriter) -> acc && isSameWriter);
     }
 
     @Override

@@ -8,7 +8,7 @@ public class Answer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true)
-    Long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
@@ -22,6 +22,8 @@ public class Answer {
 
     private LocalDateTime createdAt;
 
+    private boolean deleted = false;
+
     public Answer() {
         this.markCreatedTime();
     }
@@ -32,6 +34,10 @@ public class Answer {
 
     public Question getQuestion() {
         return question;
+    }
+
+    public boolean getDeleted() {
+        return this.deleted;
     }
 
     public void setQuestion(Question question) {
@@ -59,7 +65,19 @@ public class Answer {
     }
 
     public void update(Answer answer) {
+        if (!isValid(answer)) {
+            throw new RuntimeException("InvalidUpdateAnswer");
+        }
         this.contents = answer.contents;
+
+    }
+
+    private boolean isValid(Answer answer) {
+        return answer.contents != null;
+    }
+
+    public void delete() {
+        this.deleted = true;
     }
 
     private void markCreatedTime() {

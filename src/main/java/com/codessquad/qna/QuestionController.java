@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -18,12 +19,24 @@ public class QuestionController {
     @Autowired
     private AnswerRepository answerRepository;
 
+    private Result valid(HttpSession session, Question question) {
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        if (!question.isSameWriter(loginUser)) {
+            return Result.fail("자신이 쓴 글만 수정, 삭제가 가능합니다.");
+        }
+
+        return Result.ok();
+    }
+
     @PostMapping("/questions/{questionId}/answers")
     public String createAnswer(@PathVariable("questionId") Long questionId, HttpSession session, Answer answer) {
-        Optional<Question> optionalQuestion = questionRepository.findById(questionId);
         if (!HttpSessionUtils.isUserLogin(session)) {
             return "redirect:/login";
         }
+
+        Optional<Question> optionalQuestion = questionRepository.findActiveQuestionById(questionId);
+
+        optionalQuestion.orElseThrow(ProductNotfoundException::new);
 
         optionalQuestion.ifPresent(question -> {
             answer.setQuestion(question);
@@ -36,33 +49,43 @@ public class QuestionController {
 
     @DeleteMapping("questions/{questionId}/answers/{id}")
     public String deleteAnswer(@PathVariable("questionId") Long questionId, @PathVariable("id") Long id, HttpSession session) {
-        Optional<Answer> optionalAnswer = answerRepository.findById(id);
         if (!HttpSessionUtils.isUserLogin(session)) {
             return "redirect:/login";
         }
 
-        optionalAnswer.ifPresent(answer -> {
-            if (HttpSessionUtils.getUserFromSession(session).matchId(optionalAnswer.get().getWriter().getId())) {
-                answerRepository.deleteById(id);
-            }
-        });
+        Optional<Answer> optionalAnswer = answerRepository.findActiveAnswerById(id);
+        if (!optionalAnswer.isPresent()) {
+            throw new ProductNotfoundException();
+        }
+
+        Answer answer = optionalAnswer.get();
+        if (!answer.getWriter().equals(HttpSessionUtils.getUserFromSession(session))) {
+            throw new UnauthorizedException();
+        }
+
+        answer.delete();
+        answerRepository.save(answer);
 
         return "redirect:/questions/" + questionId;
     }
 
     @PutMapping("/questions/{questionId}/answers/{id}")
     public String updateAnswer(@PathVariable("questionId") Long questionId, @PathVariable("id") Long id, HttpSession session, Answer updatedAnswer) {
-        Optional<Answer> optionalAnswer = answerRepository.findById(id);
         if (!HttpSessionUtils.isUserLogin(session)) {
             return "redirect:/login";
         }
 
-        optionalAnswer.ifPresent(answer -> {
-            if (HttpSessionUtils.getUserFromSession(session).matchId(optionalAnswer.get().getWriter().getId())) {
-                answer.update(updatedAnswer);
-                answerRepository.save(answer);
-            }
-        });
+        Optional<Answer> optionalAnswer = answerRepository.findActiveAnswerById(id);
+        if (!optionalAnswer.isPresent()) {
+            throw new ProductNotfoundException();
+        }
+
+        Answer answer = optionalAnswer.get();
+        if (!answer.getWriter().equals(HttpSessionUtils.getUserFromSession(session))) {
+            throw new UnauthorizedException();
+        }
+        answer.update(updatedAnswer);
+        answerRepository.save(answer);
 
         return "redirect:/questions/" + questionId;
     }
@@ -72,6 +95,7 @@ public class QuestionController {
         if (!HttpSessionUtils.isUserLogin(session)) {
             return "redirect:/login";
         }
+
         User loginedUser = HttpSessionUtils.getUserFromSession(session);
         question.setWriter(loginedUser);
         questionRepository.save(question);
@@ -80,23 +104,21 @@ public class QuestionController {
 
     @GetMapping("/")
     public String home(Model model) {
-        model.addAttribute("questions", questionRepository.findAll());
+        model.addAttribute("questions", questionRepository.findAllActiveQuestion());
         return "index";
     }
 
     @GetMapping("/questions/{id}")
     public String post(@PathVariable("id") Long id, Model model) {
-        Optional<Question> optionalQuestion = questionRepository.findById(id);
+        Optional<Question> optionalQuestion = questionRepository.findActiveQuestionById(id);
 
-        if (!optionalQuestion.isPresent()) {
-            return "redirect:/";
-        }
+        optionalQuestion.orElseThrow(ProductNotfoundException::new);
 
-        Answer[] answers = answerRepository.findByQuestionId(id);
+        List<Answer> answers = answerRepository.findActiveAnswerByQuestionId(id);
 
         model.addAttribute("question", optionalQuestion.get());
-        model.addAttribute("answers", answers);
-        model.addAttribute("answerLength", answers.length);
+        model.addAttribute("answerList", answers);
+        model.addAttribute("answerLength", answers.size());
         return "qna/show";
     }
 
@@ -111,19 +133,19 @@ public class QuestionController {
     }
 
     @GetMapping("/questions/{id}/update")
-    public String updateQuestion(@PathVariable("id") Long id, HttpSession session, Model model) throws IllegalAccessException {
+    public String updateQuestion(@PathVariable("id") Long id, HttpSession session, Model model) {
         if (!HttpSessionUtils.isUserLogin(session)) {
             return "redirect:/login";
         }
 
-        Optional<Question> optionalQuestion = questionRepository.findById(id);
-        if (!optionalQuestion.isPresent()) {
-            return "redirect:/";
-        }
+        Optional<Question> optionalQuestion = questionRepository.findActiveQuestionById(id);
+
+        optionalQuestion.orElseThrow(ProductNotfoundException::new);
 
         Question question = optionalQuestion.get();
-        if (!HttpSessionUtils.getUserFromSession(session).matchId(question.getWriter().getId())) {
-            throw new IllegalAccessException("자신이 올린 게시글만 수정할 수 있습니다.");
+        Result result = valid(session, question);
+        if (!result.isValid()) {
+            throw new UnauthorizedException();
         }
 
         model.addAttribute("question", question);
@@ -131,20 +153,19 @@ public class QuestionController {
     }
 
     @PutMapping("/questions/{id}/update")
-    public String putQuestion(@PathVariable("id") Long id, Question updatedQuestion, HttpSession session) throws IllegalAccessException {
+    public String putQuestion(@PathVariable("id") Long id, Question updatedQuestion, HttpSession session, Model model) {
         if (!HttpSessionUtils.isUserLogin(session)) {
             return "redirect:/login";
         }
 
-        Optional<Question> optionalQuestion = questionRepository.findById(id);
+        Optional<Question> optionalQuestion = questionRepository.findActiveQuestionById(id);
 
-        if (!optionalQuestion.isPresent()) {
-            return "redirect:/";
-        }
+        optionalQuestion.orElseThrow(ProductNotfoundException::new);
 
         Question question = optionalQuestion.get();
-        if (!HttpSessionUtils.getUserFromSession(session).matchId(question.getWriter().getId())) {
-            throw new IllegalAccessException("자신이 올린 게시글만 수정할 수 있습니다.");
+        Result result = valid(session, question);
+        if (!result.isValid()) {
+            throw new UnauthorizedException();
         }
 
         question.update(updatedQuestion);
@@ -153,22 +174,25 @@ public class QuestionController {
     }
 
     @DeleteMapping("/questions/{id}/delete")
-    public String deleteQuestion(@PathVariable("id") Long id, HttpSession session) throws IllegalAccessException {
+    public String deleteQuestion(@PathVariable("id") Long id, HttpSession session, Model model) {
         if (!HttpSessionUtils.isUserLogin(session)) {
             return "redirect:/login";
         }
 
-        Optional<Question> optionalQuestion = questionRepository.findById(id);
-        if (!optionalQuestion.isPresent()) {
-            return "redirect:/";
-        }
+        Optional<Question> optionalQuestion = questionRepository.findActiveQuestionById(id);
+
+        optionalQuestion.orElseThrow(ProductNotfoundException::new);
 
         Question question = optionalQuestion.get();
-        if (!HttpSessionUtils.getUserFromSession(session).matchId(question.getWriter().getId())) {
-            throw new IllegalAccessException("자신이 올린 게시글만 삭제할 수 있습니다.");
+        Result result = valid(session, question);
+        if (!result.isValid()) {
+            throw new UnauthorizedException();
         }
-
-        questionRepository.delete(question);
-        return "redirect:/";
+        if (question.canDelete()) {
+            question.delete();
+            questionRepository.save(question);
+            return "redirect:/";
+        }
+        throw new UnauthorizedException();
     }
 }

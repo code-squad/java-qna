@@ -1,6 +1,7 @@
 package com.codessquad.qna;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class User {
@@ -57,9 +58,17 @@ public class User {
     }
 
     public void update(User user) {
+        if (!isValid(user)) {
+            throw new RuntimeException("InvalidUserUpdate");
+        }
+
         this.name = user.name;
         this.email = user.email;
         this.password = user.password;
+    }
+
+    private boolean isValid(User user) {
+        return user.name != null && user.email != null && user.password != null;
     }
 
     public boolean matchPassword(String newPassword) {
@@ -84,6 +93,19 @@ public class User {
         }
 
         return newName.equals(name);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     @Override

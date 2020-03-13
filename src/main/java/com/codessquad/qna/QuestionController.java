@@ -6,20 +6,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
-
     @Autowired
     private QuestionRepository questionRepository;
 
     @GetMapping("")
     public String showQuestionList(Model model) {
         model.addAttribute("questions", questionRepository.findAll());
-
         return "qna/list";
     }
 
@@ -33,16 +30,13 @@ public class QuestionController {
     }
 
     @PostMapping("")
-    public String createQuestion(Question question, HttpSession session) {
+    public String createQuestion(String title, String contents, HttpSession session) {
         if (!HttpSessionUtils.isLoggedInUser(session)) {
             return "redirect:/users/login";
         }
 
-        LocalDateTime nowTime = LocalDateTime.now();
         User loginUser = HttpSessionUtils.getUserFromSession(session);
-        assert loginUser != null;
-
-        question.createNewQuestion(loginUser.getUserId(), nowTime);
+        Question question = new Question(loginUser, title, contents);
         questionRepository.save(question);
 
         return "redirect:/";
@@ -119,6 +113,6 @@ public class QuestionController {
     }
 
     private boolean isSameWriterAndLoginUser(User loginUser, Question question) {
-        return question.getWriter().equals(loginUser.getUserId());
+        return question.getWriter().getUserId().equals(loginUser.getUserId());
     }
 }

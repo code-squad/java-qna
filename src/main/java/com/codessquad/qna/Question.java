@@ -1,10 +1,8 @@
 package com.codessquad.qna;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Question {
@@ -13,51 +11,39 @@ public class Question {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false, length = 20)
-    private String writer;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    private User writer;
 
     private String title;
     private String contents;
     private LocalDateTime time;
 
-    public String getWriter() {
-        return writer;
+    public Question() {
+
     }
 
-    public void setWriter(String writer) {
+    public Question(User writer, String title, String contents) {
         this.writer = writer;
+        this.title = title;
+        this.contents = contents;
+        this.time = LocalDateTime.now();
+    }
+
+    public User getWriter() {
+        return writer;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getContents() {
         return contents;
     }
 
-    public void setContents(String contents) {
-        this.contents = contents;
-    }
-
-    public LocalDateTime getTime() {
-        return time;
-    }
-
-    public void setTime(LocalDateTime time) {
-        this.time = time;
-    }
-
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     @Override
@@ -71,13 +57,15 @@ public class Question {
                 '}';
     }
 
-    public void createNewQuestion(String userId, LocalDateTime time) {
-        this.writer = userId;
-        this.time = time;
-    }
-
     public void updateQuestion(String title, String contents) {
         this.title = title;
         this.contents = contents;
+    }
+
+    public String getFormattedCreateDate() {
+        if(time == null) {
+            return "";
+        }
+        return time.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
     }
 }

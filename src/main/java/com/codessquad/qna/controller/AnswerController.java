@@ -31,10 +31,11 @@ public class AnswerController {
 
     @GetMapping("/{answerId}/editForm")
     public String showEditForm(@PathVariable("questionId") Long questionId, @PathVariable("answerId") Long answerId, HttpSession session, Model model) {
+        User user = HttpSessionUtil.getUserFromSession(session);
         Question question = findQuestion(questionId);
         Answer answer = findAnswer(answerId);
 
-        if (!answer.isCorrectWriter(HttpSessionUtil.getUserFromSession(session)))
+        if (!answer.isCorrectWriter(user))
            throw new UnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.UNAUTHORIZED);
 
         model.addAttribute("answer", answer);
@@ -44,9 +45,9 @@ public class AnswerController {
 
     @PutMapping("/{answerId}")
     public String updateAnswer(@PathVariable("questionId") Long questionId, @PathVariable("answerId") Long answerId, String contents ,HttpSession session) {
+        User user = HttpSessionUtil.getUserFromSession(session);
         Question question = findQuestion(questionId);
         Answer answer = findAnswer(answerId);
-        User user = HttpSessionUtil.getUserFromSession(session);
 
         if (!answer.isCorrectWriter(user)) {
             throw new UnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.UNAUTHORIZED);
@@ -57,6 +58,7 @@ public class AnswerController {
         answerRepository.save(answer);
         return PathUtil.REDIRECT_QUESTION_DETAIL + questionId;
     }
+
 
     private Question findQuestion(Long id) {
         return questionRepository.findById(id).orElseThrow(() ->

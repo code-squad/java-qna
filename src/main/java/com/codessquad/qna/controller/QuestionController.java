@@ -41,10 +41,11 @@ public class QuestionController {
 
     @GetMapping("{id}/editForm")
     public Object showEditPage(@PathVariable Long id, Model model, HttpSession session) {
+        User user = HttpSessionUtil.getUserFromSession(session);
         Question question = questionRepository.findById(id).orElseThrow(() ->
                 new NoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_QUESTION));
 
-        if (!verifyUser(session, question))
+        if (!question.isCorrectWriter(user))
             throw new UnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.UNAUTHORIZED);
 
         model.addAttribute("question", question);
@@ -55,19 +56,22 @@ public class QuestionController {
     public String createQuestion(String title, String contents, HttpSession session) {
         User user = HttpSessionUtil.getUserFromSession(session);
         Question question = new Question(title, contents, user);
+
         if (!question.isCorrectFormat(question)) {
             throw new WrongFormatException(PathUtil.BAD_REQUEST, ErrorMessageUtil.WRONG_FORMAT);
         }
+
         questionRepository.save(question);
         return PathUtil.HOME;
     }
 
     @PutMapping("/{id}")
     public Object updateQuestion(@PathVariable Long id, Question updateData, HttpSession session) {
+        User user = HttpSessionUtil.getUserFromSession(session);
         Question question = questionRepository.findById(id).orElseThrow(() ->
                 new NoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_QUESTION));
 
-        if (!verifyUser(session, question))
+        if (!question.isCorrectWriter(user))
             throw new UnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.UNAUTHORIZED);
 
         question.update(updateData);
@@ -78,19 +82,15 @@ public class QuestionController {
     @Transactional
     @DeleteMapping("/{id}")
     public String deleteQuestion(@PathVariable Long id, HttpSession session) {
+        User user = HttpSessionUtil.getUserFromSession(session);
         Question question = questionRepository.findById(id).orElseThrow(() ->
                 new NoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_QUESTION));
 
-        if (!verifyUser(session, question))
+        if (!question.isCorrectWriter(user))
             throw new UnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.UNAUTHORIZED);
 
         answerRepository.deleteByQuestion(question);
         questionRepository.delete(id);
         return PathUtil.HOME;
-    }
-
-    private boolean verifyUser(HttpSession session, Question question) {
-        User user = HttpSessionUtil.getUserFromSession(session);
-        return question.isCorrectWriter(user);
     }
 }

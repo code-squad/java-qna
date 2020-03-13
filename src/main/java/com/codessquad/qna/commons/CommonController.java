@@ -1,8 +1,13 @@
 package com.codessquad.qna.commons;
 
+import com.codessquad.qna.question.Question;
 import com.codessquad.qna.question.QuestionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +27,10 @@ public class CommonController {
    */
   @GetMapping(value = {"/", ""})
   public String welcomeGet(Model model) {
-    model.addAttribute("questions", questionRepository.findAllByDeleted(false));
+    Pageable firstPageWithTwoElements = PageRequest.of(0, 16, Sort.by("lastModifiedDateTime").descending());
+    Page<Question> questions = questionRepository.findAllByDeleted(firstPageWithTwoElements, false);
+    model.addAttribute("questions", questions.getContent());
+    model.addAttribute("pagesCount", questions.getTotalPages());
     return "/welcome";
   }
 
@@ -33,9 +41,10 @@ public class CommonController {
    */
   @PostMapping("/welcome")
   public String welcomePost(Model model) {
-    log.debug("### /welcome");
-    model.addAttribute("questions", questionRepository.findAllByDeleted(false));
-
+    Pageable firstPageWithTwoElements = PageRequest.of(0, 16, Sort.by("lastModifiedDateTime").descending());
+    Page<Question> questions = questionRepository.findAllByDeleted(firstPageWithTwoElements, false);
+    model.addAttribute("questions", questions.getContent());
+    model.addAttribute("pagesCount", questions.getTotalPages());
     return "/welcome";
   }
 }

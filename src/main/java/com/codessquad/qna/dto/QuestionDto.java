@@ -23,7 +23,7 @@ public class QuestionDto {
         this.writer = new UserDto(question.getWriter());
         this.title = question.getTitle();
         this.contents = question.getContents();
-        this.createdAt = question.getCreated();
+        this.createdAt = question.getCreatedAt();
         this.countOfAnswer = question.getCountOfAnswer();
     }
 

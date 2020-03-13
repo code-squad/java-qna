@@ -24,7 +24,7 @@ public class Answer extends AbstractEntity{
     @Lob
     @Column(nullable = false)
     private String contents;
-    private Boolean deleted = false;
+    private boolean deleted = false;
 
     public Answer(){}
     public Answer(User user, Question question, String contents) {

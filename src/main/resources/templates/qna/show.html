@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="kr">
 {{#partial "content" }}
+
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-12">
         <div class="panel panel-default">
@@ -65,7 +66,7 @@
                                       </div>
                                   </div>
                                   <div class="article-doc comment-doc">
-                                      {{contents}}
+                                      {{{contentsWithBr}}}
                                   </div>
                                   <div class="article-util">
                                       <ul class="article-util-list">
@@ -132,7 +133,7 @@
         <form name = "answer" method="post" action="/questions/{{question.id}}/answers/\{{id}}" class="answer-write">
             <input type="hidden" name="_method" value="put"/>
             <div class="form-group" style="padding:14px;">
-                <textarea name = "contents" class="form-control" placeholder="Update your status">{\{{contentsWithBr}}}</textarea>
+                <textarea name = "contents" class="form-control" placeholder="Update your status">{\{{contents}}}</textarea>
             </div>
             <button type="submit" class="btn btn-success pull-right">수정하기</button>
             <div class="clearfix" />

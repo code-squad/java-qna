@@ -27,7 +27,7 @@ public class CommonController {
    */
   @GetMapping(value = {"/", ""})
   public String welcomeGet(Model model) {
-    Pageable firstPageWithTwoElements = PageRequest.of(0, 16, Sort.by("lastModifiedDateTime").descending());
+    Pageable firstPageWithTwoElements = PageRequest.of(0, 15, Sort.by("lastModifiedDateTime").descending());
     Page<Question> questions = questionRepository.findAllByDeleted(firstPageWithTwoElements, false);
     model.addAttribute("questions", questions.getContent());
     model.addAttribute("pagesCount", questions.getTotalPages());
@@ -41,7 +41,7 @@ public class CommonController {
    */
   @PostMapping("/welcome")
   public String welcomePost(Model model) {
-    Pageable firstPageWithTwoElements = PageRequest.of(0, 16, Sort.by("lastModifiedDateTime").descending());
+    Pageable firstPageWithTwoElements = PageRequest.of(0, 15, Sort.by("lastModifiedDateTime").descending());
     Page<Question> questions = questionRepository.findAllByDeleted(firstPageWithTwoElements, false);
     model.addAttribute("questions", questions.getContent());
     model.addAttribute("pagesCount", questions.getTotalPages());

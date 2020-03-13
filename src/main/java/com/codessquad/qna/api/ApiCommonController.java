@@ -28,7 +28,7 @@ public class ApiCommonController {
    */
   @GetMapping("/{page}")
   public Result welcomeGet(@PathVariable int page) {
-    Pageable firstPageWithTwoElements = PageRequest.of(page, 16, Sort.by("lastModifiedDateTime").descending());
+    Pageable firstPageWithTwoElements = PageRequest.of(page, 15, Sort.by("lastModifiedDateTime").descending());
     Page<Question> questions = questionRepository.findAllByDeleted(firstPageWithTwoElements, false);
 
     return Result.ok(questions);

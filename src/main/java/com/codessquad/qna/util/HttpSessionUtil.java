@@ -3,7 +3,6 @@ package com.codessquad.qna.util;
 import com.codessquad.qna.exception.UnauthorizedException;
 import com.codessquad.qna.repository.User;
 import javax.servlet.http.HttpSession;
-import java.util.Optional;
 
 public class HttpSessionUtil {
     public static final String USER_SESSION_KEY = "authorizedUser";
@@ -14,7 +13,9 @@ public class HttpSessionUtil {
     }
 
     public static User getUserFromSession(HttpSession session) {
-        return Optional.ofNullable((User)session.getAttribute(USER_SESSION_KEY))
-                .orElseThrow(() -> new UnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.UNAUTHORIZED));
+        if (!isAuthorizedUser(session)) {
+            throw new UnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.UNAUTHORIZED);
+        }
+        return (User)session.getAttribute(USER_SESSION_KEY);
     }
 }

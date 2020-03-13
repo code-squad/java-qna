@@ -3,10 +3,10 @@ package com.codessquad.qna;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
+import java.util.NoSuchElementException;
 
 @Controller
 @RequestMapping("/users")
@@ -34,33 +34,79 @@ public class UserController {
         return "user/form";
     }
 
+    @GetMapping("/{id}")
+    public String showUserProfile(@PathVariable Long id, Model model) {
+        User user = userRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        model.addAttribute("userProfile", user);
+
+        return "user/profile";
+    }
+
+    @GetMapping("/{id}/form")
+    public String modifyUserProfile(@PathVariable Long id, Model model, HttpSession session) {
+        if (!HttpSessionUtils.isLoggedInUser(session)) {
+            return "redirect:/users/login";
+        }
+
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        assert loginUser != null;
+
+        if (!loginUser.matchId(id)) {
+            throw new IllegalStateException("자기 자신의 정보만 수정 가능합니다.");
+        }
+
+        User user = userRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        model.addAttribute("userProfile", user);
+
+        return "user/updateForm";
+    }
+
+    @PutMapping("/{id}/update")
+    public String updateUserProfile(@PathVariable Long id, Model model, User updateUser, HttpSession session) {
+        if (!HttpSessionUtils.isLoggedInUser(session)) {
+            return "redirect:/users/login";
+        }
+
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        assert loginUser != null;
+
+        if (!loginUser.matchId(id)) {
+            throw new IllegalStateException("자기 자신의 정보만 수정 가능합니다.");
+        }
+
+        if (loginUser.matchPassword(updateUser)) {
+            loginUser.update(updateUser);
+            userRepository.save(loginUser);
+        }
+
+        model.addAttribute("userProfile", loginUser);
+
+        return "redirect:/users";
+    }
+
     @GetMapping("/login")
     public String goLoginForm() {
         return "user/login";
     }
 
-    @GetMapping("/{id}")
-    public String showUserProfile(@PathVariable Long id, Model model) {
-        model.addAttribute("userProfile", userRepository.findById(id).get());
-        return "user/profile";
-    }
+    @PostMapping("/login")
+    public String login(String userId, String password, Model model, HttpSession session) {
+        User loginUser = userRepository.findByUserId(userId);
+        if (loginUser == null || !loginUser.matchPassword(password)) {
+            model.addAttribute("userId", userId);
 
-    @GetMapping("/{id}/form")
-    public String modifyUserProfile(@PathVariable Long id, Model model) {
-        model.addAttribute("userProfile", userRepository.findById(id).get());
-
-        return "user/updateForm";
-    }
-
-    @PostMapping("/{id}/update")
-    public String updateUserProfile(@PathVariable Long id, Model model, User updateUser) {
-        User oldUser = userRepository.findById(id).get();
-        if (oldUser.isCheckPassword(updateUser)) {
-            oldUser.update(updateUser);
-            userRepository.save(oldUser);
+            return "user/login_failed";
         }
-        model.addAttribute("userProfile", oldUser);
 
-        return "redirect:/users";
+        session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, loginUser);
+
+        return "redirect:/";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
+
+        return "redirect:/";
     }
 }

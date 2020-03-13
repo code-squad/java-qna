@@ -70,4 +70,14 @@ public class Question {
                 ", time='" + time + '\'' +
                 '}';
     }
+
+    public void createNewQuestion(String userId, LocalDateTime time) {
+        this.writer = userId;
+        this.time = time;
+    }
+
+    public void updateQuestion(String title, String contents) {
+        this.title = title;
+        this.contents = contents;
+    }
 }

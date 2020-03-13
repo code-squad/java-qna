@@ -1,5 +1,7 @@
-package com.codessquad.qna;
+package com.codessquad.qna.controller;
 
+import com.codessquad.qna.ProductNotfoundException;
+import com.codessquad.qna.UnauthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;

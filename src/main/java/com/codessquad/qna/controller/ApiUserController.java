@@ -1,6 +1,7 @@
-package com.codessquad.qna;
+package com.codessquad.qna.controller;
 
 import com.codessquad.qna.dto.UserDto;
+import com.codessquad.qna.domain.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

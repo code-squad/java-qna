@@ -1,6 +1,6 @@
 package com.codessquad.qna.dto;
 
-import com.codessquad.qna.User;
+import com.codessquad.qna.domain.User;
 
 public class UserDto {
 

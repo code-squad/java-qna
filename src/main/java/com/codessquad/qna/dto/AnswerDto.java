@@ -1,6 +1,6 @@
 package com.codessquad.qna.dto;
 
-import com.codessquad.qna.Answer;
+import com.codessquad.qna.domain.Answer;
 
 import java.time.LocalDateTime;
 

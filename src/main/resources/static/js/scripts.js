@@ -8,21 +8,18 @@ String.prototype.format = function () {
     });
 };
 
-document.querySelectorAll("#answer__modify--btn").forEach((btn, index) => {
-    btn.addEventListener("click", e => {
-        document.querySelectorAll(".comment-doc")[index].remove();
-        document.querySelectorAll(".article-util__comment")[index].remove();
-        document.querySelectorAll(".comment__modify--input")[index].classList.remove("hidden");
-    })
-});
-
+function makeAnswerTemplate(data) {
+    const answerTemplate = $("#answerTemplate").html();
+    const {writer, createdAt, contents, id, question} = data;
+    return answerTemplate.format(writer.name, createdAt, contents, question.id, id);
+}
 
 $(".answer-writer button[type='submit']").on("click", addAnswer);
 
 function addAnswer(e) {
     e.preventDefault();
-    const queryString = $(".answer-writer").serialize();
 
+    const queryString = $(".answer-writer").serialize();
     const url = $(".answer-writer").attr("action");
 
     $.ajax({
@@ -33,22 +30,15 @@ function addAnswer(e) {
         error: function (xhr, status, error) {
             console.log("failure");
         },
-        success: onSuccess
+        success: function (data, status) {
+            const template = makeAnswerTemplate(data);
+            $(".qna-comment-slipp-articles").prepend(template);
+            $(".answer-writer textarea").val("");
+
+            const commentCountEl = $(".qna-comment-count strong");
+            commentCountEl.text(parseInt(commentCountEl.text()) + 1);
+        }
     });
-}
-
-
-function onSuccess(data, status) {
-    const answerTemplate = $("#answerTemplate").html();
-
-    const {writer, createdAt, contents, id, question} = data;
-    const template = answerTemplate.format(writer.name, createdAt, contents, question.id, id);
-
-    $(".qna-comment-slipp-articles").prepend(template);
-    $(".answer-writer textarea").val("");
-
-    const commentCountEl = $(".qna-comment-count strong");
-    commentCountEl.text(parseInt(commentCountEl.text()) + 1);
 }
 
 $(".qna-comment-slipp-articles").on('click', ".link-delete-answer", deleteAnswer);
@@ -73,6 +63,51 @@ function deleteAnswer(e) {
                 commentCountEl.text(parseInt(commentCountEl.text()) - 1);
             } else {
                 alert(data.errorMessage);
+            }
+        }
+    })
+}
+
+$(".qna-comment-slipp-articles").on('click', ".link-modify-article", showUpdateInput);
+
+function showUpdateInput(e) {
+    e.preventDefault();
+
+    const answerTemplate = $("#answerUpdateTemplate").html();
+    const template = answerTemplate.format($(this).attr("href"), $(this).closest("article").find(".comment-doc").text().trim());
+
+    $(this).closest("article").append(template);
+    $(this).closest("article").find(".article-header").remove();
+    $(this).closest("article").find(".comment-doc").remove();
+    $(this).closest("article").find(".article-util").remove();
+}
+
+$(".qna-comment-slipp-articles").on('click', "#comment-modify-button", updateAnswer);
+
+function updateAnswer(e) {
+    e.preventDefault();
+
+    const updateBtn = $(this);
+    const queryString = updateBtn.closest(".modify-answer-form").serialize();
+    const url = updateBtn.closest(".modify-answer-form").attr("action");
+
+    $.ajax({
+        type: 'PUT',
+        url: url,
+        dataType: 'json',
+        data: queryString,
+        error: function (xhr, status, error) {
+            console.log("failure")
+        },
+        success: function (data, status) {
+            console.log(data);
+            if (!data) {
+                alert("잘못된 접근입니다.");
+            } else {
+                const template = makeAnswerTemplate(data);
+                updateBtn.closest("article").remove();
+                $(".qna-comment-slipp-articles").prepend(template);
+                $(".answer-writer textarea").val("");
             }
         }
     })

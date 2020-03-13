@@ -8,7 +8,6 @@ import com.codessquad.qna.domain.QuestionRepository;
 import com.codessquad.qna.dto.AnswerDto;
 import com.codessquad.qna.dto.Result;
 import com.codessquad.qna.exception.ProductNotfoundException;
-import com.codessquad.qna.exception.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,7 +50,7 @@ public class AnswerController {
 
         Optional<Answer> optionalAnswer = answerRepository.findActiveAnswerById(id);
         if (!optionalAnswer.isPresent()) {
-            return Result.fail("자신이 작성한 글만 삭제할 수 있습니다.");
+            return Result.fail("삭제할 글이 없습니다.");
         }
 
         Answer answer = optionalAnswer.get();
@@ -66,24 +65,24 @@ public class AnswerController {
         return Result.ok();
     }
 
-    @PutMapping("")
-    public String update(@PathVariable("questionId") Long questionId, @PathVariable("id") Long id, HttpSession session, Answer updatedAnswer) {
+    @PutMapping("/{id}")
+    public AnswerDto update(@PathVariable("questionId") Long questionId, @PathVariable("id") Long id, HttpSession session, Answer updatedAnswer) {
         if (!HttpSessionUtils.isUserLogin(session)) {
-            return "redirect:/login";
+            return null;
         }
 
         Optional<Answer> optionalAnswer = answerRepository.findActiveAnswerById(id);
         if (!optionalAnswer.isPresent()) {
-            throw new ProductNotfoundException();
+            return null;
         }
 
         Answer answer = optionalAnswer.get();
         if (!answer.getWriter().equals(HttpSessionUtils.getUserFromSession(session))) {
-            throw new UnauthorizedException();
+            return null;
         }
         answer.update(updatedAnswer);
         answerRepository.save(answer);
 
-        return "redirect:/questions/" + questionId;
+        return new AnswerDto(answer);
     }
 }

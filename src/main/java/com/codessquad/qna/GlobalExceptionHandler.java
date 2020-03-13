@@ -1,6 +1,7 @@
 package com.codessquad.qna;
 
-import javassist.NotFoundException;
+import com.codessquad.qna.exception.InvalidInputException;
+import com.codessquad.qna.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -18,20 +19,12 @@ public class GlobalExceptionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NullPointerException.class)
-    public String handle(NullPointerException e, Model model, HttpServletRequest request) {
-        LOGGER.debug("[page/EXCEPTION] : {}", "NULL");
-        setModel(e,request,model);
-        return "/errors/404";
-    }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NotFoundException.class)
     public String notFound(NotFoundException e, Model model, HttpServletRequest request) {
         LOGGER.debug("[page/EXCEPTION] : {}", "NOT_FOUND");
         setModel(e,request,model);
         return "/errors/404";
-}
+    }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalStateException.class)
@@ -45,6 +38,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoSuchElementException.class)
     public String notMatch(NoSuchElementException e, Model model, HttpServletRequest request) {
         LOGGER.debug("[page/EXCEPTION] : {}", "NOT_MATCH");
+        setModel(e,request,model);
+        return "/errors/403";
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidInputException.class)
+    public String invalidInput(InvalidInputException e, Model model, HttpServletRequest request) {
+        LOGGER.debug("[page/EXCEPTION] : {}", "BAD_REQUEST");
         setModel(e,request,model);
         return "/errors/403";
     }

@@ -30,7 +30,7 @@ public class QuestionController {
     }
 
     @PostMapping("")
-    public String createQna(String title, String contents, HttpSession session) {
+    public String createQuestion(String title, String contents, HttpSession session) {
         if (HttpSessionUtils.isNoneExistentUser(session)) {
             return "redirect:/users/loginForm";
         }
@@ -42,20 +42,20 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}")
-    public String showQuestionContents(@PathVariable Long id, Model model) throws IllegalAccessException {
-        model.addAttribute("question", questionRepository.findById(id).orElseThrow(IllegalAccessException::new));
+    public String showQuestionContents(@PathVariable Long id, Model model) {
+        model.addAttribute("question", questionRepository.findById(id).orElseThrow(IllegalStateException::new));
         return "qna/show";
     }
 
     @GetMapping("/{id}/form")
-    public String updateForm(@PathVariable Long id, Model model) throws IllegalAccessException {
-        model.addAttribute("question", questionRepository.findById(id).orElseThrow(IllegalAccessException::new));
+    public String updateForm(@PathVariable Long id, Model model) {
+        model.addAttribute("question", questionRepository.findById(id).orElseThrow(IllegalStateException::new));
         return "/qna/updateForm";
     }
 
     @PutMapping("/{id}")
-    public String updateQna(@PathVariable Long id, String title, String contents) throws IllegalAccessException {
-        Question question = questionRepository.findById(id).orElseThrow(IllegalAccessException::new);
+    public String updateQna(@PathVariable Long id, String title, String contents) {
+        Question question = questionRepository.findById(id).orElseThrow(IllegalStateException::new);
         question.update(title, contents);
         questionRepository.save(question);
         return String.format("redirect:/questions/%d",id);

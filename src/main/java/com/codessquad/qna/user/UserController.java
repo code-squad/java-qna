@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 
@@ -67,10 +66,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ModelAndView showUser(@PathVariable Long id) throws IllegalAccessException {
-        ModelAndView showMav = new ModelAndView("user/profile");
-        showMav.addObject("user", userRepository.findById(id).orElseThrow(IllegalAccessException::new));
-        return showMav;
+    public String showUser(@PathVariable Long id, Model model) throws IllegalAccessException {
+        model.addAttribute("user", userRepository.findById(id).orElseThrow(IllegalAccessException::new));
+        return "user/profile";
     }
 
     @GetMapping("/{id}/form")

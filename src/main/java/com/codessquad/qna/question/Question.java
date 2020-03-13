@@ -23,7 +23,6 @@ public class Question {
     }
 
     public Question(String writer, String title, String contents) {
-        super();
         this.writer = writer;
         this.title = title;
         this.contents = contents;

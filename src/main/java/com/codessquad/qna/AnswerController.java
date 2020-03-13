@@ -36,25 +36,26 @@ public class AnswerController {
         return new AnswerDto(responseAnswer);
     }
 
-    @DeleteMapping("")
-    public String delete(@PathVariable("questionId") Long questionId, @PathVariable("id") Long id, HttpSession session) {
+    @DeleteMapping("/{id}")
+    public Result delete(@PathVariable("questionId") Long questionId, @PathVariable("id") Long id, HttpSession session) {
         if (!HttpSessionUtils.isUserLogin(session)) {
+            return Result.fail("로그인을 해야 합니다.");
         }
 
         Optional<Answer> optionalAnswer = answerRepository.findActiveAnswerById(id);
         if (!optionalAnswer.isPresent()) {
-            throw new ProductNotfoundException();
+            return Result.fail("자신이 작성한 글만 삭제할 수 있습니다.");
         }
 
         Answer answer = optionalAnswer.get();
         if (!answer.getWriter().equals(HttpSessionUtils.getUserFromSession(session))) {
-            throw new UnauthorizedException();
+            return Result.fail("자신이 작성한 글만 삭제할 수 있습니다.");
         }
 
         answer.delete();
         answerRepository.save(answer);
 
-        return "redirect:/questions/" + questionId;
+        return Result.ok();
     }
 
     @PutMapping("")

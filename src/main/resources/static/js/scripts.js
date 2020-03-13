@@ -17,12 +17,10 @@ document.querySelectorAll("#answer__modify--btn").forEach((btn, index) => {
 });
 
 
-$(".answer-writer button[type=submit]").click(addAnswer);
+$(".answer-writer button[type='submit']").on("click", addAnswer);
 
 function addAnswer(e) {
-    console.log('click me');
     e.preventDefault();
-
     const queryString = $(".answer-writer").serialize();
 
     const url = $(".answer-writer").attr("action");
@@ -44,9 +42,35 @@ function addAnswer(e) {
 function onSuccess(data, status) {
     const answerTemplate = $("#answerTemplate").html();
 
-    const {writer, createdAt, contents, id} = data;
-    const template = answerTemplate.format(writer.name, createdAt, contents, id, id);
+    const {writer, createdAt, contents, id, question} = data;
+    const template = answerTemplate.format(writer.name, createdAt, contents, question.id, id);
 
     $(".qna-comment-slipp-articles").prepend(template);
     $(".answer-writer textarea").val("");
 }
+
+$(".qna-comment-slipp-articles").on('click', ".link-delete-answer", deleteAnswer);
+
+function deleteAnswer(e) {
+    e.preventDefault();
+
+    const deleteBtn = $(this);
+    const url = deleteBtn.attr("href");
+
+    $.ajax({
+        type: 'delete',
+        url: url,
+        dataType: 'json',
+        error: function (xhr, status) {
+            console.log('error');
+        },
+        success: function (data, status) {
+            if (data.valid) {
+                deleteBtn.closest("article").remove();
+            } else {
+                alert(data.errorMessage);
+            }
+        }
+    })
+}
+

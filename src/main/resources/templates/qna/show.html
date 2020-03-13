@@ -55,7 +55,7 @@
                                   <div class="article-header-text">
                                       <a class="article-author-name" href="/users/1/자바지기">{{writer.name}}</a>
                                       <a href="#answer-1434" class="article-header-time" title="퍼머링크">
-                                          {{createAt}}
+                                          {{createdAt}}
                                       </a>
                                   </div>
                               </div>
@@ -81,12 +81,8 @@
                                           <a class="link-modify-article" href="#" id="answer__modify--btn">수정</a>
                                       </li>
                                       <li>
-                                          <form action="api/questions/{{question.id}}/answers/{{id}}"
-                                                class="delete-answer-form"
-                                                method="POST">
-                                              <input type="hidden" name="_method" value="DELETE">
-                                              <button type="submit" class="delete-answer-button">삭제</button>
-                                          </form>
+                                          <a class="link-delete-answer"
+                                             href="/api/questions/{{question.id}}/answers/{{id}}">삭제</a>
                                       </li>
                                   </ul>
                               </div>
@@ -124,17 +120,14 @@
 			{2}
 		</div>
 		<div class="article-util">
-		<ul class="article-util-list">
-			<li>
-				<a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
-			</li>
-			<li>
-				<form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
-					<input type="hidden" name="_method" value="DELETE">
-                     <button type="submit" class="delete-answer-button">삭제</button>
-				</form>
-			</li>
-		</ul>
+            <ul class="article-util-list">
+                <li>
+                    <a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
+                </li>
+                <li>
+                    <a class="link-delete-answer" href="/api/questions/{3}/answers/{4}">삭제</a>
+                </li>
+            </ul>
 		</div>
 	</article>
 </script>

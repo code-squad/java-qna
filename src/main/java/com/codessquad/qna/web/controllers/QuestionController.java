@@ -1,6 +1,8 @@
 package com.codessquad.qna.web.controllers;
 
 import com.codessquad.qna.domain.Question;
+import com.codessquad.qna.exceptions.NotFoundException;
+import com.codessquad.qna.exceptions.UnauthorizedException;
 import com.codessquad.qna.web.services.AuthService;
 import com.codessquad.qna.web.services.QuestionService;
 import org.springframework.stereotype.Controller;
@@ -29,19 +31,19 @@ public class QuestionController {
     }
 
     @GetMapping("/questions/createForm")
-    public String createFormPage(HttpServletRequest request) {
+    public String createFormPage(HttpServletRequest request) throws UnauthorizedException {
         authService.getRequester(request);
         return "questions/createForm";
     }
 
     @GetMapping("/questions/{id}")
-    public String detailPage(@PathVariable("id") Long id, Model model) {
+    public String detailPage(@PathVariable("id") Long id, Model model) throws NotFoundException {
         model.addAttribute("question", questionService.getQuestionById(id));
         return "questions/detail";
     }
 
     @PostMapping("/questions")
-    public String createQuestion(HttpServletRequest request, Question question) {
+    public String createQuestion(HttpServletRequest request, Question question) throws UnauthorizedException {
         question.setWriter(authService.getRequester(request));
         questionService.register(question);
         return "redirect:/";

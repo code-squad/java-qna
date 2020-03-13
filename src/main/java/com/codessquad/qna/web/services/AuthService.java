@@ -26,7 +26,7 @@ public class AuthService {
         this.userRepository = userRepository;
     }
 
-    public void validateAuthentication(HttpServletRequest request, User entrant) {
+    public void validateAuthentication(HttpServletRequest request, User entrant) throws UnauthorizedException {
         /**
          * 함수 파라미터가 Supplier<? extends Throwable>이다.
          * UnauthorizedException 생성자는 UnauthorizedException(String message) 이다.
@@ -57,7 +57,7 @@ public class AuthService {
         response.addCookie(cookie);
     }
 
-    public User getRequester(HttpServletRequest request) throws RuntimeException {
+    public User getRequester(HttpServletRequest request) throws UnauthorizedException {
         try {
             Long requesterId = (Long) request.getSession(false).getAttribute(AUTHENTICATION_ID);
 
@@ -67,7 +67,7 @@ public class AuthService {
         }
     }
 
-    public void hasAuthorization(HttpServletRequest request, User targetUser) {
+    public void hasAuthorization(HttpServletRequest request, User targetUser) throws UnauthorizedException, PermissionDeniedException {
         User requester = getRequester(request);
 
         if (!requester.equals(targetUser)) {

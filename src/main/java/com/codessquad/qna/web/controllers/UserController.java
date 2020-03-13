@@ -1,6 +1,9 @@
 package com.codessquad.qna.web.controllers;
 
 import com.codessquad.qna.domain.User;
+import com.codessquad.qna.exceptions.NotFoundException;
+import com.codessquad.qna.exceptions.PermissionDeniedException;
+import com.codessquad.qna.exceptions.UnauthorizedException;
 import com.codessquad.qna.web.services.AuthService;
 import com.codessquad.qna.web.services.UserService;
 import org.springframework.stereotype.Controller;
@@ -32,13 +35,13 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public String detailPage(@PathVariable("id") Long id, Model model) {
+    public String detailPage(@PathVariable("id") Long id, Model model) throws NotFoundException {
         model.addAttribute("user", userService.getUserById(id));
         return "users/detail";
     }
 
     @GetMapping("/{id}/updateForm")
-    public String updateFormPage(HttpServletRequest request, @PathVariable("id") Long targetUserId, Model model) {
+    public String updateFormPage(HttpServletRequest request, @PathVariable("id") Long targetUserId, Model model) throws NotFoundException, UnauthorizedException, PermissionDeniedException {
         User targetUser = userService.getUserById(targetUserId);
         authService.hasAuthorization(request, targetUser);
         model.addAttribute("user", targetUser);
@@ -52,7 +55,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public String updateUser(HttpServletRequest request, @PathVariable("id") Long targetUserId, User newUser) {
+    public String updateUser(HttpServletRequest request, @PathVariable("id") Long targetUserId, User newUser) throws NotFoundException, UnauthorizedException, PermissionDeniedException {
         User targetUser = userService.getUserById(targetUserId);
         authService.hasAuthorization(request, targetUser);
         userService.edit(targetUser, newUser);

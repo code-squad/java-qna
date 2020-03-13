@@ -17,14 +17,13 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User getUserById(Long id) {
+    public User getUserById(Long id) throws NotFoundException {
         return userRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
     }
 
     public void register(User newUser) {
         userRepository.save(newUser);
     }
-
 
     public void edit(User targetUser, User newUser) {
         register(targetUser.merge(newUser));

@@ -1,6 +1,6 @@
 package com.codessquad.qna.controller;
 
-import com.codessquad.qna.exception.CustomNoSuchUserException;
+import com.codessquad.qna.exception.NoSuchUserException;
 import com.codessquad.qna.repository.User;
 import com.codessquad.qna.repository.UserRepository;
 import com.codessquad.qna.util.ErrorMessageUtil;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/users")
@@ -43,7 +42,7 @@ public class UserController {
     @PostMapping
     public String createUser(User user) {
         if (!user.isCorrectFormat(user))
-            throw new CustomNoSuchUserException(PathUtil.BAD_REQUEST, ErrorMessageUtil.WRONG_FORMAT);
+            throw new NoSuchUserException(PathUtil.BAD_REQUEST, ErrorMessageUtil.WRONG_FORMAT);
         userRepository.save(user);
         return PathUtil.USER_LIST;
     }
@@ -59,7 +58,7 @@ public class UserController {
 
     private User findUser(Long id) {
         return userRepository.findById(id).orElseThrow(() ->
-                new CustomNoSuchUserException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_USER));
+                new NoSuchUserException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_USER));
     }
 }
 

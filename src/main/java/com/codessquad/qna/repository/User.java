@@ -1,6 +1,6 @@
 package com.codessquad.qna.repository;
 
-import com.codessquad.qna.exception.CustomWrongFormatException;
+import com.codessquad.qna.exception.WrongFormatException;
 import com.codessquad.qna.util.ErrorMessageUtil;
 import com.codessquad.qna.util.PathUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -32,9 +32,9 @@ public class User extends AbstractEntity{
 
     public void update(User updateData, String currentPassword) {
         if (!isCorrectPassword(currentPassword))
-            throw new CustomWrongFormatException(PathUtil.BAD_REQUEST, ErrorMessageUtil.WRONG_PASSWORD);
+            throw new WrongFormatException(PathUtil.BAD_REQUEST, ErrorMessageUtil.WRONG_PASSWORD);
         if (!isCorrectFormat(updateData))
-            throw new CustomWrongFormatException(PathUtil.BAD_REQUEST, ErrorMessageUtil.WRONG_FORMAT);
+            throw new WrongFormatException(PathUtil.BAD_REQUEST, ErrorMessageUtil.WRONG_FORMAT);
         this.password = updateData.password;
         this.name = updateData.name;
         this.email = updateData.email;

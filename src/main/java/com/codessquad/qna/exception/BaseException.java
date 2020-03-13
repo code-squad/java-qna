@@ -1,10 +1,10 @@
 package com.codessquad.qna.exception;
 
-public class CustomBaseException extends RuntimeException {
+public class BaseException extends RuntimeException {
     private String path;
     private String errorMessage;
 
-    public CustomBaseException(String path, String errorMessage) {
+    public BaseException(String path, String errorMessage) {
         this.path = path;
         this.errorMessage = errorMessage;
     }

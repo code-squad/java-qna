@@ -1,8 +1,8 @@
 package com.codessquad.qna.controller;
 
-import com.codessquad.qna.exception.CustomNoSuchElementException;
-import com.codessquad.qna.exception.CustomUnauthorizedException;
-import com.codessquad.qna.exception.CustomWrongFormatException;
+import com.codessquad.qna.exception.NoSuchElementException;
+import com.codessquad.qna.exception.UnauthorizedException;
+import com.codessquad.qna.exception.WrongFormatException;
 import com.codessquad.qna.repository.*;
 import com.codessquad.qna.util.ErrorMessageUtil;
 import com.codessquad.qna.util.HttpSessionUtil;
@@ -25,7 +25,7 @@ public class QuestionController {
     @GetMapping("/form")
     public String showForm(HttpSession session) {
         if (!HttpSessionUtil.isAuthorizedUser(session)) {
-            throw new CustomUnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.LOGIN);
+            throw new UnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.LOGIN);
         }
         return PathUtil.QUESTION_FORM_TEMPLATE;
     }
@@ -33,7 +33,7 @@ public class QuestionController {
     @GetMapping("/{id}")
     public Object showQuestion(@PathVariable Long id, Model model) {
         Question question = questionRepository.findById(id).orElseThrow(() ->
-                new CustomNoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_QUESTION));
+                new NoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_QUESTION));
 
         model.addAttribute("question", question);
         return PathUtil.QUESTION_DETAIL_TEMPLATE;
@@ -42,10 +42,10 @@ public class QuestionController {
     @GetMapping("{id}/editForm")
     public Object showEditPage(@PathVariable Long id, Model model, HttpSession session) {
         Question question = questionRepository.findById(id).orElseThrow(() ->
-                new CustomNoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_QUESTION));
+                new NoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_QUESTION));
 
         if (!verifyUser(session, question))
-            throw new CustomUnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.UNAUTHORIZED);
+            throw new UnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.UNAUTHORIZED);
 
         model.addAttribute("question", question);
         return PathUtil.QUESTION_EDIT_TEMPLATE;
@@ -56,7 +56,7 @@ public class QuestionController {
         User user = HttpSessionUtil.getUserFromSession(session);
         Question question = new Question(title, contents, user);
         if (!question.isCorrectFormat(question)) {
-            throw new CustomWrongFormatException(PathUtil.BAD_REQUEST, ErrorMessageUtil.WRONG_FORMAT);
+            throw new WrongFormatException(PathUtil.BAD_REQUEST, ErrorMessageUtil.WRONG_FORMAT);
         }
         questionRepository.save(question);
         return PathUtil.HOME;
@@ -65,10 +65,10 @@ public class QuestionController {
     @PutMapping("/{id}")
     public Object updateQuestion(@PathVariable Long id, Question updateData, HttpSession session) {
         Question question = questionRepository.findById(id).orElseThrow(() ->
-                new CustomNoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_QUESTION));
+                new NoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_QUESTION));
 
         if (!verifyUser(session, question))
-            throw new CustomUnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.UNAUTHORIZED);
+            throw new UnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.UNAUTHORIZED);
 
         question.update(updateData);
         questionRepository.save(question);
@@ -79,10 +79,10 @@ public class QuestionController {
     @DeleteMapping("/{id}")
     public String deleteQuestion(@PathVariable Long id, HttpSession session) {
         Question question = questionRepository.findById(id).orElseThrow(() ->
-                new CustomNoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_QUESTION));
+                new NoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_QUESTION));
 
         if (!verifyUser(session, question))
-            throw new CustomUnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.UNAUTHORIZED);
+            throw new UnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.UNAUTHORIZED);
 
         answerRepository.deleteByQuestion(question);
         questionRepository.delete(id);

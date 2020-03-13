@@ -1,7 +1,7 @@
 package com.codessquad.qna.controller;
 
-import com.codessquad.qna.exception.CustomNoSuchElementException;
-import com.codessquad.qna.exception.CustomUnauthorizedException;
+import com.codessquad.qna.exception.NoSuchElementException;
+import com.codessquad.qna.exception.UnauthorizedException;
 import com.codessquad.qna.repository.*;
 import com.codessquad.qna.util.ErrorMessageUtil;
 import com.codessquad.qna.util.HttpSessionUtil;
@@ -35,7 +35,7 @@ public class AnswerController {
         Answer answer = findAnswer(answerId);
 
         if (!answer.isCorrectWriter(HttpSessionUtil.getUserFromSession(session)))
-           throw new CustomUnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.UNAUTHORIZED);
+           throw new UnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.UNAUTHORIZED);
 
         model.addAttribute("answer", answer);
         model.addAttribute("question", question);
@@ -49,7 +49,7 @@ public class AnswerController {
         User user = HttpSessionUtil.getUserFromSession(session);
 
         if (!answer.isCorrectWriter(user)) {
-            throw new CustomUnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.UNAUTHORIZED);
+            throw new UnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.UNAUTHORIZED);
         }
 
         Answer updateData = new Answer(user, question, contents);
@@ -60,11 +60,11 @@ public class AnswerController {
 
     private Question findQuestion(Long id) {
         return questionRepository.findById(id).orElseThrow(() ->
-                new CustomNoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_QUESTION));
+                new NoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_QUESTION));
     }
 
     private Answer findAnswer(Long id) {
         return answerRepository.findById(id).orElseThrow(() ->
-                new CustomNoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_ANSWER));
+                new NoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_ANSWER));
     }
 }

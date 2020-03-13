@@ -3,6 +3,7 @@ package com.codessquad.qna.domain;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -12,17 +13,18 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 20)
+    @NotBlank
+    @Column(length = 20)
     private String writer;
 
-    @Column(nullable = false, length = 50)
+    @NotBlank
+    @Column(length = 50)
     private String title;
 
-    @Column(nullable = false)
+    @NotBlank
     @Type(type = "text")
     private String contents;
 
-//    @Column(nullable = false)
     private LocalDateTime writeTime;
 
     public Long getId() {

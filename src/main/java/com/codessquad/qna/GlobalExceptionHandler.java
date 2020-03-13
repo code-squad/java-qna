@@ -21,10 +21,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NullPointerException.class)
     public String handle(NullPointerException e, Model model, HttpServletRequest request) {
         LOGGER.debug("[page/EXCEPTION] : {}", "NULL");
-        model.addAttribute("timestamp", LocalDateTime.now());
-        model.addAttribute("error", "NOT_FOUND");
-        model.addAttribute("path", request.getRequestURI());
-        model.addAttribute("errorMessage", e.getMessage());
+        setModel(e,request,model);
         return "/errors/404";
     }
 
@@ -32,10 +29,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     public String notFound(NotFoundException e, Model model, HttpServletRequest request) {
         LOGGER.debug("[page/EXCEPTION] : {}", "NOT_FOUND");
-        model.addAttribute("timestamp", LocalDateTime.now());
-        model.addAttribute("error", "NOT_FOUND");
-        model.addAttribute("path", request.getRequestURI());
-        model.addAttribute("errorMessage", e.getMessage());
+        setModel(e,request,model);
         return "/errors/404";
 }
 
@@ -43,10 +37,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalStateException.class)
     public String illegal(IllegalStateException e, Model model, HttpServletRequest request) {
         LOGGER.debug("[page/EXCEPTION] : {}", "BAD_REQUEST");
-        model.addAttribute("timestamp", LocalDateTime.now());
-        model.addAttribute("error", "BAD_REQUEST");
-        model.addAttribute("path", request.getRequestURI());
-        model.addAttribute("errorMessage", e.getMessage());
+        setModel(e,request,model);
         return "/errors/400";
     }
 
@@ -54,11 +45,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoSuchElementException.class)
     public String notMatch(NoSuchElementException e, Model model, HttpServletRequest request) {
         LOGGER.debug("[page/EXCEPTION] : {}", "NOT_MATCH");
+        setModel(e,request,model);
+        return "/errors/403";
+    }
+
+    private void setModel(Exception e, HttpServletRequest request, Model model) {
         model.addAttribute("timestamp", LocalDateTime.now());
-        model.addAttribute("error", "NOT_MATCH");
         model.addAttribute("path", request.getRequestURI());
         model.addAttribute("errorMessage", e.getMessage());
-        return "/errors/403";
     }
 
 }

@@ -1,13 +1,12 @@
 package com.codessquad.qna;
 
-import com.codessquad.qna.domain.Question;
-import com.codessquad.qna.domain.QuestionRepository;
-import com.codessquad.qna.domain.User;
+import com.codessquad.qna.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
 
 @Controller
@@ -16,6 +15,9 @@ public class QuestionController {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private AnswerRepository answerRepository;
 
     @GetMapping("/form")
     public String form(HttpSession session) {
@@ -34,7 +36,7 @@ public class QuestionController {
 
         User sessionUser = HttpSessionUtils.getUserFromSession(session);
         if (sessionUser != null) {
-            Question newQuestion = new Question(sessionUser.getUserId(), title, contents);
+            Question newQuestion = new Question(sessionUser, title, contents);
             questionRepository.save(newQuestion);
         }
 
@@ -43,47 +45,57 @@ public class QuestionController {
 
     @GetMapping("/{id}")
     public String show(Model model, @PathVariable Long id) {
-        model.addAttribute("question", questionRepository.findById(id).orElseThrow(NullPointerException::new));
-
+        model.addAttribute("question", questionRepository.findById(id).orElseThrow(EntityNotFoundException::new));
+        model.addAttribute("answers", answerRepository.findAll());
         return "/question/show";
     }
 
+    private Result valid(HttpSession session, Question question) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return Result.fail("로그인이 필요합니다.");
+        }
+
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        if (!question.isSameWriter(loginUser)) {
+            return Result.fail("자신이 쓴 글만 수정, 삭제가 가능합니다.");
+        }
+        return Result.ok();
+    }
 
     @GetMapping("/{id}/form")
     public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            return "redirect:/users/loginForm";
+        Question question = questionRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        Result result = valid(session,question);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return "/user/login";
         }
-
-        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-
-        model.addAttribute("question", questionRepository.findById(id).orElseThrow(NullPointerException::new));
+        model.addAttribute("question", question);
         return "/question/updateForm";
     }
 
     @PutMapping("/{id}")
-    public String update(@PathVariable Long id, Model model, Question updateQuestion, HttpSession session) {
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            return "redirect:/users/loginForm";
+    public String update(@PathVariable Long id, String title, String contents, Model model, HttpSession session) {
+        Question question = questionRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        Result result = valid(session,question);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return "/user/login";
         }
-
-        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-
-        model.addAttribute("question", questionRepository.findById(id).orElseThrow(NullPointerException::new));
-        Question question = questionRepository.findById(id).orElseThrow(NullPointerException::new);
-        question.update(updateQuestion);
+        question.update(title, contents);
         questionRepository.save(question);
-        return "redirect:/";
+        return String.format("redirect:/questions/%d", id);
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id, Question deleteQuestion, HttpSession session) {
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            return "redirect:/users/loginForm";
+    public String delete(@PathVariable Long id, Model model, HttpSession session) {
+        Question question = questionRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        Result result = valid(session,question);
+        if (!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return "/user/login";
         }
-
-        Question question = questionRepository.findById(id).orElseThrow(NullPointerException::new);
-        questionRepository.delete(question);
+        questionRepository.deleteById(id);
         return "redirect:/";
     }
 }

@@ -1,5 +1,9 @@
 package com.codessquad.qna.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -21,6 +25,7 @@ public class Question {
 
     @OneToMany(mappedBy = "question")
     @OrderBy("id asc")
+    @JsonIgnore
     private List<Answer> answers;
 
     @Lob
@@ -100,14 +105,7 @@ public class Question {
 
     @Override
     public String toString() {
-        return "Question{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", createdDate=" + createdDate +
-                ", writer=" + writer +
-                ", answers=" + answers +
-                ", contents='" + contents + '\'' +
-                '}';
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
     }
 
     public void update(String title, String contents) {

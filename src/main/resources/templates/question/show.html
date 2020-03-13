@@ -85,12 +85,11 @@
                                 </div>
                             </article>
                             {{/answers}}
-                            <form class="submit-write" action="/questions/{{question.id}}/answers" method="post">
+                            <form class="answer-write" action="/api/questions/{{question.id}}/answers" method="post">
                                 <div class="form-group" style="padding:14px;">
-                                    <textarea class="form-control" id="contents" name="contents"
-                                              placeholder="Update your status"></textarea>
+                                    <textarea class="form-control" id="contents" name="contents" placeholder="Update your status"></textarea>
                                 </div>
-                                <button class="btn btn-success pull-right" type="submit">답변하기</button>
+                                <input class="btn btn-success pull-right" type="submit" value="답변하기">
                                 <div class="clearfix"/>
                             </form>
 
@@ -133,8 +132,4 @@
 </script>
 
 <!-- script references -->
-<script src="../../static/js/jquery-2.2.0.min.js"></script>
-<script src="../../static/js/bootstrap.min.js"></script>
-<script src="../../static/js/scripts.js"></script>
-</body>
-</html>
+{{> footer}}

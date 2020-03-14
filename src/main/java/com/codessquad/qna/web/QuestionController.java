@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Controller
@@ -14,6 +15,9 @@ import java.util.NoSuchElementException;
 public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private AnswerRepository answerRepository;
 
     @GetMapping("")
     public String showQuestionList(Model model) {
@@ -45,8 +49,8 @@ public class QuestionController {
 
     @GetMapping("/{id}")
     public String showQuestionDetail(@PathVariable Long id, Model model) {
-        Question question = questionRepository.findById(id).orElseThrow(NoSuchElementException::new);
-        model.addAttribute("question", question);
+        model.addAttribute("question", questionRepository.findById(id).orElseThrow(NoSuchElementException::new));
+        model.addAttribute("answers", answerRepository.findAllByQuestionId(id));
 
         return "qna/show";
     }

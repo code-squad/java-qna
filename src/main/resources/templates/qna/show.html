@@ -10,8 +10,10 @@
             <header class="qna-header">
                 <h2 class="qna-title">{{title}}</h2>
             </header>
+            {{/question}}
             <div class="content-main">
                 <article class="article">
+                    {{#question}}
                     <div class="article-header">
                         <div class="article-header-thumb">
                             <img src="https://graph.facebook.com/v2.3/100000059371774/picture"
@@ -50,7 +52,7 @@
                         <p class="qna-comment-count"><strong>{{answerSize}}</strong>개의 의견</p>
                         {{/question}}
                         <div class="qna-comment-slipp-articles">
-                            {{#question.answers}}
+                            {{#answers}}
                             <article class="article" id="answer-1405">
                                 <div class="article-header">
                                     <div class="article-header-thumb">
@@ -58,18 +60,12 @@
                                              class="article-author-thumb" alt="">
                                     </div>
                                     <div class="article-header-text">
-                                        <a href="/users/1/자바지기" class="article-author-name">
-                                            {{writer.userId}}
-                                        </a>
-                                        <a href="#answer-1434" class="article-header-time" title="퍼머링크">
-                                            {{formattedCreateDate}}
-                                        </a>
+                                        <a href="/users/1/자바지기" class="article-author-name">{{writer.userId}}</a>
+                                        <a href="#answer-1434" class="article-header-time" title="퍼머링크">{{formattedCreateDate}}</a>
                                     </div>
                                 </div>
                                 <div class="article-doc comment-doc">
-                                    <p>
-                                        {{contents}}
-                                    </p>
+                                    <p>{{contents}}</p>
                                 </div>
                                 <div class="article-util">
                                     <ul class="article-util-list">
@@ -88,7 +84,7 @@
                                     </ul>
                                 </div>
                             </article>
-                            {{/question.answers}}
+                            {{/answers}}
                             <form class="submit-write" method="post" action="/questions/{{id}}/answers">
                                 <div class="form-group" style="padding:14px;">
                                     <textarea class="form-control" placeholder="Update your status"

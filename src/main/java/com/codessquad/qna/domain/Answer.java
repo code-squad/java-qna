@@ -36,6 +36,26 @@ public class Answer {
         this.time = LocalDateTime.now();
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public User getWriter() {
+        return writer;
+    }
+
+    public Question getQuestion() {
+        return question;
+    }
+
+    public String getContents() {
+        return contents;
+    }
+
+    public LocalDateTime getTime() {
+        return time;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

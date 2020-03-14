@@ -1,8 +1,9 @@
-package com.codessquad.qna;
+package com.codessquad.qna.domain;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Entity
 public class Question {
@@ -16,8 +17,16 @@ public class Question {
     private User writer;
 
     private String title;
+
+    @Lob
     private String contents;
     private LocalDateTime time;
+
+    @OneToMany(mappedBy = "question")
+    @OrderBy("id ASC")
+    private List<Answer> answers;
+
+    private int answerSize;
 
     public Question() {
 
@@ -28,6 +37,7 @@ public class Question {
         this.title = title;
         this.contents = contents;
         this.time = LocalDateTime.now();
+        this.answerSize = 0;
     }
 
     public User getWriter() {
@@ -44,6 +54,14 @@ public class Question {
 
     public Long getId() {
         return id;
+    }
+
+    public int getAnswerSize() {
+        return answers.size();
+    }
+
+    public List<Answer> getAnswers() {
+        return answers;
     }
 
     @Override
@@ -63,9 +81,13 @@ public class Question {
     }
 
     public String getFormattedCreateDate() {
-        if(time == null) {
+        if (time == null) {
             return "";
         }
         return time.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
+    }
+
+    public void addAnswerSize() {
+        this.answerSize += 1;
     }
 }

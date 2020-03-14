@@ -60,7 +60,7 @@ SIMPLE_STYLE
 ## Ajax를 왜 사용하는가? 
 - 서버에 리퀘스트를 해도 고정된 값이 있고 전달되는 값이 있다. 이 때 모든 리소스를 매번 요청하지 않고 내가 필요한 데이터만 리퀘스트하고 그 데이터만 리스폰스할 수 있도록 도와주는 기술이다. 예를 들어, 댓글을 추가할 때 모든 페이지를 리퀘스트하지 않고 댓글 관련된 리소스만 리퀘스트하는 것이다. 
 ## Step5 진행하며 배운점
-- 객체 데이터를 json으로 만들 때 왜 stackOverFlow가 발생할까? toString()처럼 Mapping된 객체가 있으면 그 객체 속성으로 들어가는데, 만약 양방향 매핑이라면 서로 참조하기 때문이다.
+- 객체 데이터를 json으로 만들 때 왜 stackOverFlow가 발생할까? toString()에서 Mapping된 객체가 있으면 그 객체 속성으로 들어가는데, 만약 양방향 매핑이라면 서로 참조하기 때문이다.
 
 ## 답변 기능 Ajax이용해 구현 하기. 
 - 답변 추가 시 서버에 전송하는 기능을 제한한다. ajax가 대신 서버에 전달하게 하는 기능 -> 왜?? 댓글과 관련된 리소스만 받아오며 되는데 매번 모든 리소스를 가져오면 비효율적이기 때문이다. 
@@ -72,6 +72,7 @@ SIMPLE_STYLE
 var queryString = $(".answer-write").serialize();
     console.log("query : " + queryString);
 ```
+
 - attr를 이용해 클릭된 url을 가져온다. 
 
 ```javascript
@@ -132,6 +133,30 @@ public class ApiUserController {}
 ```
 
 ### json을 동적으로 처리할 HTML templates 준비 
-- show에 <script> 파일을 읽어야 한다. 
+- show에 <script>태그의 templates을 동적으로 제어하는 것. 
+- script.js에 아래 코드 추가. 처음에 있는데 삭제한 경우 추가한다.
 
+```javascript
+String.prototype.format = function() {
+    var args = arguments;
+    return this.replace(/{(\d+)}/g, function(match, number) {
+        return typeof args[number] != 'undefined'
+            ? args[number]
+            : match
+            ;
+    });
+};
+``` 
 
+- template에 answer json 데이터 전달.
+
+```javascript
+function onSuccess(data, status) {
+    console.log(data);
+    var answerTemplate = $("#answerTemplate").html();
+    var template = answerTemplate.format(data.writer.name, data.formattedCreatedDate,
+        data.contents, data.id, data.id);
+    $(".qna-comment-slipp-articles").prepend(template);
+    $(".answer-write textarea").val("");
+}
+```

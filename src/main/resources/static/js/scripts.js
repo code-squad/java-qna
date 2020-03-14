@@ -25,6 +25,11 @@ function onError(data, status) {
 
 function onSuccess(data, status) {
     console.log(data);
+    var answerTemplate = $("#answerTemplate").html();
+    var template = answerTemplate.format(data.writer.name, data.formattedCreatedDate,
+        data.contents, data.id, data.id);
+    $(".qna-comment-slipp-articles").prepend(template);
+    $(".answer-write textarea").val("");
 }
 
 // json을 동적으로 처리하기 위한 템플릿 복사.

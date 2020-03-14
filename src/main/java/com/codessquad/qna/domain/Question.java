@@ -1,6 +1,5 @@
 package com.codessquad.qna.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -24,8 +23,7 @@ public class Question {
     private User writer;
 
     @OneToMany(mappedBy = "question")
-    @OrderBy("id asc")
-    @JsonIgnore
+    @OrderBy("id desc")
     private List<Answer> answers;
 
     @Lob
@@ -130,8 +128,6 @@ public class Question {
     }
 
     public boolean isSameBetweenWritersOfAnswers() {
-//        long countOfSameWriter = answers.stream()
-//                .filter(answer -> answer.getWriter() == writer).count();
         return answers.stream().allMatch(answer -> answer.matchWriter(this.writer));
     }
 

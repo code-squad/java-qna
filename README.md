@@ -396,3 +396,142 @@
 - 웹, 모바일 백엔드가 하는일 은 같다.
 
 - 요즘 트랜드는 최초 접속시 서비스 이용에 필요한 자원(이미지등 파일)을 모두 받고, 그 이후에 요청에는 모두 ajax를 이용하여 Json or XML을 통해서 통신하는 것이 트랜드.
+
+
+
+## step6
+
+> 목표
+
+- 페이지 나누기
+  - [x] 한페이지당 15개씩
+  - [x] 생성일 기준 내림차순
+
+- 페이지 목록...
+
+
+
+> 정리
+
+- MaxPage를 통해서 프론트에서 제어하는 방식으로,  paing을 동적으로 해보자
+  - 안됨.
+- 페이지 리스트를 서버와 교류 없이 동적으로 html을 만드는 코드를 작성하려 했지만 실패
+- 왜?
+  - 이벤트 바인딩, 버블링, 캡처링에 대한 개념 부족.
+  - 어떻게 진행되는 지 모르겠음.
+- 굉장히 하드코딩으로 구현하여, 아마도 다른 예제 상황이 있다면 작동 안될 가능성 높음 --> 안좋은 코드 ㅠㅠ
+
+- Failed to retrieve application JMX service URL
+  - 오류 때문에 , class가 로드 되지 않거나, DB 맵핑에 문제가 생기는 경우가 있었음.
+  - it isn't possible to get local JMX connector address if Spring Boot application and IntelliJ IDEA JVMs have different bitness 라는데 , 정확히 어떤 것 때문인지는 이해가 안된다.
+
+
+
+
+
+> 셀프 체크 리스트
+
+##### ORM과 JPA의 관계, JPA와 Hibernate의 관계에 대해 이해했는가?
+
+- ORM
+  - Object Relation Mapping
+  - 객체 관계 맵핑.
+  - 즉 자바 객체가 맵핑되어 DB 테이블에 등록되는 느낌
+  - DB 탐색시, Query를 직접 작성하지 않아도 됨.
+
+- JPA, Java Persistence API, 자바 어플리케이션에서 관계형 데이터베이스 사용 방식을 정의한 **인터페이스**
+- JPA는 라이브러리 아님. 단지 정의되어있음. 어떻게 사용하면 되는지
+
+- Hiberante는 JPA 인터페이스의 구현체
+  - 미리 구현해놓은 것임.
+  - 맘에 안들면 인터페이스로 부터 나만의 구현체를 만들어도 됨.
+
+- JPA, Hibernate, Spring Data JPA
+
+  ![](https://suhwan.dev/images/jpa_hibernate_repository/overall_design.png)
+
+
+
+- 참고
+  - https://suhwan.dev/2019/02/24/jpa-vs-hibernate-vs-spring-data-jpa/
+  - https://victorydntmd.tistory.com/195
+
+
+
+##### Maven, Gradle과 같은 빌드 도구의 역할에 대해 이해했는가?
+
+- Maven
+
+  - groupId, artifactId, version을 통해서 프로젝트를 식별한다.
+
+  - groupId : 조직의 고유 아이디. 일반적으로 도메인.
+
+  - artifactId : 프로젝트를 식별하는 유일한 아이디.
+
+  - version. 프로젝트 현재 버전. 
+
+    - 개발이 완료되었으면 1.0, 2.0..
+    - 개발중이면 접미사로 SNAPSHOT을 사용
+
+  - 기본 디렉토리 구조
+
+    - src/main/java : 배포되는 자바 소스 코드 디렉토리
+    - scr/main/resources : 배포되는 설정 파일 디렉토리
+    - src/main/webapp : 웹 정적자원 html, css, javascript를 관리하는 디렉토리
+
+  - 원격 저장소, 로컬저장소
+
+    ![](https://firebasestorage.googleapis.com/v0/b/nextstep-real.appspot.com/o/lesson-attachments%2F-KhznCj3wRoDrQIEqsXG%2Fmaven%20repository.JPG?alt=media&token=244503d6-ba83-44b2-aacb-bcfc1ff10cf7)
+
+  - 메이븐 빌드 도구 역할가 왜 필요해? 
+
+    - 프로젝트 빌드를 쉽게할 수 있음.
+    - 다른 의존성을 쉽게 추가할 수 있음.
+    - 의존성들의 업데이트가 쉬워짐.
+    - 프로젝트 outputs 타입 통일?
+    - 즉 종합하자면 프로젝트 관리(빌드, 업데이트, 공유) 등을 편하고 오류 없게 하기 위해서.
+
+    
+
+  - 라이프 사이클
+    1. compile : 소스 코드 컴파일 하고
+    2. test : 테스트 코드 실행, 실패하면 빌드 실패로 생각
+    3. package : pom.xml에 설정된 방식(jar,war,ear등)으로 압축
+    4. install : 로컬 저장소에 압축한 파일을 배포
+    5. deploy : 원격 저장소에 압축한 파일을 배표.
+
+  - clean
+    - 메이븐 빌드를 통해 생성된 모든 산출물을 삭제.
+    - 즉 target 디렉토리 삭제
+  - site
+      
+      - 프로젝트에 대한 문서 사이트를 생성.
+
+
+
+##### Cookie와 Session의 차이점
+
+- 가장 큰 차이점은 세션은 서버쪽에서 저장되고, 쿠키는 클라이언트의 브라우저에 저장됨.
+
+- 쿠키
+
+  - bit of data, maximum 4KB
+  - 서버로 부터 set Cookie 요청이 와서, 한번 설정되면, 모든 페이지 요청에 포함됨.
+  - 만료시간을 설정할 수 있음.
+
+- 세션
+
+  - collection of data
+
+  - 서버에서 세션이 생성되면, 쿠키에 포함되어져서 클라이언트 쪽으로 전송됨.
+  - 상대적으로 쿠키보다는 많은 양의 데이터를 저장할 수 있음.
+  - 브라우저가 닫히면, 삭제됨.
+
+- 참고
+
+  - https://www.tutorialspoint.com/What-is-the-difference-between-session-and-cookies
+
+  - https://www.guru99.com/difference-between-cookie-session.html
+
+
+

@@ -1,5 +1,6 @@
 package com.codessquad.qna.domain;
 
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -31,6 +32,14 @@ public class Question {
     private String contents;
 
     private LocalDateTime writeTime;
+
+    private boolean deleted;
+
+    @Formula("(SELECT count(*) FROM ANSWER a WHERE a.QUESTION_ID = ID)")
+    private Long countOfAnswers;
+
+    @Formula("(SELECT count(*) FROM ANSWER a WHERE a.QUESTION_ID = ID AND a.WRITER_ID = WRITER_ID)")
+    private Long countOfAnswersOfWriter;
 
     public List<Answer> getAnswers() {
         return answers;
@@ -83,6 +92,27 @@ public class Question {
 
     public boolean isSameUser(User user) {
         return writer.equals(user);
+    }
+
+    private boolean isEmptyAnswers() {
+        return countOfAnswers<=0;
+    }
+
+    private boolean isAllAnswersByWriter() {
+        return countOfAnswers.equals(countOfAnswersOfWriter);
+    }
+
+    //댓글이 없거나 모든 댓글이 글 작성자의 것이면 true 반환
+    public boolean canDeleteAnswers() {
+        if(isEmptyAnswers()) {
+            return true;
+        }
+
+        return isAllAnswersByWriter();
+    }
+
+    public void delete(){
+        this.deleted = true;
     }
 
 }

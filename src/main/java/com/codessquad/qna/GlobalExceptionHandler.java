@@ -1,5 +1,6 @@
 package com.codessquad.qna;
 
+import com.codessquad.qna.exception.CanNotDeleteException;
 import com.codessquad.qna.exception.InvalidInputException;
 import com.codessquad.qna.exception.NotFoundException;
 import org.slf4j.Logger;
@@ -44,6 +45,15 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidInputException.class)
     public String invalidInput(InvalidInputException e, Model model, HttpServletRequest request) {
+        LOGGER.debug("[page/EXCEPTION] : {}", "BAD_REQUEST");
+        setModel(e,request,model);
+        return "/errors/400";
+    }
+
+    //TODO: 상태코드 수정?
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(CanNotDeleteException.class)
+    public String canNotDelete(CanNotDeleteException e, Model model, HttpServletRequest request) {
         LOGGER.debug("[page/EXCEPTION] : {}", "BAD_REQUEST");
         setModel(e,request,model);
         return "/errors/400";

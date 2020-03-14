@@ -3,6 +3,7 @@ package com.codessquad.qna.controller;
 import com.codessquad.qna.domain.Question;
 import com.codessquad.qna.domain.QuestionRepository;
 import com.codessquad.qna.domain.User;
+import com.codessquad.qna.exception.CanNotDeleteException;
 import com.codessquad.qna.exception.InvalidInputException;
 import com.codessquad.qna.exception.NotFoundException;
 import org.slf4j.Logger;
@@ -123,7 +124,13 @@ public class QuestionController {
             throw new IllegalStateException("글 작성자 아님");
         }
 
-        questionRepository.deleteById(id);
+        if(!question.canDeleteAnswers()) {
+            LOGGER.debug("[page] : {}", "답변이 존재함");
+            throw new CanNotDeleteException("삭제할 수 없습니다.");
+        }
+
+        question.delete();
+        questionRepository.save(question);
 
         return "redirect:/";
     }

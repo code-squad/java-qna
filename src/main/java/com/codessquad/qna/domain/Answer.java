@@ -1,6 +1,7 @@
 package com.codessquad.qna.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -13,20 +14,25 @@ public class Answer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty
     private Long id;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
+    @JsonProperty
     private User writer;
 
     @Lob
+    @JsonProperty
     private String contents;
+    @JsonProperty
     private LocalDateTime createdDate;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_question"))
-    @JsonIgnore
+    @JsonProperty
     private Question question;
+    @JsonProperty
     private boolean deleted;
 
     public Answer() {

@@ -1,4 +1,5 @@
-$(".answer-write input[type=submit]").click(addAnswer);
+$(".answer-write input[type='submit']").on("click", addAnswer);
+
 function addAnswer(e) {
     e.preventDefault();
     console.log("click me");
@@ -26,8 +27,10 @@ function onError(data, status) {
 function onSuccess(data, status) {
     console.log(data);
     var answerTemplate = $("#answerTemplate").html();
+    console.log("실행1");
     var template = answerTemplate.format(data.writer.name, data.formattedCreatedDate,
         data.contents, data.id, data.id);
+    console.log("실행2");
     $(".qna-comment-slipp-articles").prepend(template);
     $(".answer-write textarea").val("");
 }

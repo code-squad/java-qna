@@ -219,3 +219,6 @@ function onSuccess(data, status) {
     $(".answer-write textarea").val("");
 }
 ```
+
+## 답변 기능 구현 에러 
+- 문제 : 첫 답변하기 버튼 클릭 시 반응이 없음. 2번째부터는 되다가 그 이후는 입력한 답변이 존재하던 모든 답변 위에 포함되는 문제 발생.

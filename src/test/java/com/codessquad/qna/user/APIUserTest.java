@@ -6,7 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 class UserJPATest {
@@ -17,6 +17,8 @@ class UserJPATest {
   @Test
   void GET_USERS() {
     List<User> users = userRepository.findAll();
-    assertTrue(users.size() == 2);
+    int expectedUserSize = 8;
+
+    assertEquals(expectedUserSize, users.size());
   }
 }

@@ -22,6 +22,8 @@ public class Answer {
 
     private LocalDateTime createdAt;
 
+    private boolean deleted;
+
     public Answer() {}
 
     public Answer(User writer, Question question, String contents) {
@@ -45,6 +47,10 @@ public class Answer {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public void delete() {
+        this.deleted = true;
     }
 
     public boolean isSameUser(User user) {

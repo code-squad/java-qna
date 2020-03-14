@@ -1,8 +1,6 @@
 package com.codessquad.qna.controller;
 
-import com.codessquad.qna.domain.Question;
-import com.codessquad.qna.domain.QuestionRepository;
-import com.codessquad.qna.domain.User;
+import com.codessquad.qna.domain.*;
 import com.codessquad.qna.exception.CanNotDeleteException;
 import com.codessquad.qna.exception.InvalidInputException;
 import com.codessquad.qna.exception.NotFoundException;
@@ -14,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 @RequestMapping("/questions")
@@ -22,6 +21,9 @@ public class QuestionController {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private AnswerRepository answerRepository;
 
     @GetMapping("/form")
     public String showQuestionForm(HttpSession session) {
@@ -129,6 +131,11 @@ public class QuestionController {
             throw new CanNotDeleteException("삭제할 수 없습니다.");
         }
 
+        List<Answer> answers = answerRepository.findAllByQuestionId(id);
+        answers.forEach(answer -> {
+            answer.delete();
+            answerRepository.save(answer);
+        });
         question.delete();
         questionRepository.save(question);
 

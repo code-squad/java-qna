@@ -2,6 +2,7 @@ package com.codessquad.qna;
 
 import com.codessquad.qna.domain.User;
 import com.codessquad.qna.domain.UserRepository;
+import com.codessquad.qna.domain.UserUpdateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -57,7 +58,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public String profile(@PathVariable Long id, Model model) {
-        model.addAttribute("user", findUser(userRepository, id));
+        model.addAttribute("user", findUser(id));
         return "user/profile";
     }
 
@@ -70,7 +71,7 @@ public class UserController {
     public String updateForm(@PathVariable Long id, Model model, HttpSession httpSession) {
         try {
             hasPermission(httpSession, id);
-            model.addAttribute("user", findUser(userRepository, id));
+            model.addAttribute("user", findUser(id));
             return "user/updateForm";
         } catch (IllegalStateException e) {
             model.addAttribute("errorMessage", e.getMessage());
@@ -79,19 +80,18 @@ public class UserController {
     }
 
     @PostMapping("/{id}/update")
-    public String updateUser(@PathVariable Long id, String password, String newPassword,
-                             String checkPassword, String name, String email,
+    public String updateUser(@PathVariable Long id, UserUpdateDTO userUpdateDTO,
                              HttpSession httpSession, Model model) {
         try {
             hasPermission(httpSession, id);
-            User user = findUser(userRepository, id);
+            User user = findUser(id);
 
-            if (user.notMatchPassword(password)) {
+            if (user.notMatchPassword(userUpdateDTO)) {
                 return "redirect:/users/{id}/form";
             }
 
-            if (newPassword.equals(checkPassword)) {
-                user.update(name, email, newPassword);
+            if (userUpdateDTO.checkPassword()) {
+                user.update(userUpdateDTO);
                 userRepository.save(user);
                 return "redirect:/users";
             }
@@ -102,7 +102,7 @@ public class UserController {
         }
     }
 
-    private User findUser(UserRepository userRepository, Long id) {
+    private User findUser(Long id) {
         return userRepository.findById(id).orElseThrow(() ->
                 new IllegalStateException("There is no user."));
     }

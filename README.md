@@ -1,9 +1,64 @@
 # Step5 
 [배포 url : https://hyunjun2.herokuapp.com/](https://hyunjun2.herokuapp.com/)
 
-## Ajax를 왜 사용하는가? 
-- 서버에 리퀘스트를 해도 고정된 값이 있고 전달되는 값이 있다. 이 때 모든 리소스를 매번 요청하지 않고 내가 필요한 데이터만 리퀘스트하고 그 데이터만 리스폰스할 수 있도록 도와주는 기술이다. 예를 들어, 댓글을 추가할 때 모든 페이지를 리퀘스트하지 않고 댓글 관련된 리소스만 리퀘스트하는 것이다.
+## Step4 리뷰어 피드백 참고 리팩토링
+- [ ] Exception이 발생하는 부분만 try - catch 하기. AnswerController의 hasPermission()
+- [x] 객체의 필드로 선언된 repository를 메서드의 인자로 넘길 필요없음.  
+- [x] PathVariable에 .(dot) 대신 camelCase로 표기하기. ex) answer.id -> answerId
+- [x] 기능 추가에 따른 hasPermission의 이름 구분 생각해보기.  
+- [x] question.isNoAnswer() || isSameBetweenWriters() -> question.isDeletable() 변경 추천
+- [ ] 로그인 체크하는 메서드 중복 발생하니 클래스로 뽑아서 공통으로 사용하기.
+- [x] 유저 업데이트할 때 인자 여러개보다 DTO를 만들면 코드 간결성, 관리 측면에 효과적. 
+- [x] 호눅스의 추천 : DTO에 대한 공부
+- [x] this 사용 시 일관성있게 모든 필드에서 사용.
+- [x] OrderBy 대신 Repository에서 sort 해보기. -> findAllByOrderByIdAsc();
+- [x] ORM으로 연관관계 시 toString() 사용 주의. 공부해보기. 
+- [x] stream().allMatch() 사용하기. -> allMatch(), anyMatch(), noneMatch(), findFirst(), findAny() 적절히 사용하기 
 
+### DTO(Data transfer object)
+DTO는 데이터를 전달하는 역할을 하는 객체를 의미한다. 보통 객체란 역할과 책임을 가진 존재이다. 하지만 DTO로 사용될 땐 마치 Collection처럼 여러개의 데이터를 한번에 전달할 때 사용된다. 속성과 setter, getter가 존재한다. 
+
+### ORM으로 연관관계 시 toString() 대신 toStringBuilder() 
+[참고 : 오라클 ToStringStyle](https://commons.apache.org/proper/commons-lang/apidocs/org/apache/commons/lang3/builder/ToStringStyle.html)
+ 
+[참고 : 오라클 ToStringBuilder](https://commons.apache.org/proper/commons-lang/apidocs/org/apache/commons/lang3/builder/ToStringBuilder.html)<br>
+ORM을 통해 객체 간 연관관계가 양방향일 경우 toString 사용 시 StackOverFlow exception이 발생할 수 있다. 이유는 A 객체의 toString에서 매핑된 B객체를 참조한다. 그러면 B객체의 toString에서도 A객체를 참조한다. 그러면 A->B->A->B와 같이 에러가 발생한다. 해결책은 toStringBuilder가 있다.<br>  
+아래 코드에서 1번은 기본 형태이다. 2번 형식이 간결하고 style을 지정할 수 있다. (reflectionToString)
+
+```java
+ public class Person {
+   String name;
+   int age;
+   boolean smoker;
+
+   ...
+    // 1번
+   public String toString() {
+     return new ToStringBuilder(this).
+       append("name", name).
+       append("age", age).
+       append("smoker", smoker).
+       toString();
+   }
+    // 2번
+    public String toString() {
+        return ToStringBuilder
+            .reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+    }
+ }
+```
+
+ToStingStyle은 7가지가 있다. 
+DEFAULT_STYLE 
+JSON_STYLE The 
+MULTI_LINE_STYLE 
+NO_CLASS_NAME_STYLE 
+NO_FIELD_NAMES_STYLE 
+SHORT_PREFIX_STYLE 
+SIMPLE_STYLE 
+
+## Ajax를 왜 사용하는가? 
+- 서버에 리퀘스트를 해도 고정된 값이 있고 전달되는 값이 있다. 이 때 모든 리소스를 매번 요청하지 않고 내가 필요한 데이터만 리퀘스트하고 그 데이터만 리스폰스할 수 있도록 도와주는 기술이다. 예를 들어, 댓글을 추가할 때 모든 페이지를 리퀘스트하지 않고 댓글 관련된 리소스만 리퀘스트하는 것이다. 
 ## Step5 진행하며 배운점
 - 객체 데이터를 json으로 만들 때 왜 stackOverFlow가 발생할까? toString()처럼 Mapping된 객체가 있으면 그 객체 속성으로 들어가는데, 만약 양방향 매핑이라면 서로 참조하기 때문이다.
 

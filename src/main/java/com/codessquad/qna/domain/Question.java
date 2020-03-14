@@ -121,14 +121,18 @@ public class Question {
         return createdDate.format(DateTimeFormatter.ofPattern("YYYY-MM-SS HH:mm:ss"));
     }
 
+    public boolean isDeletable() {
+        return isNoAnswers() || isSameBetweenWritersOfAnswers();
+    }
+
     public boolean isNoAnswers() {
         return answers.isEmpty();
     }
 
     public boolean isSameBetweenWritersOfAnswers() {
-        long countOfSameWriter = answers.stream()
-                .filter(answer -> answer.getWriter() == writer).count();
-        return countOfSameWriter == answers.size();
+//        long countOfSameWriter = answers.stream()
+//                .filter(answer -> answer.getWriter() == writer).count();
+        return answers.stream().allMatch(answer -> answer.matchWriter(this.writer));
     }
 
     public void delete() {

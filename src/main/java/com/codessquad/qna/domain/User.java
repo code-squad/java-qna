@@ -69,14 +69,18 @@ public class User {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
     }
 
-    public void update(String name, String email, String newPassword) {
-        this.name = name;
-        this.email = email;
-        this.password = newPassword;
+    public void update(UserUpdateDTO userUpdateDTO) {
+        this.name = userUpdateDTO.getName();
+        this.email = userUpdateDTO.getEmail();
+        this.password = userUpdateDTO.getPassword();
     }
 
     public boolean notMatchId(Long id) {
         return !id.equals(this.id);
+    }
+
+    public boolean notMatchPassword(UserUpdateDTO userUpdateDTO) {
+        return !userUpdateDTO.getPassword().equals(this.password);
     }
 
     public boolean notMatchPassword(String password) {

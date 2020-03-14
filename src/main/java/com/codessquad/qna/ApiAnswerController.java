@@ -4,12 +4,10 @@ import com.codessquad.qna.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.Arrays;
 
 @RestController
 @RequestMapping("/api/questions")
@@ -27,11 +25,11 @@ public class ApiAnswerController {
                          HttpSession httpSession,
                          Model model) {
         try {
-            User sessionedUser = HttpSessionUtils.getUserFromSession(httpSession);
             hasPermission(httpSession);
-            Question question = findQuestionById(questionRepository, questionId);
+            User sessionedUser = HttpSessionUtils.getUserFromSession(httpSession);
+            Question question = findQuestionById(questionId);
             Answer answer = new Answer(question, contents, sessionedUser);
-            logger.debug("answer : {} " , answer);
+            logger.debug("answer : {} ", answer);
             return answerRepository.save(answer);
         } catch (IllegalStateException e) {
             logger.info("null!!!");
@@ -40,16 +38,16 @@ public class ApiAnswerController {
         }
     }
 
-    @GetMapping("/{questionId}/answers/{id}/{writer}/form")
+    @GetMapping("/{questionId}/answers/{answerId}/{writer}/form")
     public String updateForm(@PathVariable Long questionId,
-                             @PathVariable("id") Long answerId,
+                             @PathVariable Long answerId,
                              @PathVariable String writer,
                              HttpSession httpSession,
                              Model model) {
         try {
             hasPermission(httpSession, writer);
-            model.addAttribute("question", findQuestionById(questionRepository, questionId));
-            model.addAttribute("answer", findAnswerById(answerRepository, answerId));
+            model.addAttribute("question", findQuestionById(questionId));
+            model.addAttribute("answer", findAnswerById(answerId));
             return "answer/updateForm";
         } catch (IllegalStateException e) {
             model.addAttribute("errorMessage", e.getMessage());
@@ -57,14 +55,14 @@ public class ApiAnswerController {
         }
     }
 
-    @PutMapping("/{questionId}/answers/{answer.id}/update")
-    public String update(@PathVariable("answer.id") Long answerId,
+    @PutMapping("/{questionId}/answers/{answerId}/update")
+    public String update(@PathVariable Long answerId,
                          String contents,
                          HttpSession httpSession,
                          Model model) {
         try {
             hasPermission(httpSession);
-            Answer answer = findAnswerById(answerRepository, answerId);
+            Answer answer = findAnswerById(answerId);
             answer.update(contents);
             answerRepository.save(answer);
             return "redirect:/questions/{questionId}";
@@ -74,14 +72,14 @@ public class ApiAnswerController {
         }
     }
 
-    @DeleteMapping("/{questionId}/answers/{id}/{writer}/delete")
-    public String delete(@PathVariable("id") Long answerId,
+    @DeleteMapping("/{questionId}/answers/{answerId}/{writer}/delete")
+    public String delete(@PathVariable Long answerId,
                          @PathVariable String writer,
                          HttpSession httpSession,
                          Model model) {
         try {
             hasPermission(httpSession, writer);
-            Answer answer = findAnswerById(answerRepository, answerId);
+            Answer answer = findAnswerById(answerId);
             answer.delete();
             answerRepository.save(answer);
             return "redirect:/questions/{questionId}";
@@ -111,12 +109,12 @@ public class ApiAnswerController {
         }
     }
 
-    private Answer findAnswerById(AnswerRepository answerRepository, Long answerId) {
+    private Answer findAnswerById(Long answerId) {
         return answerRepository.findById(answerId).orElseThrow(() ->
                 new IllegalStateException("There is no answer"));
     }
 
-    private Question findQuestionById(QuestionRepository questionRepository, Long questionId) {
+    private Question findQuestionById(Long questionId) {
         return questionRepository.findById(questionId).orElseThrow(() ->
                 new IllegalStateException("There is no question."));
     }

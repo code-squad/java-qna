@@ -35,7 +35,7 @@ public class Answer {
         this.contents = contents;
         this.writer = writer;
         this.createdDate = LocalDateTime.now();
-        deleted = false;
+        this.deleted = false;
     }
 
     public boolean isDeleted() {
@@ -104,6 +104,10 @@ public class Answer {
     }
 
     public void delete() {
-        deleted = true;
+        this.deleted = true;
+    }
+
+    public boolean matchWriter(User writer) {
+        return this.writer == writer;
     }
 }

@@ -13,9 +13,9 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @Column(length = 20)
-    private String writer;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    private User writer;
 
     @NotBlank
     @Column(length = 50)
@@ -31,12 +31,12 @@ public class Question {
         return id;
     }
 
-    public String getWriter() {
-        return writer;
+    public void setWriter(User writer) {
+        this.writer = writer;
     }
 
-    public void setWriter(String writer) {
-        this.writer = writer;
+    public User getWriter() {
+        return writer;
     }
 
     public String getTitle() {
@@ -71,15 +71,9 @@ public class Question {
         title = updatedQuestion.title;
         contents = updatedQuestion.contents;
     }
-    
-    @Override
-    public String toString() {
-        return "Question{" +
-                "id=" + id +
-                ", writer='" + writer + '\'' +
-                ", title='" + title + '\'' +
-                ", contents='" + contents + '\'' +
-                ", writeTime=" + writeTime +
-                '}';
+
+    public boolean isSameUser(User user) {
+        return writer.equals(user);
     }
+
 }

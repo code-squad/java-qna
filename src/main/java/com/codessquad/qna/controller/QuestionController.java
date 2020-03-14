@@ -31,13 +31,6 @@ public class QuestionController {
             return "redirect:/users/loginForm";
         }
 
-
-        Object sessionUser = session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
-        if(sessionUser == null) {
-            LOGGER.debug("[page] : {}", "비로그인 상태");
-            return "redirect:/users/loginForm";
-        }
-
         return "qna/form";
     }
 
@@ -50,15 +43,13 @@ public class QuestionController {
             return "redirect:/users/loginForm";
         }
 
-        User user = HttpSessionUtils.getUserFromSession(session);
-        if(!user.matchName(question.getWriter())) {
-            LOGGER.debug("[page] : {}", "글 작성자 아님");
-            throw new IllegalStateException("글 작성자 아님");
-        }
 
         if(question == null) {
             throw new InvalidInputException("입력값이 유효하지 않습니다.");
         }
+
+        User user = HttpSessionUtils.getUserFromSession(session);
+        question.setWriter(user);
         question.setWriteTimeNow();
 
         LOGGER.debug("[page] : {}", "질문 DB에 저장");
@@ -85,7 +76,7 @@ public class QuestionController {
 
         User user = HttpSessionUtils.getUserFromSession(session);
         Question question = getQuestionById(id);
-        if(!user.matchName(question.getWriter())) {
+        if(!question.isSameUser(user)) {
             LOGGER.debug("[page] : {}", "글 작성자 아님");
             throw new IllegalStateException("글 작성자 아님");
         }
@@ -104,12 +95,12 @@ public class QuestionController {
         }
 
         User user = HttpSessionUtils.getUserFromSession(session);
-        if(!user.matchName(updatedQuestion.getWriter())) {
+        Question question = getQuestionById(id);
+        if(!question.isSameUser(user)) {
             LOGGER.debug("[page] : {}", "글 작성자 아님");
             throw new IllegalStateException("글 작성자 아님");
         }
 
-        Question question = getQuestionById(id);
         question.update(updatedQuestion);
         questionRepository.save(question);
 
@@ -127,7 +118,7 @@ public class QuestionController {
 
         User user = HttpSessionUtils.getUserFromSession(session);
         Question question = getQuestionById(id);
-        if(!user.matchName(question.getWriter())) {
+        if(!question.isSameUser(user)) {
             LOGGER.debug("[page] : {}", "글 작성자 아님");
             throw new IllegalStateException("글 작성자 아님");
         }

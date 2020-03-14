@@ -93,7 +93,7 @@ getter가 없으면 답변이 뜨지 않음. getter를 넣자.
 
 ## 4.6 답변 삭제하기
 
-
+현재 show.html에서 question과 answer과 얽혀있어 삭제하기가 작동이 잘 되지 않는다.
 
 ## 4.7 QuestionController 중복 코드 제거 리팩토링
 

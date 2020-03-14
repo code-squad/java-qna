@@ -42,17 +42,18 @@ public class AnswerController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteAnswer(@PathVariable("id") Long answerId, HttpSession session) {
+    public String deleteAnswer(@PathVariable Long id, HttpSession session) {
         if (HttpSessionUtils.isNoneExistentUser(session)) {
             log.info("로그인하세요.");
             return "redirect:/users/loginForm";
         }
         User loginUser = HttpSessionUtils.getUserFromSession(session);
-        Answer answer = answerRepository.findById(answerId).orElseThrow(IllegalStateException::new);
+        Answer answer = answerRepository.findById(id).orElseThrow(IllegalStateException::new);
         if (answer.isNotSameWriter(loginUser)) {
+            log.info("해당 로그인이 아닙니다.");
             return "redirect:/users/loginForm";
         }
         answerRepository.delete(answer);
-        return "redirect:/questions/{questionId}/answers";
+        return "redirect:/questions/{questionId}";
     }
 }

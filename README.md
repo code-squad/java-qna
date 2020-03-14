@@ -57,8 +57,8 @@ public class LocalDateTimeConverter implements AttributeConverter<LocalDateTime,
 
 ### 요구사항
 
-- [ ] 사용자는 질문 상세보기 화면에서 답변 목록을 볼 수 있다.
-- [ ] 로그인한 사용자는 답변을 추가할 수 있다.
+- [x] 사용자는 질문 상세보기 화면에서 답변 목록을 볼 수 있다.
+- [x] 로그인한 사용자는 답변을 추가할 수 있다.
 - [ ] 자신이 쓴 답변을 삭제할 수 있다.
 
 ---
@@ -87,13 +87,13 @@ org.springframework.beans.factory.BeanCreationException.
 
 @OrderBy("id ASC"): 오름차순
 
-## 4.6 QuestionController 중복 코드 제거 리팩토링
+
+
+## 4.6 답변 삭제하기
 
 
 
-## 4.7 답변 추가하기
-
-
+## 4.7 QuestionController 중복 코드 제거 리팩토링
 
 
 

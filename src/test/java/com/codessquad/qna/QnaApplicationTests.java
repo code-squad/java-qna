@@ -9,5 +9,4 @@ class QnaApplicationTests {
   @Test
   void contextLoads() {
   }
-
 }

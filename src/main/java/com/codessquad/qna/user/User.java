@@ -4,12 +4,13 @@ import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Data
 @NotNull
-public class User {
+public class User implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +27,14 @@ public class User {
 
   @Transient
   private String oldPassword;
+
+  public User(Long id, String userId, String password, String name, String email) {
+    this.id = id;
+    this.userId = userId;
+    this.password = password;
+    this.name = name;
+    this.email = email;
+  }
 
   public void update(User newUser) {
     this.password = newUser.password;

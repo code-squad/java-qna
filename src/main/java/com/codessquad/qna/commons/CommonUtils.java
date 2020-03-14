@@ -7,6 +7,8 @@ import com.codessquad.qna.errors.UserException;
 import com.codessquad.qna.question.Question;
 import com.codessquad.qna.question.QuestionRepository;
 import com.codessquad.qna.user.User;
+import com.codessquad.qna.user.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -14,8 +16,23 @@ import java.util.Optional;
 
 public class CommonUtils {
 
+  @Autowired
+  UserRepository userRepository;
+
   /**
    * Feat : Null 을 처리한 User 를 가져옵니다.
+   * Desc :
+   * Return : id 에 매칭되는 User
+   */
+  public User getUser(Long id) {
+    Optional<User> optionalUser = userRepository.findById(id);
+    User user = optionalUser.orElseThrow(() -> new UserException(CustomMessage.USER_NOT_EXIST));
+
+    return user;
+  }
+
+  /**
+   * Feat : Null 을 처리한 sessionedUser 를 가져옵니다.
    * Desc :
    * Return : sessionedUser
    */

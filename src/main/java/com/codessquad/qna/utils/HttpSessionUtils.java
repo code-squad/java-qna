@@ -1,4 +1,4 @@
-package com.codessquad.qna.sessionutils;
+package com.codessquad.qna.utils;
 
 import com.codessquad.qna.user.User;
 

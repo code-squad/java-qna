@@ -31,6 +31,10 @@ public class Answer {
         this.createdAt = LocalDateTime.now();
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public User getWriter() {
         return writer;
     }
@@ -41,6 +45,10 @@ public class Answer {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public boolean isSameUser(User user) {
+        return writer.equals(user);
     }
 
 }

@@ -44,6 +44,7 @@ public class QuestionController {
     public String showQuestionContents(@PathVariable Long id, Model model) {
         model.addAttribute("question",
                 questionRepository.findById(id).orElseThrow(IllegalStateException::new));
+
         return "qna/show";
     }
 

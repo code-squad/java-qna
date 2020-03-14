@@ -3,7 +3,7 @@
 ## comment 사항
 
 - [x] CheckedException을 지양하고 UnCheckedException (예외처리 참고: https://www.slipp.net/questions/350)
-- [ ] 로그인 여부 체크하는 기능이 누락됨. 로그인 된 유저들만 호출할 수 있는 api라 생각이 되어도 서버에서는 꼼꼼하게 체크해 주는것이 기본! (QuestionController에서 로그인 유저 검사할 것.)
+- [x] 로그인 여부 체크하는 기능이 누락됨. 로그인 된 유저들만 호출할 수 있는 api라 생각이 되어도 서버에서는 꼼꼼하게 체크해 주는것이 기본! (QuestionController에서 로그인 유저 검사할 것.)
 - [x] CrudRepository <-(상속) JpaRepository 차후에 페이징 기능을 사용하기 때문에 JpaRepository로 하자.
 - [x] Question.java에서 super()제거
 - [x] 메서드(createQna -> createQuestion)으로 변경하기
@@ -35,11 +35,57 @@ Step3에서 구현완료. String.format이 느리다고 한다. StringBuilder나
 
 @Converter를 이용한 LocalDateTime설정.
 
+```java
+@Converter(autoApply = true)
+public class LocalDateTimeConverter implements AttributeConverter<LocalDateTime, Timestamp> {
+
+    @Override
+    public Timestamp convertToDatabaseColumn(LocalDateTime localDateTime) {
+        return localDateTime != null ? Timestamp.valueOf(localDateTime) : null;
+    }
+
+    @Override
+    public LocalDateTime convertToEntityAttribute(Timestamp timestamp) {
+        return timestamp != null ? timestamp.toLocalDateTime() : null;
+    }
+}
+```
+
 그대로 equals를 사용하면 해당 주소만 비교. 객체값을 비교하려면 hashCode()오버라이딩이 필요하다.
 
 ## 4.5 답변 추가 및 목록 기능 구현
 
+### 요구사항
 
+- [ ] 사용자는 질문 상세보기 화면에서 답변 목록을 볼 수 있다.
+- [ ] 로그인한 사용자는 답변을 추가할 수 있다.
+- [ ] 자신이 쓴 답변을 삭제할 수 있다.
+
+---
+
+@Lob: 글자수제한 커짐
+
+구현하던 와중에 빌드 에러가 났음.
+
+원인: AnswerRepository에서 잘못된 Annotaion사용이었음.
+
+```java
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Invocation of init method failed; nested exception is org.hibernate.AnnotationException: Could not extract type parameter information from AttributeConverter implementation [com.codessquad.qna.answer.AnswerController]
+```
+
+```java
+org.springframework.beans.factory.BeanCreationException.
+    org.hibernate.AnnotationException
+    Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/sosah/documents/java-qna/build/reports/tests/test/index.html
+
+```
+
+템플릿 사용시 변수명 제대로 확인할 것. 대문자인지 아닌지 꼭 확인할 것. (괜한 삽질함)
+
+@OneToMany(mappedBy="변수명") <=> @ManyToOne
+
+@OrderBy("id ASC"): 오름차순
 
 ## 4.6 QuestionController 중복 코드 제거 리팩토링
 

@@ -1,6 +1,6 @@
 package com.codessquad.qna.user;
 
-import com.codessquad.qna.sessionutils.HttpSessionUtils;
+import com.codessquad.qna.utils.HttpSessionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/users")
 public class UserController {
-    private static Logger log = LoggerFactory.getLogger(UserController.class);
+    private Logger log = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -66,13 +66,13 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public String showUser(@PathVariable Long id, Model model) throws IllegalAccessException {
-        model.addAttribute("user", userRepository.findById(id).orElseThrow(IllegalAccessException::new));
+    public String showUser(@PathVariable Long id, Model model) {
+        model.addAttribute("user", userRepository.findById(id).orElseThrow(IllegalStateException::new));
         return "user/profile";
     }
 
     @GetMapping("/{id}/form")
-    public String updateForm(@PathVariable Long id, Model model, HttpSession session) throws IllegalAccessException {
+    public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
         if (HttpSessionUtils.isNoneExistentUser(session)) {
             return "redirect:/users/loginForm";
         }
@@ -81,13 +81,13 @@ public class UserController {
             throw new IllegalStateException("자신의 정보만 수정하세요.");
         }
 
-        User user = userRepository.findById(id).orElseThrow(IllegalAccessException::new);
+        User user = userRepository.findById(id).orElseThrow(IllegalStateException::new);
         model.addAttribute("user", user);
         return "user/updateForm";
     }
 
     @PutMapping("/{id}")
-    public String updateUser(@PathVariable Long id, User updateUser, HttpSession session) throws IllegalAccessException {
+    public String updateUser(@PathVariable Long id, User updateUser, HttpSession session) {
         if (HttpSessionUtils.isNoneExistentUser(session)) {
             return "redirect:/users/loginForm";
         }
@@ -96,7 +96,7 @@ public class UserController {
             throw new IllegalStateException("자신의 정보만 수정하세요.");
         }
 
-        User user = userRepository.findById(id).orElseThrow(IllegalAccessException::new);
+        User user = userRepository.findById(id).orElseThrow(IllegalStateException::new);
         user.update(updateUser);
         userRepository.save(user);
         return "redirect:/users";

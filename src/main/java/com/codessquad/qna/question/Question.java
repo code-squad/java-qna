@@ -1,7 +1,6 @@
 package com.codessquad.qna.question;
 
 import com.codessquad.qna.user.User;
-import jdk.vm.ci.meta.Local;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -57,6 +56,10 @@ public class Question {
 
     public String getContents() {
         return contents;
+    }
+
+    public boolean isNotSameWriter(User loginUser) {
+        return !this.writer.equals(loginUser);
     }
 
     @Override

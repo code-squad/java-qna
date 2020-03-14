@@ -3,6 +3,8 @@ package com.codessquad.qna.controller;
 import com.codesquad.web.HttpSessionUtils;
 import com.codessquad.qna.domain.User;
 import com.codessquad.qna.domain.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,10 +20,11 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
     @GetMapping
     public String list(Model model) {
         model.addAttribute("users", userRepository.findAll());
-        System.out.println(userRepository.findAll());
         return "/users/list";
     }
 
@@ -91,7 +94,8 @@ public class UserController {
             System.out.println("Login Failure");
             return "redirect:/login";
         }
-        System.out.println("Login Success!");
+        logger.trace("######################## Login Success ####################");
+
         session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
         return "redirect:/";
     }

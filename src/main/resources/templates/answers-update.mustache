@@ -1,0 +1,32 @@
+{{>layout/header}}
+<h1>답변 수정</h1>
+<div class="col-md-12">
+  <div class="col-md-4">
+    <form>
+      <div class="form-group">
+        <label for="title">답변 고유번호</label>
+        <input type="text" class="form-control" id="answerId" value="{{answers.Id}}" readonly>
+      </div>
+      <div class="form-group">
+        <label for="title">원 질문글 제목</label>
+        <input type="text" class="form-control" id="questionTitle" value="{{answers.question.title}}" readonly>
+      </div>
+      <div class="form-group">
+        <label for="title">원 질문글 번호</label>
+        <input type="text" class="form-control" id="questionId" value="{{answers.question.Id}}" readonly>
+      </div>
+      <div class="form-group">
+        <label for="title">답변 작성자</label>
+        <input type="text" class="form-control" id="name" value="{{answers.author.name}}" readonly>
+      </div>
+      <div class="form-group">
+        <label for="title">답변 내용</label>
+        <input type="text" class="form-control" id="content" value="{{answers.content}}">
+      </div>
+    </form>
+    <a href="/" role="button" class="btn btn-secondary">취소</a>
+    <button type="button" class="btn btn-primary" id="btn-answer-update">수정 완료</button>
+    <button type="button" class="btn btn-danger" id="btn-answer-delete">삭제</button>
+  </div>
+</div>
+{{>layout/footer}}

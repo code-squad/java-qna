@@ -1,19 +1,22 @@
-package com.codessquad.qna.controller;
+package com.codessquad.qna.controller.posts;
 
 import com.codessquad.qna.service.posts.PostsService;
-import com.codessquad.qna.web.dto.PostsSaveRequestDto;
-import com.codessquad.qna.web.dto.PostsUpdateRequestDto;
-import lombok.RequiredArgsConstructor;
+import com.codessquad.qna.web.dto.posts.PostsDeleteRequestDto;
+import com.codessquad.qna.web.dto.posts.PostsSaveRequestDto;
+import com.codessquad.qna.web.dto.posts.PostsUpdateRequestDto;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequiredArgsConstructor
 @RestController
 public class PostsAPIController {
   private final PostsService postsService;
+
+  public PostsAPIController(PostsService postsService) {
+    this.postsService = postsService;
+  }
 
   @PostMapping("/api/v1/posts")
   public Long save(@RequestBody PostsSaveRequestDto requestDto) {
@@ -23,5 +26,10 @@ public class PostsAPIController {
   @PutMapping("/api/v1/posts/{Id}")
   public Long update(@PathVariable Long Id, @RequestBody PostsUpdateRequestDto requestDto) {
     return postsService.update(Id, requestDto);
+  }
+
+  @PutMapping("/api/v1/posts/delete/{Id}")
+  public Long delete(@PathVariable Long Id, @RequestBody PostsDeleteRequestDto requestDto) {
+    return postsService.delete(Id, requestDto);
   }
 }

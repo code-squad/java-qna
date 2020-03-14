@@ -2,9 +2,9 @@
 //브라우저의 스코프는 기본적으로 공용 공간으로 쓰이기 때문에 함수 이름이 같으면 계속 덮어쓰기가 된다.
 //따라서 index 객체 안에서만 scope가 돌도록 함수의 범위를 설정한 것으로 이해하면 된다.
 
-var index = {
+const index = {
   init: function () {
-    var _this = this;
+    const _this = this;
 
     $('#btn-save').on('click', function () {
       _this.save();
@@ -19,17 +19,28 @@ var index = {
     });
 
     $('#btn-userregister').on('click', function () {
-      debugger;
       _this.register();
     });
 
     $('#btn-userupdate').on('click', function () {
       _this.userUpdate();
     });
+
+    $('#btn-answer-submit').on('click', function () {
+      _this.answerSubmit();
+    });
+
+    $('#btn-answer-update').on('click', function () {
+      _this.answerUpdate();
+    });
+
+    $('#btn-answer-delete').on('click', function () {
+      _this.answerDelete();
+    })
   },
 
   register: function () {
-    var data = {
+    const data = {
       userId: $('#userId').val(),
       password: $('#password').val(),
       name: $('#name').val(),
@@ -51,13 +62,13 @@ var index = {
   },
 
   userUpdate: function () {
-    var data = {
+    const data = {
       userId: $('#userId').val(),
       password: $('#password').val(),
       name: $('#name').val(),
       email: $('#email').val()
     };
-    var Id = $('#Id').val();
+    const Id = $('#Id').val();
 
     $.ajax({
       type: 'PUT',
@@ -74,9 +85,8 @@ var index = {
   },
 
   save: function () {
-    var data = {
+    const data = {
       title: $('#title').val(),
-      author: $('#author').val(),
       content: $('#content').val()
     };
 
@@ -95,11 +105,11 @@ var index = {
   },
 
   update: function () {
-    var data = {
+    const data = {
       title: $('#title').val(),
       content: $('#content').val()
     };
-    var Id = $('#Id').val();
+    const Id = $('#Id').val();
 
     $.ajax({
       type: 'PUT',
@@ -112,8 +122,88 @@ var index = {
       window.location.href = '/';
     }).fail(function (error) {
       alert(JSON.stringify(error));
-    });
-  }
+    })
+  },
+
+  delete: function () {
+    const data = {
+      deleteStatus: true
+    };
+    const Id = $('#Id').val();
+
+    $.ajax({
+      type: 'PUT',
+      url: '/api/v1/posts/delete/' + Id,
+      dataType: 'json',
+      contentType: 'application/json; charset=utf-8',
+      data: JSON.stringify(data)
+    }).done(function () {
+      alert('글이 삭제되었습니다.');
+      window.location.href = '/';
+    }).fail(function (error) {
+      alert(JSON.stringify(error));
+    })
+  },
+
+  answerSubmit: function () {
+    const data = {
+      content: $('#answer-content').val(),
+      postId: $('#postId').val()
+    };
+    const postId = $('#postId').val();
+
+    $.ajax({
+      type: 'POST',
+      url: '/api/v1/answers/',
+      dataType: 'json',
+      contentType: 'application/json; charset=utf-8',
+      data: JSON.stringify(data)
+    }).done(function () {
+      alert('답변이 등록되었습니다.');
+      window.location.href = '/posts/show/' + postId;
+    })
+  },
+
+  answerUpdate: function () {
+    const data = {
+      content: $('#content').val()
+    };
+    const answerId = $('#answerId').val();
+    const postId = $('#questionId').val();
+
+    $.ajax({
+      type: 'PUT',
+      url: '/api/v1/answers/' + answerId,
+      dataType: 'json',
+      contentType: 'application/json; charset=utf-8',
+      data: JSON.stringify(data)
+    }).done(function () {
+      alert('답변이 수정되었습니다.');
+      window.location.href = '/posts/show/' + postId;
+    }).fail(function (error) {
+      alert(JSON.stringify(error));
+    })
+  },
+
+  answerDelete: function () {
+    const data = {
+      deleteStatus: true
+    };
+    const answerId = $('#answerId').val();
+
+    $.ajax({
+      type: 'PUT',
+      url: '/api/v1/answers/delete/' + answerId,
+      dataType: 'json',
+      contentType: 'application/json; charset=utf-8',
+      data: JSON.stringify(data)
+    }).done(function () {
+      alert('답변이 삭제되었습니다.');
+      window.location.href = '/';
+    }).fail(function (error) {
+      alert(JSON.stringify(error));
+    })
+  },
 };
 
 index.init();

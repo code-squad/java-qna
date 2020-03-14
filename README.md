@@ -87,6 +87,8 @@ org.springframework.beans.factory.BeanCreationException.
 
 @OrderBy("id ASC"): 오름차순
 
+getter가 없으면 답변이 뜨지 않음. getter를 넣자.
+
 
 
 ## 4.6 답변 삭제하기

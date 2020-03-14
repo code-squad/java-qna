@@ -1,5 +1,6 @@
 package com.codessquad.qna.question;
 
+import com.codessquad.qna.answer.AnswerRepository;
 import com.codessquad.qna.utils.HttpSessionUtils;
 import com.codessquad.qna.user.User;
 import com.codessquad.qna.utils.Result;
@@ -16,6 +17,9 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("/questions")
 public class QuestionController {
     private Logger log = LoggerFactory.getLogger(QuestionController.class);
+
+    @Autowired
+    private AnswerRepository answerRepository;
 
     @Autowired
     private QuestionRepository questionRepository;
@@ -53,13 +57,42 @@ public class QuestionController {
     public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
         Question question = questionRepository.findById(id).orElseThrow(IllegalStateException::new);
         Result result = valid(session, question);
-        if (!result.isValid()) {
+        if (result.isNotValid()) {
             model.addAttribute("errorMessage", result.getErrorMessage());
             return "user/login";
         }
 
         model.addAttribute("question", question);
         return "qna/updateForm";
+    }
+
+    @PutMapping("/{id}")
+    public String updateQuestion(@PathVariable Long id, String title, String contents,
+                                 Model model, HttpSession session) {
+        Question question = questionRepository.findById(id).orElseThrow(IllegalStateException::new);
+        Result result = valid(session, question);
+        if (result.isNotValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return "user/login";
+        }
+
+        model.addAttribute("question", question);
+        question.update(title, contents);
+        questionRepository.save(question);
+        return "redirect:/questions/" + id;
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteQuestion(@PathVariable Long id, Model model, HttpSession session) {
+        Question question = questionRepository.findById(id).orElseThrow(IllegalStateException::new);
+        Result result = valid(session, question);
+        if (result.isNotValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return "user/login";
+        }
+
+        questionRepository.deleteById(id);
+        return "redirect:/";
     }
 
     private Result valid(HttpSession session, Question question) {
@@ -74,32 +107,4 @@ public class QuestionController {
         return Result.ok();
     }
 
-    @PutMapping("/{id}")
-    public String updateQuestion(@PathVariable Long id, String title, String contents,
-                                 Model model, HttpSession session) {
-        Question question = questionRepository.findById(id).orElseThrow(IllegalStateException::new);
-        Result result = valid(session, question);
-        if (!result.isValid()) {
-            model.addAttribute("errorMessage", result.getErrorMessage());
-            return "user/login";
-        }
-
-        model.addAttribute("question", question);
-        question.update(title, contents);
-        questionRepository.save(question);
-        return String.format("redirect:/questions/%d", id);
-    }
-
-    @DeleteMapping("/{id}")
-    public String deleteQuestion(@PathVariable Long id, Model model, HttpSession session) {
-        Question question = questionRepository.findById(id).orElseThrow(IllegalStateException::new);
-        Result result = valid(session, question);
-        if (!result.isValid()) {
-            model.addAttribute("errorMessage", result.getErrorMessage());
-            return "user/login";
-        }
-
-        questionRepository.deleteById(id);
-        return "redirect:/";
-    }
 }

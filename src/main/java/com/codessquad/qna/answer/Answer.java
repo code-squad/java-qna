@@ -41,6 +41,22 @@ public class Answer {
         return formattedWrittenTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
+    public User getWriter() {
+        return writer;
+    }
+
+    public Question getQuestion() {
+        return question;
+    }
+
+    public String getContents() {
+        return contents;
+    }
+
+    public boolean isNotSameWriter(User loginUser) {
+        return !this.writer.equals(loginUser);
+    }
+
     @Override
     public String toString() {
         return "Answer{" +

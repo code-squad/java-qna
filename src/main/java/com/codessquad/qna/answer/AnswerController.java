@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +29,7 @@ public class AnswerController {
     @PostMapping("")
     public String createAnswer(@PathVariable Long questionId, String contents, HttpSession session) {
         if (HttpSessionUtils.isNoneExistentUser(session)) {
-            return "/users/loginForm";
+            return "redirect:/users/loginForm";
         }
 
         User loginUser = HttpSessionUtils.getUserFromSession(session);
@@ -37,6 +38,21 @@ public class AnswerController {
         log.info("answer confirm");
         answerRepository.save(answer);
         log.info("answer save: '{}'",answer);
-        return String.format("redirect:/questions/%d", questionId);
+        return "redirect:/questions/" + questionId;
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteAnswer(@PathVariable("id") Long answerId, HttpSession session) {
+        if (HttpSessionUtils.isNoneExistentUser(session)) {
+            log.info("로그인하세요.");
+            return "redirect:/users/loginForm";
+        }
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        Answer answer = answerRepository.findById(answerId).orElseThrow(IllegalStateException::new);
+        if (answer.isNotSameWriter(loginUser)) {
+            return "redirect:/users/loginForm";
+        }
+        answerRepository.delete(answer);
+        return "redirect:/questions/{questionId}/answers";
     }
 }

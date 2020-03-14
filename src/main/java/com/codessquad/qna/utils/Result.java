@@ -17,8 +17,8 @@ public class Result {
         return new Result(false, errorMessage);
     }
 
-    public boolean isValid() {
-        return valid;
+    public boolean isNotValid() {
+        return !valid;
     }
 
     public String getErrorMessage() {

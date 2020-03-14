@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Entity
 public class Question {
@@ -17,6 +18,10 @@ public class Question {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     private User writer;
 
+    @OneToMany(mappedBy = "question")
+    @OrderBy("id ASC")
+    private List<Answer> answers;
+
     @NotBlank
     @Column(length = 50)
     private String title;
@@ -26,6 +31,10 @@ public class Question {
     private String contents;
 
     private LocalDateTime writeTime;
+
+    public List<Answer> getAnswers() {
+        return answers;
+    }
 
     public Long getId() {
         return id;

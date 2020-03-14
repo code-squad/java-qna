@@ -59,7 +59,8 @@ public class AnswerController {
             throw new IllegalStateException("글 작성자 아님");
         }
 
-        answerRepository.deleteById(id);
+        answer.delete();
+        answerRepository.save(answer);
 
         return String.format("redirect:/questions/%d", questionId);
     }

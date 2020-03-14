@@ -2,6 +2,7 @@ package com.codessquad.qna.domain;
 
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -20,6 +21,7 @@ public class Question {
     private User writer;
 
     @OneToMany(mappedBy = "question")
+    @Where(clause = "deleted = false")
     @OrderBy("id ASC")
     private List<Answer> answers;
 

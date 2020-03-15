@@ -59,7 +59,7 @@ public class LocalDateTimeConverter implements AttributeConverter<LocalDateTime,
 
 - [x] 사용자는 질문 상세보기 화면에서 답변 목록을 볼 수 있다.
 - [x] 로그인한 사용자는 답변을 추가할 수 있다.
-- [ ] 자신이 쓴 답변을 삭제할 수 있다.
+- [x] 자신이 쓴 답변을 삭제할 수 있다.
 
 ---
 

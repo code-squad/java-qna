@@ -41,6 +41,10 @@ public class Answer {
         return formattedWrittenTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public User getWriter() {
         return writer;
     }

@@ -95,17 +95,19 @@ getter가 없으면 답변이 뜨지 않음. getter를 넣자.
 
 현재 show.html에서 question과 answer과 얽혀있어 삭제하기가 작동이 잘 되지 않는다.
 
+안뜨면 뭐다? getter문제다. 
+
 ## 4.7 QuestionController 중복 코드 제거 리팩토링
 
+현재 JPA, 하이버네이트를 통해 DB Connection한다.
+
+![jpa](https://suhwan.dev/images/jpa_hibernate_repository/overall_design.png)
 
 
 
+- 복잡한 SQL을 사용하기엔 적합하지 않고 러닝커브가 너무 낮다. 배우는데 오래걸림.
 
-
-
-
-
-
+- 프로젝트 시작할 땐 Spring DATA JDBC 사용할 예정이다. 이런게 있다는것만 기억하자.
 
 
 

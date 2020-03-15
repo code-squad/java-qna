@@ -54,6 +54,7 @@ public class AnswerController {
             return "redirect:/users/loginForm";
         }
         answerRepository.delete(answer);
+        log.info("삭제완료.");
         return "redirect:/questions/{questionId}";
     }
 }

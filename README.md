@@ -21,7 +21,7 @@ DTO는 데이터를 전달하는 역할을 하는 객체를 의미한다. 보통
 ### ORM으로 연관관계 시 toString() 대신 toStringBuilder() 
 [참고 : 오라클 ToStringStyle](https://commons.apache.org/proper/commons-lang/apidocs/org/apache/commons/lang3/builder/ToStringStyle.html)
  
-[참고 : 오라클 ToStringBuilder](https://commons.apache.org/proper/commons-lang/apidocs/org/apache/commons/lang3/builder/ToStringBuilder.html)<br>
+[참고 : 오라클 ToStringBuilder](https://commons.apache.org/proper/commons-lang/apidocs/org/apache/commons/lang3/builder/ToStringBuilder.html) <br>
 ORM을 통해 객체 간 연관관계가 양방향일 경우 toString 사용 시 StackOverFlow exception이 발생할 수 있다. 이유는 A 객체의 toString에서 매핑된 B객체를 참조한다. 그러면 B객체의 toString에서도 A객체를 참조한다. 그러면 A->B->A->B와 같이 에러가 발생한다. 해결책은 toStringBuilder가 있다.<br>  
 아래 코드에서 1번은 기본 형태이다. 2번 형식이 간결하고 style을 지정할 수 있다. (reflectionToString)
 
@@ -59,8 +59,67 @@ SIMPLE_STYLE
 
 ## Ajax를 왜 사용하는가? 
 - 서버에 리퀘스트를 해도 고정된 값이 있고 전달되는 값이 있다. 이 때 모든 리소스를 매번 요청하지 않고 내가 필요한 데이터만 리퀘스트하고 그 데이터만 리스폰스할 수 있도록 도와주는 기술이다. 예를 들어, 댓글을 추가할 때 모든 페이지를 리퀘스트하지 않고 댓글 관련된 리소스만 리퀘스트하는 것이다. 
+
+### 특정 태그에 동적 html 추가하는 2가지 방법 : prepend, append
+[참고: https://api.jquery.com/prepend/](https://api.jquery.com/prepend/)
+
+[참고: https://api.jquery.com/prepend/](https://api.jquery.com/prepend/) <br>
+- prepend : 선택한 태그의 모든 데이터의 위로(처음으로) 동적 html이 추가된다. ex) $( ".inner" ).prepend( "<p>Test</p>" );
+- prependTo : 동적 html을 선택한 태그로 넣는다. ex) $( "<p>Test</p>" ).prepend( ".inner" );
+- append : 선택한 태그의 모든 데이터의 뒤로(마지막) 동적 html이 추가된다. ex) 
+- appendTo : append와 순서가 다르다. 
+
+```html
+<h2>Greetings</h2>
+<div class="container">
+  <div class="inner">Hello</div>
+  <div class="inner">Goodbye</div>
+</div>
+```
+
+```html
+$( ".inner" ).prepend( "<p>Test</p>" );
+```
+
+```html
+<h2>Greetings</h2>
+<div class="container">
+  <div class="inner">
+    <p>Test</p>
+    Hello
+  </div>
+  <div class="inner">
+    <p>Test</p>
+    Goodbye
+  </div>
+</div>
+```
+
+- append 예시 
+
+```html
+$( ".inner" ).append( "<p>Test</p>" );
+```
+
+```html
+<h2>Greetings</h2>
+<div class="container">
+  <div class="inner">
+    Hello
+    <p>Test</p>
+  </div>
+  <div class="inner">
+    Goodbye
+    <p>Test</p>
+  </div>
+</div>
+```
+
 ## Step5 진행하며 배운점
 - 객체 데이터를 json으로 만들 때 왜 stackOverFlow가 발생할까? toString()에서 Mapping된 객체가 있으면 그 객체 속성으로 들어가는데, 만약 양방향 매핑이라면 서로 참조하기 때문이다.
+
+## Step5 버그 해결과정 
+- 답변 추가 시 자바지기처럼 OrderedBy(id DESC)로 수정했는데 새로고침하면 asc가 된다. 그 이유는 자바지기와 다르게 나는 question과 answers를 따로 넘기기 때문에 Repository에서 정렬시킨 다음 가져와야 했다. findByQuestionIdAndDeletedFalseOrderByIdDesc(id) 추가. 
 
 ## 답변 기능 Ajax이용해 구현 하기. 
 - 답변 추가 시 서버에 전송하는 기능을 제한한다. ajax가 대신 서버에 전달하게 하는 기능 -> 왜?? 댓글과 관련된 리소스만 받아오며 되는데 매번 모든 리소스를 가져오면 비효율적이기 때문이다. 

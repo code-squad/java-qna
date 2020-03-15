@@ -68,18 +68,32 @@ public class UserController {
 
     @GetMapping("/{id}")
     public String profile(@PathVariable Long id, Model model) {
-        model.addAttribute("user", userRepository.findById(id).orElseThrow(() -> new IllegalStateException("존재하지 않는 사용자입니다.");
+        model.addAttribute("user", userRepository.findById(id).orElseThrow(() -> new IllegalStateException("존재하지 않는 사용자입니다.")));
         return "/user/profile";
     }
 
     @GetMapping("{id}/form")
-    public String updateForm(@PathVariable Long id, Model model) {
+    public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "redirect:/users/loginForm";
+        }
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        if (!loginUser.matchId(id)) {
+            throw new IllegalStateException("자신의 정보만 수정할 수 있습니다.");
+        }
         model.addAttribute("user", userRepository.findById(id).orElseThrow(() -> new IllegalStateException("존재하지 않는 사용자 입니다.")));
         return "/user/updateForm";
     }
 
     @PutMapping("/{id}")
-    public String update(@PathVariable Long id, User newUser) {
+    public String update(@PathVariable Long id, User newUser, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "redirect:/users/loginForm";
+        }
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        if (!loginUser.matchId(id)) {
+            throw new IllegalStateException("자신의 정보만 수정할 수 있습니다.");
+        }
         User user = userRepository.findById(id).get();
         user.update(newUser);
         userRepository.save(user);

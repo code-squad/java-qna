@@ -72,4 +72,11 @@ public class User {
         }
         return newPassword.equals(password);
     }
+
+    public boolean matchId(Long newId) {
+        if (newId == null) {
+            return false;
+        }
+        return newId.equals(id);
+    }
 }

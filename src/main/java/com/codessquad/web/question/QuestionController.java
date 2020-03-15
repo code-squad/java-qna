@@ -1,6 +1,7 @@
 package com.codessquad.web.question;
 
 import com.codessquad.common.HttpSessionUtils;
+import com.codessquad.domain.qna.AnswerRepository;
 import com.codessquad.domain.qna.Question;
 import com.codessquad.domain.qna.QuestionRepository;
 import com.codessquad.domain.user.User;
@@ -22,6 +23,9 @@ public class QuestionController {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private AnswerRepository answerRepository;
 
     @GetMapping("")
     public String main(Model model) {
@@ -51,6 +55,7 @@ public class QuestionController {
     @GetMapping("/{id}")
     public String show(@PathVariable Long id, Model model) {
         model.addAttribute("question", questionRepository.findById(id).orElseThrow(() -> new IllegalStateException("존재하지 않는 질문 입니다.")));
+        model.addAttribute("answer", answerRepository.findByQuestionId(id));
         return "qna/show";
     }
 

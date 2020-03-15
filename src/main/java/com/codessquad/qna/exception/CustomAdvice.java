@@ -5,22 +5,23 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class CustomAdvice {
-    @ExceptionHandler(CustomNoSuchElementException.class)
-    public String handleError(CustomNoSuchElementException noElement) {
+    @ExceptionHandler(NoSuchElementException.class)
+    public String handleError(NoSuchElementException noElement) {
         return noElement.getPath();
     }
 
-    @ExceptionHandler(CustomUnauthorizedException.class)
-    public String handleError(CustomUnauthorizedException unauthorized) {
+    @ExceptionHandler(UnauthorizedException.class)
+    public String handleError(UnauthorizedException unauthorized) {
         return unauthorized.getPath();
     }
 
-    @ExceptionHandler(CustomNoSuchUserException.class)
-    public String handleError(CustomNoSuchUserException noUser) {
+    @ExceptionHandler(NoSuchUserException.class)
+    public String handleError(NoSuchUserException noUser) {
         return noUser.getPath();
     }
-    @ExceptionHandler(CustomWrongFormatException.class)
-    public String handleError(CustomWrongFormatException wrongFormat) {
+
+    @ExceptionHandler(WrongFormatException.class)
+    public String handleError(WrongFormatException wrongFormat) {
         return wrongFormat.getPath();
     }
 }

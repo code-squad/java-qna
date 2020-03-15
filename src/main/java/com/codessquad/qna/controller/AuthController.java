@@ -1,6 +1,6 @@
 package com.codessquad.qna.controller;
 
-import com.codessquad.qna.exception.CustomNoSuchUserException;
+import com.codessquad.qna.exception.NoSuchUserException;
 import com.codessquad.qna.repository.User;
 import com.codessquad.qna.repository.UserRepository;
 import com.codessquad.qna.util.ErrorMessageUtil;
@@ -19,7 +19,7 @@ public class AuthController {
     @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
         User user = userRepository.findByUserId(userId).orElseThrow(() ->
-                new CustomNoSuchUserException(PathUtil.LOGIN_FAILED_TEMPLATE, ErrorMessageUtil.NOTFOUND_USER));
+                new NoSuchUserException(PathUtil.LOGIN_FAILED_TEMPLATE, ErrorMessageUtil.NOTFOUND_USER));
         if (!user.isCorrectPassword(password)) {
             return PathUtil.LOGIN_FAILED_TEMPLATE;
         }

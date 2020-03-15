@@ -2,13 +2,12 @@ package com.codessquad.qna.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 
 @Entity
-public class User extends AbstractEntity{
+public class User extends AbstractEntity {
     @Column(nullable = false, length = 20)
     @JsonProperty
     private String userId;
@@ -48,8 +47,7 @@ public class User extends AbstractEntity{
     }
 
     public void setEmail(String email) {
-        this.email = email;
-    }
+        this.email = email; }
 
     public void update(UserUpdateDTO userUpdateDTO) {
         this.name = userUpdateDTO.getName();

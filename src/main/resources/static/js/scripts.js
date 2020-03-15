@@ -1,4 +1,4 @@
-$(".answer-write input[type='submit']").on("click", addAnswer);
+$(document).on('click', ".answer-write input[type='submit']", addAnswer);
 
 function addAnswer(e) {
     e.preventDefault();
@@ -11,12 +11,12 @@ function addAnswer(e) {
     console.log("url : " + url);
 
     $.ajax({
-        type : 'post',
-        url : url,
-        data : queryString,
-        dataType : 'json',
-        error : onError,
-        success : onSuccess
+        type: 'post',
+        url: url,
+        data: queryString,
+        dataType: 'json',
+        error: onError,
+        success: onSuccess
     })
 }
 
@@ -37,7 +37,6 @@ function onSuccess(data, status) {
     $(".answer-write textarea").val("");
 }
 
-// $(".link-delete-article").on("click", deleteAnswer);
 $(document).on('click', '.link-delete-article', deleteAnswer);
 
 function deleteAnswer(e) {
@@ -47,14 +46,14 @@ function deleteAnswer(e) {
     console.log("url : " + url);
 
     $.ajax({
-        type : 'delete',
-        url : url,
-        dataType : 'json',
-        error : function(xhr, status) {
+        type: 'delete',
+        url: url,
+        dataType: 'json',
+        error: function (xhr, status) {
             console.log("error");
             console.log(status);
         },
-        success : function (data, status) {
+        success: function (data, status) {
             console.log(data);
             if (data.valid) {
                 deleteBtn.closest("article").remove();
@@ -64,10 +63,11 @@ function deleteAnswer(e) {
         }
     })
 }
+
 // json을 동적으로 처리하기 위한 템플릿 복사.
-String.prototype.format = function() {
+String.prototype.format = function () {
     var args = arguments;
-    return this.replace(/{(\d+)}/g, function(match, number) {
+    return this.replace(/{(\d+)}/g, function (match, number) {
         return typeof args[number] != 'undefined'
             ? args[number]
             : match

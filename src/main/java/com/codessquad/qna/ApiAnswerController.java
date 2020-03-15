@@ -86,8 +86,7 @@ public class ApiAnswerController {
             answerRepository.save(answer);
             return Result.ok();
         } catch (IllegalStateException e) {
-//            model.addAttribute("errorMessage", e.getMessage());
-            return Result.fail("실패했습니다.");
+            return Result.fail("작성자만 삭제할 수 있습니다.");
         }
     }
 

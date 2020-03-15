@@ -2,12 +2,12 @@
 [배포 url : https://hyunjun2.herokuapp.com/](https://hyunjun2.herokuapp.com/)
 
 ## Step4 리뷰어 피드백 참고 리팩토링
-- [ ] Exception이 발생하는 부분만 try - catch 하기. AnswerController의 hasPermission()
+- [ ] Exception이 발생하는 부분만 try - catch 하기. AnswerController의 hasPermission() -> 추후 예외처리 공부 후 진행예정
 - [x] 객체의 필드로 선언된 repository를 메서드의 인자로 넘길 필요없음.  
 - [x] PathVariable에 .(dot) 대신 camelCase로 표기하기. ex) answer.id -> answerId
 - [x] 기능 추가에 따른 hasPermission의 이름 구분 생각해보기.  
 - [x] question.isNoAnswer() || isSameBetweenWriters() -> question.isDeletable() 변경 추천
-- [ ] 로그인 체크하는 메서드 중복 발생하니 클래스로 뽑아서 공통으로 사용하기.
+- [ ] 로그인 체크하는 메서드 중복 발생하니 클래스로 뽑아서 공통으로 사용하기. -> 추후 진행 예정
 - [x] 유저 업데이트할 때 인자 여러개보다 DTO를 만들면 코드 간결성, 관리 측면에 효과적. 
 - [x] 호눅스의 추천 : DTO에 대한 공부
 - [x] this 사용 시 일관성있게 모든 필드에서 사용.
@@ -19,9 +19,7 @@
 DTO는 데이터를 전달하는 역할을 하는 객체를 의미한다. 보통 객체란 역할과 책임을 가진 존재이다. 하지만 DTO로 사용될 땐 마치 Collection처럼 여러개의 데이터를 한번에 전달할 때 사용된다. 속성과 setter, getter가 존재한다. 
 
 ### ORM으로 연관관계 시 toString() 대신 toStringBuilder() 
-[참고 : 오라클 ToStringStyle](https://commons.apache.org/proper/commons-lang/apidocs/org/apache/commons/lang3/builder/ToStringStyle.html)
- 
-[참고 : 오라클 ToStringBuilder](https://commons.apache.org/proper/commons-lang/apidocs/org/apache/commons/lang3/builder/ToStringBuilder.html) <br>
+[참고 : 오라클 ToStringStyle](https://commons.apache.org/proper/commons-lang/apidocs/org/apache/commons/lang3/builder/ToStringStyle.html), [참고 : 오라클 ToStringBuilder](https://commons.apache.org/proper/commons-lang/apidocs/org/apache/commons/lang3/builder/ToStringBuilder.html) <br>
 ORM을 통해 객체 간 연관관계가 양방향일 경우 toString 사용 시 StackOverFlow exception이 발생할 수 있다. 이유는 A 객체의 toString에서 매핑된 B객체를 참조한다. 그러면 B객체의 toString에서도 A객체를 참조한다. 그러면 A->B->A->B와 같이 에러가 발생한다. 해결책은 toStringBuilder가 있다.<br>  
 아래 코드에서 1번은 기본 형태이다. 2번 형식이 간결하고 style을 지정할 수 있다. (reflectionToString)
 
@@ -58,7 +56,7 @@ SHORT_PREFIX_STYLE
 SIMPLE_STYLE 
 
 ## Ajax를 왜 사용하는가? 
-- 서버에 리퀘스트를 해도 고정된 값이 있고 전달되는 값이 있다. 이 때 모든 리소스를 매번 요청하지 않고 내가 필요한 데이터만 리퀘스트하고 그 데이터만 리스폰스할 수 있도록 도와주는 기술이다. 예를 들어, 댓글을 추가할 때 모든 페이지를 리퀘스트하지 않고 댓글 관련된 리소스만 리퀘스트하는 것이다. 
+서버에 리퀘스트를 해도 고정된 값이 있고 전달되는 값이 있다. 이 때 모든 리소스를 매번 요청하지 않고 내가 필요한 데이터만 리퀘스트하고 그 데이터만 리스폰스할 수 있도록 도와주는 기술이다. 예를 들어, 댓글을 추가할 때 모든 페이지를 리퀘스트하지 않고 댓글 관련된 리소스만 리퀘스트하는 것이다. 
 
 ### 특정 태그에 동적 html 추가하는 2가지 방법 : prepend, append
 [참고: https://api.jquery.com/prepend/](https://api.jquery.com/prepend/)
@@ -121,7 +119,13 @@ $( ".inner" ).append( "<p>Test</p>" );
 ## Step5 버그 해결과정 
 - 답변 추가 시 자바지기처럼 OrderedBy(id DESC)로 수정했는데 새로고침하면 asc가 된다. 그 이유는 자바지기와 다르게 나는 question과 answers를 따로 넘기기 때문에 Repository에서 정렬시킨 다음 가져와야 했다. findByQuestionIdAndDeletedFalseOrderByIdDesc(id) 추가. 
 - 첫 답변 추가 시 답변이 안보이는 이유 : {{#answer}} 아래에 추가되는 html이 있으니 처음엔 answers가 넘어오지 않기 때문에 아예 안뜸. 아래 코드처럼 위치를 변경 
-- 답변 삭제하려 할 때 추가했을 때 바로 삭제가 안될 때  
+
+```html
+<div class="qna-comment-slipp-articles">
+{{#answers}}
+```
+
+- 답변 삭제하려 할 때 추가했을 때 바로 삭제가 안될 때 : Jquery 코드 변경!  
  
  ```javascript
 $(',link-delete-article').on('click', deleteAnswer); 
@@ -131,11 +135,6 @@ $(document).on('click', '.link-delete-article', deleteAnswer);
  ```
 
 link-delete-article 클래스가 질문 삭제에도 있어서 구현이 안되는 것인가? 아님 원인이 무엇일까 고민이 필요!! 
-
-```html
-<div class="qna-comment-slipp-articles">
-{{#answers}}
-```
 
 ## 답변 기능 Ajax이용해 구현 하기. 
 - 답변 추가 시 서버에 전송하는 기능을 제한한다. ajax가 대신 서버에 전달하게 하는 기능 -> 왜?? 댓글과 관련된 리소스만 받아오며 되는데 매번 모든 리소스를 가져오면 비효율적이기 때문이다. 
@@ -333,4 +332,20 @@ public String getFormattedCreatedDate() {
         }
         return localDateTime.format(DateTimeFormatter.ofPattern(format));
     }
+```
+
+## swagger 이용한 문서 자동화 : @EnableSwagger2 적용이 안되 중단. 
+- swagger 의존성 추가
+
+```gradle
+compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.5.0'
+compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.5.0'
+```
+
+## 로그인 상태가 아니면 답변하기 html 삭제
+
+```html
+{{#sessionedUser}}
+....
+{{/sessionedUser}}
 ```

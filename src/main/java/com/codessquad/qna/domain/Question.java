@@ -2,16 +2,12 @@ package com.codessquad.qna.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Entity
-public class Question extends AbstractEntity{
+public class Question extends AbstractEntity {
     @Column(nullable = false)
     @JsonProperty
     private String title;
@@ -112,10 +108,10 @@ public class Question extends AbstractEntity{
     }
 
     public void addAnswer() {
-        this.countOfAnswer+=1;
+        this.countOfAnswer += 1;
     }
 
     public void deleteAnswer() {
-        this.countOfAnswer-=1;
+        this.countOfAnswer -= 1;
     }
 }

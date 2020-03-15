@@ -18,6 +18,10 @@ public class AbstractEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty
     private Long id;
+    @CreatedDate
+    private LocalDateTime createdDate;
+    @LastModifiedDate
+    private LocalDateTime modifiedDate;
 
     public Long getId() {
         return id;
@@ -31,11 +35,6 @@ public class AbstractEntity {
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
     }
-
-    @CreatedDate
-    private LocalDateTime createdDate;
-    @LastModifiedDate
-    private LocalDateTime modifiedDate;
 
     public String getFormattedCreatedDate() {
         return formattedDate(createdDate, "YYYY-MM-SS HH:mm:ss");

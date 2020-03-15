@@ -23,22 +23,29 @@ public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
 
-    @GetMapping("/form")
-    public String form() {
-        return "/qna/form";
-    }
-
-    @PostMapping("")
-    public String create(Question newQuestion) {
-        newQuestion.setDateTime(LocalDateTime.now());
-        questionRepository.save(newQuestion);
-        return "redirect:/";
-    }
-
     @GetMapping("")
     public String main(Model model) {
         model.addAttribute("questions", questionRepository.findAll());
         return "/main";
+    }
+
+    @GetMapping("/form")
+    public String form(HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "/users/loginForm";
+        }
+        return "/qna/form";
+    }
+
+    @PostMapping("")
+    public String create(String title, String contents, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "/users/loginForm";
+        }
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        Question newQuestion = new Question(loginUser, title, contents);
+        questionRepository.save(newQuestion);
+        return "redirect:/";
     }
 
     @GetMapping("/{id}")
@@ -48,23 +55,27 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}/form")
-    public String updateForm(@PathVariable Long id, Model model) {
+    public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
         try {
-            model.addAttribute("question", questionRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 질문 입니다.")));
-            return "/qna/updateForm";
-        } catch (NotFoundException e) {
-            e.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            Question currentQuestion = questionRepository.findById(id).get();
+            hasPermission(session, currentQuestion);
+            model.addAttribute("question", currentQuestion);
+            return "/qna/questionUpdateForm";
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/user/login";
         }
     }
 
     @PutMapping("/{id}")
-    public String update(@PathVariable Long id, Question updateQuestion) {
-        Question question = questionRepository.findById(id).get();
-        updateQuestion.setDateTime(LocalDateTime.now());
-        question.update(updateQuestion);
-        questionRepository.save(question);
-        return "redirect:/";
+    public String update(@PathVariable Long id, Question updateQuestion, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "redirect:/users/loginForm";
+        }
+        Question currentQuestion = questionRepository.findById(id).get();
+        currentQuestion.update(updateQuestion);
+        questionRepository.save(currentQuestion);
+        return String.format("redirect:/questions/%d", id);
     }
 
     private boolean hasPermission(HttpSession session, Question question) {

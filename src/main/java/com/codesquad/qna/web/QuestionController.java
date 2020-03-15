@@ -36,13 +36,12 @@ public class QuestionController {
 
         return "index";
     }
+
+    @GetMapping("/questions/{id}")
+    public String showQuestion(@PathVariable Long id, Model model) {
+        Question selectedQuestion = questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
+        model.addAttribute("question", selectedQuestion);
+
+        return "qna/show";
+    }
 }
-//
-//    @GetMapping("/questions/{index}")
-//    public String showQuestion(@PathVariable long index, Model model) {
-//        Question selectedQuestion = questionList.get((int)index - 1);
-//        model.addAttribute("question", selectedQuestion);
-//
-//        return "qna/show";
-//    }
-//}

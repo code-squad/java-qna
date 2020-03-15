@@ -39,7 +39,6 @@ public class UserController {
 
     @GetMapping("/users/{id}/form")
     public String userForm(@PathVariable Long id, Model model) {
-        System.out.println(userRepository.findById(id));
         model.addAttribute("user", userRepository.findById(id).orElseThrow(UserNotFoundException::new));
 
         return "user/updateForm";

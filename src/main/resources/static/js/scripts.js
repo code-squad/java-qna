@@ -37,7 +37,8 @@ function onSuccess(data, status) {
     $(".answer-write textarea").val("");
 }
 
-$(".link-delete-article").on("click", deleteAnswer);
+// $(".link-delete-article").on("click", deleteAnswer);
+$(document).on('click', '.link-delete-article', deleteAnswer);
 
 function deleteAnswer(e) {
     e.preventDefault();

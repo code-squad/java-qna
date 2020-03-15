@@ -7,13 +7,16 @@ import javax.persistence.Id;
 
 @Entity
 public class User {
+
     @Id
     @GeneratedValue
     private Long id;
 
-    @Column(nullable=false, length=20)
+    @Column(nullable=false, length=10, name="USER_ID")
     private String userId;
     private String password;
+
+    @Column(name="USER_NAME")
     private String userName;
     private String email;
 
@@ -53,8 +56,12 @@ public class User {
 
     public void update(User updatedUser) {
         this.password = updatedUser.password;
+        this.userName = updatedUser.userName;
         this.email = updatedUser.email;
-        this.email = updatedUser.email;
+    }
+
+    public boolean isCorrectPassword(String confirmPassword) {
+        return password.equals(confirmPassword);
     }
 
     @Override

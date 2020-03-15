@@ -5,10 +5,7 @@ import com.codesquad.qna.domain.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -49,11 +46,15 @@ public class UserController {
     }
 
     @PutMapping("/users/{id}")
-    public String updateUser(@PathVariable long id, User updatedUser) {
+    public String updateUser(@PathVariable Long id, @RequestParam String confirmPassword,  User updatedUser) {
         User selectedUser = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-        selectedUser.update(updatedUser);
-        userRepository.save(selectedUser);
+        if (selectedUser.isCorrectPassword(confirmPassword)) {
+            selectedUser.update(updatedUser);
+            userRepository.save(selectedUser);
+            return "redirect:/users";
+        } else {
 
-        return "redirect:/users";
+            return "redirect:/users/{id}/form";
+        }
     }
 }

@@ -68,23 +68,14 @@ public class UserController {
 
     @GetMapping("/{id}")
     public String profile(@PathVariable Long id, Model model) {
-        try {
-            model.addAttribute("user", userRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 사용자 입니다.")));
-            return "/user/profile";
-        } catch (NotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        model.addAttribute("user", userRepository.findById(id).orElseThrow(() -> new IllegalStateException("존재하지 않는 사용자입니다.");
+        return "/user/profile";
     }
 
     @GetMapping("{id}/form")
     public String updateForm(@PathVariable Long id, Model model) {
-        try {
-            model.addAttribute("user", userRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 사용자 입니다.")));
-            return "/user/updateForm";
-        } catch (NotFoundException e) {
-            e.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        model.addAttribute("user", userRepository.findById(id).orElseThrow(() -> new IllegalStateException("존재하지 않는 사용자 입니다.")));
+        return "/user/updateForm";
     }
 
     @PutMapping("/{id}")

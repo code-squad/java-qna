@@ -4,28 +4,36 @@
             <a class="navbar-brand" href="/">Dingo</a>
 
             <ul class="navbar-nav flex-row">
-                <li class="nav-item px-3">
-                    <a class="nav-link" href="/">login</a>
+                {{^authenticationId}}
+                <li class="nav-item">
+                    <a href="/auth" class="btn btn-sm text-light">로그인</a>
                 </li>
-                <li class="nav-item px-3">
-                    <a class="nav-link" href="/users/new">sign up</a>
+                <li class="nav-item">
+                    <a href="/users/createForm" class="btn btn-sm text-light">회원가입</a>
                 </li>
+                {{/authenticationId}}
+                {{#authenticationId}}
+                <li class="nav-item">
+                    <form action="/auth/logout" method="post">
+                        <button type="submit" class="btn btn-sm text-light">로그아웃</button>
+                    </form>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-sm text-light" href="/users/{{authenticationId}}">마이페이지</a>
+                </li>
+                {{/authenticationId}}
             </ul>
         </div>
     </nav>
 
-    <ul class="container nav justify-content-end">
-        <li class="nav-item">
-            <a class="nav-link text-dark" href="/">Home <span class="sr-only">(current)</span></a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" href="/questions/new">질문하기</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" href="/users">회원목록</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" href="/">개인정보수정</a>
-        </li>
-    </ul>
+    <div class="bg-light border-bottom">
+        <ul class="container nav justify-content-end">
+            <li class="nav-item">
+                <a class="nav-link text-dark" href="/questions/createForm">질문하기</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" href="/users">회원목록</a>
+            </li>
+        </ul>
+    </div>
 </header>

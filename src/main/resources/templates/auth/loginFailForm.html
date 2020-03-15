@@ -1,0 +1,13 @@
+{{#partial "title"}}
+<title>로그인 실패</title>
+{{/partial}}
+
+{{#partial "alert"}}
+<div class="alert alert-danger" role="alert">
+
+    {{exception.message}}
+    
+</div>
+{{/partial}}
+
+{{> auth/loginForm}}

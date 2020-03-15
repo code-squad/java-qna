@@ -1,7 +1,11 @@
 package com.codessquad.qna.domain;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+import java.util.Optional;
 
+@Repository
+public interface UserRepository extends CrudRepository<User, Long> {
+    Optional<User> findByAccountId(String userId);
 }

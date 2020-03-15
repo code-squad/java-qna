@@ -2,12 +2,12 @@ package com.codessquad.qna.domain;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
+
+//TODO eager loading과 lazy loading 방법 찾아보기
 
 @Entity
 public class Question {
@@ -18,9 +18,14 @@ public class Question {
     private Long id;
 
     private String title;
+
     private String contents;
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    User writer;
 
     public Long getId() {
         return id;
@@ -40,6 +45,27 @@ public class Question {
 
     public void setContents(String contents) {
         this.contents = contents;
+    }
+
+    public User getWriter() {
+        return writer;
+    }
+
+    public void setWriter(User writer) {
+        this.writer = writer;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Question question = (Question) o;
+        return Objects.equals(id, question.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     public String getCreatedTime() {

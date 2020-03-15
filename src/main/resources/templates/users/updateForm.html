@@ -1,11 +1,11 @@
 {{#partial "title"}}
-<title>회원가입</title>
+<title>개인정보수</title>
 {{/partial}}
 
 {{#partial "main"}}
 {{#user}}
 <form action="/users/{{id}}" method="post">
-    <input type="hidden" name="_method" value="patch">
+    <input type="hidden" name="_method" value="put">
 
     <div class="form-group">
         <label for="nickName">별명</label>

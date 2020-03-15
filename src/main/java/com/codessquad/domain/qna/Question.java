@@ -78,4 +78,10 @@ public class Question {
         this.contents = contents;
     }
 
+    public boolean matchUser(User loginUser) {
+        if (loginUser == null) {
+            return false;
+        }
+        return loginUser.getUserId().equals(writer.getUserId());
+    }
 }

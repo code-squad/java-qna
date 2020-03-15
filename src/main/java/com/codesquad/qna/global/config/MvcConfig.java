@@ -27,6 +27,6 @@ public class MvcConfig implements WebMvcConfigurer {
                 .addPathPatterns("/users/**/form")
                 .addPathPatterns("/users/**/update")
                 .addPathPatterns("/questions/**")
-                .addPathPatterns("/questions/**/answers/**");
+                .addPathPatterns("/api/questions/**/answers/**");
     }
 }

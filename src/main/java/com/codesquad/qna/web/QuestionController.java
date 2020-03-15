@@ -30,7 +30,7 @@ public class QuestionController {
     public String create(String title, String contents, @RequestAttribute User sessionedUser) {
         Question newQuestion = new Question(sessionedUser, title, contents);
         questionRepository.save(newQuestion);
-        log.info("create : {}, writer : {}", newQuestion, sessionedUser);
+        log.debug("create : {}, writer : {}", newQuestion, sessionedUser);
         return "redirect:/";
     }
 
@@ -77,7 +77,7 @@ public class QuestionController {
 
     private Question getMatchedQuestion(Long questionId, User sessionedUser) {
         Question matchedQuestion = findQuestion(questionId);
-        log.info("matchedQuestion : {}, sessionedUser : {}", matchedQuestion, sessionedUser);
+        log.debug("matchedQuestion : {}, sessionedUser : {}", matchedQuestion, sessionedUser);
         if (!matchedQuestion.matchWriter(sessionedUser))
             throw new RequestNotAllowedException(ErrorCode.FORBIDDEN);
 

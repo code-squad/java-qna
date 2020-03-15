@@ -1,19 +1,20 @@
 package com.codesquad.qna.model;
 
-import com.codesquad.qna.util.DateTimeFormatUtils;
+import com.codesquad.qna.model.base.BaseEntity;
 import com.codesquad.qna.util.HtmlDocumentUtils;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import java.time.LocalDateTime;
 
 @Entity
-public class Answer {
+public class Answer extends BaseEntity {
     @Id
     @GeneratedValue
     private Long id;
 
     @ManyToOne
+    @JsonProperty
     private Question question;
 
     @ManyToOne
@@ -24,9 +25,6 @@ public class Answer {
     private String contents;
 
     @Column(nullable = false)
-    private LocalDateTime createDateTime;
-
-    @Column(nullable = false)
     private boolean deleted;
 
     public Answer() {}
@@ -35,7 +33,6 @@ public class Answer {
         this.question = question;
         this.writer = writer;
         this.contents = contents;
-        this.createDateTime = LocalDateTime.now();
     }
 
     public void setDeleted(boolean deleted) {
@@ -46,20 +43,16 @@ public class Answer {
         return id;
     }
 
-    public Question getQuestion() {
-        return question;
-    }
-
     public String getWriter() {
         return writer.getUserId();
     }
 
     public String getContents() {
-        return HtmlDocumentUtils.getEntertoBrTag(this.contents);
+        return contents;
     }
 
-    public String getCreateDateTimeToString() {
-        return DateTimeFormatUtils.getFormattedLocalDateTime(this.createDateTime);
+    public String getContentsWithBr() {
+        return HtmlDocumentUtils.getEntertoBrTag(contents);
     }
 
     public boolean isDeleted() {
@@ -67,10 +60,14 @@ public class Answer {
     }
 
     public boolean matchWriter(User user) {
-        return this.writer.equals(user);
+        return writer.equals(user);
     }
 
     public boolean checkDeleteCondition(User user) {
         return matchWriter(user) || deleted;
+    }
+
+    public void update(String contents) {
+        this.contents = contents;
     }
 }

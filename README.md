@@ -4,6 +4,548 @@
 
 https://jay-simple-qna.herokuapp.com/
 
+## Step5
+
+## 공부 내용
+
+### jQuery
+
++ 선택자(Selector)
+
+  + 선택자(Selector)로 원하는 DOM 객체를 가져온다.
+  + CSS 선택자와 유사
+
++ ```serialize()```
+
+  + 데이터를 보내기 위해(submit) 폼 태그의 요소를 key-value 형식의 문자열로 인코딩하는 메소드
+  + 폼 태그의 요소는 반드시 ```name``` 속성을 가지고 있어야 직렬화에 포함된다.
+
++ ```ajax(url[, settings])```
+
+  + *Perform an asynchronous HTTP (Ajax) request.*
+
+  + 서버로 데이터를 전송하는 메소드
+
+    + 해당 메소드는 jQuery 객체의 메소드
+
+    + ```XMLHttpRequest``` 객체를 리턴한다. (브라우저의 기본 ```XMLHttpRequest``` 객체의 상위 객체?)
+
+      >  ```ajax()``` 는 ```XMLHttpRequest``` 객체를 생성해서 서버에 데이터를 전송하는 메소드겠지?
+
+  + settings : key-value 형태로 구성된 요청 데이터
+
+    + method : http 메소드
+    + url : 요청할 url
+    + data : 전송할 데이터
+    + dataType : 서버로부터 받을 데이터 타입
+
+  > 참고 및 출처
+  >
+  > [jQuery-API-Ajax](https://api.jquery.com/jQuery.ajax/)
+
++ ```$.```
+
+  + ```$()``` : jQuery 함수 호출
+  + ```$.``` : jQuery 객체의 프로퍼티 호출
+  + 즉, $ == jQuery
+
+  > [참고](https://okky.kr/article/416020?note=1303402)
+
+  ```
+  if ( !noGlobal ) {
+  	window.jQuery = window.$ = jQuery;
+  }
+  ```
+
+
+
++ ```on("click")``` 과 ```click()``` 차이점
+
+  + 동적으로 이벤트를 바인딩할 수 있는가
+
+    + ``` on(event)``` 은 동적으로 이벤트를 바인딩한다.
+
+    + ```click()``` 은 최초에 선언된 element에만(정적 DOM) 동작한다.
+
+  + 즉, 페이지가 로드된 이후에 동적으로 추가되는 DOM 객체에 이벤트를 등록하고 싶다면 ```on(event)``` 으로 이벤트 리스너를 바인딩해야 한다.
+
+  + 이벤트 위임
+
+    + 하위 요소에 각각 이벤트를 붙이지 않고 상위 요소에서 하위 요소의 이벤트들을 제어하는 방식
+
+    + 언제 필요한 개념인가?
+
+      동적으로 요소가 추가되는 경우, 새로운 요소마다 이벤트 리스너를 등록해주는 것은 번거롭다.
+
+      추가될 요소의 상위 요소에 이벤트 리스너를 달아주면 *이벤트 버블링* 에 의해 하위 요소에서 발생한 이벤트를 감지할 수 있다.
+
+  > [on-과-click-차이](https://lookingfor.tistory.com/entry/JQuery-%ED%81%B4%EB%A6%AD-%EC%9D%B4%EB%B2%A4%ED%8A%B8-onclick-%EA%B3%BC-click-%EC%9D%98-%EC%B0%A8%EC%9D%B4)
+  >
+  > [이벤트-버블링-캡처-위임](https://joshua1988.github.io/web-development/javascript/event-propagation-delegation/)
+
+
+
+### Ajax
+
++ Asynchronous JavaScript And XML
+
++ Ajax는 프로그래밍 언어가 아니다.
+
++ Ajax는 XMLHttpRequest 와 JavaScript 그리고 HTML의 조합이다.
+
+  > 이름 때문에 xml 파일(만)을 이용하는 것 같지만 일반 텍스트나 JSON 텍스트로 전송하는 것이 일반적이다.
+
++ 역할
+
+  웹 페이지 뒷단에서 서버와 데이터를 교환하여 비동기적으로 웹 페이지를 업데이트할 수 있도록 해준다.
+
+  즉, 페이지가 로드된 이후에 리로드 없이 부분적으로 페이지를 변경하는 것을 가능하게 한다.
+
++ 특징
+
+  + GET, POST 외의 메소드를 지원한다.
+
++ 최근에는 최초 웹 서비스에 접근할 때 서비스에 필요한 모든 웹 자원(html, css, javascript)을 다운로드 받고, 이후 요청은 AJAX를 통해 서버와 데이터(xml 또는 json)만 주고 받는다.
+
+
+
+### Ajax 동작 방식
+
+![how-ajax-works](https://www.w3schools.com/xml/ajax.gif)
+
+1. 페이지가 로드된 이후에 이벤트가 발생한다.
+
+   > '버튼이 눌렸다.'
+
+2. 자바스크립트에 의해 ```XMLHttpRequest``` 객체가 생성된다.
+
+3. ```XMLHttpRequest``` 객체가 서버에 요청을 전송한다.
+
+4. 서버는 요청을 처리한다.
+
+5. 서버는 웹 페이지에 응답을 전송한다.
+
+6. 자바스크립트가 응답 내용을 받는다.
+
+7. 자바스크립트가 응답 내용을 이용하여 적절한 행동을 취한다.
+
+   > 페이지 리프레쉬없이 부분적으로 업데이트한다.
+
+   
+
+### XHR
+
++ XML Http Request
++ AJAX의 핵심적인 요소!
++ 대부분의 웹 브라우저가 제공하는 자바스크립트 API
++ 페이지 뒷단에서 서버와 데이터 교환을 가능하게 하는 것
++ XHR 메소드로 브라우저와 서버간의 네트워크 요청 및 응답을 처리한다.
+
+
+
+### 왜 Ajax를 사용하는가?
+
++ 페이지 리로딩 없이 페이지를 업데이트할 수 있다.
+
+  > 페이지 리로딩은 html 페이지를 서버에 재요청하는 것인가? html을 새롭게 생성하는 행위인가?
+
++ 페이지가 로드된 이후에 서버에 데이터를 요청할 수 있다.
+
++ 페이지가 로드된 이후에 서버로부터 데이터를 받을 수 있다.
+
++ 기존 방식과 비교 (다시 확인해야 함)
+
+  |                    | 기존 방식                                          | AJAX를 활용한 XHR 요청/응답                                  |
+  | ------------------ | -------------------------------------------------- | ------------------------------------------------------------ |
+  | 응답 처리          | 서버에서 새로운 HTML을 생성해서 응답한다.          | 서버로부터 받아온 데이터(JSON)을 포함하여 현재 HTML 페이지를 업데이트한다. |
+  | 서버 응답 데이터   | HTML                                               | XML 또는 JSON                                                |
+  | 자원 다운로드 여부 | 새롭게 응답받은 HTML에 필요한 자원을 다운로드한다. | (응답에 의해 새롭게 추가되는 자원이 존재하지 않는 경우) HTML이 그대로 유지되었기 때문에 다운로드를 하지 않는다. |
+
++ 사용자 경험 측면에서는 리로드(페이지 깜빡임)없이 페이지가 갱신되는 것이 더 좋다.
+
+  > 기존 방식보다 Ajax를 활용하는게 코드 작성 측면에서는 복잡할 수 있다.
+
+  
+
+> 참고 및 출처
+>
+> [Ajax-XHR-개념](https://www.w3schools.com/xml/ajax_intro.asp)
+
+
+
+### Ajax 요청에 대한 응답 결과가 리다이렉트인 경우
+
++ 기대 동작
+
+  + 답변 삭제 버튼을 눌렀을 때, ajax 방식으로 서버에 요청하고 로그인된 상태가 아니라면 인터셉터에 의해 로그인 페이지로 리다이렉트한다.
+
++ 문제 상황
+
+  + (step4 코드 기준) ajax 방식으로 요청된 결과가 리다이렉트인 경우, 리다이렉트의 메소드가 GET이 아닌 이전 요청 당시 메소드(DELETE)가 그대로 요청된다.
+
+    > 즉, ```DELETE 리다이렉트URL``` 가 요청된다. (왜???) 
+    >
+    > 그래서 status도 302가 아니라 405 (method not allowed)가 찍힌다.
+
+    > 뷰를 리턴할 때 ```response.sendRedirect(url);``` 은 GET 메소드로 변경되어서 작동하지만
+    >
+    > json을 리턴할 때는 리다이렉트 메소드가 GET으로 변경되지 않고 기존 메소드가 그대로 적용됨.
+
+  + Ajax로 처리하는 것 자체가 페이지 이동이 없을 때 사용하는 것인데 리다이렉트하여 페이지를 이동하는 것이 정상적인 작동인지 모르겠다. 
+
++ 해결 방향
+
+  1. 첫 시도
+     + 405로 인해 error 콜백 함수가 호출되면 path에 담긴 값으로 리다이렉트 한다.
+
+  2. 개선
+     + 인터셉터에서 url에 ```/api``` 가 포함되는 경우, ```response.sendRedirect(url);``` 하지 않고 ```response.setHeader("LoginPage", "/user/login"); ``` 으로 헤더를 추가해주고 그냥 false 반환한다.
+     + false 했기 때문에 error 콜백 함수가 호출되고 ```response``` 객체의 상태 코드와 LoginPage 헤더 유무를 검사. 해당 헤더가 존재하면 값으로 넘긴 로그인 페이지 url로 리다이렉트 한다.
+
++ 추가로 알게 된 점
+
+  + 리다이렉트되는 경우, ```response.setHeader(header, value);``` 는 유지되지 않는다. (정확한 이유는 아직 모르겠다.)
+
+> [리다이렉트-헤더사용하기-참고](https://c10106.tistory.com/2169)
+
+
+
+### 자바스크립트 템플릿
+
++ 자바스크립트를 이용하여 HTML 페이지에 동적으로 추가하기 위한 HTML 조각
+
++ 템플릿 스크립트 내 {} 부분 => 데이터로 치환하여 템플릿 전체를 동적으로 추가한다.
+
+  > 템플릿 엔진(handlebar)과 역할이 비슷하다. handlebar를 이용하는 방법은 없을까?
+
++ 사용 목적
+
+  + 템플릿은 페이지가 로드된 이후에 자바스크립트를 이용하여 동적으로 HTML DOM을 추가하기 위해 사용한다.
+
+  
+
+> 자바지기님 영상에서 사용한 템플릿
+
+```javascript
+<script type="text/template" id="answerTemplate">
+  <!--블라블라-->
+</script>
+```
+
++ ```type="text/template"``` 은 HTML 페이지를 불러오는 동안 구분 분석기가 템플릿을 읽기는 하지만 이는 유효성을 검증하기 위함이며 렌더링되지는 않는다.
+
+
+
+> 자바지기님 영상에서 사용하는 자바스크립트 코드
+
+```javascript
+String.prototype.format = function() {
+    var args = arguments; // 해당 메소드를 호출하면서 전달된 인자가 배열 형태로 저장되어 있다.
+    return this.replace(/{(\d+)}/g, function(match, number) { // this는 String 객체 자신.
+        return typeof args[number] != 'undefined'
+            ? args[number]
+            : match
+            ;
+    });
+};
+```
+
++ ```String ``` 타입에 ```format``` 이라는 프로퍼티(메소드)를 새롭게 정의하는 것.
+
++ 용도
+
+  동적으로 생성될 html에 작성된 {%d} 부분을 인자로 전달받은 데이터로 차례대로 바인딩한다.
+
+  > ```html()``` 의 반환 타입은 ```String``` 타입이므로 ```String``` 에 ```format``` 메소드를 정의한다.
+  >
+  > 자바스크립트 템플릿 내용을 ```html()``` 로 가져오고 ```format()``` 를 이용하여 자신(```String``` 객체)에게 포함되어 있는 ```{%d}``` 형태의 문자열을 메소드 인자로 전달된 데이터로 치환한다.
+
++ 기타
+
+  ```prototype``` 을 이용하여 정의하는 이유 : 모든 ```String``` 객체에서 사용할 수 있다. (맞나?)
+
+
+
+### 핸들바 템플릿
+
++ 사용 이유
+
+  + 자바스크립트 템플릿과 위 코드를 대체하기 위해서 템플릿 엔진을 사용하는 것이라고 생각했다.
+
++ 적용 과정
+
+  1. handlebar.js 라이브러리 추가
+
+     + ```handlebars-spring-boot-starter``` 의존성을 주입했기 때문에 바로 사용 가능할 줄 알았는데 handlebar.js 라이브러리가 따로 필요했다.
+
+     + 의존성을 주입한 것은 서버 사이드 템플릿 엔진으로 핸들바를 채택한 것이고, handlebar.js는 클라이언트 사이드 템플릿 엔진으로 핸들바를 선택한 것이다.
+
+  2. 템플릿을 작성한다.
+
+     ```html
+     <script type="text/x-handlebars-template" id="answer-Template">
+     <!-- 템플릿 -->
+     </script>
+     ```
+
+  3. 템플릿이 필요한 시점에 컴파일하는 자바스크립트를 작성한다.
+
+     ```javascript
+     var answerTemplate = $('#answer-Template').html();
+     var template = Handlebars.compile(answerTemplate);
+     var html = template(data);
+     $(".answer-article-ajax").append(html);
+     ```
+
+     + Spring Framework 을 사용하는 서버 환경에서는 대부분 컴파일 과정을 프레임워크 레벨에서 처리하므로 데이터만 묶으면 되지만 Framework를 사용하지 않는 환경은 반드시 텍스트를 생성하기 위해 해당 환경에서 처리 가능한 형태로 변환하는 컴파일 작업이 사전에 수행해야 한다. [출처](https://blog.javarouka.me/2014/05/24/handlebars-server-client-multiple-useing/#)
+
+  > Handlebars.js 작동 방식 [출처](https://www.sitepoint.com/a-beginners-guide-to-handlebars/)
+
+  <img src="https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/07/1435920536how-handlebars-works.png" alt="how-does-handlebars-work" style="zoom:50%;" />
+
++ 문제
+
+  + 필요한 시점에 템플릿이 추가되긴 하는데 데이터가 바인딩되지 않는 문제가 발생했다.
+
++ 원인
+
+  + 하나의 스크립트에서 서버에서 컴파일되는 부분과 클라이언트에서 컴파일되는 부분이 함께 존재하는 경우
+
+    ```html
+    <-- 이 부분은 클라이언트에서 사용할 템플릿 -->
+    <script id="answer-template" type="text/template" >
+    	<!-- 생략 -->
+    </script>
+    
+    <-- 이 부분은 서버에서 컴파일 될 템플릿 -->
+    <div>
+        <h1>{{reportName}}</h1>
+        <p>{{author}}</p>
+        <div id="answer-area"></div>
+    </div>
+    
+    <-- 클라이언트 템플릿을 사용해서 그려보자 -->
+    <script type="text/javascript" >
+    	<!-- 생략 -->
+        var templateHtml = $("#answer-template").html();
+        var template = Handlebars.compile(templateHtml);
+        var html = template(data);
+        $("#answer-area").html(html);
+    </script>
+    ```
+
+  + 서버와 클라이언트에서 동시에 handlebars를 사용하는 경우, 이미 서버에서 컴파일하면서 치환자들이 치환되어 버렸기 때문에 클라이언트에서  템플릿을 사용하려고 하면 컨텍스트 부분이 사라져서 의미가 없어진다.
+
+    => 즉, 동일한 파일을 2번(서버, 클라이언트) 컴파일하는 경우에 발생하는 문제
+
++ 해결
+
+  임시 방편을 포함하여 3가지 방법이 있다. (더 있을지도?)
+
+  1. <u>escape 문자를 넣어서 최초 (서버에 의해) 컴파일될 때 ```{{}}``` 을 문자로 인지하도록 한다.</u> (임시 방편)
+
+     > 클라이언트에서 컴파일되는 시점에서 ```{{}}``` 가 존재하기 때문에 정상적으로 바인딩이 된다.
+
+     > **Escaping**: If you have `{{thing}}` in your template that you want to be viewed as template data instead of a path, use `\` to escape it. So `\{{thing}}` will print "{{thing}}" into the template, and `\\{{thing}}` will print `\` to the template, and then render the path "thing". [출처](https://mandrill.zendesk.com/hc/en-us/articles/205582537-Using-Handlebars-for-Dynamic-Content)
+
+  2. <u>클라이언트 템플릿을 별도의 파일로 분리하여 pre-compile 하는 방법</u>
+
+     + Handlebars에서 권고하는 방법
+
+     > 배포할 때마다 pre-compile 해주는 작업이 필요하다.
+     >
+     > 이해가 잘 안되는 부분이 있어서 나중에 아래 주소 참고해서 다시 공부해야겠다.
+
+  3. <u>embedded helper ?</u>
+
++ compile보다 pre-compile하는 것이 성능상 좋다. (더 찾아봐야 하는 부분)
+
+  > Compiled Handlebars templates are much faster than non-compiled templates as compiling is a very expensive part of templating.
+
+  
+
+> 참고 및 출처
+>
+> [Node.js-with-Handlebars.js-on-server-and-client](https://stackoverflow.com/questions/10037936/node-js-with-handlebars-js-on-server-and-client)]
+>
+> [using-pre-compiled-templates-with-handlebars-js](https://stackoverflow.com/questions/8659787/using-pre-compiled-templates-with-handlebars-js-jquery-mobile-environment)
+>
+> [Handlebars(for Java)-서버,-클라이언트-동시에-사용하기](https://blog.javarouka.me/2014/05/24/handlebars-server-client-multiple-useing/#)
+>
+> [Handlebar를-사용하여-배포까지-(+grunt+gradle)](https://jojoldu.tistory.com/23)
+>
+> [핸들바-템플릿-사용](https://programmingsummaries.tistory.com/381)
+>
+> [springboot-handlebars-간단-화면-만들기](https://jojoldu.tistory.com/255)
+>
+> [프론트와-UI서버를-같은-템플릿으로-관리하는 법](https://m.blog.naver.com/PostView.nhn?blogId=tmondev&logNo=220402051411&proxyReferer=https%3A%2F%2Fwww.google.com%2F)
+
+
+
+### @RestController
+
++ RESTful한 웹 서비스를 위해 제공하는 어노테이션
+
+  > 'RESTful 하다'
+
+  + REST 원리를 따르는 시스템
+
+  + REST API를 제공하는 웹 서비스
+
++ ```@Controller``` 와 ```@ResponseBody``` 를 합쳐 편리함을 제공하는 어노테이션이다.
+
++ ```@Controller``` 와 차이점
+
+  + ```@Controller``` 
+  + 전통적인 Spring MVC 컨트롤러 어노테이션으로, 주로 View를 반환하기 위해 사용한다.
+
+  + 데이터(JSON)를 반환하는 경우, ```@ResponseBody``` 를 활용해야 한다.
+
++ ```@RestController``` 
+
+  + 주로 JSON/XML 형태로 객체 데이터를 반환하기 위해 사용한다.
+
+  + ```@Controller``` 에 ```@ResponseBody``` 의 기능이 추가된 것이다.
+  + 반환되는 객체 데이터를 자동으로 ```HttpResponse``` 로 직렬화한다.
+
++ 객체 데이터 자체만 반환하는 것보다 ```ResponseEntity<T>``` 를 이용하여 데이터와 상태코드를 함께 반환하는 것이 좋다.
+
+
+> 참고 및 출처
+>
+> [@Controller와-@RestController-차이](https://mangkyu.tistory.com/49)
+
++ 클라이언트에서 응답받은 객체의 프로퍼티를 접근할 때, 기본적으로 getter가 작성된 필드 데이터에 접근할 수 있다.
+  + jackson 라이브러리의 ```@JsonProperty``` 를 활용하면 getter가 작성되지 않은 필드 데이터도 접근 가능
+
+
+
+### @JsonProperty
+
++ 엔티티에서 JSON 데이터로 변환하고 싶은 필드에 붙인다.
++ handler가 반환하는 객체(응답 데이터)에 getter 메소드가 없어도 조회할 수 있다.
+
+
+
+### @JsonIgnore
+
++ JSON 데이터로 변환하지 않는 필드를 명시한다.
+
+
+
+### @MappedSuperClass
+
++ 엔티티의 공통 매핑 정보가 필요할 때 사용한다.
+
+  + 즉, 엔티티의 부모 클래스에 사용한다.
+
+    > 엔티티의 부모 클래스
+    >
+    > + 엔티티 클래스를 추상화하여 공통되는 프로퍼티를 모아 정의한다.
+
++ 특징
+
+  + DB 테이블과 별개이다.
+  + ```@MappedSuperClass``` 가 붙은 클래스는 엔티티가 아니다.
+
++ 기타
+
+  + 엔티티는 ```@Entity``` 나 ```@MappedSuperClass``` 가 붙은 클래스만 상속할 수 있다.
+
+
+
+### @EnableJpaAuditing
+
++ 스프링(data jpa)은 엔티티가 새롭게 생성되거나 변경이 발생한 시점을 추적하는 기능을 지원한다.
+
+  + SQL을 트리거로 작동하는 듯
+
++ 주로 ```@CreatedDate``` , ```@LastModifiedDate``` 등과 같은 어노테이션을 사용할 때 필요하다.
+
++ 대상이 되는 엔티티에 ```AuditingEntityListener``` 를 콜백 클래스로 지정해줘야 한다. 
+
+  + ```@EntityListeners``` : 엔티티를 DB에 적용하기 이전 이후에 커스텀 콜백을 요청할 수 있는 어노테이션
+
+  ```java
+  @Entity
+  @EntityListeners(AuditingEntityListener.class) // 기본 제공하는 클래스를 사용한다.
+  public class BaseEntity {
+  	// ...
+  }
+  ```
+
+
+
+### DB 답변 수 조회
+
++ (자바지기님 영상) DB 쿼리로 답변 수를 조회하지 않고, 자바 코드로 답변 수를 관리하도록 구현함.
+
++ (나의 step4) ```Question``` 객체에서 가상 컬럼으로 답변 수를 조회하도록 ```@Formula``` 를 사용함.
+  + ```@Formula``` 는 DB로부터 조회하는 시점의 답변 수를 반환함.
+  + ```Question``` 객체를 조회한 이후에 새로운 답변이 ```save()``` 되면 ```@Formula``` 로 가져온 값은 새로 추가된 답변 수가 반영되지 않은 값이다.
++ (새롭게 알게 된 사실) 영속성 컨텍스트에 존재하는 엔티티는 DB로부터 조회할 필요가 없기 때문에 select 쿼리를 수행하지 않는다.
+
+
+
+### Payload
+
++ Body에 포함되어 전송되는 데이터
+
++ 전송의 목적이 되는 데이터의 일부분으로, 함께 전송되는 헤더와 메타데이터를 제외한 것.
+
++ 구분되는 개념 : **Parameter**
+
+  + Parameter : URL에 포함되어 전송되는 데이터
+
+
+
+
+### Swagger 라이브러리
+
++ 어노테이션 기반 REST API 문서 자동화 라이브러리
+
++ 왜 사용하는가?
+
+  + 서버에서 작업한 REST API를 문서화할 수 있다.
+  + 클라이언트가 작성된 REST API 문서를 보고 개발할 수 있다.
+  + UI를 통해 테스트가 가능하다.
+
++ 대체품
+
+  + Spring REST Docs
+
+  
+
+## 오늘의 삽질
+
++ data.sql 문을 수정할 때마다 gradle의 clean을 함께 해줘야 한다.
+
+  + build 만으로 refresh가 안되는 것 같다.
+  + 안해주면 무결성 위배 같은 쿼리 오류가 발생한다.
+  + data.sql문과 gradle 빌드 간의 수행 관계를 잘 모르겠다.
+
+  
+
+## 공부 필요
+
++ spring-tx (트랜잭션?)
+
++ 스프링 로그인 보안 (```ThreadLocal```)
+
++ 영속성 컨텍스트
+
+  > https://gmlwjd9405.github.io/2019/08/06/persistence-context.html
+  >
+  > https://victorydntmd.tistory.com/207
+
++ DTO
+
++ ```@Profile```
+
+  > http://wonwoo.ml/index.php/post/1933
+
+---
+
 ## Step4
 
 ## 공부 내용

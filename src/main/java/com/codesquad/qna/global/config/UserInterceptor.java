@@ -4,6 +4,7 @@ import com.codesquad.qna.util.HttpSessionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -18,22 +19,31 @@ public class UserInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        log.info("preHandle enter : {}, method : {}", request.getRequestURI(), request.getMethod());
+        log.debug("preHandle enter : {}, method : {}", request.getRequestURI(), request.getMethod());
         if (matchQuestionURI(request.getRequestURI(), request.getMethod()))
             return true;
 
         HttpSession session = request.getSession();
         if (HttpSessionUtils.isNotLoggedIn(session)) {
+            if (isXHR(request.getRequestURI())) {
+                response.setStatus(HttpStatus.FOUND.value());
+                response.setHeader("LoginPage", "/user/login");
+                return false;
+            }
             response.sendRedirect("/user/login");
             return false;
         }
 
         request.setAttribute("sessionedUser", HttpSessionUtils.getUserFromSession(session));
-        log.info("preHandle out");
+        log.debug("preHandle out");
         return true;
     }
 
     private boolean matchQuestionURI(String requestURI, String requestMethod) {
         return requestURI.matches("/questions/[0-9^/]+$") && HttpMethod.GET.matches(requestMethod);
+    }
+
+    private boolean isXHR(String requestURI) {
+        return requestURI.contains("/api/");
     }
 }

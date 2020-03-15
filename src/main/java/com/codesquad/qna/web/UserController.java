@@ -31,7 +31,7 @@ public class UserController {
             return "users/join_failed";
 
         userRepository.save(newUser);
-        log.info("signUp : {}", newUser);
+        log.debug("signUp : {}", newUser);
         return "redirect:/users";
     }
 
@@ -76,19 +76,19 @@ public class UserController {
             return loginFailedTemplate;
 
         session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
-        log.info("login Success : {}" , user);
+        log.debug("login Success : {}" , user);
         return "redirect:/";
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
-        log.info("logout Success");
+        log.debug("logout Success");
         return "redirect:/";
     }
 
     private User findUser(String userId, boolean isNullable) {
-        log.info("findUser: {}", userId);
+        log.debug("findUser: {}", userId);
         Optional<User> user = userRepository.findById(userId);
         return isNullable ? user.orElse(null) : user.orElseThrow(() -> new DataNotFoundException(ErrorCode.DATA_NOT_FOUND));
     }

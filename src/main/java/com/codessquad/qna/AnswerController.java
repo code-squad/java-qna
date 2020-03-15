@@ -3,9 +3,9 @@ package com.codessquad.qna;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
@@ -13,8 +13,8 @@ import javax.servlet.http.HttpSession;
 import static com.codessquad.qna.HttpSessionUtils.isLogin;
 import static com.codessquad.qna.HttpSessionUtils.getUserFromSession;
 
-@Controller
-@RequestMapping("/questions/{questionId}/answers")
+@RestController
+@RequestMapping("/api/questions/{questionId}/answers")
 public class AnswerController {
     private static final Logger log = LoggerFactory.getLogger(HomeController.class);
 
@@ -25,51 +25,50 @@ public class AnswerController {
     private QuestionRepository questionRepository;
 
     @PostMapping("")
-    public String createAnswer(@PathVariable Long questionId, String contents, HttpSession session) {
+    public Answer createAnswer(@PathVariable Long questionId, String contents, HttpSession session) {
         if (!isLogin(session)) {
-            return "/users/loginForm";
+            return null;
         }
         User sessionUser = getUserFromSession(session);
         Question question = findQuestion(questionId);
         Answer answer = new Answer(sessionUser, question, contents);
-        answerRepository.save(answer);
-        return "redirect:/questions/" + questionId;
+        return answerRepository.save(answer);
     }
 
     @GetMapping("/{id}/form")
-    public String viewUpdateForm(@PathVariable Long id, Model model, HttpSession session) {
+    public ModelAndView viewUpdateForm(@PathVariable Long id, Model model, HttpSession session) {
         try {
             model.addAttribute("answer", getVerifiedAnswer(id, session));
-            return "/qna/updatedAnswerForm";
+            return new ModelAndView("/qna/updatedAnswerForm");
         } catch (IllegalAccessException | EntityNotFoundException e) {
-            log.info("Error Code > " + e.toString());
-            return e.getMessage();
+            log.info("Error Code > {} ", e.toString());
+            return new ModelAndView(e.getMessage());
         }
     }
 
     @PutMapping("/{id}/form")
-    public String updateAnswer(@PathVariable Long questionId, @PathVariable Long id, String contents, HttpSession session) {
+    public ModelAndView updateAnswer(@PathVariable Long questionId, @PathVariable Long id, String contents, HttpSession session) {
         try {
             Answer answer = getVerifiedAnswer(id, session);
             answer.update(contents);
             answerRepository.save(answer);
-            return "redirect:/questions/" + questionId;
+            return new ModelAndView("redirect:/questions/" + questionId);
         } catch (IllegalAccessException | EntityNotFoundException e) {
-            log.info("Error Code > " + e.toString());
-            return e.getMessage();
+            log.info("Error Code > {} ", e.toString());
+            return new ModelAndView(e.getMessage());
         }
     }
 
     @DeleteMapping("/{id}")
-    public String deleteAnswer(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
+    public boolean deleteAnswer(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
         try {
             Answer answer = getVerifiedAnswer(id, session);
             answer.delete();
             answerRepository.save(answer);
-            return "redirect:/questions/" + questionId;
+            return answer.isDeleted();
         } catch (IllegalAccessException | EntityNotFoundException e) {
-            log.info("Error Code > " + e.toString());
-            return e.getMessage();
+            log.info("Error Code > {} ", e.toString());
+            return false;
         }
     }
 

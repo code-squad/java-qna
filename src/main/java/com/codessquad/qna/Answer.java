@@ -1,5 +1,6 @@
 package com.codessquad.qna;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -12,19 +13,24 @@ import java.time.format.DateTimeFormatter;
 public class Answer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty
     private Long id;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
+    @JsonProperty
     private User writer;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
+    @JsonProperty
     private Question question;
 
     @NotEmpty
+    @JsonProperty
     private String contents;
 
+    @JsonProperty
     private boolean deleted;
     private LocalDateTime postingTime;
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";

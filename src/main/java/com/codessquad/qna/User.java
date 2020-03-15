@@ -1,5 +1,7 @@
 package com.codessquad.qna;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -11,19 +13,24 @@ import java.util.Objects;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty
     private Long id;
 
     @Column(nullable = false, length = 20, unique = true)
     @NotEmpty
+    @JsonProperty
     private String userId;
 
     @NotEmpty
+    @JsonIgnore
     private String password;
 
     @NotEmpty
+    @JsonProperty
     private String name;
 
     @NotEmpty
+    @JsonProperty
     private String email;
 
     public void setUserId(String userId) {

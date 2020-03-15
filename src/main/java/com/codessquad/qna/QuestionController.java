@@ -47,7 +47,7 @@ public class QuestionController {
             model.addAttribute("question", question);
             return "/qna/show";
         } catch (EntityNotFoundException e) {
-            log.info("Error Code > " + e.toString());
+            log.info("Error Code > {} ", e.toString());
             return e.getMessage();
         }
     }
@@ -58,7 +58,7 @@ public class QuestionController {
             model.addAttribute("question", getVerifiedQuestion(id, session));
             return "/qna/updatedForm";
         } catch (IllegalAccessException | EntityNotFoundException e) {
-            log.info("Error Code > " + e.toString());
+            log.info("Error Code > {} ", e.toString());
             return e.getMessage();
         }
     }
@@ -71,7 +71,7 @@ public class QuestionController {
             questionRepository.save(question);
             return "redirect:/questions/" + id;
         } catch (IllegalAccessException | EntityNotFoundException e) {
-            log.info("Error Code > " + e.toString());
+            log.info("Error Code > {} ", e.toString());
             return e.getMessage();
         }
     }
@@ -84,7 +84,7 @@ public class QuestionController {
             questionRepository.save(question);
             return "redirect:/";
         } catch (IllegalAccessException | EntityNotFoundException e) {
-            log.info("Error Code > " + e.toString());
+            log.info("Error Code > {} ", e.toString());
             return e.getMessage();
         }
     }

@@ -1,5 +1,7 @@
 package com.codessquad.qna;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -13,24 +15,30 @@ import java.util.List;
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty
     private Long id;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    @JsonProperty
     private User writer;
 
     @NotEmpty
+    @JsonProperty
     private String title;
 
     @NotEmpty
+    @JsonProperty
     private String contents;
 
+    @JsonProperty
     private boolean deleted;
     private LocalDateTime postingTime;
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
 
     @OneToMany(mappedBy = "question")
     @OrderBy("id ASC")
+    @JsonIgnore
     private List<Answer> answers;
 
     public Question() {}

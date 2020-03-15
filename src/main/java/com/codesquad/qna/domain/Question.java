@@ -1,14 +1,14 @@
 package com.codesquad.qna.domain;
 
+import com.codesquad.qna.web.DateTimeFormatConstants;
+import org.hibernate.annotations.Formula;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Entity
 public class Question {
-    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,7 +29,15 @@ public class Question {
     @Column(nullable = false)
     private LocalDateTime createdTime;
 
-    private Integer countOfAnswers = 0;
+    @OneToMany(mappedBy="question") //Answer에서 Question을 매핑할 때 설정한 필드 이름으로 주면됨
+    @OrderBy("id ASC")
+    private List<Answer> answers;
+
+    @Formula("(select count(*) from answer a where a.question_id = id and a.deleted = false)")
+    private int countOfAnswers;
+
+    @Column(nullable = false)
+    private boolean deleted = false;
 
     public Question() {
         setCreatedTimeNow();
@@ -44,10 +52,6 @@ public class Question {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public User getWriter() {
@@ -82,17 +86,25 @@ public class Question {
         this.createdTime = createdTime;
     }
 
+    public int getCountOfAnswers() {
+        return countOfAnswers;
+    }
+
+    public void setCountOfAnswers(int countOfAnswers) {
+        this.countOfAnswers = countOfAnswers;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
     public void setCreatedTimeNow() {
         setCreatedTime(LocalDateTime.now());
     }
 
     public String getFormattedCreatedTime() {
-        if (createdTime == null) {
-            return "";
-        }
-
-        return createdTime.format(DateTimeFormatter.ofPattern(DATE_FORMAT));
-    }
+        return this.createdTime.format(DateTimeFormatConstants.BOARD_DATA_DATE_TIME_FORMAT);
+   }
 
     public void update(Question question) {
         this.title = question.getTitle();
@@ -101,18 +113,44 @@ public class Question {
     }
 
     public boolean matchUser(User sessionUser) {
-        return sessionUser.getUserId().equals(writer.getUserId());
+        return this.writer.equals(sessionUser);
     }
 
-    public Integer getCountOfAnswers() {
-        return countOfAnswers;
+    public void delete() {
+        if (getCountOfAnswers() != 0 && isNotErasable()) {
+            throw new IllegalStateException("답변이 달린 게시글은 삭제할 수 없습니다.");
+        }
+
+        deleteAnswers(); //남아있는 댓글 delete
+        this.deleted = true;
     }
 
-    public void increaseAnswersCount() {
-        countOfAnswers++;
+    public boolean isNotErasable() {
+        for (Answer answer : answers) {
+            if (!answer.matchUser(this.writer)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public void reduceAnswersCount() {
-        countOfAnswers--;
+    public void deleteAnswers() {
+        for (Answer answer : answers) {
+            answer.delete();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "id=" + id +
+                ", writer=" + writer +
+                ", title='" + title + '\'' +
+                ", contents='" + contents + '\'' +
+                ", createdTime=" + createdTime +
+                ", answers=" + answers +
+                ", countOfAnswers=" + countOfAnswers +
+                ", deleted=" + deleted +
+                '}';
     }
 }

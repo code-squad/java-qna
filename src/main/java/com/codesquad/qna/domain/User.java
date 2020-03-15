@@ -51,6 +51,12 @@ public class User {
 
     public Long getId() { return id; }
 
+    public void update(User updatedUser) {
+        this.password = updatedUser.password;
+        this.email = updatedUser.email;
+        this.email = updatedUser.email;
+    }
+
     @Override
     public String toString() {
         return "userId : " + userId + ", userName : " + userName + ", password : " + password + ", Email : " + email + ", ID : " + id;

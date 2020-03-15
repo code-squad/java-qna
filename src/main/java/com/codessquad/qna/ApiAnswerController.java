@@ -29,11 +29,8 @@ public class ApiAnswerController {
             User sessionedUser = HttpSessionUtils.getUserFromSession(httpSession);
             Question question = findQuestionById(questionId);
             Answer answer = new Answer(question, contents, sessionedUser);
-            logger.debug("answer : {} ", answer);
             return answerRepository.save(answer);
         } catch (IllegalStateException e) {
-            logger.info("null!!!");
-//            model.addAttribute("errorMessage", e.getMessage());
             return null;
         }
     }
@@ -73,7 +70,7 @@ public class ApiAnswerController {
     }
 
     @DeleteMapping("/{questionId}/answers/{answerId}/{writer}/delete")
-    public String delete(@PathVariable Long answerId,
+    public Result delete(@PathVariable Long answerId,
                          @PathVariable String writer,
                          HttpSession httpSession,
                          Model model) {
@@ -82,10 +79,10 @@ public class ApiAnswerController {
             Answer answer = findAnswerById(answerId);
             answer.delete();
             answerRepository.save(answer);
-            return "redirect:/questions/{questionId}";
+            return Result.ok();
         } catch (IllegalStateException e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "/user/login";
+//            model.addAttribute("errorMessage", e.getMessage());
+            return Result.fail("실패했습니다.");
         }
     }
 

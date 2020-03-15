@@ -121,6 +121,7 @@ $( ".inner" ).append( "<p>Test</p>" );
 ## Step5 버그 해결과정 
 - 답변 추가 시 자바지기처럼 OrderedBy(id DESC)로 수정했는데 새로고침하면 asc가 된다. 그 이유는 자바지기와 다르게 나는 question과 answers를 따로 넘기기 때문에 Repository에서 정렬시킨 다음 가져와야 했다. findByQuestionIdAndDeletedFalseOrderByIdDesc(id) 추가. 
 - 첫 답변 추가 시 답변이 안보이는 이유 : {{#answer}} 아래에 추가되는 html이 있으니 처음엔 answers가 넘어오지 않기 때문에 아예 안뜸. 아래 코드처럼 위치를 변경 
+- 답변 삭제하려 할 때 추가했을 때 바로 삭제가 안되는 이유는??? 
 
 ```html
 <div class="qna-comment-slipp-articles">
@@ -226,5 +227,48 @@ function onSuccess(data, status) {
 }
 ```
 
-## 답변 기능 구현 에러 
-- 문제 : 첫 답변하기 버튼 클릭 시 반응이 없음. 2번째부터는 되다가 그 이후는 입력한 답변이 존재하던 모든 답변 위에 포함되는 문제 발생.
+## AJAX 이용한 답변 수정 기능 구현
+- 답변 삭제 html 변경. Ajax로 컨트롤하기 위함. 
+
+```html
+<a class="link-delete-article" href="/api/questions/{3}/answers/{4}/{0}/delete">삭제</a>
+``` 
+
+- deleteAnswer() 구현 
+
+```javascript
+$(".link-delete-article").on("click", deleteAnswer);
+
+function deleteAnswer(e) {
+    e.preventDefault();
+    var deleteBtn = $(this);
+    var url = deleteBtn.attr("href");
+    console.log("url : " + url);
+}
+```
+
+- 이전에 리팩토링하면서 Result 구현을 안하니 낭패.. 다시 연습하기.  
+
+- 삭제 버튼 클릭 시 AJAX가 서버와 소통한 후 해당 답변 삭제하는 기능 추가 
+
+```javascript
+    $.ajax({
+        type : 'delete',
+        url : url,
+        dataType : 'json',
+        error : function(xhr, status) {
+            console.log("error");
+            console.log(status);
+        },
+        success : function (data, status) {
+            console.log(data);
+            if (data.valid) {
+                deleteBtn.closest("article").remove();
+            } else {
+                alert(data.errorMessage);
+            }
+        }
+    })
+```
+
+

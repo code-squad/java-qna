@@ -46,7 +46,6 @@ public class QuestionController {
             return "redirect:/users/loginForm";
         }
 
-
         if(question == null) {
             throw new InvalidInputException("입력값이 유효하지 않습니다.");
         }
@@ -72,16 +71,11 @@ public class QuestionController {
     public String showUpdateForm(@PathVariable Long id, HttpSession session, Model model)  {
         LOGGER.debug("[page] : {}", "질문 수정 폼");
 
-        if(!HttpSessionUtils.isLoginUser(session)) {
-            LOGGER.debug("[page] : {}", "비로그인");
-            return "redirect:/users/loginForm";
-        }
-
-        User user = HttpSessionUtils.getUserFromSession(session);
         Question question = getQuestionById(id);
-        if(!question.isSameUser(user)) {
-            LOGGER.debug("[page] : {}", "글 작성자 아님");
-            throw new IllegalStateException("글 작성자 아님");
+        Result result = hasPermission(session, question);
+        if(!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return "redirect:/users/loginForm";
         }
 
         model.addAttribute("question", question);
@@ -89,19 +83,14 @@ public class QuestionController {
     }
 
     @PutMapping("/{id}")
-    public String updateQuestion(@PathVariable Long id, HttpSession session, Question updatedQuestion) {
+    public String updateQuestion(@PathVariable Long id, HttpSession session, Question updatedQuestion, Model model) {
         LOGGER.debug("[page] : {}", "질문 수정");
 
-        if(!HttpSessionUtils.isLoginUser(session)) {
-            LOGGER.debug("[page] : {}", "비로그인");
-            return "redirect:/users/loginForm";
-        }
-
-        User user = HttpSessionUtils.getUserFromSession(session);
         Question question = getQuestionById(id);
-        if(!question.isSameUser(user)) {
-            LOGGER.debug("[page] : {}", "글 작성자 아님");
-            throw new IllegalStateException("글 작성자 아님");
+        Result result = hasPermission(session, question);
+        if(!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return "redirect:/users/loginForm";
         }
 
         question.update(updatedQuestion);
@@ -111,19 +100,14 @@ public class QuestionController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteQuestion(@PathVariable Long id, HttpSession session) {
+    public String deleteQuestion(@PathVariable Long id, HttpSession session, Model model) {
         LOGGER.debug("[page] : {}", "질문 삭제");
 
-        if(!HttpSessionUtils.isLoginUser(session)) {
-            LOGGER.debug("[page] : {}", "비로그인");
-            return "redirect:/users/loginForm";
-        }
-
-        User user = HttpSessionUtils.getUserFromSession(session);
         Question question = getQuestionById(id);
-        if(!question.isSameUser(user)) {
-            LOGGER.debug("[page] : {}", "글 작성자 아님");
-            throw new IllegalStateException("글 작성자 아님");
+        Result result = hasPermission(session, question);
+        if(!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
+            return "redirect:/users/loginForm";
         }
 
         if(!question.canDeleteAnswers()) {
@@ -144,6 +128,21 @@ public class QuestionController {
 
     private Question getQuestionById(Long id){
         return questionRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 질문입니다."));
+    }
+
+    private Result hasPermission(HttpSession session, Question question) {
+        if(!HttpSessionUtils.isLoginUser(session)) {
+            LOGGER.debug("[page] : {}", "비로그인");
+            return Result.fail("로그인이 필요합니다.");
+        }
+
+        User user = HttpSessionUtils.getUserFromSession(session);
+        if(!question.isSameUser(user)) {
+            LOGGER.debug("[page] : {}", "글 작성자 아님");
+            throw new IllegalStateException("글 작성자 아님");
+        }
+
+        return Result.ok();
     }
 
 }

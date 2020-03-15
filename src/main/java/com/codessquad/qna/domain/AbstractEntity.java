@@ -5,15 +5,14 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 public class AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,9 +38,17 @@ public class AbstractEntity {
     private LocalDateTime modifiedDate;
 
     public String getFormattedCreatedDate() {
-        if (createdDate == null) {
+        return formattedDate(createdDate, "YYYY-MM-SS HH:mm:ss");
+    }
+
+    public String getFormattedModifiedDate() {
+        return formattedDate(modifiedDate, "YYYY-MM-SS HH:mm:ss");
+    }
+
+    private String formattedDate(LocalDateTime localDateTime, String format) {
+        if (localDateTime == null) {
             return "";
         }
-        return createdDate.format(DateTimeFormatter.ofPattern("YYYY-MM-SS HH:mm:ss"));
+        return localDateTime.format(DateTimeFormatter.ofPattern(format));
     }
 }

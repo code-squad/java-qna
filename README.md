@@ -308,3 +308,29 @@ public class QnaApplication {
 
 - User, Question, Answer 객체 중복되는 필드나 메서드는 이동
 - import.sql, User에 createdDate 추가.
+- 회원가입 시 createdData가 null인 경우, 상위 클래스에 @EntityListeners(AuditingEntityListener.class) 아래 속성 추가 
+
+```java
+@MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
+public class AbstractEntity {
+```
+
+- formattedDate 중복 코드 제거 
+
+```java
+public String getFormattedCreatedDate() {
+        return formattedDate(createdDate, "YYYY-MM-SS HH:mm:ss");
+    }
+
+    public String getFormattedModifiedDate() {
+        return formattedDate(modifiedDate, "YYYY-MM-SS HH:mm:ss");
+    }
+
+    private String formattedDate(LocalDateTime localDateTime, String format) {
+        if (localDateTime == null) {
+            return "";
+        }
+        return localDateTime.format(DateTimeFormatter.ofPattern(format));
+    }
+```

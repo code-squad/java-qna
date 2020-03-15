@@ -59,6 +59,19 @@ public class AnswerController {
         return String.format("redirect:/questions/%d", id);
     }
 
+    @DeleteMapping("/{answerId}")
+    public String delete(@PathVariable Long answerId, @PathVariable Long id, HttpSession session, Model model) {
+        try {
+            Answer currentAnswer = answerRepository.findById(answerId).get();
+            hasPermission(session, currentAnswer);
+            answerRepository.delete(currentAnswer);
+            return String.format("redirect:/questions/%d", id);
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "user/login";
+        }
+    }
+
     private boolean hasPermission(HttpSession session, Answer answer) {
         if (!HttpSessionUtils.isLoginUser(session)) {
             throw new IllegalStateException("로그인이 필요합니다.");

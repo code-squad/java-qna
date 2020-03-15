@@ -5,6 +5,7 @@ import com.codessquad.domain.user.User;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Entity
 public class Question {
@@ -24,6 +25,10 @@ public class Question {
     private String contents;
 
     private LocalDateTime dateTime = LocalDateTime.now();
+
+    @OneToMany(mappedBy = "question")
+    @OrderBy("id asc")
+    private List<Answer> answers;
 
     public Long getId() {
         return id;

@@ -18,7 +18,7 @@ public class Answer {
     private User writer;
 
     @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_question"))
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_of_question"))
     private Question question;
 
     @Lob

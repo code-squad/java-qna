@@ -1,10 +1,10 @@
-package io.david215.qna;
+package io.david215.forum;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class QnaApplicationTests {
+class ForumApplicationTests {
 
     @Test
     void contextLoads() {

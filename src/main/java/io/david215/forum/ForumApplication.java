@@ -1,13 +1,13 @@
-package io.david215.qna;
+package io.david215.forum;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class QnaApplication {
+public class ForumApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(QnaApplication.class, args);
+        SpringApplication.run(ForumApplication.class, args);
     }
 
 }

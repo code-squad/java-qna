@@ -1,5 +1,6 @@
 package com.codessquad.web.user;
 
+import com.codessquad.common.HttpSessionUtils;
 import com.codessquad.domain.user.User;
 import com.codessquad.domain.user.UserRepository;
 import javassist.NotFoundException;
@@ -10,12 +11,43 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpSession;
+
 @Controller
 @RequestMapping("/users")
 public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @GetMapping("/loginForm")
+    public String loginForm() {
+        return "/user/login";
+    }
+
+    @GetMapping("/loginFailedForm")
+    public String loginFailedForm() {
+        return "/user/login_failed";
+    }
+
+    @PostMapping("/login")
+    public String login(String userId, String password, HttpSession session) {
+        User user = userRepository.findByUserId(userId);
+        if (user == null) {
+            return "redirect:/users/loginFailedForm";
+        }
+        if (!user.matchPasword(password)) {
+            return "redirect:/users/loginFailedForm";
+        }
+        session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
+        return "redirect:/";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
+        return "redirect:/";
+    }
 
     @GetMapping("/form")
     public String form() {

@@ -74,29 +74,36 @@ public class UserController {
 
     @GetMapping("{id}/form")
     public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            return "redirect:/users/loginForm";
+        try {
+            User loginUser = HttpSessionUtils.getUserFromSession(session);
+            hasPermission(id, session);
+            model.addAttribute("user", loginUser);
+            return "/user/updateForm";
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/user/login";
         }
-        User loginUser = HttpSessionUtils.getUserFromSession(session);
-        if (!loginUser.matchId(id)) {
-            throw new IllegalStateException("자신의 정보만 수정할 수 있습니다.");
-        }
-        model.addAttribute("user", userRepository.findById(id).orElseThrow(() -> new IllegalStateException("존재하지 않는 사용자 입니다.")));
-        return "/user/updateForm";
     }
 
     @PutMapping("/{id}")
-    public String update(@PathVariable Long id, User newUser, HttpSession session) {
+    public String update(@PathVariable Long id, User newUser, HttpSession session, Model model) {
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/users/loginForm";
-        }
-        User loginUser = HttpSessionUtils.getUserFromSession(session);
-        if (!loginUser.matchId(id)) {
-            throw new IllegalStateException("자신의 정보만 수정할 수 있습니다.");
         }
         User user = userRepository.findById(id).get();
         user.update(newUser);
         userRepository.save(user);
-        return "redirect:/users";
+        return String.format("redirect:/users/%d", id);
+    }
+
+    private boolean hasPermission(Long id, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            throw new IllegalStateException("로그인이 필요합니다.");
+        }
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        if (!loginUser.matchId(id)) {
+            throw new IllegalStateException("자신의 정보만 수정 가능합니다.");
+        }
+        return true;
     }
 }

@@ -1,7 +1,7 @@
-package com.codessquad.user;
+package com.codessquad.web.user;
 
-import com.codessquad.domain.User;
-import com.codessquad.domain.UserRepository;
+import com.codessquad.domain.user.User;
+import com.codessquad.domain.user.UserRepository;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

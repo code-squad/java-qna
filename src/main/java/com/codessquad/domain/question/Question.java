@@ -1,4 +1,4 @@
-package com.codessquad.domain;
+package com.codessquad.domain.question;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

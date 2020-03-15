@@ -50,7 +50,6 @@ public class GlobalExceptionHandler {
         return "/errors/400";
     }
 
-    //TODO: 상태코드 수정?
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(CanNotDeleteException.class)
     public String canNotDelete(CanNotDeleteException e, Model model, HttpServletRequest request) {

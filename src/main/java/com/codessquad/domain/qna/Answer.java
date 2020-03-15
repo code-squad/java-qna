@@ -66,4 +66,15 @@ public class Answer {
         this.contents = contents;
         this.dateTime = LocalDateTime.now();
     }
+
+    public boolean matchUser(User loginUser) {
+        if (loginUser == null) {
+            return false;
+        }
+        return loginUser.getUserId().equals(writer.getUserId());
+    }
+
+    public void update(Answer updateAnswer) {
+        this.contents = updateAnswer.contents;
+    }
 }

@@ -8,9 +8,8 @@ import com.codessquad.domain.qna.QuestionRepository;
 import com.codessquad.domain.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -36,7 +35,38 @@ public class AnswerController {
         return String.format("redirect:/questions/%d", id);
     }
 
+    @GetMapping("/{answerId}/form")
+    public String updateForm(@PathVariable Long answerId, @PathVariable Long id, Model model, HttpSession session) {
+        try {
+            Answer currentAnswer = answerRepository.findById(answerId).get();
+            hasPermission(session, currentAnswer);
+            model.addAttribute("answer", currentAnswer);
+            return "/qna/answerUpdateForm";
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/user/login";
+        }
+    }
 
+    @PutMapping("/{answerId}")
+    public String update(@PathVariable Long answerId, @PathVariable Long id, Answer updateAnswer, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "redirect:/users/loginForm";
+        }
+        Answer currentAnswer = answerRepository.findById(answerId).get();
+        currentAnswer.update(updateAnswer);
+        answerRepository.save(currentAnswer);
+        return String.format("redirect:/questions/%d", id);
+    }
 
-
+    private boolean hasPermission(HttpSession session, Answer answer) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            throw new IllegalStateException("로그인이 필요합니다.");
+        }
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        if (!answer.matchUser(loginUser)) {
+            throw new IllegalStateException("자신이 쓴 댓글만 수정, 삭제가 가능합니다.");
+        }
+        return true;
+    }
 }

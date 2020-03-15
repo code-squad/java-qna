@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/questions/{questionId}/answers")
-public class AnswerController {
+public class ApiAnswerController {
     @Autowired
     AnswerRepository answerRepository;
 

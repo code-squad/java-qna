@@ -1,7 +1,7 @@
 package com.codessquad.web.question;
 
-import com.codessquad.domain.question.Question;
-import com.codessquad.domain.question.QuestionRepository;
+import com.codessquad.domain.qna.Question;
+import com.codessquad.domain.qna.QuestionRepository;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

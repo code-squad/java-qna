@@ -38,6 +38,8 @@ public class Question {
     private String contents;
     @JsonProperty
     private boolean deleted;
+    @JsonProperty
+    private Integer countOfAnswer;
 
     public Question() {
     }
@@ -106,13 +108,17 @@ public class Question {
         this.contents = contents;
     }
 
-    public long getCountOfAnswers() {
-        return answers.stream().filter(answer -> !answer.isDeleted()).count();
-    }
+//    public long getCountOfAnswers() {
+//        return answers.stream().filter(answer -> !answer.isDeleted()).count();
+//    }
 
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
+    }
+
+    public Integer getCountOfAnswer() {
+        return this.countOfAnswer;
     }
 
     public void update(String title, String contents) {
@@ -143,5 +149,13 @@ public class Question {
     public void delete() {
         deleted = true;
         answers.forEach(Answer::delete);
+    }
+
+    public void addAnswer() {
+        this.countOfAnswer+=1;
+    }
+
+    public void deleteAnswer() {
+        this.countOfAnswer-=1;
     }
 }

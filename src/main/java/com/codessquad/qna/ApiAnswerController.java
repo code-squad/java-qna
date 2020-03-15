@@ -29,6 +29,7 @@ public class ApiAnswerController {
             User sessionedUser = HttpSessionUtils.getUserFromSession(httpSession);
             Question question = findQuestionById(questionId);
             Answer answer = new Answer(question, contents, sessionedUser);
+            question.addAnswer();
             return answerRepository.save(answer);
         } catch (IllegalStateException e) {
             return null;
@@ -72,12 +73,16 @@ public class ApiAnswerController {
     @DeleteMapping("/{questionId}/answers/{answerId}/{writer}/delete")
     public Result delete(@PathVariable Long answerId,
                          @PathVariable String writer,
+                         @PathVariable Long questionId,
                          HttpSession httpSession,
                          Model model) {
         try {
             hasPermission(httpSession, writer);
             Answer answer = findAnswerById(answerId);
             answer.delete();
+            Question question = questionRepository.findById(questionId).orElseThrow(() ->
+                    new IllegalStateException("There is no answer"));
+            question.deleteAnswer();
             answerRepository.save(answer);
             return Result.ok();
         } catch (IllegalStateException e) {

@@ -271,4 +271,8 @@ function deleteAnswer(e) {
     })
 ```
 
+## 질문 목록에 답변 개수 보여주기. 
 
+- question에 countOfAnswer 필드 추가한다. 
+- 댓글 추가할 때 +1하고 save, 
+- 댓글 삭제할 때 -1하고 save한다. 

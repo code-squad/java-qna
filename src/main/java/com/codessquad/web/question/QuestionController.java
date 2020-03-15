@@ -7,26 +7,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 
 @Controller
+@RequestMapping("/questions")
 public class QuestionController {
 
     @Autowired
     private QuestionRepository questionRepository;
 
-    @GetMapping("/questions/form")
+    @GetMapping("/form")
     public String form() {
         return "/qna/form";
     }
 
-    @PostMapping("/questions")
+    @PostMapping("")
     public String create(Question newQuestion) {
         newQuestion.setDateTime(LocalDateTime.now());
         questionRepository.save(newQuestion);
@@ -39,7 +37,7 @@ public class QuestionController {
         return "/main";
     }
 
-    @GetMapping("/questions/{id}")
+    @GetMapping("/{id}")
     public String show(@PathVariable Long id, Model model) {
         try {
             model.addAttribute("question", questionRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 질문 입니다.")));
@@ -50,7 +48,7 @@ public class QuestionController {
         }
     }
 
-    @GetMapping("/questions/{id}/form")
+    @GetMapping("/{id}/form")
     public String updateForm(@PathVariable Long id, Model model) {
         try {
             model.addAttribute("question", questionRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 질문 입니다.")));
@@ -61,7 +59,7 @@ public class QuestionController {
         }
     }
 
-    @PutMapping("/questions/{id}")
+    @PutMapping("/{id}")
     public String update(@PathVariable Long id, Question updateQuestion) {
         Question question = questionRepository.findById(id).get();
         updateQuestion.setDateTime(LocalDateTime.now());

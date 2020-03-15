@@ -29,7 +29,7 @@ public class Question {
     private User writer;
 
     @OneToMany(mappedBy = "question")
-    @OrderBy("id desc")
+    @OrderBy("id asc")
     @JsonIgnore
     private List<Answer> answers;
 

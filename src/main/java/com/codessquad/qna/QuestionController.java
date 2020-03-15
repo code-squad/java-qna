@@ -53,7 +53,7 @@ public class QuestionController {
     @GetMapping("/{id}")
     public String detailPage(@PathVariable("id") Long questionId, Model model) {
         model.addAttribute("question", findQuestionById(questionId));
-        model.addAttribute("answers", answerRepository.findByQuestionIdAndDeletedFalse(questionId));
+        model.addAttribute("answers", answerRepository.findByQuestionIdAndDeletedFalseOrderByIdDesc(questionId));
         return "question/show";
     }
 

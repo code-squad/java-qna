@@ -120,6 +120,12 @@ $( ".inner" ).append( "<p>Test</p>" );
 
 ## Step5 버그 해결과정 
 - 답변 추가 시 자바지기처럼 OrderedBy(id DESC)로 수정했는데 새로고침하면 asc가 된다. 그 이유는 자바지기와 다르게 나는 question과 answers를 따로 넘기기 때문에 Repository에서 정렬시킨 다음 가져와야 했다. findByQuestionIdAndDeletedFalseOrderByIdDesc(id) 추가. 
+- 첫 답변 추가 시 답변이 안보이는 이유 : {{#answer}} 아래에 추가되는 html이 있으니 처음엔 answers가 넘어오지 않기 때문에 아예 안뜸. 아래 코드처럼 위치를 변경 
+
+```html
+<div class="qna-comment-slipp-articles">
+{{#answers}}
+```
 
 ## 답변 기능 Ajax이용해 구현 하기. 
 - 답변 추가 시 서버에 전송하는 기능을 제한한다. ajax가 대신 서버에 전달하게 하는 기능 -> 왜?? 댓글과 관련된 리소스만 받아오며 되는데 매번 모든 리소스를 가져오면 비효율적이기 때문이다. 

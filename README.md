@@ -121,7 +121,7 @@ $( ".inner" ).append( "<p>Test</p>" );
 ## Step5 버그 해결과정 
 - 답변 추가 시 자바지기처럼 OrderedBy(id DESC)로 수정했는데 새로고침하면 asc가 된다. 그 이유는 자바지기와 다르게 나는 question과 answers를 따로 넘기기 때문에 Repository에서 정렬시킨 다음 가져와야 했다. findByQuestionIdAndDeletedFalseOrderByIdDesc(id) 추가. 
 - 첫 답변 추가 시 답변이 안보이는 이유 : {{#answer}} 아래에 추가되는 html이 있으니 처음엔 answers가 넘어오지 않기 때문에 아예 안뜸. 아래 코드처럼 위치를 변경 
-- 답변 삭제하려 할 때 추가했을 때 바로 삭제가 안될 때 
+- 답변 삭제하려 할 때 추가했을 때 바로 삭제가 안될 때  
  
  ```javascript
 $(',link-delete-article').on('click', deleteAnswer); 
@@ -285,3 +285,26 @@ function deleteAnswer(e) {
 - question에 countOfAnswer 필드 추가한다. 
 - 댓글 추가할 때 +1하고 save, 
 - 댓글 삭제할 때 -1하고 save한다. 
+
+## 도메인 클래스 중복 제거 
+- 중복되는 속성을 담은 AbstractEntity 생성, @MappedSuperClass 붙이기.
+
+```java
+@MappedSuperclass
+public class AbstractEntity {
+    
+    
+}
+```
+
+- @CreatedDate와 같이 변경 사항을 추적할 수 있게 @EnableJpaAuditing 추가
+
+```java
+@SpringBootApplication
+@EnableJpaAuditing
+public class QnaApplication {
+
+```
+
+- User, Question, Answer 객체 중복되는 필드나 메서드는 이동
+- import.sql, User에 createdDate 추가.

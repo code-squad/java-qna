@@ -8,12 +8,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import javax.persistence.*;
 
 @Entity
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty
-    private Long id;
-
+public class User extends AbstractEntity{
     @Column(nullable = false, length = 20)
     @JsonProperty
     private String userId;
@@ -23,14 +18,6 @@ public class User {
     private String name;
     @JsonProperty
     private String email;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getUserId() {
         return userId;
@@ -64,11 +51,6 @@ public class User {
         this.email = email;
     }
 
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
-    }
-
     public void update(UserUpdateDTO userUpdateDTO) {
         this.name = userUpdateDTO.getName();
         this.email = userUpdateDTO.getEmail();
@@ -76,7 +58,7 @@ public class User {
     }
 
     public boolean notMatchId(Long id) {
-        return !id.equals(this.id);
+        return !id.equals(this.getId());
     }
 
     public boolean notMatchPassword(UserUpdateDTO userUpdateDTO) {

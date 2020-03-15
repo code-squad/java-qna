@@ -11,17 +11,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Entity
-public class Question {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty
-    private Long id;
-
+public class Question extends AbstractEntity{
     @Column(nullable = false)
     @JsonProperty
     private String title;
-    @JsonProperty
-    private LocalDateTime createdDate;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
@@ -48,8 +41,8 @@ public class Question {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-        createdDate = LocalDateTime.now();
-        deleted = false;
+        this.deleted = false;
+        this.countOfAnswer = 0;
     }
 
     public boolean isDeleted() {
@@ -60,28 +53,12 @@ public class Question {
         this.deleted = deleted;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getTitle() {
         return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
     }
 
     public User getWriter() {
@@ -108,15 +85,6 @@ public class Question {
         this.contents = contents;
     }
 
-//    public long getCountOfAnswers() {
-//        return answers.stream().filter(answer -> !answer.isDeleted()).count();
-//    }
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
-    }
-
     public Integer getCountOfAnswer() {
         return this.countOfAnswer;
     }
@@ -124,14 +92,6 @@ public class Question {
     public void update(String title, String contents) {
         this.title = title;
         this.contents = contents;
-        this.createdDate = LocalDateTime.now();
-    }
-
-    public String getFormattedCreatedDate() {
-        if (createdDate == null) {
-            return "";
-        }
-        return createdDate.format(DateTimeFormatter.ofPattern("YYYY-MM-SS HH:mm:ss"));
     }
 
     public boolean isDeletable() {

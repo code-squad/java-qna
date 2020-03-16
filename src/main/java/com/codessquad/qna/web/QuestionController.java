@@ -1,13 +1,15 @@
 package com.codessquad.qna.web;
 
-import com.codessquad.qna.domain.*;
+import com.codessquad.qna.domain.AnswerRepository;
+import com.codessquad.qna.domain.Question;
+import com.codessquad.qna.domain.QuestionRepository;
+import com.codessquad.qna.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @Controller

@@ -23,6 +23,12 @@ public class Question {
     private String contents;
     private LocalDateTime writtenTime;
 
+    @OneToMany(mappedBy = "question")
+    @OrderBy("id ASC")
+    private List<Answer> answers;
+
+    private int answersNum;
+
     public List<Answer> getAnswers() {
         return answers;
     }
@@ -31,9 +37,10 @@ public class Question {
         this.answers = answers;
     }
 
-    @OneToMany(mappedBy = "question")
-    @OrderBy("id ASC")
-    private List<Answer> answers;
+    public int getAnswersNum() {
+        answersNum = answers.size();
+        return answersNum;
+    }
 
 
     public Question() {

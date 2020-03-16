@@ -65,6 +65,10 @@ public class Answer {
         this.contents = contents;
     }
 
+    public boolean authorizeUser(User loginUser) {
+        return this.writer.equals(loginUser);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

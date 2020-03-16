@@ -14,10 +14,6 @@ import org.springframework.web.servlet.ModelAndView;
 // 1. exception stack trace 화면 출력 유무
 // 2. 파일 로깅 유무
 
-/**
- * resolveException 메소드는 파라미터로 Model을 포함하고 있지않다.
- * 따라서 ExceptionHandler 메소드에 파라미터로 model을 포함하지 않는게 좋다.
- */
 @ControllerAdvice
 public class ExceptionHandlerControllerAdvice {
     private Logger logger = LogManager.getLogger(ExceptionHandlerControllerAdvice.class);
@@ -27,8 +23,8 @@ public class ExceptionHandlerControllerAdvice {
         logger.error(exception);
 
         ModelAndView mav = new ModelAndView();
-        mav.addObject( "exception", exception);
-        mav.setViewName("auth/loginFailForm");
+        mav.addObject("exception", exception);
+        mav.setViewName("auth/loginForm");
 
         return mav;
     }
@@ -58,7 +54,7 @@ public class ExceptionHandlerControllerAdvice {
     }
 
     @ExceptionHandler(Exception.class)
-    public ModelAndView handleException(Exception exception) {
+    public ModelAndView handleAllExceptions(Exception exception) {
         logger.error(exception);
 
         ModelAndView mav = new ModelAndView();

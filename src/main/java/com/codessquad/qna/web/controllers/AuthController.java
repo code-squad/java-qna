@@ -1,7 +1,6 @@
 package com.codessquad.qna.web.controllers;
 
 import com.codessquad.qna.domain.User;
-import com.codessquad.qna.exceptions.UnauthorizedException;
 import com.codessquad.qna.web.services.AuthService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +25,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(HttpServletRequest request, User entrant) throws UnauthorizedException {
+    public String login(HttpServletRequest request, User entrant) {
         authService.validateAuthentication(request, entrant);
         return "redirect:/";
     }

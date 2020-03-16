@@ -5,8 +5,6 @@ import com.codessquad.qna.exceptions.UnauthorizedException;
 import javax.persistence.*;
 import java.util.Objects;
 
-import static com.codessquad.qna.exceptions.UnauthorizedException.NO_MATCH_PASSWORD;
-
 @Entity
 public class User {
     @Id
@@ -97,7 +95,7 @@ public class User {
 
     public void verify(User candidate) {
         if (!password.equals(candidate.password)) {
-            throw new UnauthorizedException(NO_MATCH_PASSWORD);
+            throw UnauthorizedException.noMatchPassword();
         }
     }
 }

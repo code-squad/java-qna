@@ -16,7 +16,7 @@ public class Question {
     private String title;
     private String contents;
 
-    @Column(name="CREATED_DATE")
+    @Column
     private LocalDateTime createdDate;
 
     public Question() {

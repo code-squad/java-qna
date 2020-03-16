@@ -13,7 +13,7 @@ public class User {
     private String userId;
     private String password;
 
-    @Column
+    @Column(nullable=false)
     private String userName;
     private String email;
 

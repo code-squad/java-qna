@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
@@ -32,10 +33,12 @@ public class QuestionController {
         return "/qna/form";
     }
     @PostMapping("/questions")
-    public String writeQuestion(Question question, Model model, HttpSession session) {
+    public String writeQuestion(Question question, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/users/login-form";
         }
+
+        DatabaseUtils.replaceEscapesToTags(question);
         questionRepository.save(question);
 
         return "redirect:/";
@@ -54,5 +57,43 @@ public class QuestionController {
         model.addAttribute("question", selectedQuestion);
 
         return "qna/show";
+    }
+
+    @GetMapping("/questions/{id}/form")
+    public String questionUpdateForm(@PathVariable Long id, Model model, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "redirect:/users/login-form";
+        }
+
+        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+        Question selectedQuestion = questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
+
+        if (!selectedQuestion.isSameWriter(sessionedUser)) {
+            return "redirect:/users/login-form";
+        }
+
+        DatabaseUtils.replaceTagsToEscapes(selectedQuestion);
+        model.addAttribute("question", selectedQuestion);
+
+        return "qna/updateForm";
+    }
+
+    @PutMapping("/questions/{id}")
+    public String updateQuestion(@PathVariable Long id, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "redirect:/users/login-form";
+        }
+
+        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+        Question selectedQuestion = questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
+
+        if (!selectedQuestion.isSameWriter(sessionedUser)) {
+            return "redirect:/users/login-form";
+        }
+
+        DatabaseUtils.replaceEscapesToTags(selectedQuestion);
+        questionRepository.save(selectedQuestion);
+
+        return "redirect:/questions/{id}";
     }
 }

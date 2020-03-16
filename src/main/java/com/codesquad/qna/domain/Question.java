@@ -51,9 +51,12 @@ public class Question {
         return createdDate;
     }
 
-
     public Long getId() {
         return id;
+    }
+
+    public boolean isSameWriter(User sessionedUser) {
+        return writer.equals(sessionedUser.getUserName());
     }
 
     @Override

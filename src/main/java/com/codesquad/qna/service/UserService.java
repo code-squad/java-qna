@@ -1,4 +1,4 @@
-package com.codesquad.qna.web;
+package com.codesquad.qna.service;
 
 import com.codesquad.qna.domain.User;
 import com.codesquad.qna.repository.UserRepository;
@@ -21,7 +21,7 @@ import static com.codesquad.qna.web.HttpSessionUtils.isLoginUser;
 
 @Controller
 @RequestMapping("/users")
-public class UserController {
+public class UserService {
     public static final String REDIRECT_LOGIN_FORM = "redirect:/users/login";
     private static final String REDIRECT_USERS_DATA = "redirect:/users";
 

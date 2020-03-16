@@ -1,9 +1,9 @@
 package com.codesquad.qna.web;
 
-import com.codesquad.qna.domain.AnswerRepository;
 import com.codesquad.qna.domain.Question;
-import com.codesquad.qna.domain.QuestionRepository;
 import com.codesquad.qna.domain.User;
+import com.codesquad.qna.repository.AnswerRepository;
+import com.codesquad.qna.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

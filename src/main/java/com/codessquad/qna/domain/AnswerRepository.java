@@ -10,5 +10,5 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
     List<Answer> findAllByQuestionId(Long questionId);
 
     @Query("SELECT answer FROM Answer answer where answer.deleted= false and answer.question.id= :id")
-    List<Answer>  findAllActiveAnswers(@Param("id") Long id);
+    List<Answer> findAllActiveAnswers(@Param("id") Long id);
 }

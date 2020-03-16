@@ -60,7 +60,7 @@ public class Answer {
         return time;
     }
 
-    public void delete(){
+    public void delete() {
         this.deleted = true;
     }
 

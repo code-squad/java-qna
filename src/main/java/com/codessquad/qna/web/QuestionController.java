@@ -59,68 +59,61 @@ public class QuestionController {
 
     @GetMapping("/{id}/form")
     public String modifyQuestionForm(@PathVariable Long id, Model model, HttpSession session) {
-        if (!HttpSessionUtils.isLoggedInUser(session)) {
-            return "redirect:/users/login";
+        try {
+            Question question = questionRepository.findById(id).orElseThrow(NoSuchElementException::new);
+            hasPermission(session, question);
+            model.addAttribute("question", question);
+
+            return "qna/updateForm";
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/user/login";
         }
-
-        User loginUser = HttpSessionUtils.getUserFromSession(session);
-        assert loginUser != null;
-
-        Question question = questionRepository.findById(id).orElseThrow(NoSuchElementException::new);
-
-        if (!isSameWriterAndLoginUser(loginUser, question)) {
-            throw new IllegalStateException("자기 자신의 질문만 수정 가능합니다.");
-        }
-
-        model.addAttribute("question", question);
-
-        return "qna/updateForm";
     }
 
     @PutMapping("/{id}/update")
     public String updateQuestion(@PathVariable Long id, String title, String contents, Model model, HttpSession session) {
-        if (!HttpSessionUtils.isLoggedInUser(session)) {
-            return "redirect:/users/login";
+        try {
+            Question question = questionRepository.findById(id).orElseThrow(NoSuchElementException::new);
+            hasPermission(session, question);
+            question.updateQuestion(title, contents);
+            questionRepository.save(question);
+
+            return String.format("redirect:/questions/%d", id);
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/user/login";
         }
-
-        User loginUser = HttpSessionUtils.getUserFromSession(session);
-        assert loginUser != null;
-
-        Question question = questionRepository.findById(id).orElseThrow(NoSuchElementException::new);
-
-        if (!isSameWriterAndLoginUser(loginUser, question)) {
-            throw new IllegalStateException("자기 자신의 질문만 수정 가능합니다.");
-        }
-
-        question.updateQuestion(title, contents);
-        questionRepository.save(question);
-        model.addAttribute("question", question);
-
-        return "redirect:/questions/{id}";
     }
 
     @DeleteMapping("/{id}")
-    public String deleteQuestion(@PathVariable Long id, HttpSession session) {
-        if (!HttpSessionUtils.isLoggedInUser(session)) {
-            return "redirect:/users/login";
+    public String deleteQuestion(@PathVariable Long id, Model model, HttpSession session) {
+
+        try {
+            Question question = questionRepository.findById(id).orElseThrow(NoSuchElementException::new);
+            hasPermission(session, question);
+            question.deleteQuestion();
+            questionRepository.save(question);
+
+            return "redirect:/";
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/user/login";
         }
-
-        User loginUser = HttpSessionUtils.getUserFromSession(session);
-        assert loginUser != null;
-
-        Question question = questionRepository.findById(id).orElseThrow(NoSuchElementException::new);
-
-        if (!isSameWriterAndLoginUser(loginUser, question)) {
-            throw new IllegalStateException("자기 자신의 질문만 삭제 가능합니다.");
-        }
-
-        question.deleteQuestion();
-        questionRepository.save(question);
-
-        return "redirect:/";
     }
 
     private boolean isSameWriterAndLoginUser(User loginUser, Question question) {
         return question.getWriter().getUserId().equals(loginUser.getUserId());
+    }
+
+    private boolean hasPermission(HttpSession session, Question question) {
+        if (!HttpSessionUtils.isLoggedInUser(session)) {
+            throw new IllegalStateException("로그인이 필요합니다.");
+        }
+        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        if (!isSameWriterAndLoginUser(loginUser, question)) {
+            throw new IllegalStateException("자신이 쓴 글만 수정, 삭제가 가능 합니다.");
+        }
+        return false;
     }
 }

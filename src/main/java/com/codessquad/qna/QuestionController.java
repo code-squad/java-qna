@@ -11,7 +11,6 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
-
     @Autowired
     private QuestionRepository questionRepository;
 
@@ -31,20 +30,21 @@ public class QuestionController {
         return "redirect:/";
     }
 
-    @GetMapping("/{questionIndex}")
-    public ModelAndView questionShowDetail(@PathVariable Long questionIndex) {
+    @GetMapping("/{id}")
+    public ModelAndView questionShowDetail(@PathVariable Long id) {
         ModelAndView modelAndView = new ModelAndView("/qna/show");
-        modelAndView.addObject("question", questionRepository.getOne(questionIndex));
+        modelAndView.addObject("question", questionRepository.getOne(id));
+        System.out.println(questionRepository.getOne(id));
         return modelAndView;
     }
 
-    @GetMapping("/{questionIndex}/modifyQuestion")
-    public String modifyQuestion(@PathVariable Long questionIndex, HttpSession session, Model model) {
+    @GetMapping("/{id}/modifyQuestion")
+    public String modifyQuestion(@PathVariable Long id, HttpSession session, Model model) {
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "/user/login";
         }
         User loginUser = HttpSessionUtils.getUserFromSession(session);
-        Question question = questionRepository.getOne(questionIndex);
+        Question question = questionRepository.getOne(id);
         if (question.authorizeUser(loginUser)) {
             model.addAttribute("question", question);
             return "/qna/modify_form";
@@ -52,23 +52,25 @@ public class QuestionController {
         return "/qna/not_qualified";
     }
 
-    @PutMapping("/{questionIndex}/updateQuestion")
-    public String updateQuestion(@PathVariable Long questionIndex, String title, String contents) {
-        Question question = questionRepository.getOne(questionIndex);
+    @PutMapping("/{id}")
+    public String updateQuestion(@PathVariable Long id, String title, String contents) {
+        Question question = questionRepository.getOne(id);
         question.updateQuestion(title, contents);
         questionRepository.save(question);
         return "redirect:/";
     }
 
-    @DeleteMapping("/{questionIndex}/delete")
-    public String deleteQuestion(@PathVariable Long questionIndex, HttpSession session) {
-        Question question = questionRepository.getOne(questionIndex);
+    @DeleteMapping("/{id}")
+    public String deleteQuestion(@PathVariable Long id, HttpSession session) {
+        Question question = questionRepository.getOne(id);
         User loginUser = HttpSessionUtils.getUserFromSession(session);
         if (question.authorizeUser(loginUser)) {
-            questionRepository.delete(question);
             return "redirect:/";
         }
         return "/qna/not_qualified";
     }
+//
+//    @GetMapping("/{id}/answer/{answerId}")
+//    public String
 
 }

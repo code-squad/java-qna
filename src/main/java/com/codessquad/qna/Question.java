@@ -3,16 +3,14 @@ package com.codessquad.qna;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Entity
 public class Question {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long questionIndex;
-
-//    @Column(nullable = false)
-//    private String writer;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
@@ -20,8 +18,23 @@ public class Question {
 
     @Column(nullable = false)
     private String title;
+
+    @Lob
     private String contents;
     private LocalDateTime writtenTime;
+
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
+    }
+
+    @OneToMany(mappedBy = "question")
+    @OrderBy("id ASC")
+    private List<Answer> answers;
+
 
     public Question() {
     }
@@ -63,20 +76,16 @@ public class Question {
         this.contents = contents;
     }
 
-    public Long getQuestionIndex() {
-        return questionIndex;
+    public Long getId() {
+        return id;
     }
 
     public void setQuestionIndex(Long questionIndex) {
-        this.questionIndex += questionIndex;
+        this.id += questionIndex;
     }
 
     public boolean authorizeUser(User loginUser) {
-        Long userId = loginUser.getId();
-        if (this.writer.getId().equals(userId)) {
-            return true;
-        }
-        return false;
+        return this.writer.equals(loginUser);
     }
 
     public void updateQuestion(String title, String contents) {

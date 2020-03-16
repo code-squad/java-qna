@@ -32,7 +32,14 @@ public class UserController {
             System.out.println("Incorrect");
             return "redirect:/users/login-form";
         }
-        session.setAttribute("user", selectedUser);
+        session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, selectedUser);
+        return "redirect:/";
+    }
+
+    @GetMapping("/users/logout")
+    public String logout(HttpSession session) {
+        session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
+
         return "redirect:/";
     }
 
@@ -58,8 +65,14 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}/form")
-    public String userForm(@PathVariable Long id, Model model) {
-        model.addAttribute("user", userRepository.findById(id).orElseThrow(UserNotFoundException::new));
+    public String userForm(@PathVariable Long id, Model model, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "redirect:/users/login-form";
+        }
+
+        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+        User selectedUser = userRepository.findById(sessionedUser.getId()).orElseThrow(UserNotFoundException::new);
+        model.addAttribute("user", selectedUser);
 
         return "user/updateForm";
     }
@@ -72,7 +85,6 @@ public class UserController {
             userRepository.save(selectedUser);
             return "redirect:/users";
         } else {
-
             return "redirect:/users/{id}/form";
         }
     }

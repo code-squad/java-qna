@@ -27,6 +27,7 @@ dependencies {
             'com.github.jknack:handlebars-jackson2:4.0.7',
             'com.github.jknack:handlebars-humanize:4.0.7',
             'com.github.jknack:handlebars-markdown:4.0.7'
+    compile group: 'org.springframework.boot', name: 'spring-boot-devtools', version: '2.2.5.RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.2.4.RELEASE'
     compile group: 'com.h2database', name: 'h2', version: '1.4.197'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {

@@ -28,6 +28,8 @@ public class Question {
 
     private int answerSize;
 
+    private boolean deleted;
+
     public Question() {
 
     }
@@ -38,6 +40,7 @@ public class Question {
         this.contents = contents;
         this.time = LocalDateTime.now();
         this.answerSize = 0;
+        this.deleted = false;
     }
 
     public User getWriter() {
@@ -89,5 +92,9 @@ public class Question {
 
     public void addAnswerSize() {
         this.answerSize += 1;
+    }
+
+    public void deleteQuestion() {
+        this.deleted = true;
     }
 }

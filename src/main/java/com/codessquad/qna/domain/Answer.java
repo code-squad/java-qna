@@ -24,6 +24,9 @@ public class Answer {
     private String contents;
     private LocalDateTime time;
 
+    private boolean deleted;
+
+
     public Answer() {
 
     }
@@ -34,6 +37,7 @@ public class Answer {
         this.question.addAnswerSize();
         this.contents = contents;
         this.time = LocalDateTime.now();
+        this.deleted = false;
     }
 
     public Long getId() {

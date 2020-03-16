@@ -23,7 +23,7 @@ public class QuestionController {
 
     @GetMapping("")
     public String showQuestionList(Model model) {
-        model.addAttribute("questions", questionRepository.findAll());
+        model.addAttribute("questions", questionRepository.findAllByActivedeleted());
         return "qna/list";
     }
 
@@ -114,7 +114,8 @@ public class QuestionController {
             throw new IllegalStateException("자기 자신의 질문만 삭제 가능합니다.");
         }
 
-        questionRepository.delete(question);
+        question.deleteQuestion();
+        questionRepository.save(question);
 
         return "redirect:/";
     }

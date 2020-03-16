@@ -35,6 +35,8 @@ function onSuccess(data, status) {
         data.id);
     $(".qna-comment-slipp-articles").prepend(template);
     $(".answer-write textarea").val("");
+    $(".qna-comment-count strong").text(data.question.countOfAnswer);
+    $(".reply span").text(data.question.countOfAnswer);
 }
 
 $(document).on('click', '.link-delete-article', deleteAnswer);

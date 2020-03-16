@@ -349,3 +349,10 @@ compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.5.0'
 ....
 {{/sessionedUser}}
 ```
+
+## 답변 개수 동적으로 추가하는 코드 
+- 답변이 달릴 때 답변 개수 태그에 text를 추가하는 코드 
+
+```javascript
+$(".qna-comment-count").text(data.question.countOfAnswer+ "개의 의견");
+```

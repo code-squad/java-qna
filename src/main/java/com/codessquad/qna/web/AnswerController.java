@@ -47,7 +47,8 @@ public class AnswerController {
             throw new IllegalStateException("자기 자신의 질문만 삭제 가능합니다.");
         }
 
-        answerRepository.delete(answer);
+        answer.delete();
+        answerRepository.save(answer);
 
         return String.format("redirect:/questions/%d", questionId);
     }

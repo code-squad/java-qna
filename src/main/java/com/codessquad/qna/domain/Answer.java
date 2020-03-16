@@ -60,6 +60,10 @@ public class Answer {
         return time;
     }
 
+    public void delete(){
+        this.deleted = true;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

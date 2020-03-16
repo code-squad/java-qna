@@ -52,7 +52,7 @@ public class QuestionController {
     @GetMapping("/{id}")
     public String showQuestionDetail(@PathVariable Long id, Model model) {
         model.addAttribute("question", questionRepository.findById(id).orElseThrow(NoSuchElementException::new));
-        model.addAttribute("answers", answerRepository.findAllByQuestionId(id));
+        model.addAttribute("answers", answerRepository.findAllActiveAnswers(id));
 
         return "qna/show";
     }

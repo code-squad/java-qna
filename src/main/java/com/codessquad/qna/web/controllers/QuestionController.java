@@ -10,10 +10,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
+@RequestMapping("/questions")
 public class QuestionController {
     private final AuthService authService;
     private final QuestionService questionService;
@@ -23,23 +25,16 @@ public class QuestionController {
         this.questionService = questionService;
     }
 
-
-    @GetMapping("/")
-    public String listPage(Model model) {
-        model.addAttribute("questions", questionService.getAllQuestions());
-        return "questions/home";
-    }
-
-    @GetMapping("/questions/createForm")
-    public String createFormPage(HttpServletRequest request) throws UnauthorizedException {
-        authService.getRequester(request);
-        return "questions/createForm";
-    }
-
-    @GetMapping("/questions/{id}")
+    @GetMapping("/{id}")
     public String detailPage(@PathVariable("id") Long id, Model model) throws NotFoundException {
         model.addAttribute("question", questionService.getQuestionById(id));
         return "questions/detail";
+    }
+
+    @GetMapping("/createForm")
+    public String createFormPage(HttpServletRequest request) throws UnauthorizedException {
+        authService.getRequester(request);
+        return "questions/createForm";
     }
 
     @PostMapping("/questions")

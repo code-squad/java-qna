@@ -1,5 +1,7 @@
 package com.codessquad.qna.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
@@ -14,25 +16,32 @@ import java.util.List;
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty
     private Long id;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    @JsonProperty
     private User writer;
 
     @OneToMany(mappedBy = "question")
     @Where(clause = "deleted = false")
     @OrderBy("id ASC")
+    //ignore 안하면 에러남
+    @JsonIgnore
     private List<Answer> answers;
 
     @NotBlank
     @Column(length = 50)
+    @JsonProperty
     private String title;
 
     @NotBlank
     @Type(type = "text")
+    @JsonProperty
     private String contents;
 
+    @JsonProperty
     private LocalDateTime writeTime;
 
     private boolean deleted;

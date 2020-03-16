@@ -1,3 +1,44 @@
+$(".answer-write input[type=submit]").click(addAnswer);
+
+function addAnswer(e) {
+  console.log("click me");
+  e.preventDefault();
+
+  var queryString = $(".answer-write").serialize();
+  console.log("query: " + queryString);
+
+  var url = $(".answer-write").attr("action");
+  console.log("url: " + url);
+
+  $.ajax({
+    type : "post",
+    url : url,
+    data : queryString,
+    dataType : "json",
+    error : onError,
+    success : onSuccess
+  });
+}
+
+function onError() {
+  console.log("오류");
+}
+
+function onSuccess(data, status) {
+  console.log("성공");
+  console.log(data);
+  console.log(status);
+
+  var answerTemplate = $("#answerTemplate").html();
+  var template = answerTemplate.format(data.writer.name, data.createdAt, data.contents, data.question.id, data.id);
+  $(".qna-comment-slipp-articles").append(template);
+  //댓글창 초기화
+  $("textarea[name=contents]").val("");
+
+
+}
+
+//동적으로 html 추가
 String.prototype.format = function() {
   var args = arguments;
   return this.replace(/{(\d+)}/g, function(match, number) {

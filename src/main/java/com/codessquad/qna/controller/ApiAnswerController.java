@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
-@Controller
-@RequestMapping("/questions/{questionId}/answers")
-public class AnswerController {
+@RestController
+@RequestMapping("/api/questions/{questionId}/answers")
+public class ApiAnswerController {
     private static final Logger LOGGER = LoggerFactory.getLogger(QuestionController.class);
 
     @Autowired
@@ -21,26 +21,19 @@ public class AnswerController {
     @Autowired
     private QuestionRepository questionRepository;
 
-    @GetMapping("test-test")
-    public String test() {
-        return "users/login";
-    }
-
     @PostMapping("")
-    public String create(@PathVariable Long questionId, HttpSession session, String contents){
+    public Answer create(@PathVariable Long questionId, HttpSession session, String contents){
         LOGGER.debug("[page]댓글 작성 요청");
 
         if(!HttpSessionUtils.isLoginUser(session)) {
             LOGGER.debug("[page]비로그인 상태");
-            return "redirect:/users/loginForm";
+            throw new IllegalStateException("권한이 없습니다.");
         }
 
         Question question = questionRepository.findById(questionId).orElseThrow(() -> new NotFoundException("존재하지 않는 질문입니다."));
         User loginUser = HttpSessionUtils.getUserFromSession(session);
         Answer answer = new Answer(loginUser, question, contents);
-        answerRepository.save(answer);
-
-        return String.format("redirect:/questions/%d", questionId);
+        return answerRepository.save(answer);
     }
 
     @DeleteMapping("{id}")

@@ -1,5 +1,8 @@
 package com.codessquad.qna.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Objects;
@@ -8,20 +11,25 @@ import java.util.Objects;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty
     private Long id;
 
     @NotBlank
     @Column(length = 20, unique = true)
+    @JsonProperty
     private String userId;
 
     @NotBlank
     @Column(length = 20)
+    @JsonIgnore
     private String password;
 
     @NotBlank
+    @JsonProperty
     private String name;
 
     @NotBlank
+    @JsonProperty
     private String email;
 
     @Transient

@@ -7,14 +7,34 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.ArrayList;
+import javax.servlet.http.HttpSession;
 
 @Controller
 public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @GetMapping("/users/login-form")
+    public String loginForm() {
+        return "user/login";
+    }
+
+    @PostMapping("/users/login")
+    public String login(String userId, String password, HttpSession session) {
+        User selectedUser = userRepository.findByUserId(userId);
+
+        if (selectedUser == null) {
+            return "redirect:/users/login-form";
+        }
+
+        if (!selectedUser.isCorrectPassword(password)) {
+            System.out.println("Incorrect");
+            return "redirect:/users/login-form";
+        }
+        session.setAttribute("user", selectedUser);
+        return "redirect:/";
+    }
 
     @PostMapping("/users")
     public String createUser(User user) {

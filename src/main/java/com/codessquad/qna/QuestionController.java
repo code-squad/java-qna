@@ -65,6 +65,7 @@ public class QuestionController {
         Question question = questionRepository.getOne(id);
         User loginUser = HttpSessionUtils.getUserFromSession(session);
         if (question.authorizeUser(loginUser)) {
+            questionRepository.deleteById(id);
             return "redirect:/";
         }
         return "/qna/not_qualified";

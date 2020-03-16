@@ -60,7 +60,7 @@ public class Question {
     }
 
     public int getAnswerSize() {
-        return answers.size();
+        return (int) answers.stream().filter(answer -> !answer.getDeleted()).count();
     }
 
     public List<Answer> getAnswers() {
@@ -95,6 +95,20 @@ public class Question {
     }
 
     public void deleteQuestion() {
+        if (!canDeleteAnswer()) {
+            throw new IllegalStateException("삭제 할 수 없습니다.");
+        }
         this.deleted = true;
+        this.answers.forEach(Answer::delete);
+    }
+
+    public boolean canDeleteAnswer() {
+        if (answers.isEmpty()) {
+            return true;
+        }
+
+        return answers.stream()
+                .filter(answer -> !answer.getDeleted())
+                .allMatch(answer -> answer.getWriter().equals(writer));
     }
 }

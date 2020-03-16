@@ -60,6 +60,10 @@ public class Answer {
         return time;
     }
 
+    public boolean getDeleted() {
+        return deleted;
+    }
+
     public void delete() {
         this.deleted = true;
     }

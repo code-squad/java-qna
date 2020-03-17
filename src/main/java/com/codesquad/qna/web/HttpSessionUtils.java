@@ -1,7 +1,7 @@
 package com.codesquad.qna.web;
 
+import com.codesquad.qna.advice.exception.UnauthorizedException;
 import com.codesquad.qna.domain.User;
-import com.codesquad.qna.exception.exception.UnauthorizedException;
 
 import javax.servlet.http.HttpSession;
 

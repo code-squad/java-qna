@@ -1,7 +1,8 @@
 package com.codesquad.qna.service;
 
+import com.codesquad.qna.advice.exception.ExistUserException;
+import com.codesquad.qna.advice.exception.UnauthorizedException;
 import com.codesquad.qna.domain.User;
-import com.codesquad.qna.exception.exception.UnauthorizedException;
 import com.codesquad.qna.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByUserId(String userId) {
-        return userRepository.findByUserId(userId).orElseThrow(IllegalArgumentException::new);
+        return userRepository.findByUserId(userId).orElseThrow(ExistUserException::existUser);
     }
 }

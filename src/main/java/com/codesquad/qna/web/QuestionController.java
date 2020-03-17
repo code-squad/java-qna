@@ -1,8 +1,8 @@
 package com.codesquad.qna.web;
 
+import com.codesquad.qna.advice.exception.UnauthorizedException;
 import com.codesquad.qna.domain.Question;
 import com.codesquad.qna.domain.User;
-import com.codesquad.qna.exception.exception.UnauthorizedException;
 import com.codesquad.qna.repository.AnswerRepository;
 import com.codesquad.qna.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;

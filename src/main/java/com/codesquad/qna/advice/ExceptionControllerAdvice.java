@@ -1,6 +1,6 @@
-package com.codesquad.qna.exception;
+package com.codesquad.qna.advice;
 
-import com.codesquad.qna.exception.exception.UnauthorizedException;
+import com.codesquad.qna.advice.exception.UnauthorizedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -11,6 +11,4 @@ public class ExceptionControllerAdvice {
     public String userNotFoundException() {
         return "redirect:/";
     }
-
-
 }

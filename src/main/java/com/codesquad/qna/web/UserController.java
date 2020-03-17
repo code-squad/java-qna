@@ -1,5 +1,7 @@
 package com.codesquad.qna.web;
 
+import com.codesquad.qna.advice.exception.ExistUserException;
+import com.codesquad.qna.advice.exception.InputMistakeException;
 import com.codesquad.qna.domain.User;
 import com.codesquad.qna.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +60,7 @@ public class UserController {
 
     @PostMapping("")
     public String create(User user, Model model) {
-        User createdUser = Optional.ofNullable(user).orElseThrow(IllegalArgumentException::new);
+        User createdUser = Optional.ofNullable(user).orElseThrow(InputMistakeException::enteredNull);
         userService.save(createdUser);
         return REDIRECT_USERS_DATA;
     }
@@ -75,6 +77,7 @@ public class UserController {
 
         User sessionedUser = getUserFromSession(session);
         sessionedUser.hasPermission(id);
+
         model.addAttribute("user", sessionedUser);
         return "/user/checkForm";
     }
@@ -99,9 +102,9 @@ public class UserController {
         checkLogin(session);
 
         User sessionedUser = getUserFromSession(session);
-
         sessionedUser.hasPermission(id);
         sessionedUser.update(updateUser);
+
         userService.save(sessionedUser);
         return REDIRECT_USERS_DATA;
     }
@@ -113,8 +116,13 @@ public class UserController {
         return "/user/profile";
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
+    @ExceptionHandler(ExistUserException.class)
     public String loginError() {
         return "redirect:/users/login";
+    }
+
+    @ExceptionHandler(InputMistakeException.class)
+    public String inputError() {
+        return "redirect:/users/create";
     }
 }

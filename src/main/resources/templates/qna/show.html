@@ -73,6 +73,8 @@
                                 </div>
                                 <div class="article-util">
                                     <ul class="article-util-list">
+
+                                        {{#hasPermissionUser}}
                                         <li>
                                             <a class="link-modify-article"
                                                href="/questions/{{question.id}}/answers/{{id}}/update">수정</a>
@@ -85,6 +87,7 @@
                                                 <button class="delete-answer-button" type="submit">삭제</button>
                                             </form>
                                         </li>
+                                        {{/hasPermissionUser}}
                                     </ul>
                                 </div>
                             </article>

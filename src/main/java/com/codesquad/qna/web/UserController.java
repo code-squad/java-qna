@@ -16,8 +16,8 @@ import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 import static com.codesquad.qna.web.HttpSessionUtils.USER_SESSION_KEY;
+import static com.codesquad.qna.web.HttpSessionUtils.checkLogin;
 import static com.codesquad.qna.web.HttpSessionUtils.getUserFromSession;
-import static com.codesquad.qna.web.HttpSessionUtils.isLoginUser;
 
 @Controller
 @RequestMapping("/users")
@@ -76,9 +76,7 @@ public class UserController {
 
     @GetMapping("/{id}/update")
     public String checkPasswordForm(@PathVariable Long id, Model model, HttpSession session) {
-        if (!isLoginUser(session)) {
-            return REDIRECT_LOGIN_FORM;
-        }
+        checkLogin(session);
 
         User sessionedUser = getUserFromSession(session);
 
@@ -89,9 +87,7 @@ public class UserController {
 
     @PostMapping("/{id}/update")
     public String updateForm(@PathVariable Long id, String password, Model model, HttpSession session) {
-        if (!isLoginUser(session)) {
-            return REDIRECT_LOGIN_FORM;
-        }
+        checkLogin(session);
 
         User sessionedUser = getUserFromSession(session);
         sessionedUser.hasPermission(id);
@@ -106,9 +102,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     public String updateUser(@PathVariable Long id, User updateUser, HttpSession session) {
-        if (!isLoginUser(session)) {
-            return REDIRECT_LOGIN_FORM;
-        }
+        checkLogin(session);
 
         User sessionedUser = getUserFromSession(session);
 

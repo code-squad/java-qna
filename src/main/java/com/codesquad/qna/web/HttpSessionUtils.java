@@ -15,7 +15,9 @@ public class HttpSessionUtils {
         return (User) session.getAttribute(USER_SESSION_KEY);
     }
 
-    public static boolean isLoginUser(HttpSession session) {
-        return getUserFromSession(session) != null;
+    public static void checkLogin(HttpSession session) {
+        if (getUserFromSession(session) == null) {
+            throw new IllegalArgumentException();
+        }
     }
 }

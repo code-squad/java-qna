@@ -18,9 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
 
+import static com.codesquad.qna.web.HttpSessionUtils.checkLogin;
 import static com.codesquad.qna.web.HttpSessionUtils.getUserFromSession;
-import static com.codesquad.qna.web.HttpSessionUtils.isLoginUser;
-import static com.codesquad.qna.web.UserController.REDIRECT_LOGIN_FORM;
 
 @Controller
 @RequestMapping("/questions/{questionId}/answers")
@@ -34,9 +33,7 @@ public class AnswerController {
 
     @PostMapping("")
     public String create(@PathVariable Long questionId, HttpSession session, String contents) {
-        if (!isLoginUser(session)) {
-            return REDIRECT_LOGIN_FORM;
-        }
+        checkLogin(session);
 
         User sessionedUser = getUserFromSession(session);
         Question question = questionRepository.findById(questionId).orElseThrow(EntityNotFoundException::new);
@@ -48,9 +45,7 @@ public class AnswerController {
 
     @GetMapping("/{id}/update")
     public String updateForm(@PathVariable Long questionId, @PathVariable Long id, HttpSession session, Model model) {
-        if (!isLoginUser(session)) {
-            return REDIRECT_LOGIN_FORM;
-        }
+        checkLogin(session);
 
         User sessionedUser = getUserFromSession(session);
         Answer updatingAnswer = answerRepository.findByQuestionIdAndId(questionId, id).orElseThrow(EntityNotFoundException::new);
@@ -62,9 +57,7 @@ public class AnswerController {
 
     @PutMapping("/{id}")
     public String update(@PathVariable Long questionId, @PathVariable Long id, Answer updatedAnswer, HttpSession session, Model model) {
-        if (!isLoginUser(session)) {
-            return REDIRECT_LOGIN_FORM;
-        }
+        checkLogin(session);
 
         User sessionedUser = getUserFromSession(session);
         Answer updatingAnswer = answerRepository.findByQuestionIdAndId(questionId, id).orElseThrow(EntityNotFoundException::new);
@@ -77,9 +70,7 @@ public class AnswerController {
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
-        if (!isLoginUser(session)) {
-            return REDIRECT_LOGIN_FORM;
-        }
+        checkLogin(session);
 
         User sessionedUser = getUserFromSession(session);
         Answer answer = answerRepository.findByQuestionIdAndId(questionId, id).orElseThrow(EntityNotFoundException::new);

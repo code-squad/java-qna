@@ -17,9 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
 
+import static com.codesquad.qna.web.HttpSessionUtils.checkLogin;
 import static com.codesquad.qna.web.HttpSessionUtils.getUserFromSession;
-import static com.codesquad.qna.web.HttpSessionUtils.isLoginUser;
-import static com.codesquad.qna.web.UserController.REDIRECT_LOGIN_FORM;
 
 @Controller
 @RequestMapping("/questions")
@@ -33,18 +32,13 @@ public class QuestionController {
 
     @GetMapping("/create")
     public String createForm(HttpSession session) {
-        if (!isLoginUser(session)) {
-            return REDIRECT_LOGIN_FORM;
-        }
-
+        checkLogin(session);
         return "qna/form";
     }
 
     @PostMapping("")
     public String create(Question question, Model model, HttpSession session) {
-        if (!isLoginUser(session)) {
-            return REDIRECT_LOGIN_FORM;
-        }
+        checkLogin(session);
 
         User sessionedUser = getUserFromSession(session);
         Question createdQuestion = new Question(sessionedUser, question);
@@ -58,7 +52,9 @@ public class QuestionController {
         Question question = findById(id);
         model.addAttribute("question", question);
 
-        if (isLoginUser(session) && getUserFromSession(session).isIdEquals(question)) {
+        checkLogin(session);
+
+        if (getUserFromSession(session).isIdEquals(question)) {
             model.addAttribute("hasPermissionUser", true);
         }
 
@@ -68,9 +64,7 @@ public class QuestionController {
 
     @GetMapping("/{id}/update")
     public String updateForm(@PathVariable Long id, HttpSession session, Model model) {
-        if (!isLoginUser(session)) {
-            return REDIRECT_LOGIN_FORM;
-        }
+        checkLogin(session);
 
         User sessionedUser = getUserFromSession(session);
         Question updatingQuestion = findById(id);
@@ -82,9 +76,7 @@ public class QuestionController {
 
     @PutMapping("/{id}")
     public String update(@PathVariable Long id, HttpSession session, Question updatedQuestion) {
-        if (!isLoginUser(session)) {
-            return REDIRECT_LOGIN_FORM;
-        }
+        checkLogin(session);
 
         User sessionedUser = getUserFromSession(session);
         Question question = findById(id);
@@ -97,9 +89,7 @@ public class QuestionController {
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id, HttpSession session) {
-        if (!isLoginUser(session)) {
-            return REDIRECT_LOGIN_FORM;
-        }
+        checkLogin(session);
 
         User sessionedUser = getUserFromSession(session);
         Question question = findById(id);

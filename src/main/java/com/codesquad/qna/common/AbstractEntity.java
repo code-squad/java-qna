@@ -5,19 +5,34 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class CommonDateEntity {
+public abstract class AbstractEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @CreatedDate
     private LocalDateTime createdAt;
 
     @LastModifiedDate
     private LocalDateTime modifiedAt;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
@@ -45,8 +60,9 @@ public abstract class CommonDateEntity {
 
     @Override
     public String toString() {
-        return "CommonDateEntity{" +
-                "createdAt=" + createdAt +
+        return "AbstractEntity{" +
+                "id=" + id +
+                ", createdAt=" + createdAt +
                 ", modifiedAt=" + modifiedAt +
                 '}';
     }

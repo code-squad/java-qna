@@ -1,21 +1,15 @@
 package com.codesquad.qna.domain;
 
-import com.codesquad.qna.common.CommonDateEntity;
+import com.codesquad.qna.common.AbstractEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class Question extends CommonDateEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Question extends AbstractEntity {
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
@@ -38,14 +32,6 @@ public class Question extends CommonDateEntity {
         this.title = question.title;
         this.contents = question.contents;
         this.replyCount = 0;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public User getWriter() {
@@ -92,7 +78,6 @@ public class Question extends CommonDateEntity {
     @Override
     public String toString() {
         return "Question{" +
-                "id=" + id +
                 ", writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +

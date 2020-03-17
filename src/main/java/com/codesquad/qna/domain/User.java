@@ -91,13 +91,13 @@ public class User {
     }
 
     public void hasPermission(Question question) {
-        Long questionId = question.getWriter().id;
-        hasPermission(questionId);
+        Long writerId = question.getWriter().id;
+        hasPermission(writerId);
     }
 
     public void hasPermission(Answer answer) {
-        Question question = answer.getQuestion();
-        hasPermission(question);
+        Long writerId = answer.getWriter().id;
+        hasPermission(writerId);
     }
 
     @Override

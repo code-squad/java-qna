@@ -1,7 +1,7 @@
 package com.codessquad.qna.controller;
 
 import com.codessquad.qna.repository.QuestionRepository;
-import com.codessquad.qna.util.PathUtil;
+import com.codessquad.qna.util.Paths;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +15,6 @@ public class HomeController {
     @GetMapping("/")
     public String showQuestionList(Model model) {
         model.addAttribute("questions", questionRepository.findAllByDeletedFalse());
-        return PathUtil.HOME_TEMPLATE;
+        return Paths.HOME_TEMPLATE;
     }
 }

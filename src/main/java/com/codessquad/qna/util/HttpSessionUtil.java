@@ -14,7 +14,7 @@ public class HttpSessionUtil {
 
     public static User getUserFromSession(HttpSession session) {
         if (!isAuthorizedUser(session)) {
-            throw new UnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.UNAUTHORIZED);
+            throw new UnauthorizedException(Paths.UNAUTHORIZED, ErrorMessages.UNAUTHORIZED);
         }
         return (User)session.getAttribute(USER_SESSION_KEY);
     }

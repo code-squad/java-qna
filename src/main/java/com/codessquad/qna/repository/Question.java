@@ -2,7 +2,7 @@ package com.codessquad.qna.repository;
 
 
 import com.codessquad.qna.exception.WrongFormatException;
-import com.codessquad.qna.util.PathUtil;
+import com.codessquad.qna.util.Paths;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.ObjectUtils;
@@ -34,7 +34,7 @@ public class Question extends AbstractEntity{
 
     public void update(Question updateData) {
         if (!isCorrectFormat(updateData)) {
-            throw new WrongFormatException(PathUtil.BAD_REQUEST, "입력값을 모두 입력해주세요");
+            throw new WrongFormatException(Paths.BAD_REQUEST, "입력값을 모두 입력해주세요");
         }
         this.title = updateData.title;
         this.contents = updateData.contents;

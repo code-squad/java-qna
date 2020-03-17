@@ -3,9 +3,9 @@ package com.codessquad.qna.controller;
 import com.codessquad.qna.exception.NoSuchUserException;
 import com.codessquad.qna.repository.User;
 import com.codessquad.qna.repository.UserRepository;
-import com.codessquad.qna.util.ErrorMessageUtil;
+import com.codessquad.qna.util.ErrorMessages;
 import com.codessquad.qna.util.HttpSessionUtil;
-import com.codessquad.qna.util.PathUtil;
+import com.codessquad.qna.util.Paths;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,14 +21,14 @@ public class UserController {
     @GetMapping
     public String showUserList(Model model) {
         model.addAttribute("users", userRepository.findAll());
-        return PathUtil.USER_LIST_TEMPLATE;
+        return Paths.USER_LIST_TEMPLATE;
     }
 
     @GetMapping("/{id}")
     public String getUserProfile(@PathVariable Long id, Model model) {
         User user = findUser(id);
         model.addAttribute("user", user);
-        return PathUtil.USER_PROFILE_TEMPLATE;
+        return Paths.USER_PROFILE_TEMPLATE;
     }
 
     @GetMapping("/editForm")
@@ -36,15 +36,15 @@ public class UserController {
         User authorizedUser = HttpSessionUtil.getUserFromSession(session);
         User user = findUser(authorizedUser.getId());
         model.addAttribute("user", user);
-        return PathUtil.USER_EDIT_TEMPLATE;
+        return Paths.USER_EDIT_TEMPLATE;
     }
 
     @PostMapping
     public String createUser(User user) {
         if (!user.isCorrectFormat(user))
-            throw new NoSuchUserException(PathUtil.BAD_REQUEST, ErrorMessageUtil.WRONG_FORMAT);
+            throw new NoSuchUserException(Paths.BAD_REQUEST, ErrorMessages.WRONG_FORMAT);
         userRepository.save(user);
-        return PathUtil.USER_LIST;
+        return Paths.USER_LIST;
     }
 
     @PutMapping
@@ -53,12 +53,12 @@ public class UserController {
         User user = findUser(authorizedUser.getId());
         user.update(updateData, currentPassword);
         userRepository.save(user);
-        return PathUtil.USER_LIST;
+        return Paths.USER_LIST;
     }
 
     private User findUser(Long id) {
         return userRepository.findById(id).orElseThrow(() ->
-                new NoSuchUserException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_USER));
+                new NoSuchUserException(Paths.NOT_FOUND, ErrorMessages.NOTFOUND_USER));
     }
 }
 

@@ -1,7 +1,6 @@
 package com.codesquad.qna.domain;
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import com.codesquad.qna.common.CommonDateEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,11 +10,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Entity
-public class Question {
+public class Question extends CommonDateEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,13 +26,6 @@ public class Question {
 
     @Column(nullable = false)
     private String contents;
-
-    @Column(nullable = false)
-    @CreatedDate
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    private LocalDateTime modifiedAt;
 
     @Column(nullable = false)
     private Integer replyCount;
@@ -90,10 +80,6 @@ public class Question {
         this.replyCount = replyCount;
     }
 
-    public String getFormattedCreatedTime() {
-        return createdAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-    }
-
     public void increaseReplyCount() {
         replyCount++;
     }
@@ -101,7 +87,6 @@ public class Question {
     public void update(Question updateQuestion) {
         this.title = updateQuestion.title;
         this.contents = updateQuestion.contents;
-        this.createdAt = LocalDateTime.now();
     }
 
     @Override
@@ -111,7 +96,7 @@ public class Question {
                 ", writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
-                ", createdAt=" + createdAt +
+                super.toString() +
                 '}';
     }
 }

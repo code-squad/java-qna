@@ -24,7 +24,7 @@ public class AnswerController {
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "/user/login_failed";
         }
-        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
         Question question = questionRepository.getOne(questionId);
         Answer answer = new Answer(loginUser, question, contents);
         answerRepository.save(answer);
@@ -34,7 +34,7 @@ public class AnswerController {
     @DeleteMapping("/{answerId}")
     public String delete(@PathVariable Long questionId, @PathVariable Long answerId, HttpSession session) {
         Answer answer = answerRepository.getOne(answerId);
-        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
         if (answer.authorizeUser(loginUser)) {
             answerRepository.deleteById(answerId);
             return String.format("redirect:/questions/%d", questionId);

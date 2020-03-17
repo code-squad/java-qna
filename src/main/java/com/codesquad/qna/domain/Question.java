@@ -67,9 +67,9 @@ public class Question {
             return false;
         }
         Long questionWriterId = this.writer.getId();
-        for (int i = 0; i < answers.size(); i++){
+        for (int i = 0; i < answers.size(); i++) {
             Answer answer = answers.get(i);
-            if(!answer.writerCheck(questionWriterId)){
+            if (!answer.writerCheck(questionWriterId)) {
                 return true;
             }
         }

@@ -1,7 +1,6 @@
 package com.codesquad.qna.domain;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
 import java.util.Objects;
 
 @Entity
@@ -11,19 +10,15 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty
     @Column(nullable = false, length = 20)
     private String userId;
 
-    @NotEmpty
     @Column(nullable = false)
     private String password;
 
-    @NotEmpty
     @Column(nullable = false)
     private String name;
 
-    @NotEmpty
     @Column(nullable = false)
     private String email;
 

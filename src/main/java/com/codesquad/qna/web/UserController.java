@@ -77,7 +77,7 @@ public class UserController {
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "/user/login_failed";
         }
-        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
         loginUser.update(updateUser);
         userRepository.save(loginUser);
         return "redirect:/users";
@@ -97,7 +97,7 @@ public class UserController {
         if (!HttpSessionUtils.isLoginUser(session)) {
             return HomeController.NOT_AUTHORIZE_DIRECTORY;
         }
-        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
         System.out.println(loginUser);
         if (loginUser.idCheck(id)) {
             return "redirect:/users/info_change";

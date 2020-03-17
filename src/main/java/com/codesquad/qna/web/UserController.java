@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.ConstraintViolationException;
 import java.util.Optional;
 
 import static com.codesquad.qna.web.HttpSessionUtils.USER_SESSION_KEY;
@@ -111,8 +112,8 @@ public class UserController {
         return "/user/profile";
     }
 
-    @ExceptionHandler(InputMistakeException.class)
-    public String inputError() {
+    @ExceptionHandler(ConstraintViolationException.class)
+    public String inputBlank() {
         return "redirect:/users/create";
     }
 }

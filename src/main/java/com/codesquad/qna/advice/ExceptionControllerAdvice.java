@@ -17,4 +17,6 @@ public class ExceptionControllerAdvice {
     public String noPermission() {
         return "redirect:/";
     }
+
+
 }

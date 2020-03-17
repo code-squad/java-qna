@@ -2,8 +2,11 @@ package com.codesquad.qna.advice;
 
 import com.codesquad.qna.advice.exception.ForbiddenException;
 import com.codesquad.qna.advice.exception.UnauthorizedException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -30,6 +33,12 @@ public class ExceptionControllerAdvice {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public String noMatch() {
+        return REDIRECT_MAIN.getUrl();
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public String requestMethodNotSupported() {
         return REDIRECT_MAIN.getUrl();
     }
 }

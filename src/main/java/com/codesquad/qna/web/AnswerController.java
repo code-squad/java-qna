@@ -4,7 +4,7 @@ import com.codesquad.qna.domain.Answer;
 import com.codesquad.qna.domain.Question;
 import com.codesquad.qna.domain.User;
 import com.codesquad.qna.repository.AnswerRepository;
-import com.codesquad.qna.repository.QuestionRepository;
+import com.codesquad.qna.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,17 +25,16 @@ import static com.codesquad.qna.web.HttpSessionUtils.getUserFromSession;
 public class AnswerController {
 
     @Autowired
-    private AnswerRepository answerRepository;
+    private QuestionService questionService;
 
     @Autowired
-    private QuestionRepository questionRepository;
+    private AnswerRepository answerRepository;
 
     @PostMapping("")
     public String create(@PathVariable Long questionId, HttpSession session, String contents) {
         User loginUser = getUserFromSession(session);
-        Question question = questionRepository.findById(questionId).orElseThrow(EntityNotFoundException::new);
+        Question question = questionService.findById(questionId);
         Answer answer = new Answer(loginUser, question, contents);
-
         answerRepository.save(answer);
         return "redirect:/questions/{questionId}";
     }

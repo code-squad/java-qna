@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpSession;
 
+import static com.codesquad.qna.UrlStrings.REDIRECT_QUESTION_SHOW;
 import static com.codesquad.qna.web.HttpSessionUtils.getUserFromSession;
 
 @Controller
@@ -35,7 +36,7 @@ public class AnswerController {
         Question question = questionService.findById(questionId);
         Answer answer = new Answer(loginUser, question, contents);
         answerService.save(answer);
-        return "redirect:/questions/{questionId}";
+        return REDIRECT_QUESTION_SHOW.getUrl();
     }
 
     @GetMapping("/{id}/update")
@@ -53,7 +54,7 @@ public class AnswerController {
         Answer updatingAnswer = answerService.findByQuestionIdAndId(questionId, id);
         loginUser.hasPermission(updatingAnswer);
         answerService.update(updatingAnswer, updatedAnswer);
-        return "redirect:/questions/{questionId}";
+        return REDIRECT_QUESTION_SHOW.getUrl();
     }
 
     @DeleteMapping("/{id}")
@@ -62,6 +63,6 @@ public class AnswerController {
         Answer answer = answerService.findByQuestionIdAndId(questionId, id);
         loginUser.hasPermission(answer);
         answerService.delete(answer);
-        return "redirect:/questions/{questionId}";
+        return REDIRECT_QUESTION_SHOW.getUrl();
     }
 }

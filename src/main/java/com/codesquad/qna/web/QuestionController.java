@@ -2,7 +2,7 @@ package com.codesquad.qna.web;
 
 import com.codesquad.qna.domain.Question;
 import com.codesquad.qna.domain.User;
-import com.codesquad.qna.repository.AnswerRepository;
+import com.codesquad.qna.service.AnswerService;
 import com.codesquad.qna.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,7 +27,7 @@ public class QuestionController {
     private QuestionService questionService;
 
     @Autowired
-    private AnswerRepository answerRepository;
+    private AnswerService answerService;
 
     @GetMapping("/create")
     public String createForm(HttpSession session) {
@@ -52,7 +52,7 @@ public class QuestionController {
             model.addAttribute("hasPermissionUser", true);
         }
 
-        model.addAttribute("answers", answerRepository.findByQuestionId(id));
+        model.addAttribute("answers", answerService.findAllByQuestionId(id));
         return "qna/show";
     }
 

@@ -61,6 +61,21 @@ public class Question {
         this.contents = contents;
     }
 
+    public boolean answerWriterCheck() {
+        boolean sameWriter = true;
+        if (answers.isEmpty()) {
+            return false;
+        }
+        Long questionWriterId = this.writer.getId();
+        for (int i = 0; i < answers.size(); i++){
+            Answer answer = answers.get(i);
+            if(!answer.writerCheck(questionWriterId)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void deletQuestion() {
         this.deleted = true;
     }

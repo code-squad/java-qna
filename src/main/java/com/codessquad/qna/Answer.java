@@ -2,7 +2,6 @@ package com.codessquad.qna;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 @Entity
@@ -35,12 +34,6 @@ public class Answer {
         this.writtenTime = LocalDateTime.now();
     }
 
-    public String getWrittenTime() {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        String writtenTimeToString = writtenTime.format(dateTimeFormatter);
-        return writtenTimeToString;
-    }
-
     public Long getId() {
         return id;
     }
@@ -67,6 +60,11 @@ public class Answer {
 
     public boolean authorizeUser(User loginUser) {
         return this.writer.equals(loginUser);
+    }
+
+    public boolean writerCheck(Long questionWriterId) {
+        Long answerWriterId = writer.getId();
+        return answerWriterId.equals(questionWriterId);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.codesquad.qna.web;
 
 import com.codesquad.qna.domain.User;
+import com.codesquad.qna.exception.exception.UnauthorizedException;
 
 import javax.servlet.http.HttpSession;
 
@@ -17,7 +18,7 @@ public class HttpSessionUtils {
 
     public static void checkLogin(HttpSession session) {
         if (getUserFromSession(session) == null) {
-            throw new IllegalArgumentException();
+            throw UnauthorizedException.notLogin();
         }
     }
 }

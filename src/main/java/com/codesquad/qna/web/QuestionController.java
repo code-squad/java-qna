@@ -2,6 +2,7 @@ package com.codesquad.qna.web;
 
 import com.codesquad.qna.domain.Question;
 import com.codesquad.qna.domain.User;
+import com.codesquad.qna.exception.exception.UnauthorizedException;
 import com.codesquad.qna.repository.AnswerRepository;
 import com.codesquad.qna.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
 
 import static com.codesquad.qna.web.HttpSessionUtils.checkLogin;
@@ -100,6 +100,6 @@ public class QuestionController {
     }
 
     private Question findById(Long id) {
-        return questionRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        return questionRepository.findById(id).orElseThrow(UnauthorizedException::noMatchUser);
     }
 }

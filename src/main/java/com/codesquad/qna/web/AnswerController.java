@@ -3,7 +3,7 @@ package com.codesquad.qna.web;
 import com.codesquad.qna.domain.Answer;
 import com.codesquad.qna.domain.Question;
 import com.codesquad.qna.domain.User;
-import com.codesquad.qna.repository.AnswerRepository;
+import com.codesquad.qna.service.AnswerService;
 import com.codesquad.qna.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
 
 import static com.codesquad.qna.web.HttpSessionUtils.getUserFromSession;
@@ -28,22 +27,21 @@ public class AnswerController {
     private QuestionService questionService;
 
     @Autowired
-    private AnswerRepository answerRepository;
+    private AnswerService answerService;
 
     @PostMapping("")
     public String create(@PathVariable Long questionId, HttpSession session, String contents) {
         User loginUser = getUserFromSession(session);
         Question question = questionService.findById(questionId);
         Answer answer = new Answer(loginUser, question, contents);
-        answerRepository.save(answer);
+        answerService.save(answer);
         return "redirect:/questions/{questionId}";
     }
 
     @GetMapping("/{id}/update")
     public String updateForm(@PathVariable Long questionId, @PathVariable Long id, HttpSession session, Model model) {
         User loginUser = getUserFromSession(session);
-        Answer updatingAnswer = answerRepository.findByQuestionIdAndId(questionId, id).orElseThrow(EntityNotFoundException::new);
-
+        Answer updatingAnswer = answerService.findByQuestionIdAndId(questionId, id);
         loginUser.hasPermission(updatingAnswer);
         model.addAttribute("updatingAnswer", updatingAnswer);
         return "qna/replyForm";
@@ -52,21 +50,18 @@ public class AnswerController {
     @PutMapping("/{id}")
     public String update(@PathVariable Long questionId, @PathVariable Long id, Answer updatedAnswer, HttpSession session, Model model) {
         User loginUser = getUserFromSession(session);
-        Answer updatingAnswer = answerRepository.findByQuestionIdAndId(questionId, id).orElseThrow(EntityNotFoundException::new);
-
+        Answer updatingAnswer = answerService.findByQuestionIdAndId(questionId, id);
         loginUser.hasPermission(updatingAnswer);
-        updatingAnswer.update(updatedAnswer);
-        answerRepository.save(updatingAnswer);
+        answerService.update(updatingAnswer, updatedAnswer);
         return "redirect:/questions/{questionId}";
     }
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
         User loginUser = getUserFromSession(session);
-        Answer answer = answerRepository.findByQuestionIdAndId(questionId, id).orElseThrow(EntityNotFoundException::new);
-
+        Answer answer = answerService.findByQuestionIdAndId(questionId, id);
         loginUser.hasPermission(answer);
-        answerRepository.delete(answer);
+        answerService.delete(answer);
         return "redirect:/questions/{questionId}";
     }
 }

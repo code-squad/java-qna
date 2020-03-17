@@ -31,10 +31,9 @@ function onSuccess(data, status) {
 
   var answerTemplate = $("#answerTemplate").html();
   var template = answerTemplate.format(data.writer.name, data.createdAt, data.contents, data.question.id, data.id);
-  $(".qna-comment-slipp-articles").append(template);
+  $(".qna-comment-slipp-articles").prepend(template);
   //댓글창 초기화
   $("textarea[name=contents]").val("");
-
 
 }
 
@@ -48,3 +47,38 @@ String.prototype.format = function() {
         ;
   });
 };
+
+$("a.link-delete-article").click(deleteAnswer);
+
+function deleteAnswer(e) {
+  e.preventDefault();
+
+  var deleteBtn = $(this);
+  var url = deleteBtn.attr("href");
+  console.log("url : " + url);
+
+  $.ajax({
+     type : "delete",
+      url : url,
+      dateType : "json",
+      error : function (xhr, status) {
+          console.log(status);
+      },
+      success : function (data, status) {
+          if (data.valid) {
+              deleteBtn.closest("article").remove();
+          } else {
+              alert("ㄴㄴ");
+          }
+      }
+  });
+
+
+}
+
+$("a.link-modify-article").click(modifiedAnswer);
+
+function modifiedAnswer(e) {
+  e.preventDefault();
+  console.log("수정");
+}

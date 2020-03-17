@@ -33,29 +33,36 @@ public class ApiAnswerController {
         Question question = questionRepository.findById(questionId).orElseThrow(() -> new NotFoundException("존재하지 않는 질문입니다."));
         User loginUser = HttpSessionUtils.getUserFromSession(session);
         Answer answer = new Answer(loginUser, question, contents);
+        //어떻게 업데이트 되는 건지
+        question.addCount();
         return answerRepository.save(answer);
+
     }
 
     @DeleteMapping("{id}")
-    public String delete(@PathVariable Long id, @PathVariable Long questionId, HttpSession session) {
+    public Result delete(@PathVariable Long id, @PathVariable Long questionId, HttpSession session) {
         LOGGER.debug("[page] : {}", "댓글 삭제 요청");
 
         if(!HttpSessionUtils.isLoginUser(session)) {
             LOGGER.debug("[page] : {}", "비로그인 상태");
-            return "redirect:/users/loginForm";
+            return Result.fail("login first");
         }
 
         User user = HttpSessionUtils.getUserFromSession(session);
         Answer answer = answerRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 댓글입니다."));
         if(!answer.isSameUser(user)){
             LOGGER.debug("[page] : {}", "글 작성자 아님");
-            throw new IllegalStateException("글 작성자 아님");
+            return Result.fail("zz");
         }
 
         answer.delete();
         answerRepository.save(answer);
 
-        return String.format("redirect:/questions/%d", questionId);
+        Question question = questionRepository.findById(questionId).get();
+        question.deleteCount();
+        questionRepository.save(question);
+
+        return Result.ok();
     }
 
 }

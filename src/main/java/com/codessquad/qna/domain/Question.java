@@ -44,6 +44,9 @@ public class Question {
     @JsonProperty
     private LocalDateTime writeTime;
 
+    @JsonProperty
+    private Integer countOfAnswer = 0;
+
     private boolean deleted;
 
     @Formula("(SELECT count(*) FROM ANSWER a WHERE a.QUESTION_ID = ID)")
@@ -96,6 +99,14 @@ public class Question {
         setWriteTime(LocalDateTime.now());
     }
 
+    public Integer getCountOfAnswer() {
+        return countOfAnswer;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
     public void update(Question updatedQuestion) {
         title = updatedQuestion.title;
         contents = updatedQuestion.contents;
@@ -120,6 +131,14 @@ public class Question {
         }
 
         return isAllAnswersByWriter();
+    }
+
+    public void addCount() {
+        this.countOfAnswer += 1;
+    }
+
+    public void deleteCount() {
+        this.countOfAnswer -= 1;
     }
 
     public void delete(){

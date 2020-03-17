@@ -3,10 +3,10 @@ package com.codessquad.qna;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,21 +17,38 @@ public class HomeController {
     private QuestionRepository questionRepository;
 
     @GetMapping("/")
-    public String viewQuestionList(Model model) {
-        List<Page> pages = createPages();
-        int pageNumber; // @PathValuable 로 인덱스 가져오기
-        model.addAttribute("questions", pages.get(0));
+    public String viewWelcomePage(Model model) {
         return "/index";
     }
 
-    public List<Page> createPages() {
-        int lastPage = 3;
-        List<Page> pages = new ArrayList<>();
-        PageRequest pageRequest;
+    @GetMapping("/{number}")
+    public String viewQuestionList(Model model, @PathVariable int number) {
+        Page page = initPage();
+        List<Page> pages = createPages(page.getTotalPages());
 
-        for (int pageNumber = 0; pageNumber < lastPage; pageNumber++) {
-            pageRequest = PageRequest.of(pageNumber, 5);
-            pages.add(questionRepository.findAll(pageRequest));
+        model.addAttribute("pages", pages);
+        model.addAttribute("questions", pages.get(number));
+
+        return "/index";
+    }
+
+    public Page initPage() {
+        int index = 0;
+        return createPage(index);
+    }
+
+    public Page createPage(int index) {
+        PageRequest pageRequest = PageRequest.of(index, 4);
+        Page page = questionRepository.findAll(pageRequest);
+        return page;
+    }
+
+    public List<Page> createPages(int totalPages) {
+        Page page;
+        List<Page> pages = new ArrayList<>();
+        for (int i = 0; i < totalPages; i++) {
+            page = createPage(i);
+            pages.add(page);
         }
         return pages;
     }

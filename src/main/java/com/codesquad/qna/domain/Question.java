@@ -55,6 +55,11 @@ public class Question {
         return id;
     }
 
+    public void update(Question updatedQuestion) {
+        title = updatedQuestion.getTitle();
+        contents = updatedQuestion.getContents();
+    }
+
     public boolean isSameWriter(User sessionedUser) {
         return writer.equals(sessionedUser.getUserName());
     }

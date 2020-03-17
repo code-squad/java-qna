@@ -45,12 +45,19 @@ public class User extends AbstractEntity{
     }
 
     public boolean isCorrectFormat(User user) {
-        boolean userIdIsExist = ObjectUtils.isNotEmpty(user.userId);
-        boolean nameIsExist = ObjectUtils.isNotEmpty(user.name);
-        boolean passwordIsExist = ObjectUtils.isNotEmpty(user.password);
-        boolean emailIsExist = ObjectUtils.isNotEmpty(user.email);
+        if (ObjectUtils.isEmpty(userId))
+            return false;
 
-        return userIdIsExist && nameIsExist && passwordIsExist && emailIsExist;
+        if (ObjectUtils.isEmpty(user.password))
+            return false;
+
+        if (ObjectUtils.isEmpty(user.name))
+            return false;
+
+        if (ObjectUtils.isEmpty(user.email))
+            return false;
+
+        return true;
     }
 
     @Override

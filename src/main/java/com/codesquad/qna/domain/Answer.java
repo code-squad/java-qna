@@ -2,11 +2,11 @@ package com.codesquad.qna.domain;
 
 import com.codesquad.qna.common.AbstractEntity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 public class Answer extends AbstractEntity {
@@ -19,7 +19,7 @@ public class Answer extends AbstractEntity {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
     private Question question;
 
-    @Column(nullable = false)
+    @NotEmpty
     private String contents;
 
     public Answer() {

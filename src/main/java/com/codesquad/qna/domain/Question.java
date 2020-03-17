@@ -2,11 +2,11 @@ package com.codesquad.qna.domain;
 
 import com.codesquad.qna.common.AbstractEntity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 public class Question extends AbstractEntity {
@@ -15,13 +15,13 @@ public class Question extends AbstractEntity {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     private User writer;
 
-    @Column(nullable = false)
+    @NotEmpty
     private String title;
 
-    @Column(nullable = false)
+    @NotEmpty
     private String contents;
 
-    @Column(nullable = false)
+    @NotEmpty
     private Integer replyCount;
 
     public Question() {

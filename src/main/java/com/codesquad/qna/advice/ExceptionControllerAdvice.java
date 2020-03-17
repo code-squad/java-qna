@@ -1,5 +1,6 @@
 package com.codesquad.qna.advice;
 
+import com.codesquad.qna.advice.exception.ForbiddenException;
 import com.codesquad.qna.advice.exception.UnauthorizedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -9,6 +10,11 @@ public class ExceptionControllerAdvice {
 
     @ExceptionHandler(UnauthorizedException.class)
     public String userNotFoundException() {
+        return "redirect:/";
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public String noPermission() {
         return "redirect:/";
     }
 }

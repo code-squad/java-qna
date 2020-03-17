@@ -9,7 +9,7 @@ public interface UserService {
 
     User save(User user);
 
-    void updateById(Long id, User user);
+    void update(Long id, User loginUser, User updatedUser);
 
     User findByUserId(String userId);
 

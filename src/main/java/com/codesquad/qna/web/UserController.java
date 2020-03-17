@@ -1,6 +1,5 @@
 package com.codesquad.qna.web;
 
-import com.codesquad.qna.advice.exception.ExistUserException;
 import com.codesquad.qna.advice.exception.InputMistakeException;
 import com.codesquad.qna.domain.User;
 import com.codesquad.qna.service.UserService;
@@ -75,10 +74,10 @@ public class UserController {
     public String checkPasswordForm(@PathVariable Long id, Model model, HttpSession session) {
         checkLogin(session);
 
-        User sessionedUser = getUserFromSession(session);
-        sessionedUser.hasPermission(id);
+        User loginUser = getUserFromSession(session);
+        loginUser.hasPermission(id);
 
-        model.addAttribute("user", sessionedUser);
+        model.addAttribute("user", loginUser);
         return "/user/checkForm";
     }
 
@@ -86,26 +85,22 @@ public class UserController {
     public String updateForm(@PathVariable Long id, String password, Model model, HttpSession session) {
         checkLogin(session);
 
-        User sessionedUser = getUserFromSession(session);
-        sessionedUser.hasPermission(id);
+        User loginUser = getUserFromSession(session);
+        loginUser.hasPermission(id);
 
-        if (!sessionedUser.isPasswordEquals(password)) {
+        if (!loginUser.isPasswordEquals(password)) {
             return "redirect:/users/{id}";
         }
 
-        model.addAttribute("user", sessionedUser);
+        model.addAttribute("user", loginUser);
         return "/user/updateForm";
     }
 
     @PutMapping("/{id}")
     public String updateUser(@PathVariable Long id, User updateUser, HttpSession session) {
         checkLogin(session);
-
-        User sessionedUser = getUserFromSession(session);
-        sessionedUser.hasPermission(id);
-        sessionedUser.update(updateUser);
-
-        userService.save(sessionedUser);
+        User loginUser = getUserFromSession(session);
+        userService.update(id, loginUser, updateUser);
         return REDIRECT_USERS_DATA;
     }
 
@@ -114,11 +109,6 @@ public class UserController {
         User user = userService.findById(id);
         model.addAttribute("user", user);
         return "/user/profile";
-    }
-
-    @ExceptionHandler(ExistUserException.class)
-    public String loginError() {
-        return "redirect:/users/login";
     }
 
     @ExceptionHandler(InputMistakeException.class)

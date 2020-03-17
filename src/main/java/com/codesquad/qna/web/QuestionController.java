@@ -40,8 +40,8 @@ public class QuestionController {
     public String create(Question question, Model model, HttpSession session) {
         checkLogin(session);
 
-        User sessionedUser = getUserFromSession(session);
-        Question createdQuestion = new Question(sessionedUser, question);
+        User loginUser = getUserFromSession(session);
+        Question createdQuestion = new Question(loginUser, question);
 
         questionRepository.save(createdQuestion);
         return "redirect:/";
@@ -66,10 +66,10 @@ public class QuestionController {
     public String updateForm(@PathVariable Long id, HttpSession session, Model model) {
         checkLogin(session);
 
-        User sessionedUser = getUserFromSession(session);
+        User loginUser = getUserFromSession(session);
         Question updatingQuestion = findById(id);
 
-        sessionedUser.hasPermission(updatingQuestion);
+        loginUser.hasPermission(updatingQuestion);
         model.addAttribute("updatingQuestion", updatingQuestion);
         return "qna/form";
     }
@@ -78,10 +78,10 @@ public class QuestionController {
     public String update(@PathVariable Long id, HttpSession session, Question updatedQuestion) {
         checkLogin(session);
 
-        User sessionedUser = getUserFromSession(session);
+        User loginUser = getUserFromSession(session);
         Question question = findById(id);
 
-        sessionedUser.hasPermission(question);
+        loginUser.hasPermission(question);
         question.update(updatedQuestion);
         questionRepository.save(question);
         return "redirect:/questions/{id}";
@@ -91,10 +91,10 @@ public class QuestionController {
     public String delete(@PathVariable Long id, HttpSession session) {
         checkLogin(session);
 
-        User sessionedUser = getUserFromSession(session);
+        User loginUser = getUserFromSession(session);
         Question question = findById(id);
 
-        sessionedUser.hasPermission(question);
+        loginUser.hasPermission(question);
         questionRepository.delete(question);
         return "redirect:/";
     }

@@ -6,7 +6,7 @@ import com.codesquad.qna.domain.User;
 import javax.servlet.http.HttpSession;
 
 public class HttpSessionUtils {
-    public static final String USER_SESSION_KEY = "sessionedUser";
+    public static final String USER_SESSION_KEY = "loginUser";
 
     private HttpSessionUtils() {
         throw new IllegalStateException("Utility Class");

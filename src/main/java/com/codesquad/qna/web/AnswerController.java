@@ -35,9 +35,9 @@ public class AnswerController {
     public String create(@PathVariable Long questionId, HttpSession session, String contents) {
         checkLogin(session);
 
-        User sessionedUser = getUserFromSession(session);
+        User loginUser = getUserFromSession(session);
         Question question = questionRepository.findById(questionId).orElseThrow(EntityNotFoundException::new);
-        Answer answer = new Answer(sessionedUser, question, contents);
+        Answer answer = new Answer(loginUser, question, contents);
 
         answerRepository.save(answer);
         return "redirect:/questions/{questionId}";
@@ -47,10 +47,10 @@ public class AnswerController {
     public String updateForm(@PathVariable Long questionId, @PathVariable Long id, HttpSession session, Model model) {
         checkLogin(session);
 
-        User sessionedUser = getUserFromSession(session);
+        User loginUser = getUserFromSession(session);
         Answer updatingAnswer = answerRepository.findByQuestionIdAndId(questionId, id).orElseThrow(EntityNotFoundException::new);
 
-        sessionedUser.hasPermission(updatingAnswer);
+        loginUser.hasPermission(updatingAnswer);
         model.addAttribute("updatingAnswer", updatingAnswer);
         return "qna/replyForm";
     }
@@ -59,10 +59,10 @@ public class AnswerController {
     public String update(@PathVariable Long questionId, @PathVariable Long id, Answer updatedAnswer, HttpSession session, Model model) {
         checkLogin(session);
 
-        User sessionedUser = getUserFromSession(session);
+        User loginUser = getUserFromSession(session);
         Answer updatingAnswer = answerRepository.findByQuestionIdAndId(questionId, id).orElseThrow(EntityNotFoundException::new);
 
-        sessionedUser.hasPermission(updatingAnswer);
+        loginUser.hasPermission(updatingAnswer);
         updatingAnswer.update(updatedAnswer);
         answerRepository.save(updatingAnswer);
         return "redirect:/questions/{questionId}";
@@ -72,10 +72,10 @@ public class AnswerController {
     public String delete(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
         checkLogin(session);
 
-        User sessionedUser = getUserFromSession(session);
+        User loginUser = getUserFromSession(session);
         Answer answer = answerRepository.findByQuestionIdAndId(questionId, id).orElseThrow(EntityNotFoundException::new);
 
-        sessionedUser.hasPermission(answer);
+        loginUser.hasPermission(answer);
         answerRepository.delete(answer);
         return "redirect:/questions/{questionId}";
     }

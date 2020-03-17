@@ -1,6 +1,5 @@
 package com.codesquad.qna.service;
 
-import com.codesquad.qna.advice.exception.ExistUserException;
 import com.codesquad.qna.advice.exception.UnauthorizedException;
 import com.codesquad.qna.domain.User;
 import com.codesquad.qna.repository.UserRepository;
@@ -27,10 +26,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateById(Long id, User updatedUser) {
-        User user = findById(id);
-        user.update(updatedUser);
-        save(user);
+    public void update(Long id, User loginUser, User updatedUser) {
+        loginUser.hasPermission(id);
+        loginUser.update(updatedUser);
+        save(loginUser);
     }
 
     @Override
@@ -40,6 +39,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByUserId(String userId) {
-        return userRepository.findByUserId(userId).orElseThrow(ExistUserException::existUser);
+        return userRepository.findByUserId(userId).orElseThrow(UnauthorizedException::noMatchUser);
     }
 }

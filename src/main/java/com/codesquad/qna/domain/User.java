@@ -1,5 +1,7 @@
 package com.codesquad.qna.domain;
 
+import com.codesquad.qna.advice.exception.ForbiddenException;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -86,7 +88,7 @@ public class User {
 
     public void hasPermission(Long id) {
         if (!isIdEquals(id)) {
-            throw new SecurityException("다른 사람의 글을 수정할 수 없습니다");
+            throw ForbiddenException.noPermission();
         }
     }
 

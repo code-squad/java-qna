@@ -13,11 +13,12 @@ public class UnauthorizedException extends RuntimeException {
         return new UnauthorizedException("로그인 해주세요");
     }
 
-    public static InputMistakeException noMatchUser() {
-        return new InputMistakeException("일치하는 사용자가 존재하지 않습니다");
+    public static UnauthorizedException noMatchUser() {
+        return new UnauthorizedException("일치하는 사용자가 존재하지 않습니다");
     }
 
-    public static InputMistakeException noMatchPassword() {
-        return new InputMistakeException("비밀번호가 일치하지 않습니다");
+    public static UnauthorizedException noMatchPassword() {
+        return new UnauthorizedException("비밀번호가 일치하지 않습니다");
     }
+
 }

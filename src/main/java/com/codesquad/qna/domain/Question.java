@@ -2,6 +2,7 @@ package com.codesquad.qna.domain;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Entity
@@ -31,19 +32,6 @@ public class Question {
 
     private boolean deleted;
 
-    public List<Answer> getAnswers() {
-        return answers;
-    }
-
-    public void setAnswers(List<Answer> answers) {
-        this.answers = answers;
-    }
-
-    public int getAnswersNum() {
-        answersNum = answers.size();
-        return answersNum;
-    }
-
 
     public Question() {
     }
@@ -62,7 +50,6 @@ public class Question {
     }
 
     public boolean answerWriterCheck() {
-        boolean sameWriter = true;
         if (answers.isEmpty()) {
             return false;
         }
@@ -76,8 +63,16 @@ public class Question {
         return false;
     }
 
+    public boolean authorizeUser(User loginUser) {
+        return this.writer.equals(loginUser);
+    }
+
     public void deletQuestion() {
         this.deleted = true;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public User getWriter() {
@@ -104,20 +99,31 @@ public class Question {
         this.contents = contents;
     }
 
-    public Long getId() {
-        return id;
+    public String getWrittenTime() {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String writtenTimeToString = writtenTime.format(dateTimeFormatter);
+        return writtenTimeToString;
     }
 
     public void setQuestionIndex(Long questionIndex) {
         this.id += questionIndex;
     }
 
-    public boolean authorizeUser(User loginUser) {
-        return this.writer.equals(loginUser);
-    }
-
     public boolean isDeleted() {
         return deleted;
+    }
+
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
+    }
+
+    public int getAnswersNum() {
+        answersNum = answers.size();
+        return answersNum;
     }
 
     @Override

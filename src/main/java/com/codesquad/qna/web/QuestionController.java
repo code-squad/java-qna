@@ -1,5 +1,8 @@
-package com.codessquad.qna;
+package com.codesquad.qna.web;
 
+import com.codesquad.qna.domain.Question;
+import com.codesquad.qna.domain.QuestionRepository;
+import com.codesquad.qna.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,7 +30,7 @@ public class QuestionController {
         User loginUser = HttpSessionUtils.getUserFromSession(session);
         Question question = new Question(loginUser, title, contents);
         questionRepository.save(question);
-        return "redirect:/";
+        return HomeController.HOME_DIRECTORY;
     }
 
     @GetMapping("/{id}")
@@ -49,7 +52,7 @@ public class QuestionController {
             model.addAttribute("question", question);
             return "/qna/modify_form";
         }
-        return "/qna/not_qualified";
+        return HomeController.NOT_AUTHORIZE_DIRECTORY;
     }
 
     @PutMapping("/{id}")
@@ -57,7 +60,7 @@ public class QuestionController {
         Question question = questionRepository.getOne(id);
         question.updateQuestion(title, contents);
         questionRepository.save(question);
-        return "redirect:/";
+        return HomeController.HOME_DIRECTORY;
     }
 
     @DeleteMapping("/{id}")
@@ -66,12 +69,12 @@ public class QuestionController {
         User loginUser = HttpSessionUtils.getUserFromSession(session);
         if (question.authorizeUser(loginUser)) {
             if(question.answerWriterCheck()){
-                return "/qna/not_qualified";
+                return HomeController.NOT_AUTHORIZE_DIRECTORY;
             }
             question.deletQuestion();
             questionRepository.save(question);
-            return "redirect:/";
+            return HomeController.HOME_DIRECTORY;
         }
-        return "/qna/not_qualified";
+        return HomeController.NOT_AUTHORIZE_DIRECTORY;
     }
 }

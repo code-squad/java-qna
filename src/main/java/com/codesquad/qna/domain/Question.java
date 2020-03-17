@@ -1,4 +1,4 @@
-package com.codessquad.qna;
+package com.codesquad.qna.domain;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

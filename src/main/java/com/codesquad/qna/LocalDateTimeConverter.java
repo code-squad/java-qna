@@ -1,4 +1,4 @@
-package com.codessquad.qna;
+package com.codesquad.qna;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

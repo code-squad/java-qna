@@ -1,5 +1,7 @@
-package com.codessquad.qna;
+package com.codesquad.qna.web;
 
+import com.codesquad.qna.domain.User;
+import com.codesquad.qna.domain.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -93,7 +95,7 @@ public class UserController {
     @GetMapping("/{id}/info_change")
     public String idInfoChange(@PathVariable Long id, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
-            return "/user/not_qualified";
+            return HomeController.NOT_AUTHORIZE_DIRECTORY;
         }
         User loginUser = HttpSessionUtils.getUserFromSession(session);
         System.out.println(loginUser);
@@ -101,14 +103,7 @@ public class UserController {
             return "redirect:/users/info_change";
         }
 
-        return "/user/not_qualified";
+        return HomeController.NOT_AUTHORIZE_DIRECTORY;
     }
 
-//    @PutMapping("/{id}/update")
-//    public String infoChange(@PathVariable Long id, String password, String name, String email) {
-//        User user = userRepository.findById(id).orElse(null);
-//        user.update(password, name, email);
-//        userRepository.save(user);
-//        return "redirect:/users";
-//    }
 }

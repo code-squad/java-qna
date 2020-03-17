@@ -1,4 +1,4 @@
-package com.codessquad.qna;
+package com.codesquad.qna.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

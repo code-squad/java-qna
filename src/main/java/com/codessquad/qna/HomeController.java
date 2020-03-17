@@ -16,25 +16,28 @@ public class HomeController {
     @Autowired
     private QuestionRepository questionRepository;
 
+    private static final int INITIAL_PAGE_NUMBER = 0;
+
     @GetMapping("/")
     public String viewWelcomePage(Model model) {
+        Page page = initPage();
+        List<Page> pages = createPages(page.getTotalPages());
+        model.addAttribute("pages", pages);
+        model.addAttribute("questions", pages.get(INITIAL_PAGE_NUMBER));
         return "/index";
     }
 
-    @GetMapping("/{number}")
-    public String viewQuestionList(Model model, @PathVariable int number) {
+    @GetMapping("/{pageNumber}")
+    public String viewQuestionList(@PathVariable int pageNumber, Model model) {
         Page page = initPage();
         List<Page> pages = createPages(page.getTotalPages());
-
         model.addAttribute("pages", pages);
-        model.addAttribute("questions", pages.get(number));
-
+        model.addAttribute("questions", pages.get(pageNumber));
         return "/index";
     }
 
     public Page initPage() {
-        int index = 0;
-        return createPage(index);
+        return createPage(INITIAL_PAGE_NUMBER);
     }
 
     public Page createPage(int index) {

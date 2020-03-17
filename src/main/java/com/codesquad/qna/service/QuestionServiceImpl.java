@@ -1,38 +1,43 @@
 package com.codesquad.qna.service;
 
+import com.codesquad.qna.advice.exception.UnauthorizedException;
 import com.codesquad.qna.domain.Question;
 import com.codesquad.qna.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class QuestionServiceImpl implements QuestionService {
 
     @Autowired
     private QuestionRepository questionRepository;
-    
+
     @Override
     public List<Question> findAll() {
-        return null;
+        return new ArrayList<>(questionRepository.findAll());
     }
 
     @Override
     public Question save(Question question) {
-        return null;
+        return questionRepository.save(question);
     }
 
     @Override
-    public void update(Question updatingQuestion, Question updatedQuestion) {
-
+    public void update(Question question, Question updatedQuestion) {
+        question.update(updatedQuestion);
+        questionRepository.save(question);
     }
 
     @Override
     public void delete(Question question) {
-
+        questionRepository.delete(question);
     }
 
     @Override
     public Question findById(Long id) {
-        return null;
+        return questionRepository.findById(id).orElseThrow(UnauthorizedException::noMatchUser);
     }
 }

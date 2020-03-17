@@ -20,6 +20,7 @@ public class UserServiceImpl implements UserService {
         return new ArrayList<>(userRepository.findAll());
     }
 
+
     @Override
     public User save(User user) {
         return userRepository.save(user);
@@ -29,7 +30,7 @@ public class UserServiceImpl implements UserService {
     public void update(Long id, User loginUser, User updatedUser) {
         loginUser.hasPermission(id);
         loginUser.update(updatedUser);
-        save(loginUser);
+        userRepository.save(loginUser);
     }
 
     @Override

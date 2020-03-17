@@ -1,6 +1,5 @@
 package com.codesquad.qna.web;
 
-import com.codesquad.qna.advice.exception.UnauthorizedException;
 import com.codesquad.qna.domain.Question;
 import com.codesquad.qna.domain.User;
 import com.codesquad.qna.repository.AnswerRepository;
@@ -85,10 +84,6 @@ public class QuestionController {
 
         loginUser.hasPermission(question);
         questionRepository.delete(question);
-        return "redirect:/";
-    }
-
-    private Question findById(Long id) {
-        return questionRepository.findById(id).orElseThrow(UnauthorizedException::noMatchUser);
+        return REDIRECT_MAIN.getUrl();
     }
 }

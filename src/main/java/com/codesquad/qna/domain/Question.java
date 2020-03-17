@@ -1,5 +1,8 @@
 package com.codesquad.qna.domain;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -28,7 +31,11 @@ public class Question {
     private String contents;
 
     @Column(nullable = false)
-    private LocalDateTime createdDateTime;
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime modifiedAt;
 
     @Column(nullable = false)
     private Integer replyCount;
@@ -40,7 +47,6 @@ public class Question {
         this.writer = writer;
         this.title = question.title;
         this.contents = question.contents;
-        this.createdDateTime = LocalDateTime.now();
         this.replyCount = 0;
     }
 
@@ -85,7 +91,7 @@ public class Question {
     }
 
     public String getFormattedCreatedTime() {
-        return createdDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        return createdAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }
 
     public void increaseReplyCount() {
@@ -95,7 +101,7 @@ public class Question {
     public void update(Question updateQuestion) {
         this.title = updateQuestion.title;
         this.contents = updateQuestion.contents;
-        this.createdDateTime = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
     }
 
     @Override
@@ -105,7 +111,7 @@ public class Question {
                 ", writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
-                ", createdDateTime=" + createdDateTime +
+                ", createdAt=" + createdAt +
                 '}';
     }
 }

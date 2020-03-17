@@ -1,5 +1,7 @@
 package com.codesquad.qna.domain;
 
+import org.springframework.data.annotation.CreatedDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -26,7 +28,8 @@ public class Answer {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
     private Question question;
 
-    private LocalDateTime createdDateTime;
+    @CreatedDate
+    private LocalDateTime createdAt;
 
     @Column(nullable = false)
     private String contents;
@@ -38,7 +41,6 @@ public class Answer {
         this.writer = writer;
         this.question = question;
         this.contents = contents;
-        this.createdDateTime = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -57,12 +59,12 @@ public class Answer {
         this.question = question;
     }
 
-    public LocalDateTime getCreatedDateTime() {
-        return createdDateTime;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreatedDateTime(LocalDateTime createdDateTime) {
-        this.createdDateTime = createdDateTime;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public String getContents() {
@@ -81,12 +83,11 @@ public class Answer {
         this.writer = writer;
     }
 
-    public String getFormattedCreatedDateTime() {
-        return createdDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    public String getFormattedCreatedAt() {
+        return createdAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }
 
     public void update(Answer updatedAnswer) {
         this.contents = updatedAnswer.contents;
-        this.createdDateTime = LocalDateTime.now();
     }
 }

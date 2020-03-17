@@ -1,6 +1,6 @@
 package com.codessquad.qna.controller;
 
-import com.codessquad.qna.exception.NoSuchElementException;
+import com.codessquad.qna.exception.CustomNoSuchElementException;
 import com.codessquad.qna.exception.UnauthorizedException;
 import com.codessquad.qna.exception.WrongFormatException;
 import com.codessquad.qna.repository.*;
@@ -33,7 +33,7 @@ public class QuestionController {
     @GetMapping("/{id}")
     public Object showQuestion(@PathVariable Long id, Model model) {
         Question question = questionRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_QUESTION));
+                new CustomNoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_QUESTION));
 
         model.addAttribute("question", question);
         return PathUtil.QUESTION_DETAIL_TEMPLATE;
@@ -43,7 +43,7 @@ public class QuestionController {
     public Object showEditPage(@PathVariable Long id, Model model, HttpSession session) {
         User user = HttpSessionUtil.getUserFromSession(session);
         Question question = questionRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_QUESTION));
+                new CustomNoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_QUESTION));
 
         if (!question.isCorrectWriter(user))
             throw new UnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.UNAUTHORIZED);
@@ -69,7 +69,7 @@ public class QuestionController {
     public Object updateQuestion(@PathVariable Long id, Question updateData, HttpSession session) {
         User user = HttpSessionUtil.getUserFromSession(session);
         Question question = questionRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_QUESTION));
+                new CustomNoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_QUESTION));
 
         if (!question.isCorrectWriter(user))
             throw new UnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.UNAUTHORIZED);
@@ -84,7 +84,7 @@ public class QuestionController {
     public String deleteQuestion(@PathVariable Long id, HttpSession session) {
         User user = HttpSessionUtil.getUserFromSession(session);
         Question question = questionRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_QUESTION));
+                new CustomNoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_QUESTION));
 
         if (!question.isCorrectWriter(user))
             throw new UnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.UNAUTHORIZED);

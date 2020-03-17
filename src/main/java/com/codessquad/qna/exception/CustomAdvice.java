@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class CustomAdvice {
-    @ExceptionHandler(NoSuchElementException.class)
-    public String handleError(NoSuchElementException noElement) {
+    @ExceptionHandler(CustomNoSuchElementException.class)
+    public String handleError(CustomNoSuchElementException noElement) {
         return noElement.getPath();
     }
 

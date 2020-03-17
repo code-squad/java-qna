@@ -1,6 +1,6 @@
 package com.codessquad.qna.controller;
 
-import com.codessquad.qna.exception.NoSuchElementException;
+import com.codessquad.qna.exception.CustomNoSuchElementException;
 import com.codessquad.qna.exception.UnauthorizedException;
 import com.codessquad.qna.repository.*;
 import com.codessquad.qna.util.ErrorMessageUtil;
@@ -62,11 +62,11 @@ public class AnswerController {
 
     private Question findQuestion(Long id) {
         return questionRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_QUESTION));
+                new CustomNoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_QUESTION));
     }
 
     private Answer findAnswer(Long id) {
         return answerRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_ANSWER));
+                new CustomNoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_ANSWER));
     }
 }

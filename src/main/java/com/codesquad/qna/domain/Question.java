@@ -21,7 +21,6 @@ public class Question extends AbstractEntity {
     @NotEmpty
     private String contents;
 
-    @NotEmpty
     private Integer replyCount;
 
     public Question() {

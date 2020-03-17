@@ -5,7 +5,7 @@ import com.codesquad.qna.domain.Answer;
 import java.util.List;
 
 public interface AnswerService {
-    List<Answer> findAllByQuestionId(Long id);
+    List<Answer> findAllByQuestionId(Long questionId);
 
     Answer save(Answer answer);
 

@@ -8,13 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.persistence.RollbackException;
 import javax.servlet.http.HttpSession;
+import javax.validation.ConstraintViolationException;
 
 import static com.codesquad.qna.UrlStrings.REDIRECT_MAIN;
 import static com.codesquad.qna.web.HttpSessionUtils.getUserFromSession;
@@ -80,6 +83,16 @@ public class QuestionController {
         Question question = questionService.findById(id);
         loginUser.hasPermission(question);
         questionService.delete(question);
+        return REDIRECT_MAIN.getUrl();
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public String noInputWhenCreate() {
+        return "redirect:/questions/create";
+    }
+
+    @ExceptionHandler(RollbackException.class)
+    public String noInputWhenUpdate() {
         return REDIRECT_MAIN.getUrl();
     }
 }

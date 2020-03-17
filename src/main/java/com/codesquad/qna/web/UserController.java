@@ -33,12 +33,16 @@ public class UserController {
     public String login(String userId, String password, HttpSession session) {
         User loginUser = userRepository.findByUserId(userId);
         if (loginUser == null) {
-            return "/user/login_failed";
+            session.setAttribute("loginCondition",false);
+            return "redirect:/users/login";
         }
 
         if (!password.equals(loginUser.getPassword())) {
-            return "/user/login_failed";
+            session.setAttribute("loginCondition",false);
+            return "redirect:/users/login";
         }
+
+        session.setAttribute("loginCondition",true);
         session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, loginUser);
         return "redirect:/";
     }
@@ -75,7 +79,7 @@ public class UserController {
     @PutMapping("/{id}")
     public String infoChange(@PathVariable Long id, User updateUser, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
-            return "/user/login_failed";
+            return HomeController.NOT_AUTHORIZE_DIRECTORY;
         }
         User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
         loginUser.update(updateUser);
@@ -98,7 +102,6 @@ public class UserController {
             return HomeController.NOT_AUTHORIZE_DIRECTORY;
         }
         User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
-        System.out.println(loginUser);
         if (loginUser.idCheck(id)) {
             return "redirect:/users/info_change";
         }

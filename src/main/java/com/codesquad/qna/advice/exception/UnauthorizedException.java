@@ -16,9 +16,4 @@ public class UnauthorizedException extends RuntimeException {
     public static UnauthorizedException noMatchUser() {
         return new UnauthorizedException("일치하는 사용자가 존재하지 않습니다");
     }
-
-    public static UnauthorizedException noMatchPassword() {
-        return new UnauthorizedException("비밀번호가 일치하지 않습니다");
-    }
-
 }

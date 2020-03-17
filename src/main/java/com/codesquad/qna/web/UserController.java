@@ -1,6 +1,5 @@
 package com.codesquad.qna.web;
 
-import com.codesquad.qna.advice.exception.InputMistakeException;
 import com.codesquad.qna.domain.User;
 import com.codesquad.qna.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,8 @@ import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolationException;
 import java.util.Optional;
 
+import static com.codesquad.qna.UrlStrings.REDIRECT_LOGIN_FORM;
+import static com.codesquad.qna.UrlStrings.REDIRECT_USERS_DATA;
 import static com.codesquad.qna.web.HttpSessionUtils.USER_SESSION_KEY;
 import static com.codesquad.qna.web.HttpSessionUtils.checkLogin;
 import static com.codesquad.qna.web.HttpSessionUtils.getUserFromSession;
@@ -24,8 +25,6 @@ import static com.codesquad.qna.web.HttpSessionUtils.getUserFromSession;
 @Controller
 @RequestMapping("/users")
 public class UserController {
-    public static final String REDIRECT_LOGIN_FORM = "redirect:/users/login";
-    private static final String REDIRECT_USERS_DATA = "redirect:/users";
 
     @Autowired
     private UserService userService;
@@ -40,7 +39,7 @@ public class UserController {
         User user = userService.findByUserId(userId);
 
         if (!user.isPasswordEquals(password)) {
-            return REDIRECT_LOGIN_FORM;
+            return REDIRECT_LOGIN_FORM.getUrl();
         }
 
         session.setAttribute(USER_SESSION_KEY, user);
@@ -60,9 +59,9 @@ public class UserController {
 
     @PostMapping("")
     public String create(User user, Model model) {
-        User createdUser = Optional.ofNullable(user).orElseThrow(InputMistakeException::enteredNull);
+        User createdUser = Optional.ofNullable(user).orElseThrow(IllegalArgumentException::new);
         userService.save(createdUser);
-        return REDIRECT_USERS_DATA;
+        return REDIRECT_USERS_DATA.getUrl();
     }
 
     @GetMapping("")
@@ -102,7 +101,7 @@ public class UserController {
         checkLogin(session);
         User loginUser = getUserFromSession(session);
         userService.update(id, loginUser, updateUser);
-        return REDIRECT_USERS_DATA;
+        return REDIRECT_USERS_DATA.getUrl();
     }
 
     @GetMapping("/{id}")
@@ -113,7 +112,7 @@ public class UserController {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public String inputBlank() {
+    public String noInput() {
         return "redirect:/users/create";
     }
 }

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ExceptionControllerAdvice {
 
     @ExceptionHandler(UnauthorizedException.class)
-    public String userNotFoundException() {
+    public String userNotFound() {
         return "redirect:/";
     }
 
@@ -18,5 +18,8 @@ public class ExceptionControllerAdvice {
         return "redirect:/";
     }
 
-
+    @ExceptionHandler(IllegalArgumentException.class)
+    public String illegalArgument() {
+        return "redirect:/";
+    }
 }

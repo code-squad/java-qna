@@ -95,7 +95,7 @@ public class UserController {
         return modelAndView;
     }
 
-    // user 전체를 볼 수 있는 list.html에서 수정을 클릭했을 때, 로그인 한 회원만 회원정보를 수정할 수 있고, 다른 경우는 수정할 수 없게
+    // user 전체를 볼 수 있는 list.html에서 수정을 클릭했을 때, 로그인 한 회원만 회원정보를 수정할 수 있고, 다른 경우는 수정할 수 없게 하였습니다.
     @GetMapping("/{id}/info_change")
     public String idInfoChange(@PathVariable Long id, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {

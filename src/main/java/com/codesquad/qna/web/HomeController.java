@@ -14,6 +14,7 @@ public class HomeController {
     @Autowired
     private QuestionRepository questionRepository;
 
+    // 중복사용이 많은 URL의 경우에는 전역변수로 선언하였습니다.
     public static final String HOME_DIRECTORY = "redirect:/";
     public static final String NOT_AUTHORIZE_DIRECTORY = "/forbidden";
 

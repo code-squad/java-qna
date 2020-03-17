@@ -5,14 +5,17 @@ import com.codesquad.qna.advice.exception.UnauthorizedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.persistence.EntityNotFoundException;
+
+import static com.codesquad.qna.UrlStrings.REDIRECT_LOGIN_FORM;
 import static com.codesquad.qna.UrlStrings.REDIRECT_MAIN;
 
 @ControllerAdvice
 public class ExceptionControllerAdvice {
 
     @ExceptionHandler(UnauthorizedException.class)
-    public String userNotFound() {
-        return REDIRECT_MAIN.getUrl();
+    public String notLogin() {
+        return REDIRECT_LOGIN_FORM.getUrl();
     }
 
     @ExceptionHandler(ForbiddenException.class)
@@ -22,6 +25,11 @@ public class ExceptionControllerAdvice {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public String illegalArgument() {
+        return REDIRECT_MAIN.getUrl();
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public String noMatch() {
         return REDIRECT_MAIN.getUrl();
     }
 }

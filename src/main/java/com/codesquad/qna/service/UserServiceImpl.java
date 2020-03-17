@@ -1,11 +1,11 @@
 package com.codesquad.qna.service;
 
-import com.codesquad.qna.advice.exception.UnauthorizedException;
 import com.codesquad.qna.domain.User;
 import com.codesquad.qna.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,11 +35,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(Long id) {
-        return userRepository.findById(id).orElseThrow(UnauthorizedException::noMatchUser);
+        return userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
     public User findByUserId(String userId) {
-        return userRepository.findByUserId(userId).orElseThrow(UnauthorizedException::noMatchUser);
+        return userRepository.findByUserId(userId).orElseThrow(EntityNotFoundException::new);
     }
 }

@@ -2,7 +2,6 @@ package com.codessquad.qna;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Entity
@@ -21,6 +20,7 @@ public class Question {
 
     @Lob
     private String contents;
+
     private LocalDateTime writtenTime;
 
     @OneToMany(mappedBy = "question")
@@ -28,6 +28,8 @@ public class Question {
     private List<Answer> answers;
 
     private int answersNum;
+
+    private boolean deleted;
 
     public List<Answer> getAnswers() {
         return answers;
@@ -51,12 +53,16 @@ public class Question {
         this.title = title;
         this.contents = contents;
         this.writtenTime = LocalDateTime.now();
+        this.deleted = false;
     }
 
-    public String getWrittenTime() {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        String writtenTimeToString = writtenTime.format(dateTimeFormatter);
-        return writtenTimeToString;
+    public void updateQuestion(String title, String contents) {
+        this.title = title;
+        this.contents = contents;
+    }
+
+    public void deletQuestion() {
+        this.deleted = true;
     }
 
     public User getWriter() {
@@ -95,9 +101,8 @@ public class Question {
         return this.writer.equals(loginUser);
     }
 
-    public void updateQuestion(String title, String contents) {
-        this.title = title;
-        this.contents = contents;
+    public boolean isDeleted() {
+        return deleted;
     }
 
     @Override

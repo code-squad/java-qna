@@ -6,10 +6,7 @@ import com.codesquad.qna.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
@@ -79,7 +76,7 @@ public class QuestionController {
     }
 
     @PutMapping("/questions/{id}")
-    public String updateQuestion(@PathVariable Long id, HttpSession session) {
+    public String updateQuestion(@PathVariable Long id, Question updatedQuestion, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/users/login-form";
         }
@@ -91,9 +88,29 @@ public class QuestionController {
             return "redirect:/users/login-form";
         }
 
+        selectedQuestion.update(updatedQuestion);
         DatabaseUtils.replaceEscapesToTags(selectedQuestion);
         questionRepository.save(selectedQuestion);
 
         return "redirect:/questions/{id}";
+    }
+
+    @DeleteMapping("/questions/{id}")
+    public String deleteQuestion(@PathVariable Long id, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "redirect:/users/login-form";
+        }
+
+        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+        Question selectedQuestion = questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
+
+        if (!selectedQuestion.isSameWriter(sessionedUser)) {
+            return "redirect:/users/login-form";
+        }
+
+        questionRepository.delete(selectedQuestion);
+
+        return "redirect:/";
+
     }
 }

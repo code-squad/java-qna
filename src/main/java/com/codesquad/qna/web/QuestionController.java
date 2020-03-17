@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpSession;
 
+import static com.codesquad.qna.UrlStrings.REDIRECT_MAIN;
 import static com.codesquad.qna.web.HttpSessionUtils.getUserFromSession;
 
 @Controller
@@ -39,9 +40,8 @@ public class QuestionController {
     public String create(Question question, Model model, HttpSession session) {
         User loginUser = getUserFromSession(session);
         Question createdQuestion = new Question(loginUser, question);
-
         questionRepository.save(createdQuestion);
-        return "redirect:/";
+        return REDIRECT_MAIN.getUrl();
     }
 
     @GetMapping("/{id}")

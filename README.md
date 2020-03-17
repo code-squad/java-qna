@@ -71,3 +71,52 @@
 매 요청마다 로그인 여부를 검사하는 부분이 중복되는데 어떤식으로 중복제거를 해야 할 지 모르겠다.
 
 * step4를 진행 하면서 중복 코드를 줄여보자
+
+## Step4
+* 요구사항
+* 회원과 질문간의 관계 매핑 및 생성일 추가
+* 질문 상세보기 기능
+* 질문 수정, 삭제 기능 구현
+* 수정/삭제 기능에 대한 보안 처리 및 LocalDateTime 설정
+* 답변 추가 및 목록 기능 구현
+* QuestionController 중복 코드 제거 리팩토링
+
+## 질문 삭제하기 실습(선택)
+* 요구사항
+* 질문 삭제 기능을 구현한다. 질문 삭제 기능의 요구사항은 다음과 같다.
+1. 질문 데이터를 완전히 삭제하는 것이 아니라 데이터의 상태를 삭제 상태(deleted - boolean type)로 변경한다.
+2. 로그인 사용자와 질문한 사람이 같은 경우 삭제 가능하다.
+3. 답변이 없는 경우 삭제가 가능하다.
+4. 질문자와 답변 글의 모든 답변자 같은 경우 삭제가 가능하다.
+5. 질문을 삭제할 때 답변 또한 삭제해야 하며, 답변의 삭제 또한 삭제 상태(deleted)를 변경한다.
+6. 질문자와 답변자가 다른 경우 답변을 삭제할 수 없다.
+
+1번 요구사항에서 데이터베이스의 데이터를 삭제하는게 아니라 deleted의 상태를 보고 
+false 상태이면 view에 보여주고 true면 view에 안보여주고 이런 식으로 구현 했는데 
+요구사항을 잘 이해 한건지.. 모르겠다.
+
+* 질문 삭제 요청시 Question.java에 deleteQuestion() 함수를 수행
+``` 
+    public void deleteQuestion() {
+        if (!canDeleteAnswer()) {
+            throw new IllegalStateException("삭제 할 수 없습니다.");
+        }
+        this.deleted = true;
+        this.answers.forEach(Answer::delete);
+    }
+
+    public boolean canDeleteAnswer() {
+        if (answers.isEmpty()) {
+            return true;
+        }
+
+        return answers.stream()
+                .filter(answer -> !answer.getDeleted())
+                .allMatch(answer -> answer.getWriter().equals(writer));
+    }
+```
+* deleteQuestion() : 답변 삭제 가능한지 체크 후(canDeleteAnswer) 삭제 가능하면 question의 deleted를 true로 바꾸고 question이 가지고 있는 answers들을 각각 삭제한다.  
+
+* canDeleteAnswer() : answer가 비어있으면 질문 삭제 가능하니 true반환 아니면
+answers들의 deleted가 false인 것들을 찾아 질문 작성자와 답변 작성자가 같은지를 체크해서
+한명이라도 다르면 질문을 삭제 할 수 없으므로 false를 날린다.

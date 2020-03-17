@@ -3,7 +3,7 @@ package com.codesquad.qna.web;
 import com.codesquad.qna.domain.Question;
 import com.codesquad.qna.domain.User;
 import com.codesquad.qna.repository.AnswerRepository;
-import com.codesquad.qna.repository.QuestionRepository;
+import com.codesquad.qna.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +24,7 @@ import static com.codesquad.qna.web.HttpSessionUtils.getUserFromSession;
 public class QuestionController {
 
     @Autowired
-    private QuestionRepository questionRepository;
+    private QuestionService questionService;
 
     @Autowired
     private AnswerRepository answerRepository;
@@ -39,13 +39,13 @@ public class QuestionController {
     public String create(Question question, Model model, HttpSession session) {
         User loginUser = getUserFromSession(session);
         Question createdQuestion = new Question(loginUser, question);
-        questionRepository.save(createdQuestion);
+        questionService.save(createdQuestion);
         return REDIRECT_MAIN.getUrl();
     }
 
     @GetMapping("/{id}")
     public String read(@PathVariable Long id, Model model, HttpSession session) {
-        Question question = findById(id);
+        Question question = questionService.findById(id);
         model.addAttribute("question", question);
 
         if (getUserFromSession(session).isIdEquals(question)) {
@@ -59,8 +59,7 @@ public class QuestionController {
     @GetMapping("/{id}/update")
     public String updateForm(@PathVariable Long id, HttpSession session, Model model) {
         User loginUser = getUserFromSession(session);
-        Question updatingQuestion = findById(id);
-
+        Question updatingQuestion = questionService.findById(id);
         loginUser.hasPermission(updatingQuestion);
         model.addAttribute("updatingQuestion", updatingQuestion);
         return "qna/form";
@@ -69,21 +68,18 @@ public class QuestionController {
     @PutMapping("/{id}")
     public String update(@PathVariable Long id, HttpSession session, Question updatedQuestion) {
         User loginUser = getUserFromSession(session);
-        Question question = findById(id);
-
+        Question question = questionService.findById(id);
         loginUser.hasPermission(question);
-        question.update(updatedQuestion);
-        questionRepository.save(question);
+        questionService.update(question, updatedQuestion);
         return "redirect:/questions/{id}";
     }
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id, HttpSession session) {
         User loginUser = getUserFromSession(session);
-        Question question = findById(id);
-
+        Question question = questionService.findById(id);
         loginUser.hasPermission(question);
-        questionRepository.delete(question);
+        questionService.delete(question);
         return REDIRECT_MAIN.getUrl();
     }
 }

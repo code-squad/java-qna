@@ -1,20 +1,14 @@
 package com.codessquad.qna.controller;
 
-import com.codessquad.qna.repository.QuestionRepository;
 import com.codessquad.qna.util.Paths;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class HomeController {
-    @Autowired
-    private QuestionRepository questionRepository;
 
     @GetMapping("/")
-    public String showQuestionList(Model model) {
-        model.addAttribute("questions", questionRepository.findAllByDeletedFalse());
+    public String showQuestionList() {
         return Paths.HOME_TEMPLATE;
     }
 }

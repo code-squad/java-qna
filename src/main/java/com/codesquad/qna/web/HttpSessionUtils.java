@@ -13,12 +13,10 @@ public class HttpSessionUtils {
     }
 
     public static User getUserFromSession(HttpSession session) {
-        return (User) session.getAttribute(USER_SESSION_KEY);
-    }
-
-    public static void checkLogin(HttpSession session) {
-        if (getUserFromSession(session) == null) {
+        User loginUser = (User) session.getAttribute(USER_SESSION_KEY);
+        if (loginUser == null) {
             throw UnauthorizedException.notLogin();
         }
+        return loginUser;
     }
 }

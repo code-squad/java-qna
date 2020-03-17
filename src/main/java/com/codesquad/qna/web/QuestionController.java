@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpSession;
 
-import static com.codesquad.qna.web.HttpSessionUtils.checkLogin;
 import static com.codesquad.qna.web.HttpSessionUtils.getUserFromSession;
 
 @Controller
@@ -32,14 +31,12 @@ public class QuestionController {
 
     @GetMapping("/create")
     public String createForm(HttpSession session) {
-        checkLogin(session);
+        getUserFromSession(session);
         return "qna/form";
     }
 
     @PostMapping("")
     public String create(Question question, Model model, HttpSession session) {
-        checkLogin(session);
-
         User loginUser = getUserFromSession(session);
         Question createdQuestion = new Question(loginUser, question);
 
@@ -52,8 +49,6 @@ public class QuestionController {
         Question question = findById(id);
         model.addAttribute("question", question);
 
-        checkLogin(session);
-
         if (getUserFromSession(session).isIdEquals(question)) {
             model.addAttribute("hasPermissionUser", true);
         }
@@ -64,8 +59,6 @@ public class QuestionController {
 
     @GetMapping("/{id}/update")
     public String updateForm(@PathVariable Long id, HttpSession session, Model model) {
-        checkLogin(session);
-
         User loginUser = getUserFromSession(session);
         Question updatingQuestion = findById(id);
 
@@ -76,8 +69,6 @@ public class QuestionController {
 
     @PutMapping("/{id}")
     public String update(@PathVariable Long id, HttpSession session, Question updatedQuestion) {
-        checkLogin(session);
-
         User loginUser = getUserFromSession(session);
         Question question = findById(id);
 
@@ -89,8 +80,6 @@ public class QuestionController {
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id, HttpSession session) {
-        checkLogin(session);
-
         User loginUser = getUserFromSession(session);
         Question question = findById(id);
 

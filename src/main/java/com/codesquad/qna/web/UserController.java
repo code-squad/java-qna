@@ -17,9 +17,9 @@ import javax.validation.ConstraintViolationException;
 import java.util.Optional;
 
 import static com.codesquad.qna.UrlStrings.REDIRECT_LOGIN_FORM;
+import static com.codesquad.qna.UrlStrings.REDIRECT_MAIN;
 import static com.codesquad.qna.UrlStrings.REDIRECT_USERS_DATA;
 import static com.codesquad.qna.web.HttpSessionUtils.USER_SESSION_KEY;
-import static com.codesquad.qna.web.HttpSessionUtils.checkLogin;
 import static com.codesquad.qna.web.HttpSessionUtils.getUserFromSession;
 
 @Controller
@@ -43,13 +43,13 @@ public class UserController {
         }
 
         session.setAttribute(USER_SESSION_KEY, user);
-        return "redirect:/";
+        return REDIRECT_MAIN.getUrl();
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.removeAttribute(USER_SESSION_KEY);
-        return "redirect:/";
+        return REDIRECT_MAIN.getUrl();
     }
 
     @GetMapping("/create")
@@ -72,24 +72,19 @@ public class UserController {
 
     @GetMapping("/{id}/update")
     public String checkPasswordForm(@PathVariable Long id, Model model, HttpSession session) {
-        checkLogin(session);
-
         User loginUser = getUserFromSession(session);
         loginUser.hasPermission(id);
-
         model.addAttribute("user", loginUser);
         return "/user/checkForm";
     }
 
     @PostMapping("/{id}/update")
     public String updateForm(@PathVariable Long id, String password, Model model, HttpSession session) {
-        checkLogin(session);
-
         User loginUser = getUserFromSession(session);
         loginUser.hasPermission(id);
 
         if (!loginUser.isPasswordEquals(password)) {
-            return "redirect:/users/{id}";
+            return "redirect:/users/{id}/update";
         }
 
         model.addAttribute("user", loginUser);
@@ -98,7 +93,6 @@ public class UserController {
 
     @PutMapping("/{id}")
     public String updateUser(@PathVariable Long id, User updateUser, HttpSession session) {
-        checkLogin(session);
         User loginUser = getUserFromSession(session);
         userService.update(id, loginUser, updateUser);
         return REDIRECT_USERS_DATA.getUrl();

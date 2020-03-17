@@ -29,6 +29,7 @@ public class Answer extends AbstractEntity {
         this.writer = writer;
         this.question = question;
         this.contents = contents;
+        question.increaseReplyCount();
     }
 
     public Question getQuestion() {

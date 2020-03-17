@@ -14,6 +14,9 @@ public class AnswerServiceImpl implements AnswerService {
     @Autowired
     private AnswerRepository answerRepository;
 
+    @Autowired
+    private QuestionService questionService;
+
     @Override
     public List<Answer> findAllByQuestionId(Long questionId) {
         return answerRepository.findByQuestionId(questionId);
@@ -36,7 +39,8 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public void delete(Answer answer) {
+    public void delete(Answer answer, Long questionId) {
+        questionService.findById(questionId).decreaseReplyCount();
         answerRepository.delete(answer);
     }
 }

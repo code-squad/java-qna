@@ -66,7 +66,7 @@ public class AnswerController {
         User loginUser = getUserFromSession(session);
         Answer answer = answerService.findByQuestionIdAndId(questionId, id);
         loginUser.hasPermission(answer);
-        answerService.delete(answer);
+        answerService.delete(answer, questionId);
         return REDIRECT_QUESTION_SHOW.getUrl();
     }
 

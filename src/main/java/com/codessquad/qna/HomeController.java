@@ -9,7 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,20 +31,20 @@ public class HomeController {
     public String viewWelcomePage(Model model) {
         Page page = initPage();
         this.totalPages = page.getTotalPages();
-        List<Page> pages = createPages(page.getTotalPages());
-        model.addAttribute("pages", pages.subList(firstPage, lastPage));
-        model.addAttribute("questions", pages.get(INITIAL_PAGE_NUMBER));
+        List<PageWrapper> pageWrappers = createPages(this.totalPages);
+        model.addAttribute("pageWrappers", pageWrappers.subList(firstPage, lastPage));
+        model.addAttribute("questions", pageWrappers.get(INITIAL_PAGE_NUMBER).getPage());
         return "/index";
     }
 
-    @GetMapping("/{pageNumber}")
-    public String viewQuestionList(@PathVariable int pageNumber, Model model) {
-        Page page = initPage();
-        List<Page> pages = createPages(page.getTotalPages());
-        model.addAttribute("pages", pages.subList(firstPage, lastPage));
-        model.addAttribute("questions", pages.get(pageNumber));
-        return "/index";
-    }
+//    @GetMapping("/{pageNumber}")
+//    public String viewQuestionList(@PathVariable int pageNumber, Model model) {
+//        Page page = initPage();
+//        List<Page> pages = createPages(page.getTotalPages());
+//        model.addAttribute("pages", pages.subList(firstPage, lastPage));
+//        model.addAttribute("questions", pages.get(pageNumber));
+//        return "/index";
+//    }
 
     @GetMapping("/moveNext")
     public String moveNext() {
@@ -86,13 +85,13 @@ public class HomeController {
         return page;
     }
 
-    public List<Page> createPages(int totalPages) {
+    public List<PageWrapper> createPages(int totalPages) {
         Page page;
-        List<Page> pages = new ArrayList<>();
-        for (int i = 1; i < totalPages; i++) {
+        List<PageWrapper> pageWrappers = new ArrayList<>();
+        for (int i = 0; i < totalPages; i++) {
             page = createPage(i);
-            pages.add(page);
+            pageWrappers.add(new PageWrapper(page, i + 1));
         }
-        return pages;
+        return pageWrappers;
     }
 }

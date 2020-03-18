@@ -42,7 +42,7 @@ public class HomeController {
     public String viewQuestionList(@PathVariable int pageNumber, Model model) {
         Page page = initPage();
         List<Page> pages = createPages(page.getTotalPages());
-        model.addAttribute("pages", pages.subList(14, 16));
+        model.addAttribute("pages", pages.subList(firstPage, lastPage));
         model.addAttribute("questions", pages.get(pageNumber));
         return "/index";
     }

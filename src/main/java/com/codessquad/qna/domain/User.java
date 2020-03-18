@@ -1,34 +1,22 @@
 package com.codessquad.qna.domain;
 
-import javax.persistence.*;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
 
 @Entity
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class User extends AbstractEntity {
     @Column(nullable = false, length = 20)
+    @JsonProperty
     private String userId;
+    @JsonIgnore
     private String password;
+    @JsonProperty
     private String name;
+    @JsonProperty
     private String email;
-
-    @OneToMany(mappedBy = "writer")
-    @OrderBy("id asc")
-    private List<Question> questions;
-    @OneToMany(mappedBy = "writer")
-    @OrderBy("id asc")
-    private List<Answer> answers;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getUserId() {
         return userId;
@@ -59,44 +47,20 @@ public class User {
     }
 
     public void setEmail(String email) {
-        this.email = email;
-    }
+        this.email = email; }
 
-    public List<Question> getQuestions() {
-        return questions;
-    }
-
-    public void setQuestions(List<Question> questions) {
-        this.questions = questions;
-    }
-
-    public List<Answer> getAnswers() {
-        return answers;
-    }
-
-    public void setAnswers(List<Answer> answers) {
-        this.answers = answers;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", userId='" + userId + '\'' +
-                ", password='" + password + '\'' +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                '}';
-    }
-
-    public void update(String name, String email, String newPassword) {
-        this.name = name;
-        this.email = email;
-        this.password = newPassword;
+    public void update(UserUpdateDTO userUpdateDTO) {
+        this.name = userUpdateDTO.getName();
+        this.email = userUpdateDTO.getEmail();
+        this.password = userUpdateDTO.getPassword();
     }
 
     public boolean notMatchId(Long id) {
-        return !id.equals(this.id);
+        return !id.equals(this.getId());
+    }
+
+    public boolean notMatchPassword(UserUpdateDTO userUpdateDTO) {
+        return !userUpdateDTO.getPassword().equals(this.password);
     }
 
     public boolean notMatchPassword(String password) {

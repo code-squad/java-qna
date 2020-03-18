@@ -1,31 +1,34 @@
 package com.codessquad.qna.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Entity
-public class Question {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Question extends AbstractEntity {
     @Column(nullable = false)
+    @JsonProperty
     private String title;
-    private LocalDateTime createdDate;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    @JsonProperty
     private User writer;
 
     @OneToMany(mappedBy = "question")
     @OrderBy("id asc")
+    @JsonIgnore
     private List<Answer> answers;
 
     @Lob
+    @JsonProperty
     private String contents;
+    @JsonProperty
     private boolean deleted;
+    @JsonProperty
+    private Integer countOfAnswer;
 
     public Question() {
     }
@@ -34,8 +37,8 @@ public class Question {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-        createdDate = LocalDateTime.now();
-        deleted = false;
+        this.deleted = false;
+        this.countOfAnswer = 0;
     }
 
     public boolean isDeleted() {
@@ -46,28 +49,12 @@ public class Question {
         this.deleted = deleted;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getTitle() {
         return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
     }
 
     public User getWriter() {
@@ -94,33 +81,17 @@ public class Question {
         this.contents = contents;
     }
 
-    public long getCountOfAnswers() {
-        return answers.stream().filter(answer -> !answer.isDeleted()).count();
-    }
-
-    @Override
-    public String toString() {
-        return "Question{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", createdDate=" + createdDate +
-                ", writer=" + writer +
-                ", answers=" + answers +
-                ", contents='" + contents + '\'' +
-                '}';
+    public Integer getCountOfAnswer() {
+        return this.countOfAnswer;
     }
 
     public void update(String title, String contents) {
         this.title = title;
         this.contents = contents;
-        this.createdDate = LocalDateTime.now();
     }
 
-    public String getFormattedCreatedDate() {
-        if (createdDate == null) {
-            return "";
-        }
-        return createdDate.format(DateTimeFormatter.ofPattern("YYYY-MM-SS HH:mm:ss"));
+    public boolean isDeletable() {
+        return isNoAnswers() || isSameBetweenWritersOfAnswers();
     }
 
     public boolean isNoAnswers() {
@@ -128,13 +99,19 @@ public class Question {
     }
 
     public boolean isSameBetweenWritersOfAnswers() {
-        long countOfSameWriter = answers.stream()
-                .filter(answer -> answer.getWriter() == writer).count();
-        return countOfSameWriter == answers.size();
+        return answers.stream().allMatch(answer -> answer.matchWriter(this.writer));
     }
 
     public void delete() {
         deleted = true;
         answers.forEach(Answer::delete);
+    }
+
+    public void addAnswer() {
+        this.countOfAnswer += 1;
+    }
+
+    public void deleteAnswer() {
+        this.countOfAnswer -= 1;
     }
 }

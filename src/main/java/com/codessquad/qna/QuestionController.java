@@ -4,6 +4,8 @@ import com.codessquad.qna.domain.AnswerRepository;
 import com.codessquad.qna.domain.Question;
 import com.codessquad.qna.domain.QuestionRepository;
 import com.codessquad.qna.domain.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +16,8 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
+    private static final Logger logger = LoggerFactory.getLogger(QuestionController.class);
+
     @Autowired
     private QuestionRepository questionRepository;
     @Autowired
@@ -23,6 +27,7 @@ public class QuestionController {
     public String form(HttpSession httpSession, Model model) {
         try {
             hasPermission(httpSession);
+            logger.debug("This is DEBUG Log!");
             return "question/questionForm";
         } catch (IllegalStateException e) {
             model.addAttribute("errorMessage", e.getMessage());
@@ -47,8 +52,8 @@ public class QuestionController {
 
     @GetMapping("/{id}")
     public String detailPage(@PathVariable("id") Long questionId, Model model) {
-        model.addAttribute("question", findQuestionById(questionRepository, questionId));
-        model.addAttribute("answers", answerRepository.findByQuestionIdAndDeletedFalse(questionId));
+        model.addAttribute("question", findQuestionById(questionId));
+        model.addAttribute("answers", answerRepository.findByQuestionIdAndDeletedFalseOrderByIdDesc(questionId));
         return "question/show";
     }
 
@@ -59,7 +64,7 @@ public class QuestionController {
                              Model model) {
         try {
             hasPermission(httpSession, writer);
-            model.addAttribute("question", findQuestionById(questionRepository, id));
+            model.addAttribute("question", findQuestionById(id));
             return "question/updateForm";
         } catch (IllegalStateException e) {
             model.addAttribute("errorMessage", e.getMessage());
@@ -75,7 +80,7 @@ public class QuestionController {
                          Model model) {
         try {
             hasPermission(httpSession, writer);
-            Question question = findQuestionById(questionRepository, id);
+            Question question = findQuestionById(id);
             question.update(title, contents);
             questionRepository.save(question);
             return "redirect:/questions/{id}";
@@ -92,8 +97,8 @@ public class QuestionController {
                          Model model) {
         try {
             hasPermission(httpSession, writer);
-            Question question = findQuestionById(questionRepository, id);
-            if (question.isNoAnswers() || question.isSameBetweenWritersOfAnswers()) {
+            Question question = findQuestionById(id);
+            if (question.isDeletable()) {
                 question.delete();
                 questionRepository.save(question);
                 return "redirect:/";
@@ -105,7 +110,7 @@ public class QuestionController {
         }
     }
 
-    private Question findQuestionById(QuestionRepository questionRepository, Long id) {
+    private Question findQuestionById(Long id) {
         return questionRepository.findById(id).orElseThrow(() ->
                 new IllegalStateException("There is no question."));
     }

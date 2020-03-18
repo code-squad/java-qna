@@ -1,27 +1,25 @@
 package com.codessquad.qna.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Entity
-public class Answer {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Answer extends AbstractEntity {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
+    @JsonProperty
     private User writer;
 
     @Lob
+    @JsonProperty
     private String contents;
-    private LocalDateTime createdDate;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_question"))
+    @JsonProperty
     private Question question;
+    @JsonProperty
     private boolean deleted;
 
     public Answer() {
@@ -31,8 +29,7 @@ public class Answer {
         this.question = question;
         this.contents = contents;
         this.writer = writer;
-        this.createdDate = LocalDateTime.now();
-        deleted = false;
+        this.deleted = false;
     }
 
     public boolean isDeleted() {
@@ -41,14 +38,6 @@ public class Answer {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public User getWriter() {
@@ -67,14 +56,6 @@ public class Answer {
         this.contents = contents;
     }
 
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
     public Question getQuestion() {
         return question;
     }
@@ -85,17 +66,13 @@ public class Answer {
 
     public void update(String contents) {
         this.contents = contents;
-        this.createdDate = LocalDateTime.now();
-    }
-
-    public String getFormattedCreatedDate() {
-        if (createdDate == null) {
-            return "";
-        }
-        return createdDate.format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:ss"));
     }
 
     public void delete() {
-        deleted = true;
+        this.deleted = true;
+    }
+
+    public boolean matchWriter(User writer) {
+        return this.writer == writer;
     }
 }

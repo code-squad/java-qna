@@ -1,49 +1,51 @@
 package com.codessquad.qna;
 
 import com.codessquad.qna.domain.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
-@Controller
-@RequestMapping("/questions")
-public class AnswerController {
+@RestController
+@RequestMapping("/api/questions")
+public class ApiAnswerController {
+    private final Logger logger = LoggerFactory.getLogger(ApiAnswerController.class);
+
     @Autowired
     private AnswerRepository answerRepository;
     @Autowired
     private QuestionRepository questionRepository;
 
     @PostMapping("/{questionId}/answers")
-    public String answer(@PathVariable Long questionId,
+    public Answer create(@PathVariable Long questionId,
                          String contents,
                          HttpSession httpSession,
                          Model model) {
         try {
-            User sessionedUser = HttpSessionUtils.getUserFromSession(httpSession);
             hasPermission(httpSession);
-            Question question = findQuestionById(questionRepository, questionId);
+            User sessionedUser = HttpSessionUtils.getUserFromSession(httpSession);
+            Question question = findQuestionById(questionId);
             Answer answer = new Answer(question, contents, sessionedUser);
-            answerRepository.save(answer);
-            return String.format("redirect:/questions/%d", questionId);
+            question.addAnswer();
+            return answerRepository.save(answer);
         } catch (IllegalStateException e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "/user/login";
+            return null;
         }
     }
 
-    @GetMapping("/{questionId}/answers/{id}/{writer}/form")
+    @GetMapping("/{questionId}/answers/{answerId}/{writer}/form")
     public String updateForm(@PathVariable Long questionId,
-                             @PathVariable("id") Long answerId,
+                             @PathVariable Long answerId,
                              @PathVariable String writer,
                              HttpSession httpSession,
                              Model model) {
         try {
             hasPermission(httpSession, writer);
-            model.addAttribute("question", findQuestionById(questionRepository, questionId));
-            model.addAttribute("answer", findAnswerById(answerRepository, answerId));
+            model.addAttribute("question", findQuestionById(questionId));
+            model.addAttribute("answer", findAnswerById(answerId));
             return "answer/updateForm";
         } catch (IllegalStateException e) {
             model.addAttribute("errorMessage", e.getMessage());
@@ -51,14 +53,14 @@ public class AnswerController {
         }
     }
 
-    @PutMapping("/{questionId}/answers/{answer.id}/update")
-    public String update(@PathVariable("answer.id") Long answerId,
+    @PutMapping("/{questionId}/answers/{answerId}/update")
+    public String update(@PathVariable Long answerId,
                          String contents,
                          HttpSession httpSession,
                          Model model) {
         try {
             hasPermission(httpSession);
-            Answer answer = findAnswerById(answerRepository, answerId);
+            Answer answer = findAnswerById(answerId);
             answer.update(contents);
             answerRepository.save(answer);
             return "redirect:/questions/{questionId}";
@@ -68,20 +70,23 @@ public class AnswerController {
         }
     }
 
-    @DeleteMapping("/{questionId}/answers/{id}/{writer}/delete")
-    public String delete(@PathVariable("id") Long answerId,
+    @DeleteMapping("/{questionId}/answers/{answerId}/{writer}/delete")
+    public Result delete(@PathVariable Long answerId,
                          @PathVariable String writer,
+                         @PathVariable Long questionId,
                          HttpSession httpSession,
                          Model model) {
         try {
             hasPermission(httpSession, writer);
-            Answer answer = findAnswerById(answerRepository, answerId);
+            Answer answer = findAnswerById(answerId);
             answer.delete();
+            Question question = questionRepository.findById(questionId).orElseThrow(() ->
+                    new IllegalStateException("There is no answer"));
+            question.deleteAnswer();
             answerRepository.save(answer);
-            return "redirect:/questions/{questionId}";
+            return Result.ok();
         } catch (IllegalStateException e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "/user/login";
+            return Result.fail("작성자만 삭제할 수 있습니다.");
         }
     }
 
@@ -105,12 +110,12 @@ public class AnswerController {
         }
     }
 
-    private Answer findAnswerById(AnswerRepository answerRepository, Long answerId) {
+    private Answer findAnswerById(Long answerId) {
         return answerRepository.findById(answerId).orElseThrow(() ->
                 new IllegalStateException("There is no answer"));
     }
 
-    private Question findQuestionById(QuestionRepository questionRepository, Long questionId) {
+    private Question findQuestionById(Long questionId) {
         return questionRepository.findById(questionId).orElseThrow(() ->
                 new IllegalStateException("There is no question."));
     }

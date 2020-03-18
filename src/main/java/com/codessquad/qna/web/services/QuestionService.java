@@ -28,4 +28,8 @@ public class QuestionService {
     public void edit(Question targetQuestion, Question newQuestion) {
         questionRepository.save(targetQuestion.merge(newQuestion));
     }
+
+    public void delete(Question targetQuestion) {
+        questionRepository.delete(targetQuestion);
+    }
 }

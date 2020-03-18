@@ -54,4 +54,12 @@ public class QuestionController {
         questionService.edit(targetQuestion, newQuestion);
         return String.format("redirect:/questions/%d", targetQuestionId);
     }
+
+    @DeleteMapping("/{id}")
+    public String deleteQuestion(HttpServletRequest request, @PathVariable("id") Long targetQuestionId) {
+        Question targetQuestion = questionService.getQuestionById(targetQuestionId);
+        authService.hasAuthorization(request, targetQuestion);
+        questionService.delete(targetQuestion);
+        return "redirect:/";
+    }
 }

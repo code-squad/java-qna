@@ -5,15 +5,15 @@
 {{#partial "main"}}
 {{#question}}
 
-<div class="p-3 border">
+<div class="p-4 border">
     {{#question}}
     <div>
-        <h2 class="pb-3" style="border-bottom: 1px dashed rgb(222, 226, 230)">{{question.title}}</h2>
-        <div class="media border-bottom">
-            <img alt="..." class="mr-3" src="/profile.jpeg" style="border-radius: 100%; max-width: 50px;">
+        <h2 class="mb-0 pb-3" style="border-bottom: 1px dashed rgb(222, 226, 230)">{{question.title}}</h2>
+        <div class="media border-bottom align-items-center py-2">
+            <img alt="프로필 사진" class="mr-3" src="/profile.jpeg" style="border-radius: 100%; max-width: 50px;">
             <div class="media-body">
                 <h5><a href="/users/{{writer.id}}">{{writer.accountId}}</a></h5>
-                <p style="font-size: 0.75rem;">2020-03-02 11:23</p>
+                <p class="text-secondary mb-0" style="font-size: 0.75rem;">{{createdTime}}</p>
             </div>
         </div>
     </div>
@@ -25,20 +25,23 @@
 
         {{#eq authenticationId writer.id}}
         <div class="m-3">
-            <a class="badge badge-pill badge-primary" href="/questions/{{question.id}}/updateForm">수정</a>
-            <a class="badge badge-pill badge-primary" href="#">삭제</a>
+            <a class="btn btn-outline-primary btn-sm" href="/questions/{{question.id}}/updateForm" role="button">수정</a>
+            <form action="/questions/{{id}}" class="d-inline" method="post">
+                <input name="_method" type="hidden" value="delete">
+                <button class="btn btn-outline-primary btn-sm" type="submit">삭제</button>
+            </form>
         </div>
         {{/eq}}
     </div>
 
     <div class="ml-3 mr-3 mb-3">
 
-        <div class="media mt-3 border-bottom">
-            <img alt="..." class="mr-3" src="/profile.jpeg" style="border-radius: 100%; max-width: 50px;">
+        <div class="media border-bottom align-items-center py-2">
+            <img alt="프로필 사진" class="mr-3" src="/profile.jpeg" style="border-radius: 100%; max-width: 50px;">
             <div class="media-body">
-                <h5><a href="/users/{{writer.id}}">Dingo</a></h5>
+                <h5><a href="/users/{{writer.id}}">{{writer.accountId}}</a></h5>
                 <p class="mb-0">오 나도 몰랐는데 공부 해볼까?</p>
-                <p class="text-secondary" style="font-size: 0.75rem;">2020-03-02 11:23</p>
+                <p class="text-secondary mb-0" style="font-size: 0.75rem;">{{createdTime}}</p>
             </div>
         </div>
 

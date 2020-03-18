@@ -1,135 +1,115 @@
-# step3. 로그인 구현
+# step4. 객체-관계 매핑
 
 ## comment 사항
 
-- [x] 메서드 이름은 동사로 짓자. (QuestionController에 그냥 지은 이름이 많다.)
-- [x] REST API가이드를 보고 그에 맞게 URI를 지정하자.
-- [x] REST API가이드에 의하면 유저 목록조회는 GET, /user로 충분하다.
-
-```properties
-spring.mvc.hiddenmethod.filter.enabled=true //프로퍼티 적용할 것
-```
-
-- [x] findByID결과는 Optional로 get()으로 가져오는것을 자제해야한다. 데이터가 없을경우 예외발생함.
-- [ ] Optional 사용법을 알자.
-- [x] getter, setter를 안쓰는 방법을 찾아보자. User 객체의 메서드로 만들어보자. (근데 뭔뜻인지모름-> [자바지기 영상](https://www.youtube.com/watch?v=DaqWKDvdmAk))
-- [ ] 객체의 필드는 시간과 관련된 객체를 넣고(LocalDateTime같은)
-  포멧팅된 문자열을 가져오는데 사용될 메서드를 하나 더 만들어 사용하는 것은 어떨까?
+- [x] CheckedException을 지양하고 UnCheckedException (예외처리 참고: https://www.slipp.net/questions/350)
+- [x] 로그인 여부 체크하는 기능이 누락됨. 로그인 된 유저들만 호출할 수 있는 api라 생각이 되어도 서버에서는 꼼꼼하게 체크해 주는것이 기본! (QuestionController에서 로그인 유저 검사할 것.)
+- [x] CrudRepository <-(상속) JpaRepository 차후에 페이징 기능을 사용하기 때문에 JpaRepository로 하자.
+- [x] Question.java에서 super()제거
+- [x] 메서드(createQna -> createQuestion)으로 변경하기
+- [x] findById는 Optional로 변환하여 null체크하기.
+- [x] ModelAndView, Model 둘 중에 하나만 사용하기. 일관성있게 작성하자.
 
 ---
 
-Rest API 가이드 링크
+## 4.1 회원과 질문간의 관계 매핑 및 생성일 추가
 
-- [Put vs Post](https://1ambda.github.io/javascripts/rest-api-put-vs-post/)
-
-- [RESTful API 가이드](https://sanghaklee.tistory.com/57)
-
-- [RESTful 팁](https://spoqa.github.io/2012/02/27/rest-introduction.html)
-- [REST API 사용하기](https://meetup.toast.com/posts/92)
-
----
-
-## 로그인 기능 구현
-
-### 요구사항
-
-- [x] 로그인이 가능해야 한다.
-
-- [x] 현재 상태가 로그인 상태이면 상단 메뉴가 "로그아웃", "개인정보수정"이 나타나야 하며,  
-
-  로그아웃 상태이면 상단 메뉴가 "로그인", "회원가입"이 나타나야 한다.
+- User와 Question 간의 관계를 매핑한다. User는 너무 많은 곳에 사용되기 때문에 User에서 관계를 매핑하기 보다는 Question에서 @ManyToOne 관계를 매핑하고 있다.
+- Question에 생성일을 추가한다.
 
 
 
-## 로그인에 따른 메뉴 처리 구현
+## 4.2 질문 상세보기 기능
 
-#### 세션 설정
+- getOne이 아닌 왜 findById를 쓰는가?
 
-- Mustache에서 HttpSession 데이터를 접근하기 위한 설정(application.properties)
+Optional로 처리한다면 null값 처리하기가 편하다.
 
-```properties
-handlebars.expose-session-attributes=true
-```
+내가 처리한 exception이 Runtime(Unchecked)인지 아닌지를 꼭 구별하여 checkedException을 지양하자.
 
+## 4.3 질문 수정, 삭제 기능 구현
 
+Step3에서 구현완료. String.format이 느리다고 한다. StringBuilder나 StringBuffer로 바꿔보도록 해보자.
 
-## 테스트 데이터 추가
+## 4.4 수정/삭제 기능에 대한 보안 처리 및 LocalDateTime설정
 
-- src/main/resources 폴더에 data.sql 파일을 추가한다.
-- 사용자 데이터를 다음과 같이 insert sql 쿼리를 추가한다.
-
-```sql
-INSERT INTO USER (USER_ID, NAME, PASSWORD, EMAIL) VALUES ('kses1010', 'Sunny', '123', 'kses1010@gmail.com');
-INSERT INTO USER (USER_ID, NAME, PASSWORD, EMAIL) VALUES ('hihi', 'Hello', 'abc', 'hihi@naver.com');
-```
-
-테스트 데이터를 추가하니 다음과 같은 문구가 나타남.
+@Converter를 이용한 LocalDateTime설정.
 
 ```java
-WARNING: An illegal reflective access operation has occurred
-WARNING: Illegal reflective access by com.github.jknack.handlebars.context.MemberValueResolver (file:/home/sosah/.gradle/caches/modules-2/files-2.1/com.github.jknack/handlebars/4.0.6/ccf00179b6648523e5c64b9b5fb783d89e42401b/handlebars-4.0.6.jar) to method java.util.Collections$EmptyMap.isEmpty()
-WARNING: Please consider reporting this to the maintainers of com.github.jknack.handlebars.context.MemberValueResolver
-WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
-WARNING: All illegal access operations will be denied in a future release
-```
+@Converter(autoApply = true)
+public class LocalDateTimeConverter implements AttributeConverter<LocalDateTime, Timestamp> {
 
+    @Override
+    public Timestamp convertToDatabaseColumn(LocalDateTime localDateTime) {
+        return localDateTime != null ? Timestamp.valueOf(localDateTime) : null;
+    }
 
-
-## 개인정보 수정
-
-### 요구사항
-
-- [x] 회원가입한 사용자의 정보를 수정할 수 있어야 한다.
-- [x] 이름, 이메일만 수정할 수 있으며, 사용자 아이디는 수정할 수 없다.
-- [x] 비밀번호가 일치하는 경우에만 수정 가능하다.
-- [x] 다른 사용자의 정보를 수정하려는 경우 에러페이지를 만든 후 에러 메시지를 출력한다.
-
-### 리팩토링
-
-- boolean method is always inverted 가 나타나면 해당 메소드를 사용할 시 항상 !를 사용해야 한다.  다른사람들이 
-  헷갈리지 않도록 inverted 가 뜨면 다르게 표현해보자.
-
-- 해당 중복되는 코드가 있다. 차차 없애도록 노력하자.
-
----
-
-## 질문 기능 구현하기
-
-### 요구사항
-
-- [x] 사용자는 질문을 할 수 있으며, 모든 질문을 볼 수 있다.
-- [x] 단, 질문을 할 수 있는 사람은 로그인 사용자만 할 수 있다.
-- [x] 질문한 사람은 자신의 글을 수정/삭제할 수 있다.
-
-
-
-#### setter 대신 생성자로 처리하기
-
-```java
-Question newQuestion = new Question(sessionUser.getUserId(), title, contents);
-
-public class Question {
-	
-    public Question() {}
-
-    public Question(String writer, String title, String contents) {
-        super();
-        this.writer = writer;
-        this.title = title;
-        this.contents = contents;
+    @Override
+    public LocalDateTime convertToEntityAttribute(Timestamp timestamp) {
+        return timestamp != null ? timestamp.toLocalDateTime() : null;
     }
 }
 ```
 
-#### update후 해당 번호페이지 띄우기
+그대로 equals를 사용하면 해당 주소만 비교. 객체값을 비교하려면 hashCode()오버라이딩이 필요하다.
+
+## 4.5 답변 추가 및 목록 기능 구현
+
+### 요구사항
+
+- [x] 사용자는 질문 상세보기 화면에서 답변 목록을 볼 수 있다.
+- [x] 로그인한 사용자는 답변을 추가할 수 있다.
+- [x] 자신이 쓴 답변을 삭제할 수 있다.
+
+---
+
+@Lob: 글자수제한 커짐
+
+구현하던 와중에 빌드 에러가 났음.
+
+원인: AnswerRepository에서 잘못된 Annotaion사용이었음.
 
 ```java
-@PutMapping("/{id}")
-public String updateQna(@PathVariable Long id, String title, String contents) throws IllegalAccessException {
-        Question question = 		         questionRepository.findById(id).orElseThrow(IllegalAccessException::new);
-        question.update(title, contents);
-        questionRepository.save(question);
-        return String.format("redirect:/questions/%d",id); //여기처럼 하면됨.
-    }
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Invocation of init method failed; nested exception is org.hibernate.AnnotationException: Could not extract type parameter information from AttributeConverter implementation [com.codessquad.qna.answer.AnswerController]
 ```
+
+```java
+org.springframework.beans.factory.BeanCreationException.
+    org.hibernate.AnnotationException
+    Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/sosah/documents/java-qna/build/reports/tests/test/index.html
+
+```
+
+템플릿 사용시 변수명 제대로 확인할 것. 대문자인지 아닌지 꼭 확인할 것. (괜한 삽질함)
+
+@OneToMany(mappedBy="변수명") <=> @ManyToOne
+
+@OrderBy("id ASC"): 오름차순
+
+getter가 없으면 답변이 뜨지 않음. getter를 넣자.
+
+
+
+## 4.6 답변 삭제하기
+
+현재 show.html에서 question과 answer과 얽혀있어 삭제하기가 작동이 잘 되지 않는다.
+
+안뜨면 뭐다? getter문제다. 
+
+## 4.7 QuestionController 중복 코드 제거 리팩토링
+
+현재 JPA, 하이버네이트를 통해 DB Connection한다.
+
+![jpa](https://suhwan.dev/images/jpa_hibernate_repository/overall_design.png)
+
+
+
+- 복잡한 SQL을 사용하기엔 적합하지 않고 러닝커브가 너무 낮다. 배우는데 오래걸림.
+
+- 프로젝트 시작할 땐 Spring DATA JDBC 사용할 예정이다. 이런게 있다는것만 기억하자.
+
+
+
+
 

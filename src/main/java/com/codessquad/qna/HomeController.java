@@ -89,7 +89,7 @@ public class HomeController {
     public List<Page> createPages(int totalPages) {
         Page page;
         List<Page> pages = new ArrayList<>();
-        for (int i = 0; i < totalPages; i++) {
+        for (int i = 1; i < totalPages; i++) {
             page = createPage(i);
             pages.add(page);
         }

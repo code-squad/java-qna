@@ -39,8 +39,9 @@ public class UserController {
 
     @GetMapping("/{id}/updateForm")
     public String updateFormPage(HttpServletRequest request, @PathVariable("id") Long targetUserId, Model model) {
+        User requester = authService.getRequester(request);
         User targetUser = userService.getUserById(targetUserId);
-        authService.hasAuthorization(request, targetUser);
+        requester.hasAuthorization(targetUser);
         model.addAttribute("user", targetUser);
         return "users/updateForm";
     }
@@ -53,8 +54,9 @@ public class UserController {
 
     @PutMapping("/{id}")
     public String updateUser(HttpServletRequest request, @PathVariable("id") Long targetUserId, User newUser) {
+        User requester = authService.getRequester(request);
         User targetUser = userService.getUserById(targetUserId);
-        authService.hasAuthorization(request, targetUser);
+        requester.hasAuthorization(targetUser);
         userService.edit(targetUser, newUser);
         return "redirect:/users";
     }

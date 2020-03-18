@@ -1,5 +1,6 @@
 package com.codessquad.qna.domain;
 
+import com.codessquad.qna.exceptions.PermissionDeniedException;
 import com.codessquad.qna.exceptions.UnauthorizedException;
 
 import javax.persistence.*;
@@ -93,5 +94,15 @@ public class User {
         if (!password.equals(candidate.password)) {
             throw UnauthorizedException.noMatchPassword();
         }
+    }
+
+    public void hasAuthorization(User target) {
+        if (!equals(target)) {
+            throw new PermissionDeniedException();
+        }
+    }
+
+    public void hasAuthorization(Question target) {
+        hasAuthorization(target.getWriter());
     }
 }

@@ -1,6 +1,7 @@
 package com.codessquad.qna.web.controllers;
 
 import com.codessquad.qna.domain.Question;
+import com.codessquad.qna.domain.User;
 import com.codessquad.qna.web.services.AuthService;
 import com.codessquad.qna.web.services.QuestionService;
 import org.springframework.stereotype.Controller;
@@ -34,8 +35,9 @@ public class QuestionController {
 
     @GetMapping("/{id}/updateForm")
     public String updateFormPage(HttpServletRequest request, @PathVariable("id") Long targetQuestionId, Model model) {
+        User requester = authService.getRequester(request);
         Question targetQuestion = questionService.getQuestionById(targetQuestionId);
-        authService.hasAuthorization(request, targetQuestion);
+        requester.hasAuthorization(targetQuestion);
         model.addAttribute("question", targetQuestion);
         return "questions/updateForm";
     }
@@ -49,16 +51,18 @@ public class QuestionController {
 
     @PutMapping("/{id}")
     public String updateQuestion(HttpServletRequest request, @PathVariable("id") Long targetQuestionId, Question newQuestion) {
+        User requester = authService.getRequester(request);
         Question targetQuestion = questionService.getQuestionById(targetQuestionId);
-        authService.hasAuthorization(request, targetQuestion);
+        requester.hasAuthorization(targetQuestion);
         questionService.edit(targetQuestion, newQuestion);
         return String.format("redirect:/questions/%d", targetQuestionId);
     }
 
     @DeleteMapping("/{id}")
     public String deleteQuestion(HttpServletRequest request, @PathVariable("id") Long targetQuestionId) {
+        User requester = authService.getRequester(request);
         Question targetQuestion = questionService.getQuestionById(targetQuestionId);
-        authService.hasAuthorization(request, targetQuestion);
+        requester.hasAuthorization(targetQuestion);
         questionService.delete(targetQuestion);
         return "redirect:/";
     }

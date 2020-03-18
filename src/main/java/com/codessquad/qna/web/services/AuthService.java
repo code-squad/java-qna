@@ -1,9 +1,7 @@
 package com.codessquad.qna.web.services;
 
-import com.codessquad.qna.domain.Question;
 import com.codessquad.qna.domain.User;
 import com.codessquad.qna.domain.UserRepository;
-import com.codessquad.qna.exceptions.PermissionDeniedException;
 import com.codessquad.qna.exceptions.UnauthorizedException;
 import org.springframework.stereotype.Service;
 
@@ -54,21 +52,5 @@ public class AuthService {
         Long id = (Long) session.getAttribute(AUTHENTICATION_ID);
 
         return userRepository.findById(id).orElseThrow(() -> new RuntimeException("세션에 문제가 발생했어요."));
-    }
-
-    public void hasAuthorization(HttpServletRequest request, User targetUser) {
-        User requester = getRequester(request);
-
-        if (!requester.equals(targetUser)) {
-            throw new PermissionDeniedException();
-        }
-    }
-
-    public void hasAuthorization(HttpServletRequest request, Question question) {
-        User requester = getRequester(request);
-
-        if (!requester.equals(question.getWriter())) {
-            throw new PermissionDeniedException();
-        }
     }
 }

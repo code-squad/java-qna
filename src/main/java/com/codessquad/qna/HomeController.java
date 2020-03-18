@@ -39,6 +39,11 @@ public class HomeController {
         if (this.totalPages > lastPage) {
             model.addAttribute("next", next);
         }
+
+        Prev prev = new Prev();
+        if (this.firstPage != 1) {
+            model.addAttribute("prev", prev);
+        }
         return "/index";
     }
 
@@ -53,6 +58,11 @@ public class HomeController {
         Next next = new Next();
         if (this.totalPages > lastPage) {
             model.addAttribute("next", next);
+        }
+
+        Prev prev = new Prev();
+        if (this.firstPage != 1) {
+            model.addAttribute("prev", prev);
         }
         return "/index";
     }
@@ -92,11 +102,11 @@ public class HomeController {
     public String movePrev() {
         this.firstPage -= 5;
         this.lastPage -= 5;
-        if (firstPage < 1) {
-            this.firstPage = INITIAL_PAGE_NUMBER;
-        }
-        if (totalPages > 5 && lastPage < 5) {
-            lastPage = 5;
+//        if (firstPage < 1) {
+//            this.firstPage = INITIAL_PAGE_NUMBER;
+//        }
+        if (lastPage - firstPage != 4) {
+            lastPage = firstPage + 4;
         }
         return "redirect:/" + firstPage;
     }

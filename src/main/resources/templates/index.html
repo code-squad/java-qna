@@ -32,7 +32,9 @@
               <div class="col-md-3"></div>
               <div class="col-md-6 text-center">
                   <ul class="pagination center-block" style="display:inline-block;">
+                      {{#prev}}
                       <li><a href="/movePrev">«</a></li>
+                      {{/prev}}
                       {{#pageWrappers}}
                       <li><a href="/{{index}}">{{index}}</a></li>
                       {{/pageWrappers}}

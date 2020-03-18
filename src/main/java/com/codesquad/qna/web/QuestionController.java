@@ -1,5 +1,8 @@
 package com.codesquad.qna.web;
 
+import com.codesquad.qna.domain.Question;
+import com.codesquad.qna.domain.QuestionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +14,9 @@ import java.util.List;
 
 @Controller
 public class QuestionController {
-    List<Question> questionList = new ArrayList<>();
+
+    @Autowired
+    private QuestionRepository questionRepository;
 
     @GetMapping("/questions")
     public String questions() {
@@ -19,26 +24,22 @@ public class QuestionController {
     }
 
     @PostMapping("/questions")
-    public String writeQuestion(Question question) {
-        System.out.println(question);
-        long id = questionList.size() + 1;
-
-        question.setId(id);
-        questionList.add(question);
+    public String writeQuestion(Question question, Model model) {
+        questionRepository.save(question);
 
         return "redirect:/";
     }
 
-//    @GetMapping("")
-//    public String home(Model model) {
-//        model.addAttribute("questions", questionList);
-//
-//        return "index";
-//    }
+    @GetMapping("")
+    public String home(Model model) {
+        model.addAttribute("questions", questionRepository.findAll());
 
-    @GetMapping("/questions/{index}")
-    public String showQuestion(@PathVariable long index, Model model) {
-        Question selectedQuestion = questionList.get((int)index - 1);
+        return "index";
+    }
+
+    @GetMapping("/questions/{id}")
+    public String showQuestion(@PathVariable Long id, Model model) {
+        Question selectedQuestion = questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
         model.addAttribute("question", selectedQuestion);
 
         return "qna/show";

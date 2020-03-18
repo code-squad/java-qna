@@ -21,8 +21,8 @@ public class HomeController {
     private static final Logger log = LoggerFactory.getLogger(HomeController.class);
 
     private static final int INITIAL_PAGE_NUMBER = 0;
-    private static final int QUESTIONS_OF_PAGE = 2;
-    private static final int PAGES_ON_DISPLAY = 5;
+    private static final int QUESTIONS_OF_PAGE = 6;
+    private static final int LIMIT_OF_PAGES = 5;
     private int firstPage = 1;
     private int lastPage = 6;
     private int totalPage = 0;
@@ -31,7 +31,7 @@ public class HomeController {
     public String viewWelcomePage(Model model) {
         Page page = initPage();
         List<Page> pages = createPages(page.getTotalPages());
-        model.addAttribute("pages", subList(pages, firstPage, lastPage));//pages.subList(firstPage, lastPage));
+        model.addAttribute("pages", getSubPages(pages, firstPage, lastPage));
         model.addAttribute("questions", pages.get(INITIAL_PAGE_NUMBER));
         return "/index";
     }
@@ -40,11 +40,11 @@ public class HomeController {
     public String viewQuestionList(@PathVariable int pageNumber, Model model) {
         Page page = initPage();
         List<Page> pages = createPages(page.getTotalPages());
-        model.addAttribute("pages", subList(pages, firstPage, lastPage));//pages.subList(firstPage, lastPage));
+        model.addAttribute("pages", getSubPages(pages, firstPage, lastPage));
         log.info("pageNumber : {}", pageNumber);
-        log.info("firstPagef : {}", firstPage);
-        log.info("lastPagef : {}", lastPage);
-        log.info("totalPagef : {}", totalPage);
+        log.info("firstPage : {}", firstPage);
+        log.info("lastPage : {}", lastPage);
+        log.info("totalPage : {}", totalPage);
         model.addAttribute("questions", pages.get(pageNumber - 1));
         return "/index";
     }
@@ -62,11 +62,11 @@ public class HomeController {
     }
 
     public void plusPageCount() {
-        this.firstPage += 5;
-        this.lastPage += 5;
+        this.firstPage += LIMIT_OF_PAGES;
+        this.lastPage += LIMIT_OF_PAGES;
 
         if (totalPage < firstPage) {
-            firstPage -= 5;
+            firstPage -= LIMIT_OF_PAGES;
         }
         if (totalPage < lastPage) {
             lastPage = totalPage + 1;
@@ -75,23 +75,27 @@ public class HomeController {
 
     public void minusPageCount() {
         if (totalPage == lastPage - 1) {
-            lastPage += (5 - (lastPage - firstPage));
+            lastPage += (LIMIT_OF_PAGES - (lastPage - firstPage));
         }
-
-        this.firstPage -= 5;
-        this.lastPage -= 5;
+        this.firstPage -= LIMIT_OF_PAGES;
+        this.lastPage -= LIMIT_OF_PAGES;
 
         if (firstPage < INITIAL_PAGE_NUMBER) {
             firstPage = INITIAL_PAGE_NUMBER + 1;
         }
-        if (totalPage > 5 && lastPage < 5) {
-            lastPage = 5 + 1;
+        if (totalPage > LIMIT_OF_PAGES && lastPage < LIMIT_OF_PAGES) {
+            lastPage = LIMIT_OF_PAGES + 1;
         }
     }
 
     public Page initPage() {
         Page page = createPage(INITIAL_PAGE_NUMBER);
         this.totalPage = page.getTotalPages();
+
+        // 페이지 갯수가 5보다 작을 경우 이니셜값 변경
+        if (totalPage < LIMIT_OF_PAGES) {
+            lastPage = totalPage + 1;
+        }
         return page;
     }
 
@@ -111,9 +115,14 @@ public class HomeController {
         return pages;
     }
 
-    public List<Page> subList(List<Page> intputPages, int firstPage, int lastPage) {
-        List<Page> pages = intputPages.subList(firstPage, lastPage - 1);
-        pages.add(createPage(lastPage - 1));
+    public List<Page> getSubPages(List<Page> inputPages, int firstPage, int lastPage) {
+        // 마지막에만 페이지 추가
+        if (totalPage < lastPage) {
+            List<Page> pages = inputPages.subList(firstPage, lastPage - 1);
+            pages.add(createPage(lastPage - 1));
+            return pages;
+        }
+        List<Page> pages = inputPages.subList(firstPage, lastPage);
         return pages;
     }
 }

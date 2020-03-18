@@ -15,36 +15,33 @@ import java.util.List;
 
 @Controller
 public class HomeController {
-    @Autowired
-    private QuestionRepository questionRepository;
-
-    private static final Logger log = LoggerFactory.getLogger(HomeController.class);
-
     private static final int INITIAL_PAGE_NUMBER = 0;
-    private static final int QUESTIONS_OF_PAGE = 6;
-    private static final int LIMIT_OF_PAGES = 5;
+    private static final int QUESTIONS_OF_EACH_PAGE = 1;
+    private static final int SIZE_OF_PAGE_BAR = 5;
     private int firstPage = 1;
     private int lastPage = 6;
     private int totalPage = 0;
+    private static final Logger log = LoggerFactory.getLogger(HomeController.class);
+
+    @Autowired
+    private QuestionRepository questionRepository;
 
     @GetMapping("/")
     public String viewWelcomePage(Model model) {
-        Page page = initPage();
-        List<Page> pages = createPages(page.getTotalPages());
-        model.addAttribute("pages", getSubPages(pages, firstPage, lastPage));
+        initPage();
+        List<Page> pages = createPages(totalPage);
+        List<Page> subPages = isLastPageBar() ? getLastSubPages(pages) : getSubPages(pages);
+        model.addAttribute("pages", subPages);
         model.addAttribute("questions", pages.get(INITIAL_PAGE_NUMBER));
         return "/index";
     }
 
     @GetMapping("/{pageNumber}") // ?key=
     public String viewQuestionList(@PathVariable int pageNumber, Model model) {
-        Page page = initPage();
-        List<Page> pages = createPages(page.getTotalPages());
-        model.addAttribute("pages", getSubPages(pages, firstPage, lastPage));
-        log.info("pageNumber : {}", pageNumber);
-        log.info("firstPage : {}", firstPage);
-        log.info("lastPage : {}", lastPage);
-        log.info("totalPage : {}", totalPage);
+        initPage();
+        List<Page> pages = createPages(totalPage);
+        List<Page> subPages = isLastPageBar() ? getLastSubPages(pages) : getSubPages(pages);
+        model.addAttribute("pages", subPages);
         model.addAttribute("questions", pages.get(pageNumber - 1));
         return "/index";
     }
@@ -61,46 +58,16 @@ public class HomeController {
         return "redirect:/" + firstPage;
     }
 
-    public void plusPageCount() {
-        this.firstPage += LIMIT_OF_PAGES;
-        this.lastPage += LIMIT_OF_PAGES;
-
-        if (totalPage < firstPage) {
-            firstPage -= LIMIT_OF_PAGES;
-        }
-        if (totalPage < lastPage) {
-            lastPage = totalPage + 1;
-        }
-    }
-
-    public void minusPageCount() {
-        if (totalPage == lastPage - 1) {
-            lastPage += (LIMIT_OF_PAGES - (lastPage - firstPage));
-        }
-        this.firstPage -= LIMIT_OF_PAGES;
-        this.lastPage -= LIMIT_OF_PAGES;
-
-        if (firstPage < INITIAL_PAGE_NUMBER) {
-            firstPage = INITIAL_PAGE_NUMBER + 1;
-        }
-        if (totalPage > LIMIT_OF_PAGES && lastPage < LIMIT_OF_PAGES) {
-            lastPage = LIMIT_OF_PAGES + 1;
-        }
-    }
-
-    public Page initPage() {
+    public void initPage() {
         Page page = createPage(INITIAL_PAGE_NUMBER);
-        this.totalPage = page.getTotalPages();
-
-        // 페이지 갯수가 5보다 작을 경우 이니셜값 변경
-        if (totalPage < LIMIT_OF_PAGES) {
+        totalPage = page.getTotalPages();
+        if (totalPage < SIZE_OF_PAGE_BAR) {
             lastPage = totalPage + 1;
         }
-        return page;
     }
 
     public Page createPage(int index) {
-        PageRequest pageRequest = PageRequest.of(index, QUESTIONS_OF_PAGE);
+        PageRequest pageRequest = PageRequest.of(index, QUESTIONS_OF_EACH_PAGE);
         Page page = questionRepository.findAll(pageRequest);
         return page;
     }
@@ -115,14 +82,44 @@ public class HomeController {
         return pages;
     }
 
-    public List<Page> getSubPages(List<Page> inputPages, int firstPage, int lastPage) {
-        // 마지막에만 페이지 추가
-        if (totalPage < lastPage) {
-            List<Page> pages = inputPages.subList(firstPage, lastPage - 1);
-            pages.add(createPage(lastPage - 1));
-            return pages;
-        }
-        List<Page> pages = inputPages.subList(firstPage, lastPage);
+    public boolean isLastPageBar() {
+        return lastPage > totalPage;
+    }
+
+    public List<Page> getSubPages(List<Page> inputPages) {
+        return inputPages.subList(firstPage, lastPage);
+    }
+
+    public List<Page> getLastSubPages(List<Page> inputPages) {
+        List<Page> pages = inputPages.subList(firstPage, lastPage - 1);
+        pages.add(createPage(lastPage - 1));
         return pages;
+    }
+
+    public void plusPageCount() {
+        firstPage += SIZE_OF_PAGE_BAR;
+        lastPage += SIZE_OF_PAGE_BAR;
+
+        if (firstPage > totalPage) {
+            firstPage -= SIZE_OF_PAGE_BAR;
+        }
+        if (lastPage > totalPage) {
+            lastPage = totalPage + 1;
+        }
+    }
+
+    public void minusPageCount() {
+        if (totalPage == lastPage - 1) {
+            lastPage += (SIZE_OF_PAGE_BAR - (lastPage - firstPage));
+        }
+        firstPage -= SIZE_OF_PAGE_BAR;
+        lastPage -= SIZE_OF_PAGE_BAR;
+
+        if (firstPage < INITIAL_PAGE_NUMBER) {
+            firstPage = INITIAL_PAGE_NUMBER + 1;
+        }
+        if (totalPage > SIZE_OF_PAGE_BAR && lastPage < SIZE_OF_PAGE_BAR) {
+            lastPage = SIZE_OF_PAGE_BAR + 1;
+        }
     }
 }

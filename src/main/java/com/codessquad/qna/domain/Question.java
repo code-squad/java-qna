@@ -74,4 +74,10 @@ public class Question {
     public String getCreatedTime() {
         return dateTimeFormatter.format(createdAt);
     }
+
+    public Question merge(Question newQuestion) {
+        setTitle(newQuestion.title);
+        setContent(newQuestion.content);
+        return this;
+    }
 }

@@ -24,4 +24,8 @@ public class QuestionService {
     public void register(Question newQuestion) {
         questionRepository.save(newQuestion);
     }
+
+    public void edit(Question targetQuestion, Question newQuestion) {
+        questionRepository.save(targetQuestion.merge(newQuestion));
+    }
 }

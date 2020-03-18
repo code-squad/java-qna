@@ -5,10 +5,7 @@ import com.codessquad.qna.web.services.AuthService;
 import com.codessquad.qna.web.services.QuestionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -35,10 +32,26 @@ public class QuestionController {
         return "questions/createForm";
     }
 
-    @PostMapping("/questions")
+    @GetMapping("/{id}/updateForm")
+    public String updateFormPage(HttpServletRequest request, @PathVariable("id") Long targetQuestionId, Model model) {
+        Question targetQuestion = questionService.getQuestionById(targetQuestionId);
+        authService.hasAuthorization(request, targetQuestion);
+        model.addAttribute("question", targetQuestion);
+        return "questions/updateForm";
+    }
+
+    @PostMapping
     public String createQuestion(HttpServletRequest request, Question question) {
         question.setWriter(authService.getRequester(request));
         questionService.register(question);
         return "redirect:/";
+    }
+
+    @PutMapping("/{id}")
+    public String updateQuestion(HttpServletRequest request, @PathVariable("id") Long targetQuestionId, Question newQuestion) {
+        Question targetQuestion = questionService.getQuestionById(targetQuestionId);
+        authService.hasAuthorization(request, targetQuestion);
+        questionService.edit(targetQuestion, newQuestion);
+        return String.format("redirect:/questions/%d", targetQuestionId);
     }
 }

@@ -1,5 +1,6 @@
 package com.codessquad.qna.web.services;
 
+import com.codessquad.qna.domain.Question;
 import com.codessquad.qna.domain.User;
 import com.codessquad.qna.domain.UserRepository;
 import com.codessquad.qna.exceptions.PermissionDeniedException;
@@ -25,7 +26,7 @@ public class AuthService {
 
     public void validateAuthentication(HttpServletRequest request, User entrant) throws UnauthorizedException {
         Optional<User> optionalOrigin = userRepository.findByAccountId(entrant.getAccountId());
-        User origin = optionalOrigin.orElseThrow(() -> UnauthorizedException.noMatchUser());
+        User origin = optionalOrigin.orElseThrow(UnauthorizedException::noMatchUser);
         origin.verify(entrant);
 
         HttpSession session = request.getSession(true);
@@ -59,6 +60,14 @@ public class AuthService {
         User requester = getRequester(request);
 
         if (!requester.equals(targetUser)) {
+            throw new PermissionDeniedException();
+        }
+    }
+
+    public void hasAuthorization(HttpServletRequest request, Question question) {
+        User requester = getRequester(request);
+
+        if (!requester.equals(question.getWriter())) {
             throw new PermissionDeniedException();
         }
     }

@@ -17,13 +17,11 @@ import java.util.List;
 @Controller
 public class HomeController {
 
-    private Logger logger = LoggerFactory.getLogger(HomeController.class);
-
-    @Autowired
-    private QuestionRepository questionRepository;
-
     private static final int INITIAL_PAGE_NUMBER = 0;
     private static final int QUESTIONS_OF_PAGE = 1;
+    private Logger logger = LoggerFactory.getLogger(HomeController.class);
+    @Autowired
+    private QuestionRepository questionRepository;
     private int totalPages = 0;
     private int firstPage = 1;
     private int lastPage = 5;
@@ -33,14 +31,14 @@ public class HomeController {
         Page page = initPage();
         this.totalPages = page.getTotalPages();
         List<PageWrapper> pageWrappers = createPages(this.totalPages);
-        List<PageWrapper> partPageWrappers = new ArrayList<>();
-        for (int count = firstPage; count <= lastPage; count++) {
-            for (PageWrapper each : pageWrappers) {
-                if (each.getIndex() == count) partPageWrappers.add(each);
-            }
+        List<PageWrapper> footerPageNumbers = getFooterPageNumbers(pageWrappers);
+        model.addAttribute("pageWrappers", footerPageNumbers);
+        model.addAttribute("questions", getCurrentPage(pageWrappers, 1));
+
+        Next next = new Next();
+        if (this.totalPages > lastPage) {
+            model.addAttribute("next", next);
         }
-        model.addAttribute("pageWrappers", partPageWrappers);
-        model.addAttribute("questions", pageWrappers.get(INITIAL_PAGE_NUMBER).getPage());
         return "/index";
     }
 
@@ -48,9 +46,32 @@ public class HomeController {
     public String viewQuestionList(@PathVariable int index, Model model) {
         Page page = initPage();
         List<PageWrapper> pageWrappers = createPages(page.getTotalPages());
-        model.addAttribute("pageWrappers", pageWrappers.subList(firstPage, lastPage));
-        model.addAttribute("questions", pageWrappers.get(index - 1).getPage());
+        List<PageWrapper> footerPageNumbers = getFooterPageNumbers(pageWrappers);
+        model.addAttribute("pageWrappers", footerPageNumbers);
+        model.addAttribute("questions", getCurrentPage(pageWrappers, index));
+
+        Next next = new Next();
+        if (this.totalPages > lastPage) {
+            model.addAttribute("next", next);
+        }
         return "/index";
+    }
+
+    private List<PageWrapper> getFooterPageNumbers(List<PageWrapper> pageWrappers) {
+        List<PageWrapper> partPageWrappers = new ArrayList<>();
+        for (int count = firstPage; count <= lastPage; count++) {
+            for (PageWrapper each : pageWrappers) {
+                if (each.getIndex() == count) partPageWrappers.add(each);
+            }
+        }
+        return partPageWrappers;
+    }
+
+    public Page getCurrentPage(List<PageWrapper> pageWrappers, int index) {
+        for (PageWrapper each : pageWrappers) {
+            if (each.getIndex() == index) return each.getPage();
+        }
+        return null;
     }
 
     @GetMapping("/moveNext")
@@ -59,13 +80,11 @@ public class HomeController {
         this.lastPage += 5;
         if (this.lastPage > this.totalPages) {
             this.lastPage = this.totalPages;
-
         }
         if (this.firstPage > this.totalPages) {
             this.firstPage -= 5;
             logger.info("firstPage : {}", firstPage);
         }
-
         return "redirect:/" + firstPage;
     }
 

@@ -1,15 +1,54 @@
 {{#partial "main"}}
-<title>회원정보</title>
+<title>질문 보기</title>
 {{/partial}}
 
 {{#partial "main"}}
 {{#question}}
-<div class="card text-white bg-primary m-auto" style="max-width: 18rem;">
-    <div class="card-header">{{title}}</div>
-    <div class="card-body">
-        <p class="card-text">{{contents}}</p>
+
+<div class="p-3 border">
+    {{#question}}
+    <div>
+        <h2 class="pb-3" style="border-bottom: 1px dashed rgb(222, 226, 230)">{{question.title}}</h2>
+        <div class="media border-bottom">
+            <img alt="..." class="mr-3" src="/profile.jpeg" style="border-radius: 100%; max-width: 50px;">
+            <div class="media-body">
+                <h5><a href="/users/{{writer.id}}">{{writer.accountId}}</a></h5>
+                <p style="font-size: 0.75rem;">2020-03-02 11:23</p>
+            </div>
+        </div>
     </div>
+
+    <div class="border-bottom">
+        <div class="m-3">
+            {{question.content}}
+        </div>
+        <div class="m-3">
+            <span class="badge badge-pill badge-primary">수정</span>
+            <span class="badge badge-pill badge-primary">삭제</span>
+        </div>
+    </div>
+
+    <div class="ml-3 mr-3 mb-3">
+
+        <div class="media mt-3 border-bottom">
+            <img alt="..." class="mr-3" src="/profile.jpeg" style="border-radius: 100%; max-width: 50px;">
+            <div class="media-body">
+                <h5><a href="/users/{{writer.id}}">Dingo</a></h5>
+                <p class="mb-0">오 나도 몰랐는데 공부 해볼까?</p>
+                <p class="text-secondary" style="font-size: 0.75rem;">2020-03-02 11:23</p>
+            </div>
+        </div>
+
+        <form>
+            <div class="form-group">
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+            </div>
+            <button class="btn btn-outline-primary" type="button">답글</button>
+        </form>
+    </div>
+    {{/question}}
 </div>
+
 {{/question}}
 {{/partial}}
 

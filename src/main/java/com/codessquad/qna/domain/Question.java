@@ -21,7 +21,7 @@ public class Question {
     private String title;
 
     @Column
-    private String contents;
+    private String content;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -42,12 +42,12 @@ public class Question {
         this.title = title;
     }
 
-    public String getContents() {
-        return contents;
+    public String getContent() {
+        return content;
     }
 
-    public void setContents(String contents) {
-        this.contents = contents;
+    public void setContent(String contents) {
+        this.content = contents;
     }
 
     public User getWriter() {

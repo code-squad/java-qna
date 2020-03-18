@@ -12,10 +12,10 @@
     <tbody>
     {{#questions}}
     <tr>
-        <th scope="row">{{id}}</th>
+        <th scope="row">{{this.id}}</th>
         <td><a href="/questions/{{id}}">{{title}}</a></td>
         <td>{{createdTime}}</td>
-        <td><a href="/users/{{this.writer.id}}">{{this.writer.accountId}}</a></td>
+        <td><a href="/users/{{writer.id}}">{{writer.accountId}}</a></td>
     </tr>
     {{/questions}}
     </tbody>

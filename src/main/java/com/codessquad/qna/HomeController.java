@@ -1,5 +1,7 @@
 package com.codessquad.qna;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,53 +18,35 @@ public class HomeController {
     @Autowired
     private QuestionRepository questionRepository;
 
+    private static final Logger log = LoggerFactory.getLogger(HomeController.class);
+
     private static final int INITIAL_PAGE_NUMBER = 0;
-    private static final int QUESTIONS_OF_PAGE = 1;
-    private int firstPage = 0;
-    private int lastPage = 5;
+    private static final int QUESTIONS_OF_PAGE = 2;
+    private static final int PAGES_ON_DISPLAY = 5;
+    private int firstPage = 1;
+    private int lastPage = 6;
     private int totalPage = 0;
 
     @GetMapping("/")
     public String viewWelcomePage(Model model) {
         Page page = initPage();
-        this.totalPage = page.getTotalPages();
         List<Page> pages = createPages(page.getTotalPages());
-        model.addAttribute("pages", pages.subList(firstPage, lastPage));
+        model.addAttribute("pages", subList(pages, firstPage, lastPage));//pages.subList(firstPage, lastPage));
         model.addAttribute("questions", pages.get(INITIAL_PAGE_NUMBER));
         return "/index";
     }
 
-    @GetMapping("/{pageNumber}")
+    @GetMapping("/{pageNumber}") // ?key=
     public String viewQuestionList(@PathVariable int pageNumber, Model model) {
         Page page = initPage();
         List<Page> pages = createPages(page.getTotalPages());
-        model.addAttribute("pages", pages.subList(firstPage, lastPage));
-        model.addAttribute("questions", pages.get(pageNumber));
+        model.addAttribute("pages", subList(pages, firstPage, lastPage));//pages.subList(firstPage, lastPage));
+        log.info("pageNumber : {}", pageNumber);
+        log.info("firstPagef : {}", firstPage);
+        log.info("lastPagef : {}", lastPage);
+        log.info("totalPagef : {}", totalPage);
+        model.addAttribute("questions", pages.get(pageNumber - 1));
         return "/index";
-    }
-
-    public void plusPageCount() {
-        this.firstPage += 5;
-        this.lastPage += 5;
-
-        if (totalPage < firstPage) {
-            firstPage -= 5;
-        }
-        if (totalPage < lastPage) {
-            lastPage = totalPage;
-        }
-    }
-
-    public void minusPageCount() {
-        this.firstPage -= 5;
-        this.lastPage -= 5;
-
-        if (firstPage < 1) {
-            this.firstPage = INITIAL_PAGE_NUMBER;
-        }
-        if (totalPage > 5 && lastPage < 5) {
-            lastPage = 5;
-        }
     }
 
     @GetMapping("/moveNext")
@@ -77,8 +61,38 @@ public class HomeController {
         return "redirect:/" + firstPage;
     }
 
+    public void plusPageCount() {
+        this.firstPage += 5;
+        this.lastPage += 5;
+
+        if (totalPage < firstPage) {
+            firstPage -= 5;
+        }
+        if (totalPage < lastPage) {
+            lastPage = totalPage + 1;
+        }
+    }
+
+    public void minusPageCount() {
+        if (totalPage == lastPage - 1) {
+            lastPage += (5 - (lastPage - firstPage));
+        }
+
+        this.firstPage -= 5;
+        this.lastPage -= 5;
+
+        if (firstPage < INITIAL_PAGE_NUMBER) {
+            firstPage = INITIAL_PAGE_NUMBER + 1;
+        }
+        if (totalPage > 5 && lastPage < 5) {
+            lastPage = 5 + 1;
+        }
+    }
+
     public Page initPage() {
-        return createPage(INITIAL_PAGE_NUMBER);
+        Page page = createPage(INITIAL_PAGE_NUMBER);
+        this.totalPage = page.getTotalPages();
+        return page;
     }
 
     public Page createPage(int index) {
@@ -96,5 +110,10 @@ public class HomeController {
         }
         return pages;
     }
-}
 
+    public List<Page> subList(List<Page> intputPages, int firstPage, int lastPage) {
+        List<Page> pages = intputPages.subList(firstPage, lastPage - 1);
+        pages.add(createPage(lastPage - 1));
+        return pages;
+    }
+}

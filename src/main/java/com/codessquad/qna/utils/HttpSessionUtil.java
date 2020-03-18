@@ -1,9 +1,9 @@
-package com.codessquad.qna.web;
+package com.codessquad.qna.utils;
 
 import com.codessquad.qna.domain.Users;
 import javax.servlet.http.HttpSession;
 
-public class HttpSessionUtils {
+public class HttpSessionUtil {
 
   public static final String USER_SESSION_KEY = "sessionUser";
 

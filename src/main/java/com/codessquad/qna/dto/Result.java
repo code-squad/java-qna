@@ -1,4 +1,4 @@
-package com.codessquad.qna;
+package com.codessquad.qna.dto;
 
 public class Result {
     private boolean valid;

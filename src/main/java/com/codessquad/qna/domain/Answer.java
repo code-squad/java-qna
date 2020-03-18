@@ -1,15 +1,12 @@
-package com.codessquad.qna;
+package com.codessquad.qna.domain;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
+import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
-public class Answer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true)
-    private Long id;
-
+public class Answer extends AbstractEntity {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
     private Question question;
@@ -20,17 +17,7 @@ public class Answer {
 
     private String contents;
 
-    private LocalDateTime createdAt;
-
     private boolean deleted = false;
-
-    public Answer() {
-        this.markCreatedTime();
-    }
-
-    public Long getId() {
-        return id;
-    }
 
     public Question getQuestion() {
         return question;
@@ -60,10 +47,6 @@ public class Answer {
         this.contents = contents;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
     public void update(Answer answer) {
         if (!isValid(answer)) {
             throw new RuntimeException("InvalidUpdateAnswer");
@@ -80,18 +63,13 @@ public class Answer {
         this.deleted = true;
     }
 
-    private void markCreatedTime() {
-        this.createdAt = LocalDateTime.now();
-    }
-
     @Override
     public String toString() {
         return "Answer{" +
-                "id=" + id +
+                super.toString() +
                 ", question=" + question +
                 ", writer=" + writer +
                 ", contents='" + contents + '\'' +
-                ", createdAt=" + createdAt +
                 '}';
     }
 }

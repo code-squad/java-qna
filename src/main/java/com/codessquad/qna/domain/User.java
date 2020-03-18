@@ -1,14 +1,10 @@
-package com.codessquad.qna;
+package com.codessquad.qna.domain;
 
-import javax.persistence.*;
-import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 
 @Entity
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class User extends AbstractEntity {
     @Column(nullable = false, length = 20)
     private String userId;
 
@@ -20,10 +16,6 @@ public class User {
 
     @Column(nullable = false)
     private String password;
-
-    public Long getId() {
-        return id;
-    }
 
     public String getUserId() {
         return userId;
@@ -79,39 +71,10 @@ public class User {
         return newPassword.equals(password);
     }
 
-    public boolean matchId(Long newId) {
-        if (newId == null) {
-            return false;
-        }
-
-        return newId.equals(id);
-    }
-
-    public boolean matchName(String newName) {
-        if (newName == null) {
-            return false;
-        }
-
-        return newName.equals(name);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
     @Override
     public String toString() {
         return "User{" +
-                "userId='" + userId + '\'' +
+                super.toString() +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +

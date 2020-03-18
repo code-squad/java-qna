@@ -1,5 +1,6 @@
-package com.codessquad.qna;
+package com.codessquad.qna.domain;
 
+import com.codessquad.qna.domain.Question;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 

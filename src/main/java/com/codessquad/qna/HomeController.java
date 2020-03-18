@@ -25,7 +25,7 @@ public class HomeController {
     private static final int INITIAL_PAGE_NUMBER = 0;
     private static final int QUESTIONS_OF_PAGE = 1;
     private int totalPages = 0;
-    private int firstPage = 0;
+    private int firstPage = 1;
     private int lastPage = 5;
 
     @GetMapping("/")
@@ -33,7 +33,13 @@ public class HomeController {
         Page page = initPage();
         this.totalPages = page.getTotalPages();
         List<PageWrapper> pageWrappers = createPages(this.totalPages);
-        model.addAttribute("pageWrappers", pageWrappers.subList(firstPage, lastPage));
+        List<PageWrapper> partPageWrappers = new ArrayList<>();
+        for (int count = firstPage; count <= lastPage; count++) {
+            for (PageWrapper each : pageWrappers) {
+                if (each.getIndex() == count) partPageWrappers.add(each);
+            }
+        }
+        model.addAttribute("pageWrappers", partPageWrappers);
         model.addAttribute("questions", pageWrappers.get(INITIAL_PAGE_NUMBER).getPage());
         return "/index";
     }

@@ -1,10 +1,14 @@
 package com.codessquad.qna.domain;
 
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Entity
 public class Question {
@@ -12,29 +16,47 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 20)
-    private String writer;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    private User writer;
 
-    @Column(nullable = false, length = 50)
+    @OneToMany(mappedBy = "question")
+    @Where(clause = "deleted = false")
+    @OrderBy("id ASC")
+    private List<Answer> answers;
+
+    @NotBlank
+    @Column(length = 50)
     private String title;
 
-    @Column(nullable = false)
+    @NotBlank
     @Type(type = "text")
     private String contents;
 
-//    @Column(nullable = false)
     private LocalDateTime writeTime;
+
+    private boolean deleted;
+
+    @Formula("(SELECT count(*) FROM ANSWER a WHERE a.QUESTION_ID = ID)")
+    private Long countOfAnswers;
+
+    @Formula("(SELECT count(*) FROM ANSWER a WHERE a.QUESTION_ID = ID AND a.WRITER_ID = WRITER_ID)")
+    private Long countOfAnswersOfWriter;
+
+    public List<Answer> getAnswers() {
+        return answers;
+    }
 
     public Long getId() {
         return id;
     }
 
-    public String getWriter() {
-        return writer;
+    public void setWriter(User writer) {
+        this.writer = writer;
     }
 
-    public void setWriter(String writer) {
-        this.writer = writer;
+    public User getWriter() {
+        return writer;
     }
 
     public String getTitle() {
@@ -69,15 +91,30 @@ public class Question {
         title = updatedQuestion.title;
         contents = updatedQuestion.contents;
     }
-    
-    @Override
-    public String toString() {
-        return "Question{" +
-                "id=" + id +
-                ", writer='" + writer + '\'' +
-                ", title='" + title + '\'' +
-                ", contents='" + contents + '\'' +
-                ", writeTime=" + writeTime +
-                '}';
+
+    public boolean isSameUser(User user) {
+        return writer.equals(user);
     }
+
+    private boolean isEmptyAnswers() {
+        return countOfAnswers<=0;
+    }
+
+    private boolean isAllAnswersByWriter() {
+        return countOfAnswers.equals(countOfAnswersOfWriter);
+    }
+
+    //댓글이 없거나 모든 댓글이 글 작성자의 것이면 true 반환
+    public boolean canDeleteAnswers() {
+        if(isEmptyAnswers()) {
+            return true;
+        }
+
+        return isAllAnswersByWriter();
+    }
+
+    public void delete(){
+        this.deleted = true;
+    }
+
 }

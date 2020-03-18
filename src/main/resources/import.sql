@@ -1,3 +1,7 @@
 INSERT INTO USER (USER_ID, PASSWORD, NAME, EMAIL) VALUES ('a', 'a', 'a이름', 'a@a');
 INSERT INTO USER (USER_ID, PASSWORD, NAME, EMAIL) VALUES ('b', 'b', 'b이름', 'b@b');
 
+INSERT INTO QUESTION (CONTENTS, TITLE, WRITE_TIME, WRITER_ID, DELETED) VALUES ('내용a', '제목a', current_timestamp, 1, false);
+INSERT INTO QUESTION (CONTENTS, TITLE, WRITE_TIME, WRITER_ID, DELETED) VALUES ('내용b', '제목b', current_timestamp, 2, false);
+
+

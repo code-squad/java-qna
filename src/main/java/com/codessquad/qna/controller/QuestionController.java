@@ -1,9 +1,9 @@
 package com.codessquad.qna.controller;
 
-import com.codessquad.qna.domain.Question;
-import com.codessquad.qna.domain.QuestionRepository;
-import com.codessquad.qna.domain.User;
-import javassist.NotFoundException;
+import com.codessquad.qna.domain.*;
+import com.codessquad.qna.exception.CanNotDeleteException;
+import com.codessquad.qna.exception.InvalidInputException;
+import com.codessquad.qna.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.Optional;
+import java.util.List;
 
 @Controller
 @RequestMapping("/questions")
@@ -22,12 +22,14 @@ public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
 
+    @Autowired
+    private AnswerRepository answerRepository;
+
     @GetMapping("/form")
-    public String questionForm(HttpSession session) {
+    public String showQuestionForm(HttpSession session) {
         LOGGER.debug("[page] : {}", "질문작성 폼");
 
-        Object sessionUser = session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
-        if(sessionUser == null) {
+        if(!HttpSessionUtils.isLoginUser(session)) {
             LOGGER.debug("[page] : {}", "비로그인 상태");
             return "redirect:/users/loginForm";
         }
@@ -44,42 +46,36 @@ public class QuestionController {
             return "redirect:/users/loginForm";
         }
 
-        User user = HttpSessionUtils.getUserFromSession(session);
-        if(!user.matchName(question.getWriter())) {
-            LOGGER.debug("[page] : {}", "글 작성자 아님");
-            throw new IllegalStateException("글 작성자 아님");
+        if(question == null) {
+            throw new InvalidInputException("입력값이 유효하지 않습니다.");
         }
 
-        Question createdQuestion = Optional.ofNullable(question).orElseThrow(() -> new NullPointerException("NULL"));
-        createdQuestion.setWriteTimeNow();
+        User user = HttpSessionUtils.getUserFromSession(session);
+        question.setWriter(user);
+        question.setWriteTimeNow();
 
         LOGGER.debug("[page] : {}", "질문 DB에 저장");
-        questionRepository.save(createdQuestion);
+        questionRepository.save(question);
 
         return "redirect:/";
     }
 
     @GetMapping("/{id}")
-    public String show(@PathVariable Long id, Model model) throws NotFoundException {
+    public String showQuestion(@PathVariable Long id, Model model) {
         LOGGER.debug("[page] : {}", "질문 상세보기");
-        model.addAttribute("question", questionRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 질문입니다.")));
+        model.addAttribute("question", getQuestionById(id));
         return "qna/show";
     }
 
     @GetMapping("/{id}/form")
-    public String updateForm(@PathVariable Long id, HttpSession session, Model model) throws NotFoundException {
+    public String showUpdateForm(@PathVariable Long id, HttpSession session, Model model)  {
         LOGGER.debug("[page] : {}", "질문 수정 폼");
 
-        if(!HttpSessionUtils.isLoginUser(session)) {
-            LOGGER.debug("[page] : {}", "비로그인");
+        Question question = getQuestionById(id);
+        Result result = hasPermission(session, question);
+        if(!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
             return "redirect:/users/loginForm";
-        }
-
-        User user = HttpSessionUtils.getUserFromSession(session);
-        Question question = questionRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 질문입니다."));
-        if(!user.matchName(question.getWriter())) {
-            LOGGER.debug("[page] : {}", "글 작성자 아님");
-            throw new IllegalStateException("글 작성자 아님");
         }
 
         model.addAttribute("question", question);
@@ -87,21 +83,16 @@ public class QuestionController {
     }
 
     @PutMapping("/{id}")
-    public String updateQuestion(@PathVariable Long id, HttpSession session, Question updatedQuestion) throws NotFoundException {
+    public String updateQuestion(@PathVariable Long id, HttpSession session, Question updatedQuestion, Model model) {
         LOGGER.debug("[page] : {}", "질문 수정");
 
-        if(!HttpSessionUtils.isLoginUser(session)) {
-            LOGGER.debug("[page] : {}", "비로그인");
+        Question question = getQuestionById(id);
+        Result result = hasPermission(session, question);
+        if(!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
             return "redirect:/users/loginForm";
         }
 
-        User user = HttpSessionUtils.getUserFromSession(session);
-        if(!user.matchName(updatedQuestion.getWriter())) {
-            LOGGER.debug("[page] : {}", "글 작성자 아님");
-            throw new IllegalStateException("글 작성자 아님");
-        }
-
-        Question question = questionRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 질문입니다."));
         question.update(updatedQuestion);
         questionRepository.save(question);
 
@@ -109,24 +100,49 @@ public class QuestionController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteQuestion(@PathVariable Long id, HttpSession session) throws NotFoundException {
+    public String deleteQuestion(@PathVariable Long id, HttpSession session, Model model) {
         LOGGER.debug("[page] : {}", "질문 삭제");
 
-        if(!HttpSessionUtils.isLoginUser(session)) {
-            LOGGER.debug("[page] : {}", "비로그인");
+        Question question = getQuestionById(id);
+        Result result = hasPermission(session, question);
+        if(!result.isValid()) {
+            model.addAttribute("errorMessage", result.getErrorMessage());
             return "redirect:/users/loginForm";
         }
 
+        if(!question.canDeleteAnswers()) {
+            LOGGER.debug("[page] : {}", "답변이 존재함");
+            throw new CanNotDeleteException("삭제할 수 없습니다.");
+        }
+
+        List<Answer> answers = answerRepository.findAllByQuestionId(id);
+        answers.forEach(answer -> {
+            answer.delete();
+            answerRepository.save(answer);
+        });
+        question.delete();
+        questionRepository.save(question);
+
+        return "redirect:/";
+    }
+
+    private Question getQuestionById(Long id){
+        return questionRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 질문입니다."));
+    }
+
+    private Result hasPermission(HttpSession session, Question question) {
+        if(!HttpSessionUtils.isLoginUser(session)) {
+            LOGGER.debug("[page] : {}", "비로그인");
+            return Result.fail("로그인이 필요합니다.");
+        }
+
         User user = HttpSessionUtils.getUserFromSession(session);
-        Question question = questionRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 질문입니다."));
-        if(!user.matchName(question.getWriter())) {
+        if(!question.isSameUser(user)) {
             LOGGER.debug("[page] : {}", "글 작성자 아님");
             throw new IllegalStateException("글 작성자 아님");
         }
 
-        questionRepository.deleteById(id);
-
-        return "redirect:/";
+        return Result.ok();
     }
 
 }

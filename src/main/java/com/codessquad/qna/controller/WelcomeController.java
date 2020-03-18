@@ -19,7 +19,7 @@ public class WelcomeController {
     @GetMapping("/")
     public String Home(Model model) {
         LOGGER.debug("[page] : {}", "메인");
-        model.addAttribute("questions", questionRepository.findAll());
+        model.addAttribute("questions", questionRepository.findAllByDeleted(false));
         return "home";
     }
 

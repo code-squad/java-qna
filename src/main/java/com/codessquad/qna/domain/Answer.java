@@ -5,21 +5,15 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Objects;
 
-//TODO eager loading과 lazy loading 방법 찾아보기
-
 @Entity
-public class Question {
+public class Answer {
     private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column
-    private String title;
 
     @Column
     private String content;
@@ -28,30 +22,27 @@ public class Question {
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
     private User writer;
 
-    @OneToMany(mappedBy = "question")
-    private List<Answer> answers;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
+    private Question question;
 
     public Long getId() {
         return id;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getContent() {
         return content;
     }
 
-    public void setContent(String contents) {
-        this.content = contents;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public User getWriter() {
@@ -62,8 +53,12 @@ public class Question {
         this.writer = writer;
     }
 
-    public List<Answer> getAnswers() {
-        return answers;
+    public Question getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(Question question) {
+        this.question = question;
     }
 
     public String getCreatedTime() {
@@ -74,19 +69,12 @@ public class Question {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Question question = (Question) o;
-        return Objects.equals(id, question.id);
+        Answer answer = (Answer) o;
+        return id.equals(answer.id);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-
-    public Question merge(Question newQuestion) {
-        setTitle(newQuestion.title);
-        setContent(newQuestion.content);
-        return this;
     }
 }

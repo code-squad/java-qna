@@ -8,7 +8,7 @@
 <div class="p-4 border">
     {{#question}}
     <div>
-        <h2 class="mb-0 pb-3" style="border-bottom: 1px dashed rgb(222, 226, 230)">{{question.title}}</h2>
+        <h2 class="mb-0 pb-3" style="border-bottom: 1px dashed rgb(222, 226, 230)">{{title}}</h2>
         <div class="media border-bottom align-items-center py-2">
             <img alt="프로필 사진" class="mr-3" src="/profile.jpeg" style="border-radius: 100%; max-width: 50px;">
             <div class="media-body">
@@ -20,7 +20,7 @@
 
     <div class="border-bottom">
         <div class="m-3" style="min-height: 100px;">
-            {{question.content}}
+            {{content}}
         </div>
 
         {{#eq authenticationId writer.id}}
@@ -35,21 +35,22 @@
     </div>
 
     <div class="ml-3 mr-3 mb-3">
-
+        {{#answers}}
         <div class="media border-bottom align-items-center py-2">
             <img alt="프로필 사진" class="mr-3" src="/profile.jpeg" style="border-radius: 100%; max-width: 50px;">
             <div class="media-body">
-                <h5><a href="/users/{{writer.id}}">{{writer.accountId}}</a></h5>
-                <p class="mb-0">오 나도 몰랐는데 공부 해볼까?</p>
+                <h5><a class="d-inline-block" href="/users/{{writer.id}}">{{writer.accountId}}</a></h5>
+                <p class="mb-0">{{content}}</p>
                 <p class="text-secondary mb-0" style="font-size: 0.75rem;">{{createdTime}}</p>
             </div>
         </div>
+        {{/answers}}
 
-        <form>
+        <form action="/questions/{{id}}/answers" class="mt-3" method="post">
             <div class="form-group">
-                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                <textarea class="form-control" id="content" name="content" rows="3"></textarea>
             </div>
-            <button class="btn btn-outline-primary" type="button">답글</button>
+            <button class="btn btn-outline-primary" type="submit">답글</button>
         </form>
     </div>
     {{/question}}

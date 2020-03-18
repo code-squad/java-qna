@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,14 +38,14 @@ public class HomeController {
         return "/index";
     }
 
-//    @GetMapping("/{pageNumber}")
-//    public String viewQuestionList(@PathVariable int pageNumber, Model model) {
-//        Page page = initPage();
-//        List<Page> pages = createPages(page.getTotalPages());
-//        model.addAttribute("pages", pages.subList(firstPage, lastPage));
-//        model.addAttribute("questions", pages.get(pageNumber));
-//        return "/index";
-//    }
+    @GetMapping("/{index}")
+    public String viewQuestionList(@PathVariable int index, Model model) {
+        Page page = initPage();
+        List<PageWrapper> pageWrappers = createPages(page.getTotalPages());
+        model.addAttribute("pageWrappers", pageWrappers.subList(firstPage, lastPage));
+        model.addAttribute("questions", pageWrappers.get(index - 1).getPage());
+        return "/index";
+    }
 
     @GetMapping("/moveNext")
     public String moveNext() {

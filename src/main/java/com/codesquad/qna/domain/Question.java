@@ -65,7 +65,7 @@ public class Question {
     }
 
     public boolean isSameWriter(User sessionedUser) {
-        return writer.equals(sessionedUser.getUserName());
+        return writer.equals(sessionedUser);
     }
 
     @Override

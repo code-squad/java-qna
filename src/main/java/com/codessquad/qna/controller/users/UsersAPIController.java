@@ -1,7 +1,7 @@
 package com.codessquad.qna.controller.users;
 
 import com.codessquad.qna.service.users.UsersService;
-import com.codessquad.qna.web.PathUtils;
+import com.codessquad.qna.utils.PathUtil;
 import com.codessquad.qna.web.dto.users.UsersRegisterRequestDto;
 import com.codessquad.qna.web.dto.users.UsersUpdateRequestDto;
 import org.springframework.ui.Model;
@@ -16,11 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class UsersAPIController {
 
   private final UsersService usersService;
-  private final UsersRepository usersRepository;
 
-  public UsersAPIController(UsersService usersService, UsersRepository usersRepository) {
+  public UsersAPIController(UsersService usersService) {
     this.usersService = usersService;
-    this.usersRepository = usersRepository;
   }
 
   @PostMapping("/api/v1/users")
@@ -31,7 +29,7 @@ public class UsersAPIController {
   @GetMapping("/api/v1/users/list")
   public String index(Model model) {
     model.addAttribute("users", usersService.findAllDesc());
-    return PathUtils.USERS_LIST;
+    return PathUtil.USERS_LIST;
   }
 
   @PutMapping("/api/v1/users/{Id}")

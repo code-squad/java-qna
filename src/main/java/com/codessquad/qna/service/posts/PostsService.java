@@ -2,6 +2,8 @@ package com.codessquad.qna.service.posts;
 
 import com.codessquad.qna.controller.posts.PostsRepository;
 import com.codessquad.qna.domain.Posts;
+import com.codessquad.qna.exception.NoSuchPostException;
+import com.codessquad.qna.utils.PathUtil;
 import com.codessquad.qna.web.dto.posts.PostsDeleteRequestDto;
 import com.codessquad.qna.web.dto.posts.PostsListResponseDto;
 import com.codessquad.qna.web.dto.posts.PostsResponseDto;
@@ -36,7 +38,7 @@ public class PostsService {
   @Transactional
   public Long update(Long id, PostsUpdateRequestDto requestDto) {
     Posts posts = postsRepository.findById(id).orElseThrow(
-        () -> new IllegalArgumentException("no such post." + " id = " + id));
+        () -> new NoSuchPostException(PathUtil.NO_SUCH_POSTS_OR_ANSWERS, "no such post." + " id = " + id));
     posts.update(requestDto.getTitle(), requestDto.getContent());
     return id;
   }
@@ -44,9 +46,9 @@ public class PostsService {
   @Transactional
   public Long delete(Long id, PostsDeleteRequestDto requestDto) {
     Posts posts = postsRepository.findById(id).orElseThrow(
-        () -> new IllegalArgumentException("no such post." + " id = " + id));
+        () -> new NoSuchPostException(PathUtil.NO_SUCH_POSTS_OR_ANSWERS, "no such post." + " id = " + id));
     if (posts.isDeleted()) {
-      throw new IllegalArgumentException("this answer is already deleted.");
+      throw new NoSuchPostException(PathUtil.NO_SUCH_POSTS_OR_ANSWERS, "this answer is already deleted.");
     }
     posts.deletePost(requestDto.deleteStatusQuo());
     return id;
@@ -55,7 +57,7 @@ public class PostsService {
   @Transactional(readOnly = true)
   public PostsResponseDto findById(Long id) {
     Posts entity = postsRepository.findById(id)
-        .orElseThrow(() -> new IllegalArgumentException("no such post" + " id = " + id)
+        .orElseThrow(() -> new NoSuchPostException(PathUtil.NO_SUCH_POSTS_OR_ANSWERS, "no such post" + " id = " + id)
         );
     return new PostsResponseDto(entity);
   }

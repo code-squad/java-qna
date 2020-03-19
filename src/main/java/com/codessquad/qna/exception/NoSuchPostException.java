@@ -1,7 +1,7 @@
 package com.codessquad.qna.exception;
 
-public class NoSuchElementException extends RudimentaryException {
-  public NoSuchElementException(String url, String errorMessage) {
+public class NoSuchPostException extends RudimentaryException {
+  public NoSuchPostException(String url, String errorMessage) {
     super(url, errorMessage);
   }
 }

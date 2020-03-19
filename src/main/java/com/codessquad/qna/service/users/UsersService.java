@@ -2,6 +2,8 @@ package com.codessquad.qna.service.users;
 
 import com.codessquad.qna.controller.users.UsersRepository;
 import com.codessquad.qna.domain.Users;
+import com.codessquad.qna.exception.NoSuchUserException;
+import com.codessquad.qna.utils.PathUtil;
 import com.codessquad.qna.web.dto.users.UsersListResponseDto;
 import com.codessquad.qna.web.dto.users.UsersRegisterRequestDto;
 import com.codessquad.qna.web.dto.users.UsersResponseDto;
@@ -28,7 +30,7 @@ public class UsersService {
   @Transactional(readOnly = true)
   public UsersResponseDto findById(Long id) {
     Users entity = usersRepository.findById(id).orElseThrow(
-        () -> new IllegalArgumentException("No Such User.")
+        () -> new NoSuchUserException(PathUtil.NO_SUCH_USERS, "No Such User." + id)
     );
     return new UsersResponseDto(entity);
   }
@@ -41,7 +43,7 @@ public class UsersService {
   @Transactional
   public Long update(Long id, UsersUpdateRequestDto requestDto) {
     Users users = usersRepository.findById(id).orElseThrow(
-        () -> new IllegalArgumentException("No Such User." + " id " + id));
+        () -> new NoSuchUserException(PathUtil.NO_SUCH_USERS, "No Such User." + " id " + id));
     users.update(requestDto.getUserId(), requestDto.getPassword(), requestDto.getName(), requestDto.getEmail());
     return id;
   }

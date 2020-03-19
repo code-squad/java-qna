@@ -2,6 +2,8 @@ package com.codessquad.qna.service.answers;
 
 import com.codessquad.qna.controller.answers.AnswersRepository;
 import com.codessquad.qna.domain.Answers;
+import com.codessquad.qna.exception.NoSuchAnswerException;
+import com.codessquad.qna.utils.PathUtil;
 import com.codessquad.qna.web.dto.answers.AnswersDeleteRequestDto;
 import com.codessquad.qna.web.dto.answers.AnswersListResponseDto;
 import com.codessquad.qna.web.dto.answers.AnswersResponseDto;
@@ -37,7 +39,7 @@ public class AnswersService {
   @Transactional
   public Long update(Long id, AnswersUpdateRequestDto requestDto) {
     Answers answers = answersRepository.findById(id).orElseThrow(
-        () -> new IllegalArgumentException("no such post." + " id = " + id));
+        () -> new NoSuchAnswerException(PathUtil.NO_SUCH_POSTS_OR_ANSWERS, "no such post. id = " + id));
     answers.update(requestDto.getContent());
     return id;
   }
@@ -45,9 +47,9 @@ public class AnswersService {
   @Transactional
   public Long delete(Long id, AnswersDeleteRequestDto requestDto) {
     Answers answers = answersRepository.findById(id).orElseThrow(
-        () -> new IllegalArgumentException("no such post." + " id = " + id));
+        () -> new NoSuchAnswerException(PathUtil.NO_SUCH_POSTS_OR_ANSWERS, "no such answer. id = " + id));
     if (answers.isDeleted()) {
-      throw new IllegalArgumentException("this answer is already deleted." + " id = " + id);
+      throw new NoSuchAnswerException(PathUtil.NO_SUCH_POSTS_OR_ANSWERS, "this answer is already deleted. id = " + id);
     }
     answers.deleteAnswer(requestDto.deleteStatusQuo());
     return id;
@@ -56,7 +58,7 @@ public class AnswersService {
   @Transactional(readOnly = true)
   public AnswersResponseDto findById(Long id) {
     Answers entity = answersRepository.findById(id)
-        .orElseThrow(() -> new IllegalArgumentException("no such post" + " id = " + id)
+        .orElseThrow(() -> new NoSuchAnswerException(PathUtil.NO_SUCH_POSTS_OR_ANSWERS, "no such post. id = " + id)
         );
     return new AnswersResponseDto(entity);
   }

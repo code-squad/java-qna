@@ -23,8 +23,7 @@ public class ApiAnswerController {
     @PostMapping("/{questionId}/answers")
     public Answer create(@PathVariable Long questionId,
                          String contents,
-                         HttpSession httpSession,
-                         Model model) {
+                         HttpSession httpSession) {
         try {
             hasPermission(httpSession);
             User sessionedUser = HttpSessionUtils.getUserFromSession(httpSession);

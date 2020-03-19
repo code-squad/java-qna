@@ -10,28 +10,38 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class PageController {
-    private static final int INITIAL_PAGE_NUMBER = 0;
-    private static final int QUESTIONS_OF_PAGE = 1;
-    private Logger logger = LoggerFactory.getLogger(HomeController.class);
+    private Logger logger = LoggerFactory.getLogger(PageController.class);
+
     @Autowired
     private QuestionRepository questionRepository;
     private int totalPages = 0;
-    private int firstPage = 1;
-    private int lastPage = 5;
+    private int firstPageNumber = 1;
+    private int lastPageNumber = 5;
+    private static final int INITIAL_NUMBER = 0;
+    private static final int HOMEPAGE_NUMBER = 1;
+    private static final int QUESTIONS_OF_PAGE = 3;
+    private static final int COUNT_OF_FOOTER_PAGE_NUMBERS = 5;
 
-    public void initTotalPages() {
-        Page page = initPage();
-        this.totalPages = page.getTotalPages();
+    @GetMapping("/")
+    public String index(Model model) {
+        getTotalPages();
+        List<PageWrapper> pageWrappers = createPages(this.totalPages);
+        List<PageWrapper> footerPageNumbers = getHomePageFooterPageNumbers(pageWrappers);
+        model.addAttribute("pageWrappers", footerPageNumbers);
+        model.addAttribute("questions", getCurrentPage(pageWrappers, HOMEPAGE_NUMBER));
+        model.addAttribute("next", isLastPageGroup());
+        model.addAttribute("prev", isFirstPageGroup());
+        return "/index";
     }
 
     @GetMapping("/{index}")
-    public String viewQuestionList(@PathVariable int index, Model model) {
-        initTotalPages();
+    public String showPage(@PathVariable int index, Model model) {
         List<PageWrapper> pageWrappers = createPages(this.totalPages);
         List<PageWrapper> footerPageNumbers = getFooterPageNumbers(pageWrappers);
         model.addAttribute("pageWrappers", footerPageNumbers);
@@ -41,19 +51,34 @@ public class PageController {
         return "/index";
     }
 
+    public void getTotalPages() {
+        Page page = createInitialPage();
+        this.totalPages = page.getTotalPages();
+    }
+
     private Next isLastPageGroup() {
-        if (this.totalPages > lastPage) return new Next();
+        if (this.totalPages > lastPageNumber) return new Next();
         return null;
     }
 
     private Prev isFirstPageGroup() {
-        if (this.firstPage != 1) return new Prev();
+        if (this.firstPageNumber != 1) return new Prev();
         return null;
     }
 
     private List<PageWrapper> getFooterPageNumbers(List<PageWrapper> pageWrappers) {
         List<PageWrapper> partPageWrappers = new ArrayList<>();
-        for (int count = firstPage; count <= lastPage; count++) {
+        for (int count = firstPageNumber; count <= lastPageNumber; count++) {
+            for (PageWrapper each : pageWrappers) {
+                if (each.getIndex() == count) partPageWrappers.add(each);
+            }
+        }
+        return partPageWrappers;
+    }
+
+    private List<PageWrapper> getHomePageFooterPageNumbers(List<PageWrapper> pageWrappers) {
+        List<PageWrapper> partPageWrappers = new ArrayList<>();
+        for (int count = 1; count <= 5; count++) {
             for (PageWrapper each : pageWrappers) {
                 if (each.getIndex() == count) partPageWrappers.add(each);
             }
@@ -70,30 +95,26 @@ public class PageController {
 
     @GetMapping("/moveNext")
     public String moveNext() {
-        this.firstPage += 5;
-        this.lastPage += 5;
-        if (this.lastPage > this.totalPages) {
-            this.lastPage = this.totalPages;
+        this.firstPageNumber += COUNT_OF_FOOTER_PAGE_NUMBERS;
+        this.lastPageNumber += COUNT_OF_FOOTER_PAGE_NUMBERS;
+        if (this.lastPageNumber > this.totalPages) {
+            this.lastPageNumber = this.totalPages;
         }
-        if (this.firstPage > this.totalPages) {
-            this.firstPage -= 5;
-            logger.info("firstPage : {}", firstPage);
-        }
-        return "redirect:/" + firstPage;
+        return "redirect:/" + firstPageNumber;
     }
 
     @GetMapping("/movePrev")
     public String movePrev() {
-        this.firstPage -= 5;
-        this.lastPage -= 5;
-        if (lastPage - firstPage != 4) {
-            lastPage = firstPage + 4;
+        this.firstPageNumber -= COUNT_OF_FOOTER_PAGE_NUMBERS;
+        this.lastPageNumber -= COUNT_OF_FOOTER_PAGE_NUMBERS;
+        if (lastPageNumber - firstPageNumber != 4) {
+            lastPageNumber = firstPageNumber + 4;
         }
-        return "redirect:/" + firstPage;
+        return "redirect:/" + firstPageNumber;
     }
 
-    public Page initPage() {
-        return createPage(INITIAL_PAGE_NUMBER);
+    public Page createInitialPage() {
+        return createPage(INITIAL_NUMBER);
     }
 
     public Page createPage(int index) {

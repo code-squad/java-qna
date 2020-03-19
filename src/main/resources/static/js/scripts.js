@@ -66,30 +66,6 @@ function deleteAnswer(e) {
     })
 }
 
-// $(document).on('click', '.link-modify-article', updateAnswer);
-//
-// function updateAnswer(e) {
-//     e.preventDefault();
-//     var updateBtn = $(this);
-//     var url = updateBtn.attr("href");
-//     console.log("url : " + url);
-//
-//     $.ajax({
-//         type : 'get',
-//         url : 'url',
-//         dataType : 'json',
-//         error : function(xhr, status) {
-//             console.log("error");
-//             console.log(status);
-//         }
-//         success : function (data, status) {
-//             console.log(data);
-//
-//
-//         }
-//     })
-// }
-
 // json을 동적으로 처리하기 위한 템플릿 복사.
 String.prototype.format = function () {
     var args = arguments;

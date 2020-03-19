@@ -9,7 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,26 +47,6 @@ public class HomeController {
         return "/index";
     }
 
-//    @GetMapping("/{index}")
-//    public String viewQuestionList(@PathVariable int index, Model model) {
-//        Page page = initPage();
-//        List<PageWrapper> pageWrappers = createPages(page.getTotalPages());
-//        List<PageWrapper> footerPageNumbers = getFooterPageNumbers(pageWrappers);
-//        model.addAttribute("pageWrappers", footerPageNumbers);
-//        model.addAttribute("questions", getCurrentPage(pageWrappers, index));
-//
-//        Next next = new Next();
-//        if (this.totalPages > lastPage) {
-//            model.addAttribute("next", next);
-//        }
-//
-//        Prev prev = new Prev();
-//        if (this.firstPage != 1) {
-//            model.addAttribute("prev", prev);
-//        }
-//        return "/index";
-//    }
-
     private List<PageWrapper> getFooterPageNumbers(List<PageWrapper> pageWrappers) {
         List<PageWrapper> partPageWrappers = new ArrayList<>();
         for (int count = firstPage; count <= lastPage; count++) {
@@ -85,37 +64,14 @@ public class HomeController {
         return null;
     }
 
-//    @GetMapping("/moveNext")
-//    public String moveNext() {
-//        this.firstPage += 5;
-//        this.lastPage += 5;
-//        if (this.lastPage > this.totalPages) {
-//            this.lastPage = this.totalPages;
-//        }
-//        if (this.firstPage > this.totalPages) {
-//            this.firstPage -= 5;
-//            logger.info("firstPage : {}", firstPage);
-//        }
-//        return "redirect:/" + firstPage;
-//    }
-//
-//    @GetMapping("/movePrev")
-//    public String movePrev() {
-//        this.firstPage -= 5;
-//        this.lastPage -= 5;
-//        if (lastPage - firstPage != 4) {
-//            lastPage = firstPage + 4;
-//        }
-//        return "redirect:/" + firstPage;
-//    }
-
     public Page initPage() {
         return createPage(INITIAL_PAGE_NUMBER);
     }
 
     public Page createPage(int index) {
         PageRequest pageRequest = PageRequest.of(index, QUESTIONS_OF_PAGE);
-        Page page = questionRepository.findAll(pageRequest);
+//        Page page = questionRepository.findAll(pageRequest);
+        Page page = questionRepository.findAllByDeletedFalse(pageRequest);
         return page;
     }
 

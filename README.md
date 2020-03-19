@@ -63,3 +63,28 @@
         return "redirect:/" + firstPage;
     }
 ```
+## 질문 삭제 버그 
+- 질문 삭제가 안될 때 : 답변의 삭제 button class의 이름과 질문 삭제 button class 이름이 같아서 질문 삭제를 누르면 답변 ajax로 넘어가기 때문에 에러가 발생한다.
+- "link-delete-article" -> "link-delete-question-article"
+
+```javascript
+<button class="link-delete-question-article" type="submit">삭제</button>
+```
+
+
+## 질문 삭제 시 삭제한 질문 제외한 질문 목록 출력 기능 구현 
+- 삭제 시 질문의 deleted 상태가 true로 변하기 때문에 QuestionRepostioy에 메서드를 추가한다. 
+
+```java
+Page findAllByDeletedFalse(Pageable pageable);
+```
+
+- 변경된 메서드로 질문을 가져온다. 
+
+```java
+public Page createPage(int index) {
+        PageRequest pageRequest = PageRequest.of(index, QUESTIONS_OF_PAGE);
+        Page page = questionRepository.findAllByDeletedFalse(pageRequest);
+        return page;
+    }
+```

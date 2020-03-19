@@ -16,10 +16,9 @@ import java.util.List;
 
 @Controller
 public class PageController {
-    private Logger logger = LoggerFactory.getLogger(HomeController.class);
     private static final int INITIAL_PAGE_NUMBER = 0;
     private static final int QUESTIONS_OF_PAGE = 1;
-
+    private Logger logger = LoggerFactory.getLogger(HomeController.class);
     @Autowired
     private QuestionRepository questionRepository;
     private int totalPages = 0;
@@ -100,7 +99,7 @@ public class PageController {
 
     public Page createPage(int index) {
         PageRequest pageRequest = PageRequest.of(index, QUESTIONS_OF_PAGE);
-        Page page = questionRepository.findAll(pageRequest);
+        Page page = questionRepository.findAllByDeletedFalse(pageRequest);
         return page;
     }
 

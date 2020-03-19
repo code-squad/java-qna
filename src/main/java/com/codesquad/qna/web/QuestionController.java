@@ -35,6 +35,8 @@ public class QuestionController {
             return "redirect:/users/login-form";
         }
 
+        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+        question.setWriter(sessionedUser);
         DatabaseUtils.replaceEscapesToTags(question);
         questionRepository.save(question);
 

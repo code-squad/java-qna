@@ -1,8 +1,11 @@
 # Step6 
 [배포 url : https://hyunjun2.herokuapp.com/](https://hyunjun2.herokuapp.com/)
 
-## Step6 리뷰어 피드백 참고 리팩토링
-- [ ] Exception이 발생하는 부분만 try - catch 하기. AnswerController의 hasPermission() -> 추후 예외처리 공부 후 진행예정
+## Step5 리뷰어 피드백 참고 리팩토링
+- [X] Jquery도 좋지만 바닐라 JS fetch API와 DOM을 직접 해보기. 아니면 가볍게 React나 Vue.js 하루 공부해보기 -> 추후 공부
+- [ ] URL에 update, delete 제거하기. 
+- [ ] 사용자 정의 예외 만들어서 처리해보기 
+
 
 ## Step6 구현 
 ### PageRequest 이용해 질문 목록 나누기. 

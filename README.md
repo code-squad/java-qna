@@ -3,8 +3,31 @@
 
 ## Step5 리뷰어 피드백 참고 리팩토링
 - [X] Jquery도 좋지만 바닐라 JS fetch API와 DOM을 직접 해보기. 아니면 가볍게 React나 Vue.js 하루 공부해보기 -> 추후 공부
-- [ ] URL에 update, delete 제거하기. 
+- [X] URL에 update, delete 제거하기. 
 - [ ] 사용자 정의 예외 만들어서 처리해보기 
+
+## URL에 /update와 /delete 지우기 
+- url 조정할 때 Ajax로 관리하는 템플릿은 잘 확인하고 지우기. 
+- ajax로 처리하지 않고 request에 대 해 controller에서 바로 처리하기 위해선 ModelAndView로 리턴한다. 
+
+```java
+@GetMapping("/{questionId}/answers/{answerId}/{writer}/form")
+    public ModelAndView updateForm(@PathVariable Long questionId,
+                             @PathVariable Long answerId,
+                             @PathVariable String writer,
+                             HttpSession httpSession,
+                             Model model) {
+        try {
+            hasPermission(httpSession, writer);
+            model.addAttribute("question", findQuestionById(questionId));
+            model.addAttribute("answer", findAnswerById(answerId));
+            return new ModelAndView("/answer/updateForm");
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return new ModelAndView("/user/login");
+        }
+    }
+```
 
 
 ## Step6 구현 

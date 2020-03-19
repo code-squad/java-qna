@@ -29,9 +29,7 @@ public class UsersService {
 
   @Transactional(readOnly = true)
   public UsersResponseDto findById(Long id) {
-    Users entity = usersRepository.findById(id).orElseThrow(
-        () -> new NoSuchUserException(PathUtil.NO_SUCH_USERS, "No Such User." + id)
-    );
+    Users entity = checkValidity(id);
     return new UsersResponseDto(entity);
   }
 
@@ -42,9 +40,15 @@ public class UsersService {
 
   @Transactional
   public Long update(Long id, UsersUpdateRequestDto requestDto) {
+    Users entity = checkValidity(id);
+    entity.update(requestDto.getUserId(), requestDto.getPassword(), requestDto.getName(), requestDto.getEmail());
+    return id;
+  }
+
+  private Users checkValidity(Long id) {
     Users users = usersRepository.findById(id).orElseThrow(
         () -> new NoSuchUserException(PathUtil.NO_SUCH_USERS, "No Such User." + " id " + id));
-    users.update(requestDto.getUserId(), requestDto.getPassword(), requestDto.getName(), requestDto.getEmail());
-    return id;
+    // TODO Users 회원탈퇴 기능 구현하기 (isDeleted()를 사용할 수 있도록 설계해보기)
+    return users;
   }
 }

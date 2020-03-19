@@ -38,28 +38,32 @@ public class AnswersService {
 
   @Transactional
   public Long update(Long id, AnswersUpdateRequestDto requestDto) {
-    Answers answers = answersRepository.findById(id).orElseThrow(
-        () -> new NoSuchAnswerException(PathUtil.NO_SUCH_POSTS_OR_ANSWERS, "no such post. id = " + id));
-    answers.update(requestDto.getContent());
+    Answers entity = checkValidity(id);
+    entity.update(requestDto.getContent());
     return id;
   }
 
   @Transactional
   public Long delete(Long id, AnswersDeleteRequestDto requestDto) {
-    Answers answers = answersRepository.findById(id).orElseThrow(
-        () -> new NoSuchAnswerException(PathUtil.NO_SUCH_POSTS_OR_ANSWERS, "no such answer. id = " + id));
-    if (answers.isDeleted()) {
-      throw new NoSuchAnswerException(PathUtil.NO_SUCH_POSTS_OR_ANSWERS, "this answer is already deleted. id = " + id);
-    }
-    answers.deleteAnswer(requestDto.deleteStatusQuo());
+    Answers entity = checkValidity(id);
+    entity.deleteAnswer(requestDto.deleteStatusQuo());
     return id;
   }
 
   @Transactional(readOnly = true)
   public AnswersResponseDto findById(Long id) {
-    Answers entity = answersRepository.findById(id)
-        .orElseThrow(() -> new NoSuchAnswerException(PathUtil.NO_SUCH_POSTS_OR_ANSWERS, "no such post. id = " + id)
-        );
+    Answers entity = checkValidity(id);
     return new AnswersResponseDto(entity);
+  }
+
+  private Answers checkValidity(Long id) {
+    Answers entity = answersRepository.findById(id).orElseThrow(
+        () -> new NoSuchAnswerException(PathUtil.NO_SUCH_POSTS_OR_ANSWERS,
+            "no such answer. id = " + id));
+    if (entity.isDeleted()) {
+      throw new NoSuchAnswerException(PathUtil.NO_SUCH_POSTS_OR_ANSWERS,
+          "this answer is already deleted. id = " + id);
+    }
+    return entity;
   }
 }

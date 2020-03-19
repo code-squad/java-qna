@@ -28,6 +28,8 @@ function onSuccess(data, status) {
   console.log("성공");
   console.log(data);
   console.log(status);
+  var count = $("p.qna-comment-count");
+  console.log("카운트 : " + count);
 
   var answerTemplate = $("#answerTemplate").html();
   var template = answerTemplate.format(data.writer.name, data.createdAt, data.contents, data.question.id, data.id);

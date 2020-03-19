@@ -1,6 +1,7 @@
 package com.codessquad.qna.domain;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -34,6 +35,9 @@ public class Question {
     @OneToMany(mappedBy = "question")
     private List<Answer> answers;
 
+    @Formula("(SELECT count(*) FROM answer a WHERE a.question_id = id)")
+    private Integer numberOfAnswer;
+
     public Long getId() {
         return id;
     }
@@ -64,6 +68,10 @@ public class Question {
 
     public List<Answer> getAnswers() {
         return answers;
+    }
+
+    public Integer getNumberOfAnswer() {
+        return numberOfAnswer;
     }
 
     public String getCreatedTime() {

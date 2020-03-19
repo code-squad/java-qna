@@ -23,15 +23,16 @@
             {{content}}
         </div>
 
-        {{#eq authenticationId writer.id}}
         <div class="m-3">
+            <a class="btn btn-outline-primary btn-sm" href="/" role="button">목록</a>
+            {{#eq authenticationId writer.id}}
             <a class="btn btn-outline-primary btn-sm" href="/questions/{{question.id}}/updateForm" role="button">수정</a>
             <form action="/questions/{{id}}" class="d-inline" method="post">
                 <input name="_method" type="hidden" value="delete">
                 <button class="btn btn-outline-primary btn-sm" type="submit">삭제</button>
             </form>
+            {{/eq}}
         </div>
-        {{/eq}}
     </div>
 
     <div class="ml-3 mr-3 mb-3">

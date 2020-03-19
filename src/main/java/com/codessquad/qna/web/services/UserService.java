@@ -5,6 +5,8 @@ import com.codessquad.qna.domain.UserRepository;
 import com.codessquad.qna.exceptions.NotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -13,7 +15,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public Iterable<User> getAllUsers() {
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 

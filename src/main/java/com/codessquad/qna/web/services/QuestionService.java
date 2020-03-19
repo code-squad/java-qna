@@ -5,6 +5,8 @@ import com.codessquad.qna.domain.QuestionRepository;
 import com.codessquad.qna.exceptions.NotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class QuestionService {
     private final QuestionRepository questionRepository;
@@ -13,7 +15,7 @@ public class QuestionService {
         this.questionRepository = questionRepository;
     }
 
-    public Iterable<Question> getAllQuestions() {
+    public List<Question> getAllQuestions() {
         return questionRepository.findAll();
     }
 

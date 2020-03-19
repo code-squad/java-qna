@@ -1,12 +1,10 @@
-package com.codessquad.qna.exception;
+package com.codessquad.qna.controller.httperror;
 
 import ch.qos.logback.classic.Logger;
 import java.util.Date;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.servlet.error.ErrorController;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class CustomHttpErrorController implements ErrorController {
 
-  private static final String ERROR_PATH = "/httperror";
+  private static final String ERROR_PATH = "/error";
   Logger logger = (Logger) LoggerFactory.getLogger(CustomHttpErrorController.class);
 
   @Override
@@ -22,17 +20,12 @@ public class CustomHttpErrorController implements ErrorController {
     return ERROR_PATH;
   }
 
-  @RequestMapping("/httperror")
-  public String HandleError(HttpServletRequest request, Model model) {
-    Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
+  @RequestMapping("/error")
+  public String handleError(HttpServletResponse response, Model model) {
+    int status = response.getStatus();
     logger.info("status: " + status);
-    HttpStatus httpStatus = HttpStatus.valueOf(status.toString());
-
-    logger.info("httpStatus : " + httpStatus.toString());
-    model.addAttribute("code", status.toString());
-    model.addAttribute("msg", httpStatus.getReasonPhrase());
+    model.addAttribute("code", status);
     model.addAttribute("timestamp", new Date());
-
     return "error/error";
   }
 }

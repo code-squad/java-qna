@@ -1,10 +1,8 @@
 package com.codesquad.qna.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Question {
@@ -12,22 +10,26 @@ public class Question {
     @Id
     @GeneratedValue
     private Long id;
-    private String writer;
+
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    private User writer;
+
     private String title;
+
     private String contents;
 
-    @Column
     private LocalDateTime createdDate;
 
     public Question() {
         createdDate = LocalDateTime.now();
     }
 
-    public String getWriter() {
+    public User getWriter() {
         return writer;
     }
 
-    public void setWriter(String writer) {
+    public void setWriter(User writer) {
         this.writer = writer;
     }
 
@@ -47,8 +49,10 @@ public class Question {
         this.contents = contents;
     }
 
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
+    public String getCreatedDate() {
+        String dateTimePattern = "yyyy년 MM월 dd일 HH시 mm분 ss초";
+
+        return createdDate.format(DateTimeFormatter.ofPattern(dateTimePattern));
     }
 
     public Long getId() {

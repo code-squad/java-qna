@@ -3,6 +3,7 @@ package com.codesquad.qna.domain;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Entity
 public class Question {
@@ -20,6 +21,10 @@ public class Question {
     private String contents;
 
     private LocalDateTime createdDate;
+
+    @OneToMany(mappedBy="question")
+    @OrderBy("id ASC")
+    private List<Answer> answers;
 
     public Question() {
         createdDate = LocalDateTime.now();
@@ -57,6 +62,14 @@ public class Question {
 
     public Long getId() {
         return id;
+    }
+
+    public Long getNumberOfAnswers() {
+        return (long)answers.size();
+    }
+
+    public List<Answer> getAnswers() {
+        return answers;
     }
 
     public void update(Question updatedQuestion) {

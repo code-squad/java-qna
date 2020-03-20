@@ -8,12 +8,7 @@ import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
 @Entity
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty
-    private Long id;
-
+public class User extends AbstractEntity {
     @NotBlank
     @Column(length = 20, unique = true)
     @JsonProperty
@@ -34,14 +29,6 @@ public class User {
 
     @Transient
     private String updatedPassword;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getUserId() {
         return userId;
@@ -105,7 +92,7 @@ public class User {
     }
 
     public boolean matchId(Long inputId) {
-        return id.equals(inputId);
+        return getId().equals(inputId);
     }
 
     public boolean matchName(String writer) {

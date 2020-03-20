@@ -8,17 +8,10 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Entity
-public class Question {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty
-    private Long id;
-
+public class Question extends AbstractEntity {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
     @JsonProperty
@@ -27,7 +20,6 @@ public class Question {
     @OneToMany(mappedBy = "question")
     @Where(clause = "deleted = false")
     @OrderBy("id ASC")
-    //ignore 안하면 에러남
     @JsonIgnore
     private List<Answer> answers;
 
@@ -42,9 +34,6 @@ public class Question {
     private String contents;
 
     @JsonProperty
-    private LocalDateTime writeTime;
-
-    @JsonProperty
     private Integer countOfAnswer = 0;
 
     private boolean deleted;
@@ -57,10 +46,6 @@ public class Question {
 
     public List<Answer> getAnswers() {
         return answers;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public void setWriter(User writer) {
@@ -85,18 +70,6 @@ public class Question {
 
     public void setContents(String contents) {
         this.contents = contents;
-    }
-
-    public void setWriteTime(LocalDateTime writeTime) {
-        this.writeTime = writeTime;
-    }
-
-    public String getWriteTime() {
-        return writeTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-    }
-
-    public void setWriteTimeNow() {
-        setWriteTime(LocalDateTime.now());
     }
 
     public Integer getCountOfAnswer() {

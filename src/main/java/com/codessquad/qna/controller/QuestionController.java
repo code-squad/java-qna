@@ -52,7 +52,6 @@ public class QuestionController {
 
         User user = HttpSessionUtils.getUserFromSession(session);
         question.setWriter(user);
-        question.setWriteTimeNow();
 
         LOGGER.debug("[page] : {}", "질문 DB에 저장");
         questionRepository.save(question);

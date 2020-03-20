@@ -1,4 +1,4 @@
-$(".answer-write input[type=submit]").click(addAnswer);
+$(".answer-write input[type='submit']").on("click", addAnswer);
 
 function addAnswer(e) {
   console.log("click me");
@@ -50,10 +50,10 @@ String.prototype.format = function() {
   });
 };
 
-$("a.link-delete-article").click(deleteAnswer);
+$("a.link-delete-article").on("click", deleteAnswer);
 
 function deleteAnswer(e) {
-  e.preventDefault();
+    e.preventDefault();
 
   var deleteBtn = $(this);
   var url = deleteBtn.attr("href");
@@ -70,17 +70,10 @@ function deleteAnswer(e) {
           if (data.valid) {
               deleteBtn.closest("article").remove();
           } else {
-              alert("ㄴㄴ");
+              alert("삭제할 수 없습니다.");
           }
       }
   });
 
 
-}
-
-$("a.link-modify-article").click(modifiedAnswer);
-
-function modifiedAnswer(e) {
-  e.preventDefault();
-  console.log("수정");
 }

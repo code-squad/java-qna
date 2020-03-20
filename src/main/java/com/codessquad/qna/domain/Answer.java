@@ -3,15 +3,9 @@ package com.codessquad.qna.domain;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
-public class Answer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty
-    private Long id;
-
+public class Answer extends AbstractEntity {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
     @JsonProperty
@@ -26,8 +20,6 @@ public class Answer {
     @JsonProperty
     private String contents;
 
-    private LocalDateTime createdAt;
-
     private boolean deleted;
 
     public Answer() {}
@@ -36,11 +28,6 @@ public class Answer {
         this.writer = writer;
         this.question = question;
         this.contents = contents;
-        this.createdAt = LocalDateTime.now();
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public User getWriter() {
@@ -49,10 +36,6 @@ public class Answer {
 
     public String getContents() {
         return contents;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
     }
 
     public void delete() {

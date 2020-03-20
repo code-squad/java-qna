@@ -56,6 +56,7 @@ public class QuestionController {
         Question selectedQuestion = questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
 
         model.addAttribute("question", selectedQuestion);
+        model.addAttribute("questionId", id);
 
         return "qna/show";
     }

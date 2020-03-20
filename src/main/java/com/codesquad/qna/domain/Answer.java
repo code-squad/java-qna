@@ -28,6 +28,14 @@ public class Answer {
         createdDate = LocalDateTime.now();
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public User getWriter() {
+        return writer;
+    }
+
     public void setWriter(User writer) {
         this.writer = writer;
     }
@@ -48,5 +56,9 @@ public class Answer {
         String dateTimePattern = "yyyy년 MM월 dd일 HH시 mm분 ss초";
 
         return createdDate.format(DateTimeFormatter.ofPattern(dateTimePattern));
+    }
+
+    public boolean isSameWriter(User writer) {
+        return this.writer.equals(writer);
     }
 }

@@ -27,6 +27,10 @@ public class AbstractEntity {
         return id;
     }
 
+    public String getCreateDate() {
+        return getFormattedCreateDate();
+    }
+
     public String getFormattedCreateDate() {
         return getFormattedDate(createDate, "yyyy-MM-dd HH:mm:ss");
     }

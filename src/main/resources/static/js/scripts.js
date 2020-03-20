@@ -32,7 +32,7 @@ function onSuccess(data, status) {
   console.log("카운트 : " + count);
 
   var answerTemplate = $("#answerTemplate").html();
-  var template = answerTemplate.format(data.writer.name, data.createdAt, data.contents, data.question.id, data.id);
+  var template = answerTemplate.format(data.writer.name, data.createDate, data.contents, data.question.id, data.id);
   $(".qna-comment-slipp-articles").prepend(template);
   //댓글창 초기화
   $("textarea[name=contents]").val("");
@@ -50,7 +50,7 @@ String.prototype.format = function() {
   });
 };
 
-$("a.link-delete-article").on("click", deleteAnswer);
+$(".qna-comment-slipp-articles").on("click", "a.link-delete-article", deleteAnswer);
 
 function deleteAnswer(e) {
     e.preventDefault();

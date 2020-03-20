@@ -1,5 +1,7 @@
-package com.codessquad.qna;
+package com.codesquad.qna.web;
 
+import com.codesquad.qna.domain.User;
+import com.codesquad.qna.domain.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,12 +33,16 @@ public class UserController {
     public String login(String userId, String password, HttpSession session) {
         User loginUser = userRepository.findByUserId(userId);
         if (loginUser == null) {
-            return "/user/login_failed";
+            session.setAttribute("loginCondition",false);
+            return "redirect:/users/login";
         }
 
         if (!password.equals(loginUser.getPassword())) {
-            return "/user/login_failed";
+            session.setAttribute("loginCondition",false);
+            return "redirect:/users/login";
         }
+
+        session.setAttribute("loginCondition",true);
         session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, loginUser);
         return "redirect:/";
     }
@@ -73,9 +79,9 @@ public class UserController {
     @PutMapping("/{id}")
     public String infoChange(@PathVariable Long id, User updateUser, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
-            return "/user/login_failed";
+            return HomeController.NOT_AUTHORIZE_DIRECTORY;
         }
-        User loginUser = HttpSessionUtils.getUserFromSession(session);
+        User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
         loginUser.update(updateUser);
         userRepository.save(loginUser);
         return "redirect:/users";
@@ -89,26 +95,18 @@ public class UserController {
         return modelAndView;
     }
 
-    // user 전체를 볼 수 있는 list.html에서 수정을 클릭했을 때, 로그인 한 회원만 회원정보를 수정할 수 있고, 다른 경우는 수정할 수 없게
+    // user 전체를 볼 수 있는 list.html에서 수정을 클릭했을 때, 로그인 한 회원만 회원정보를 수정할 수 있고, 다른 경우는 수정할 수 없게 하였습니다.
     @GetMapping("/{id}/info_change")
     public String idInfoChange(@PathVariable Long id, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
-            return "/user/not_qualified";
+            return HomeController.NOT_AUTHORIZE_DIRECTORY;
         }
-        User loginUser = HttpSessionUtils.getUserFromSession(session);
-        System.out.println(loginUser);
+        User loginUser = HttpSessionUtils.getUserFromSession(session).orElse(null);
         if (loginUser.idCheck(id)) {
             return "redirect:/users/info_change";
         }
 
-        return "/user/not_qualified";
+        return HomeController.NOT_AUTHORIZE_DIRECTORY;
     }
 
-//    @PutMapping("/{id}/update")
-//    public String infoChange(@PathVariable Long id, String password, String name, String email) {
-//        User user = userRepository.findById(id).orElse(null);
-//        user.update(password, name, email);
-//        userRepository.save(user);
-//        return "redirect:/users";
-//    }
 }

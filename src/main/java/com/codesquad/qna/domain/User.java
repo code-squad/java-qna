@@ -1,7 +1,7 @@
-package com.codessquad.qna;
+package com.codesquad.qna.domain;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
+import java.util.Objects;
 
 @Entity
 public class User {
@@ -10,19 +10,15 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty
     @Column(nullable = false, length = 20)
     private String userId;
 
-    @NotEmpty
     @Column(nullable = false)
     private String password;
 
-    @NotEmpty
     @Column(nullable = false)
     private String name;
 
-    @NotEmpty
     @Column(nullable = false)
     private String email;
 
@@ -94,5 +90,18 @@ public class User {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

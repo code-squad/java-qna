@@ -34,11 +34,12 @@ public class Users {
     return new UsersBuilder();
   }
 
-  public void update(String userId, String name, String password, String email) {
+  public Users update(String userId, String name, String password, String email) {
     this.userId = userId;
     this.password = password;
     this.name = name;
     this.email = email;
+    return this;
   }
 
   @Override
@@ -52,11 +53,11 @@ public class Users {
         '}';
   }
 
-  public boolean matchId(Long newId) {
-    if (newId == null) {
+  public boolean matchId(Long givenId) {
+    if (givenId == null) {
       return false;
     }
-    return newId.equals(Id);
+    return givenId.equals(Id);
   }
 
   public boolean matchPassword(String newPassword) {

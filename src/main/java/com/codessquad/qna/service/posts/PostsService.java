@@ -31,22 +31,20 @@ public class PostsService {
   }
 
   @Transactional
-  public Long save(PostsSaveRequestDto requestDto) {
-    return postsRepository.save(requestDto.toEntity()).getId();
+  public Posts save(PostsSaveRequestDto requestDto) {
+    return postsRepository.save(requestDto.toEntity());
   }
 
   @Transactional
-  public Long update(Long id, PostsUpdateRequestDto requestDto) {
+  public Posts update(Long id, PostsUpdateRequestDto requestDto) {
     Posts entity = checkValidity(id);
-    entity.update(requestDto.getTitle(), requestDto.getContent());
-    return id;
+    return entity.update(requestDto.getTitle(), requestDto.getContent());
   }
 
   @Transactional
-  public Long delete(Long id, PostsDeleteRequestDto requestDto) {
+  public Posts delete(Long id, PostsDeleteRequestDto requestDto) {
     Posts entity = checkValidity(id);
-    entity.deletePost(requestDto.deleteStatusQuo());
-    return id;
+    return entity.deletePost(requestDto.deleteStatusQuo());
   }
 
   @Transactional(readOnly = true)

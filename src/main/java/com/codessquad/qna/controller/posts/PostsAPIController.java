@@ -1,5 +1,6 @@
 package com.codessquad.qna.controller.posts;
 
+import com.codessquad.qna.domain.Posts;
 import com.codessquad.qna.service.posts.PostsService;
 import com.codessquad.qna.web.dto.posts.PostsDeleteRequestDto;
 import com.codessquad.qna.web.dto.posts.PostsSaveRequestDto;
@@ -19,17 +20,17 @@ public class PostsAPIController {
   }
 
   @PostMapping("/api/v1/posts")
-  public Long save(@RequestBody PostsSaveRequestDto requestDto) {
+  public Posts save(@RequestBody PostsSaveRequestDto requestDto) {
     return postsService.save(requestDto);
   }
 
   @PutMapping("/api/v1/posts/{Id}")
-  public Long update(@PathVariable Long Id, @RequestBody PostsUpdateRequestDto requestDto) {
+  public Posts update(@PathVariable Long Id, @RequestBody PostsUpdateRequestDto requestDto) {
     return postsService.update(Id, requestDto);
   }
 
   @PutMapping("/api/v1/posts/delete/{Id}")
-  public Long delete(@PathVariable Long Id, @RequestBody PostsDeleteRequestDto requestDto) {
+  public Posts delete(@PathVariable Long Id, @RequestBody PostsDeleteRequestDto requestDto) {
     return postsService.delete(Id, requestDto);
   }
 }

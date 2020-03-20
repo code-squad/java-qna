@@ -32,22 +32,20 @@ public class AnswersService {
   }
 
   @Transactional
-  public Long save(AnswersSaveRequestDto requestDto) {
-    return answersRepository.save(requestDto.toEntity()).getId();
+  public Answers save(AnswersSaveRequestDto requestDto) {
+    return answersRepository.save(requestDto.toEntity());
   }
 
   @Transactional
-  public Long update(Long id, AnswersUpdateRequestDto requestDto) {
+  public Answers update(Long id, AnswersUpdateRequestDto requestDto) {
     Answers entity = checkValidity(id);
-    entity.update(requestDto.getContent());
-    return id;
+    return entity.update(requestDto.getContent());
   }
 
   @Transactional
-  public Long delete(Long id, AnswersDeleteRequestDto requestDto) {
+  public Answers delete(Long id, AnswersDeleteRequestDto requestDto) {
     Answers entity = checkValidity(id);
-    entity.deleteAnswer(requestDto.deleteStatusQuo());
-    return id;
+    return entity.deleteAnswer(requestDto.deleteStatusQuo());
   }
 
   @Transactional(readOnly = true)

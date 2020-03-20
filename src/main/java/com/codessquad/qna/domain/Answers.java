@@ -63,8 +63,9 @@ public class Answers extends BaseTimeEntity {
     return deleteStatus;
   }
 
-  public void deleteAnswer(boolean deleteStatus) {
+  public Answers deleteAnswer(boolean deleteStatus) {
     this.deleteStatus = deleteStatus;
+    return this;
   }
 
   public Answers(Users author, String content, Posts posts) {
@@ -81,8 +82,9 @@ public class Answers extends BaseTimeEntity {
     return new AnswersBuilder();
   }
 
-  public void update(String content) {
+  public Answers update(String content) {
     this.content = content;
+    return this;
   }
 
   @Override

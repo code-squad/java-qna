@@ -50,7 +50,7 @@ const index = {
     $.ajax({
       type: 'POST',
       url: '/api/v1/users',
-      dataType: 'json',
+      // dataType: 'json',
       contentType: 'application/json; charset=utf-8',
       data: JSON.stringify(data)
     }).done(function () {
@@ -73,7 +73,7 @@ const index = {
     $.ajax({
       type: 'PUT',
       url: '/api/v1/users/' + Id,
-      dataType: 'json',
+      // dataType: 'json',
       contentType: 'application/json; charset=utf-8',
       data: JSON.stringify(data)
     }).done(function () {
@@ -93,7 +93,7 @@ const index = {
     $.ajax({
       type: 'POST',
       url: '/api/v1/posts',
-      dataType: 'json',
+      // dataType: 'json',
       contentType: 'application/json; charset=utf-8',
       data: JSON.stringify(data)
     }).done(function () {
@@ -114,7 +114,7 @@ const index = {
     $.ajax({
       type: 'PUT',
       url: '/api/v1/posts/' + Id,
-      dataType: 'json',
+      // dataType: 'json',
       contentType: 'application/json; charset=utf-8',
       data: JSON.stringify(data)
     }).done(function () {
@@ -134,7 +134,7 @@ const index = {
     $.ajax({
       type: 'PUT',
       url: '/api/v1/posts/delete/' + Id,
-      dataType: 'json',
+      // dataType: 'json',
       contentType: 'application/json; charset=utf-8',
       data: JSON.stringify(data)
     }).done(function () {
@@ -155,7 +155,7 @@ const index = {
     $.ajax({
       type: 'POST',
       url: '/api/v1/answers/',
-      dataType: 'json',
+      // dataType: 'json',
       contentType: 'application/json; charset=utf-8',
       data: JSON.stringify(data)
     }).done(function () {
@@ -174,7 +174,7 @@ const index = {
     $.ajax({
       type: 'PUT',
       url: '/api/v1/answers/' + answerId,
-      dataType: 'json',
+      // dataType: 'json',
       contentType: 'application/json; charset=utf-8',
       data: JSON.stringify(data)
     }).done(function () {
@@ -194,7 +194,7 @@ const index = {
     $.ajax({
       type: 'PUT',
       url: '/api/v1/answers/delete/' + answerId,
-      dataType: 'json',
+      // dataType: 'json',
       contentType: 'application/json; charset=utf-8',
       data: JSON.stringify(data)
     }).done(function () {

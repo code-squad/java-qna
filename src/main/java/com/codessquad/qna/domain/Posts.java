@@ -95,8 +95,9 @@ public class Posts extends BaseTimeEntity {
     return deleteStatus;
   }
 
-  public void deletePost(boolean deleteStatus) {
+  public Posts deletePost(boolean deleteStatus) {
     this.deleteStatus = deleteStatus;
+    return this;
   }
 
   public long getCountOfAnswers() {
@@ -110,9 +111,10 @@ public class Posts extends BaseTimeEntity {
     return new PostsBuilder();
   }
 
-  public void update(String title, String content) {
+  public Posts update(String title, String content) {
     this.title = title;
     this.content = content;
+    return this;
   }
 
   public Long getId() {

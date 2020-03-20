@@ -34,15 +34,14 @@ public class UsersService {
   }
 
   @Transactional
-  public Long register(UsersRegisterRequestDto requestDto) {
-    return usersRepository.save(requestDto.toEntity()).getId();
+  public Users register(UsersRegisterRequestDto requestDto) {
+    return usersRepository.save(requestDto.toEntity());
   }
 
   @Transactional
-  public Long update(Long id, UsersUpdateRequestDto requestDto) {
+  public Users update(Long id, UsersUpdateRequestDto requestDto) {
     Users entity = checkValidity(id);
-    entity.update(requestDto.getUserId(), requestDto.getPassword(), requestDto.getName(), requestDto.getEmail());
-    return id;
+    return entity.update(requestDto.getUserId(), requestDto.getPassword(), requestDto.getName(), requestDto.getEmail());
   }
 
   private Users checkValidity(Long id) {

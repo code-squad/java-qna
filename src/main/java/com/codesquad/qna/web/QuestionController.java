@@ -1,8 +1,6 @@
 package com.codesquad.qna.web;
 
-import com.codesquad.qna.domain.Question;
-import com.codesquad.qna.domain.QuestionRepository;
-import com.codesquad.qna.domain.User;
+import com.codesquad.qna.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +15,9 @@ public class QuestionController {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private AnswerRepository answerRepository;
 
     @GetMapping("/questions/form")
     public String questionForm(HttpSession session, Model model) {
@@ -53,6 +54,7 @@ public class QuestionController {
     @GetMapping("/questions/{id}")
     public String showQuestion(@PathVariable Long id, Model model) {
         Question selectedQuestion = questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
+
         model.addAttribute("question", selectedQuestion);
 
         return "qna/show";

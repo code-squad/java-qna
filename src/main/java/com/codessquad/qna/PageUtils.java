@@ -2,6 +2,7 @@ package com.codessquad.qna;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +31,8 @@ public class PageUtils {
     }
 
     public Page createPage(int pageIndex, QuestionRepository questionRepository) {
-        PageRequest pageRequest = PageRequest.of(pageIndex, QUESTIONS_OF_EACH_PAGE);
-        Page page = questionRepository.findAll(pageRequest);
+        PageRequest pageRequest = PageRequest.of(pageIndex, QUESTIONS_OF_EACH_PAGE, Sort.by("postingTime").descending());
+        Page page = questionRepository.findAllByDeletedFalse(pageRequest);
         return page;
     }
 

@@ -1,4 +1,6 @@
-package com.codessquad.qna;
+package com.codessquad.qna.web;
+
+import com.codessquad.qna.domain.User;
 
 import javax.servlet.http.HttpSession;
 

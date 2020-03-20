@@ -1,5 +1,7 @@
-package com.codessquad.qna;
+package com.codessquad.qna.web;
 
+import com.codessquad.qna.domain.User;
+import com.codessquad.qna.domain.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

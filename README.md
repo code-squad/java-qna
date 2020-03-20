@@ -1,3 +1,9 @@
+# step5
+
+- AJAX로 답변 추가
+- AJAX로 답변 삭제
+- 답변 삭제 기능 버그 해결
+
 # step4
 
 - User와 Question 연결

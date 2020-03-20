@@ -1,15 +1,13 @@
-package com.codessquad.domain;
+package com.codessquad.domain.user;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class User {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true, length = 30)
@@ -21,7 +19,7 @@ public class User {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     public Long getId() {
@@ -64,5 +62,19 @@ public class User {
         this.password = newUser.password;
         this.name = newUser.name;
         this.email = newUser.email;
+    }
+
+    public boolean matchPasword(String newPassword) {
+        if (newPassword == null) {
+            return false;
+        }
+        return newPassword.equals(password);
+    }
+
+    public boolean matchId(Long newId) {
+        if (newId == null) {
+            return false;
+        }
+        return newId.equals(id);
     }
 }

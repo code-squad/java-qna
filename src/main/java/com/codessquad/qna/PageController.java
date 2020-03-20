@@ -27,6 +27,8 @@ public class PageController {
 
         model.addAttribute("pages", subPages);
         model.addAttribute("questions", pages.get(INITIAL_PAGE_NUMBER));
+        model.addAttribute("preButton", pageUtils.preButton());
+        model.addAttribute("nextButton", pageUtils.nextButton());
         return "/index";
     }
 
@@ -38,6 +40,8 @@ public class PageController {
 
         model.addAttribute("pages", subPages);
         model.addAttribute("questions", pages.get(pageNumber - 1));
+        model.addAttribute("preButton", pageUtils.preButton());
+        model.addAttribute("nextButton", pageUtils.nextButton());
         return "/index";
     }
 

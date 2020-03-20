@@ -35,11 +35,15 @@
               <div class="col-md-3"></div>
               <div class="col-md-6 text-center">
                   <ul class="pagination center-block" style="display:inline-block;">
+                        {{#preButton}}
                         <li><a href="/movePre">«</a></li>
+                        {{/preButton}}
                         {{#pages}}
                         <li><a href="/{{number}}">{{number}}</a></li>
                         {{/pages}}
-                         <li><a href="/moveNext">»</a></li>
+                        {{#nextButton}}
+                        <li><a href="/moveNext">»</a></li>
+                        {{/nextButton}}
                 </ul>
               </div>
               <div class="col-md-3 qna-write">

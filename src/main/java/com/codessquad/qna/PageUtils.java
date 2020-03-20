@@ -16,8 +16,6 @@ public class PageUtils {
 
     private List<Page> pages;
 
-    public PageUtils() {}
-
     public PageUtils(int firstPage, int lastPage) {
         this.firstPage = firstPage;
         this.lastPage = lastPage;
@@ -54,6 +52,10 @@ public class PageUtils {
 
     public boolean isLastPageBar() {
         return lastPage > totalPage;
+    }
+
+    public boolean isFirstPageBar() {
+        return firstPage == 1;
     }
 
     public List<Page> getRegularSubPages(List<Page> inputPages) {
@@ -93,5 +95,15 @@ public class PageUtils {
             lastPage = SIZE_OF_PAGE_BAR + 1;
         }
         return firstPage;
+    }
+
+    public String preButton() {
+        if (!isFirstPageBar()) return " ";
+        return null;
+    }
+
+    public String nextButton() {
+        if (!isLastPageBar()) return " ";
+        return null;
     }
 }

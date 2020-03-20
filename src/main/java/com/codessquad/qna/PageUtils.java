@@ -8,7 +8,7 @@ import java.util.List;
 
 public class PageUtils {
     private static final int INITIAL_PAGE_NUMBER = 0;
-    private static final int QUESTIONS_OF_EACH_PAGE = 1;
+    private static final int QUESTIONS_OF_EACH_PAGE = 3;
     private static final int SIZE_OF_PAGE_BAR = 5;
     private int firstPage;
     private int lastPage;
@@ -88,12 +88,6 @@ public class PageUtils {
         firstPage -= SIZE_OF_PAGE_BAR;
         lastPage -= SIZE_OF_PAGE_BAR;
 
-        if (firstPage < INITIAL_PAGE_NUMBER) {
-            firstPage = INITIAL_PAGE_NUMBER + 1;
-        }
-        if (totalPage > SIZE_OF_PAGE_BAR && lastPage < SIZE_OF_PAGE_BAR) {
-            lastPage = SIZE_OF_PAGE_BAR + 1;
-        }
         return firstPage;
     }
 

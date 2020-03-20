@@ -3,6 +3,7 @@ package com.codessquad.qna.service.answers;
 import com.codessquad.qna.controller.answers.AnswersRepository;
 import com.codessquad.qna.domain.Answers;
 import com.codessquad.qna.exception.NoSuchAnswerException;
+import com.codessquad.qna.utils.ErrorMessageUtil;
 import com.codessquad.qna.utils.PathUtil;
 import com.codessquad.qna.web.dto.answers.AnswersDeleteRequestDto;
 import com.codessquad.qna.web.dto.answers.AnswersListResponseDto;
@@ -60,7 +61,7 @@ public class AnswersService {
             "no such answer. id = " + id));
     if (entity.isDeleted()) {
       throw new NoSuchAnswerException(PathUtil.NO_SUCH_POSTS_OR_ANSWERS,
-          "this answer is already deleted. id = " + id);
+          ErrorMessageUtil.ANSWERS_NOTFOUND + id);
     }
     return entity;
   }

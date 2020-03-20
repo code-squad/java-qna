@@ -3,6 +3,7 @@ package com.codessquad.qna.service.users;
 import com.codessquad.qna.controller.users.UsersRepository;
 import com.codessquad.qna.domain.Users;
 import com.codessquad.qna.exception.NoSuchUserException;
+import com.codessquad.qna.utils.ErrorMessageUtil;
 import com.codessquad.qna.utils.PathUtil;
 import com.codessquad.qna.web.dto.users.UsersListResponseDto;
 import com.codessquad.qna.web.dto.users.UsersRegisterRequestDto;
@@ -46,7 +47,7 @@ public class UsersService {
 
   private Users checkValidity(Long id) {
     Users users = usersRepository.findById(id).orElseThrow(
-        () -> new NoSuchUserException(PathUtil.NO_SUCH_USERS, "No Such User." + " id " + id));
+        () -> new NoSuchUserException(PathUtil.NO_SUCH_USERS, ErrorMessageUtil.USERS_NOTFOUND + id));
     // TODO Users 회원탈퇴 기능 구현하기 (isDeleted()를 사용할 수 있도록 설계해보기)
     return users;
   }

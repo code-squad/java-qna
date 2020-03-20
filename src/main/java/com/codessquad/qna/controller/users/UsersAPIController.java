@@ -1,5 +1,6 @@
 package com.codessquad.qna.controller.users;
 
+import com.codessquad.qna.domain.Users;
 import com.codessquad.qna.service.users.UsersService;
 import com.codessquad.qna.utils.PathUtil;
 import com.codessquad.qna.web.dto.users.UsersRegisterRequestDto;
@@ -22,7 +23,7 @@ public class UsersAPIController {
   }
 
   @PostMapping("/api/v1/users")
-  public Long register(@RequestBody UsersRegisterRequestDto requestDto) {
+  public Users register(@RequestBody UsersRegisterRequestDto requestDto) {
     return usersService.register(requestDto);
   }
 
@@ -33,7 +34,7 @@ public class UsersAPIController {
   }
 
   @PutMapping("/api/v1/users/{Id}")
-  public Long update(@PathVariable Long Id, @RequestBody UsersUpdateRequestDto requestDto) {
+  public Users update(@PathVariable Long Id, @RequestBody UsersUpdateRequestDto requestDto) {
     return usersService.update(Id, requestDto);
   }
 }

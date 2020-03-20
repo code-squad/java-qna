@@ -1,6 +1,7 @@
 package com.codessquad.qna.controller.index;
 
 import com.codessquad.qna.domain.Users;
+import com.codessquad.qna.utils.ErrorMessageUtil;
 import com.codessquad.qna.utils.HttpSessionUtil;
 import java.util.Objects;
 import javax.servlet.http.HttpSession;
@@ -12,7 +13,7 @@ public class ResultsCheckUtil {
   public static Results loginCheckResult() {
     HttpSession httpSession = getHttpSession();
     if (HttpSessionUtil.notLoggedIn(httpSession)) {
-      return Results.fail("Needs to be logged in.");
+      return Results.fail(ErrorMessageUtil.LOGIN);
     }
     return Results.ok();
   }
@@ -21,7 +22,7 @@ public class ResultsCheckUtil {
     HttpSession httpSession = getHttpSession();
     Users sessionUser = (Users) httpSession.getAttribute("sessionUser");
     if (!sessionUser.matchId(Id)) {
-      return Results.fail("Not correct User.");
+      return Results.fail(ErrorMessageUtil.UNAUTHORIZED);
     }
     return Results.ok();
   }

@@ -3,6 +3,7 @@ package com.codessquad.qna.service.posts;
 import com.codessquad.qna.controller.posts.PostsRepository;
 import com.codessquad.qna.domain.Posts;
 import com.codessquad.qna.exception.NoSuchPostException;
+import com.codessquad.qna.utils.ErrorMessageUtil;
 import com.codessquad.qna.utils.PathUtil;
 import com.codessquad.qna.web.dto.posts.PostsDeleteRequestDto;
 import com.codessquad.qna.web.dto.posts.PostsListResponseDto;
@@ -56,10 +57,10 @@ public class PostsService {
   private Posts checkValidity(Long id) {
     Posts entity = postsRepository.findById(id).orElseThrow(
         () -> new NoSuchPostException(PathUtil.NO_SUCH_POSTS_OR_ANSWERS,
-            "no such post." + " id = " + id));
+            ErrorMessageUtil.QUESTION_NOTFOUND + id));
     if (entity.isDeleted()) {
       throw new NoSuchPostException(PathUtil.NO_SUCH_POSTS_OR_ANSWERS,
-          "this post is already deleted.");
+          ErrorMessageUtil.QUESTION_NOTFOUND);
     }
     return entity;
   }

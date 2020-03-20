@@ -1,12 +1,15 @@
 package com.codessquad.qna.question;
 
+import com.codessquad.qna.answer.Answer;
 import com.codessquad.qna.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Entity
 @Data
@@ -20,6 +23,10 @@ public class Question {
   @ManyToOne
   @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_to_user"))
   private User user;
+
+  @JsonIgnore
+  @OneToMany(mappedBy = "question")
+  private List<Answer> answers;
 
   @Column(nullable = false)
   private String title;
@@ -42,6 +49,11 @@ public class Question {
     this.title = question.title;
     this.contents = question.contents;
     this.lastModifiedDateTime = LocalDateTime.now();
+  }
+
+  public boolean checkAnswersWriter() {
+    System.out.println("### checkAnswersWriter()");
+    return this.answers.stream().allMatch(answer -> answer.getUser() == this.user);
   }
 
   public void delete() {

@@ -9,39 +9,20 @@
       <div class="alert alert-danger" role="alert">권한이 없는 사용자 입니다.</div>
     {{/notMatchedUser}}
     <div class="panel panel-default qna-list">
-      <ul class="list">
-        {{#questions}}
-          <li>
-            <div class="wrap">
-              <div class="main">
-                <strong class="subject">
-                  <a href="/questions/{{id}}">{{title}}</a>
-                </strong>
-                <div class="auth-info">
-                  <i class="icon-add-comment"></i>
-                  <span class="time">{{lastModifiedDateTime}}</span>
-                  <a class="author">{{user.userId}}</a>
-                </div>
-                <div class="reply" title="댓글">
-                  <i class="icon-reply"></i>
-                  <span class="point"></span>
-                </div>
-              </div>
-            </div>
-          </li>
-        {{/questions}}
-      </ul>
+      {{> questionTemplate}}
       <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-6 text-center">
           <ul class="pagination center-block" style="display:inline-block;">
-            <li><a href="#">«</a></li>
-            <li><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li><a href="#">»</a></li>
+            {{#pageBeforeButton}}
+              <li><a href="{{pageBeforeButton}}">«</a></li>
+            {{/pageBeforeButton}}
+            {{#each pageCountMap}}
+              <li><a href="{{this}}">{{@key}}</a></li>
+            {{/each}}
+            {{#pageNextButton}}
+              <li><a href="{{pageNextButton}}">»</a></li>
+            {{/pageNextButton}}
           </ul>
         </div>
         <div class="col-md-3 qna-write">

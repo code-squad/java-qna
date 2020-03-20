@@ -16,7 +16,7 @@ public class Question {
     private String title;
     private String contents;
 
-    @Column(name="CREATED_DATE")
+    @Column
     private LocalDateTime createdDate;
 
     public Question() {
@@ -51,9 +51,17 @@ public class Question {
         return createdDate;
     }
 
-
     public Long getId() {
         return id;
+    }
+
+    public void update(Question updatedQuestion) {
+        title = updatedQuestion.getTitle();
+        contents = updatedQuestion.getContents();
+    }
+
+    public boolean isSameWriter(User sessionedUser) {
+        return writer.equals(sessionedUser.getUserName());
     }
 
     @Override

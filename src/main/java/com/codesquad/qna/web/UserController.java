@@ -25,12 +25,11 @@ public class UserController {
         User selectedUser = userRepository.findByUserId(userId);
 
         if (selectedUser == null) {
-            return "redirect:/users/login-form";
+            throw new UserNotFoundException();
         }
 
         if (!selectedUser.isCorrectPassword(password)) {
-            System.out.println("Incorrect");
-            return "redirect:/users/login-form";
+            throw new LoginFailedException();
         }
         session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, selectedUser);
         return "redirect:/";
@@ -59,7 +58,8 @@ public class UserController {
 
     @GetMapping("/users/{id}")
     public String showUser(@PathVariable Long id, Model model) {
-        model.addAttribute("user", userRepository.findById(id).orElseThrow(UserNotFoundException::new));
+        User selectedUser = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        model.addAttribute("user", selectedUser);
 
         return "user/profile";
     }
@@ -67,7 +67,7 @@ public class UserController {
     @GetMapping("/users/{id}/form")
     public String userForm(@PathVariable Long id, Model model, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
-            return "redirect:/users/login-form";
+            throw new UserNotPermittedException();
         }
 
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
@@ -85,7 +85,7 @@ public class UserController {
             userRepository.save(selectedUser);
             return "redirect:/users";
         } else {
-            return "redirect:/users/{id}/form";
+            throw new LoginFailedException();
         }
     }
 }

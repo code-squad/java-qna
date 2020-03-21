@@ -20,7 +20,7 @@ public class Question {
 
     private String contents;
 
-    private LocalDateTime createdDate;
+    private LocalDateTime createdDateTime;
 
     @OneToMany(mappedBy="question")
     @OrderBy("id ASC")
@@ -32,7 +32,7 @@ public class Question {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-        createdDate = LocalDateTime.now();
+        createdDateTime = LocalDateTime.now();
     }
 
     public User getWriter() {
@@ -59,10 +59,10 @@ public class Question {
         this.contents = contents;
     }
 
-    public String getCreatedDate() {
+    public String getCreatedDateTime() {
         String dateTimePattern = "yyyy년 MM월 dd일 HH시 mm분 ss초";
 
-        return createdDate.format(DateTimeFormatter.ofPattern(dateTimePattern));
+        return createdDateTime.format(DateTimeFormatter.ofPattern(dateTimePattern));
     }
 
     public Long getId() {

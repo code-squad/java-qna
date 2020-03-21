@@ -12,10 +12,12 @@ public class User {
 
     @Column(nullable=false, length=10, unique=true)
     private String userId;
+
     private String password;
 
     @Column(nullable=false)
     private String userName;
+
     private String email;
 
     public String getUserId() {

@@ -22,7 +22,7 @@ public class Answer {
 
     private String contents;
 
-    private LocalDateTime createdDate;
+    private LocalDateTime createdDateTime;
 
     public Answer() { }
 
@@ -30,6 +30,7 @@ public class Answer {
         this.writer = writer;
         this.question = question;
         this.contents = contents;
+        this.createdDateTime = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -48,10 +49,10 @@ public class Answer {
         this.contents = contents;
     }
 
-    public String getCreatedDate() {
+    public String getCreatedDateTime() {
         String dateTimePattern = "yyyy년 MM월 dd일 HH시 mm분 ss초";
 
-        return createdDate.format(DateTimeFormatter.ofPattern(dateTimePattern));
+        return createdDateTime.format(DateTimeFormatter.ofPattern(dateTimePattern));
     }
 
     public boolean isSameWriter(User writer) {

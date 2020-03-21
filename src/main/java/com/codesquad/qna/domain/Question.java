@@ -83,10 +83,6 @@ public class Question {
 
     @Override
     public String toString() {
-        return "Writer : " + writer + "\n" +
-                "Title : " + title + "\n" +
-                "Contents : " + contents + "\n" +
-                "Date : " + getCreatedDate() + "\n" +
-                "Id : " + id;
+        return "[Question ID] " + id + "\n [Writer] " + writer;
     }
 }

@@ -1,6 +1,8 @@
 package com.codesquad.qna.web;
 
 import com.codesquad.qna.domain.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +15,8 @@ import java.util.List;
 @Controller
 public class QuestionController {
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     private QuestionRepository questionRepository;
 
@@ -22,7 +26,7 @@ public class QuestionController {
     @GetMapping("/questions/form")
     public String questionForm(HttpSession session, Model model) {
         if (!HttpSessionUtils.isLoginUser(session)) {
-            throw new UserNotPermittedException(); // 중복 코드 리팩토
+            throw new UserNotPermittedException(); // 중복 코드 리팩토링
         }
 
         User writer = HttpSessionUtils.getUserFromSession(session);
@@ -40,6 +44,7 @@ public class QuestionController {
         question.setWriter(sessionedUser);
         DatabaseUtils.replaceEscapesToTags(question);
         questionRepository.save(question);
+        logger.info("{} 질문글의 등록에 성공 하였습니다.", question);
 
         return "redirect:/";
     }
@@ -54,9 +59,7 @@ public class QuestionController {
     @GetMapping("/questions/{id}")
     public String showQuestion(@PathVariable Long id, Model model) {
         Question selectedQuestion = questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
-
         model.addAttribute("question", selectedQuestion);
-        model.addAttribute("questionId", id);
 
         return "qna/show";
     }
@@ -96,6 +99,7 @@ public class QuestionController {
         selectedQuestion.update(updatedQuestion);
         DatabaseUtils.replaceEscapesToTags(selectedQuestion);
         questionRepository.save(selectedQuestion);
+        logger.info("{} 질문글 수정에 성공 하였습니다.", selectedQuestion);
 
         return "redirect:/questions/{id}";
     }
@@ -113,6 +117,7 @@ public class QuestionController {
             throw new UserNotPermittedException();
         }
 
+        logger.info("{} 질문글 삭제에 성공 하였습니다.", selectedQuestion);
         questionRepository.delete(selectedQuestion);
 
         return "redirect:/";

@@ -22,7 +22,7 @@ public class QuestionController {
     @GetMapping("/questions/form")
     public String questionForm(HttpSession session, Model model) {
         if (!HttpSessionUtils.isLoginUser(session)) {
-            return "redirect:/users/login-form";
+            throw new UserNotPermittedException(); // 중복 코드 리팩토
         }
 
         User writer = HttpSessionUtils.getUserFromSession(session);
@@ -33,7 +33,7 @@ public class QuestionController {
     @PostMapping("/questions")
     public String writeQuestion(Question question, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
-            return "redirect:/users/login-form";
+            throw new UserNotPermittedException();
         }
 
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
@@ -64,14 +64,14 @@ public class QuestionController {
     @GetMapping("/questions/{id}/form")
     public String questionUpdateForm(@PathVariable Long id, Model model, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
-            return "redirect:/users/login-form";
+            throw new UserNotPermittedException();
         }
 
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
         Question selectedQuestion = questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
 
         if (!selectedQuestion.isSameWriter(sessionedUser)) {
-            return "redirect:/users/login-form";
+            throw new UserNotPermittedException();
         }
 
         DatabaseUtils.replaceTagsToEscapes(selectedQuestion);
@@ -83,14 +83,14 @@ public class QuestionController {
     @PutMapping("/questions/{id}")
     public String updateQuestion(@PathVariable Long id, Question updatedQuestion, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
-            return "redirect:/users/login-form";
+            throw new UserNotPermittedException();
         }
 
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
         Question selectedQuestion = questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
 
         if (!selectedQuestion.isSameWriter(sessionedUser)) {
-            return "redirect:/users/login-form";
+            throw new UserNotPermittedException();
         }
 
         selectedQuestion.update(updatedQuestion);
@@ -103,14 +103,14 @@ public class QuestionController {
     @DeleteMapping("/questions/{id}")
     public String deleteQuestion(@PathVariable Long id, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
-            return "redirect:/users/login-form";
+            throw new UserNotPermittedException();
         }
 
         User sessionedUser = HttpSessionUtils.getUserFromSession(session);
         Question selectedQuestion = questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
 
         if (!selectedQuestion.isSameWriter(sessionedUser)) {
-            return "redirect:/users/login-form";
+            throw new UserNotPermittedException();
         }
 
         questionRepository.delete(selectedQuestion);

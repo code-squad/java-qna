@@ -27,15 +27,12 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
-        User selectedUser = userRepository.findByUserId(userId);
+        User selectedUser = userRepository.findByUserId(userId).orElseThrow(UserNotFoundException::new);
 
-        if (selectedUser == null) {
-            throw new UserNotFoundException();
-        }
-
-        if (!selectedUser.isCorrectPassword(password)) {
+        if (selectedUser.isNotCorrectPassword(password)) {
             throw new LoginFailedException();
         }
+
         session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, selectedUser);
         logger.info("{} 사용자가 로그인을 했습니다.", selectedUser);
 
@@ -44,7 +41,9 @@ public class UserController {
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        logger.info("{} 사용자가 로그아웃을 했습니다.", HttpSessionUtils.getUserFromSession(session));
+        User loginUser = HttpSessionUtils.couldGetValidUserFromSession(session);
+
+        logger.info("{} 사용자가 로그아웃을 했습니다.", loginUser);
         session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
 
         return "redirect:/";
@@ -75,28 +74,35 @@ public class UserController {
 
     @GetMapping("/{id}/form")
     public String userForm(@PathVariable Long id, Model model, HttpSession session) {
-        if (!HttpSessionUtils.isLoginUser(session)) {
+        User loginUser = HttpSessionUtils.couldGetValidUserFromSession(session);
+        User selectedUser = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+
+        if (!loginUser.equals(selectedUser)) {
             throw new UserNotPermittedException();
         }
 
-        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-        User selectedUser = userRepository.findById(sessionedUser.getId()).orElseThrow(UserNotFoundException::new);
         model.addAttribute("user", selectedUser);
 
         return "user/updateForm";
     }
 
     @PutMapping("/{id}")
-    public String updateUser(@PathVariable Long id, @RequestParam String confirmPassword,  User updatedUser) {
+    public String updateUser(@PathVariable Long id, @RequestParam String confirmPassword,  User updatedUser, HttpSession session) {
+        User loginUser = HttpSessionUtils.couldGetValidUserFromSession(session);
         User selectedUser = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-        if (selectedUser.isCorrectPassword(confirmPassword)) {
-            selectedUser.update(updatedUser);
-            userRepository.save(selectedUser);
-            logger.info("{} 사용자의 정보를 수정 했습니다.", selectedUser);
 
-            return "redirect:/users";
-        } else {
+        if (!loginUser.equals(selectedUser)) {
+            throw new UserNotPermittedException();
+        }
+
+        if (selectedUser.isNotCorrectPassword(confirmPassword)) {
             throw new LoginFailedException();
         }
+
+        selectedUser.update(updatedUser);
+        userRepository.save(selectedUser);
+        logger.info("{} 사용자의 정보를 수정 했습니다.", selectedUser);
+
+        return "redirect:/users";
     }
 }

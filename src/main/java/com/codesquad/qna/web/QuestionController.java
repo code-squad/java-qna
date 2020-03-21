@@ -9,8 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @RequestMapping("/questions")
@@ -26,23 +24,15 @@ public class QuestionController {
 
     @GetMapping("/form")
     public String questionForm(HttpSession session, Model model) {
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            throw new UserNotPermittedException(); // 중복 코드 리팩토링
-        }
-
-        User writer = HttpSessionUtils.getUserFromSession(session);
+        User writer = HttpSessionUtils.couldGetValidUserFromSession(session);
         model.addAttribute("userName", writer.getUserName());
 
         return "/qna/form";
     }
     @PostMapping("")
     public String writeQuestion(Question question, HttpSession session) {
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            throw new UserNotPermittedException();
-        }
-
-        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
-        question.setWriter(sessionedUser);
+        User writer = HttpSessionUtils.couldGetValidUserFromSession(session);
+        question.setWriter(writer);
         DatabaseUtils.replaceEscapesToTags(question);
         questionRepository.save(question);
         logger.info("{} 질문글의 등록에 성공 하였습니다.", question);
@@ -60,14 +50,10 @@ public class QuestionController {
 
     @GetMapping("/{id}/form")
     public String questionUpdateForm(@PathVariable Long id, Model model, HttpSession session) {
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            throw new UserNotPermittedException();
-        }
-
-        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+        User loginUser = HttpSessionUtils.couldGetValidUserFromSession(session);
         Question selectedQuestion = questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
 
-        if (!selectedQuestion.isSameWriter(sessionedUser)) {
+        if (selectedQuestion.isNotSameWriter(loginUser)) {
             throw new UserNotPermittedException();
         }
 
@@ -79,14 +65,10 @@ public class QuestionController {
 
     @PutMapping("/{id}")
     public String updateQuestion(@PathVariable Long id, Question updatedQuestion, HttpSession session) {
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            throw new UserNotPermittedException();
-        }
-
-        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+        User writer = HttpSessionUtils.couldGetValidUserFromSession(session);
         Question selectedQuestion = questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
 
-        if (!selectedQuestion.isSameWriter(sessionedUser)) {
+        if (selectedQuestion.isNotSameWriter(writer)) {
             throw new UserNotPermittedException();
         }
 
@@ -100,14 +82,10 @@ public class QuestionController {
 
     @DeleteMapping("/{id}")
     public String deleteQuestion(@PathVariable Long id, HttpSession session) {
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            throw new UserNotPermittedException();
-        }
-
-        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+        User writer = HttpSessionUtils.couldGetValidUserFromSession(session);
         Question selectedQuestion = questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
 
-        if (!selectedQuestion.isSameWriter(sessionedUser)) {
+        if (selectedQuestion.isNotSameWriter(writer)) {
             throw new UserNotPermittedException();
         }
 

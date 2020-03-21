@@ -23,13 +23,9 @@ public class AnswerController {
 
     @PostMapping("/answers")
     public String write(@PathVariable Long questionId, Answer answer, HttpSession session) {
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            throw new UserNotPermittedException();
-        }
-
-        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+        User writer = HttpSessionUtils.couldGetValidUserFromSession(session);
         Question selectedQuestion = questionRepository.findById(questionId).orElseThrow(QuestionNotFoundException::new);
-        answer.setWriter(sessionedUser);
+        answer.setWriter(writer);
         answer.setQuestion(selectedQuestion);
         answerRepository.save(answer);
         logger.info("답변 {} 등록에 성공 했습니다.", answer);
@@ -39,18 +35,14 @@ public class AnswerController {
 
     @DeleteMapping("/answers/{id}")
     public String delete(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
-        if (!HttpSessionUtils.isLoginUser(session)) {
-            throw new UserNotPermittedException();
-        }
-
         Answer selectedAnswer = answerRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
-        User sessionedUser = HttpSessionUtils.getUserFromSession(session);
+        User writer = HttpSessionUtils.couldGetValidUserFromSession(session);
 
-        if (!selectedAnswer.isSameWriter(sessionedUser)) {
+        if (!selectedAnswer.isSameWriter(writer)) {
             throw new UserNotPermittedException();
         }
 
-        logger.info("답변 {} 를 삭제 하였습니다.", selectedAnswer);
+        logger.info("답변 {}를 삭제 하였습니다.", selectedAnswer);
         answerRepository.delete(selectedAnswer);
 
         return "redirect:/questions/{questionId}";

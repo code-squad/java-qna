@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 
 @Controller
+@RequestMapping("/users")
 public class UserController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -19,12 +20,12 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/users/login-form")
+    @GetMapping("/login-form")
     public String loginForm() {
         return "user/login";
     }
 
-    @PostMapping("/users/login")
+    @PostMapping("/login")
     public String login(String userId, String password, HttpSession session) {
         User selectedUser = userRepository.findByUserId(userId);
 
@@ -41,7 +42,7 @@ public class UserController {
         return "redirect:/";
     }
 
-    @GetMapping("/users/logout")
+    @GetMapping("/logout")
     public String logout(HttpSession session) {
         logger.info("{} 사용자가 로그아웃을 했습니다.", HttpSessionUtils.getUserFromSession(session));
         session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
@@ -49,21 +50,21 @@ public class UserController {
         return "redirect:/";
     }
 
-    @PostMapping("/users")
+    @PostMapping("")
     public String createUser(User user) {
         userRepository.save(user);
 
         return "redirect:/users";
     }
 
-    @GetMapping("/users")
+    @GetMapping("")
     public String listUsers(Model model) {
         model.addAttribute("users", userRepository.findAll());
 
         return "user/list";
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     public String showUser(@PathVariable Long id, Model model) {
         User selectedUser = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         model.addAttribute("user", selectedUser);
@@ -72,7 +73,7 @@ public class UserController {
         return "user/profile";
     }
 
-    @GetMapping("/users/{id}/form")
+    @GetMapping("/{id}/form")
     public String userForm(@PathVariable Long id, Model model, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
             throw new UserNotPermittedException();
@@ -85,7 +86,7 @@ public class UserController {
         return "user/updateForm";
     }
 
-    @PutMapping("/users/{id}")
+    @PutMapping("/{id}")
     public String updateUser(@PathVariable Long id, @RequestParam String confirmPassword,  User updatedUser) {
         User selectedUser = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         if (selectedUser.isCorrectPassword(confirmPassword)) {

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@RequestMapping("/questions")
 public class QuestionController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -23,7 +24,7 @@ public class QuestionController {
     @Autowired
     private AnswerRepository answerRepository;
 
-    @GetMapping("/questions/form")
+    @GetMapping("/form")
     public String questionForm(HttpSession session, Model model) {
         if (!HttpSessionUtils.isLoginUser(session)) {
             throw new UserNotPermittedException(); // 중복 코드 리팩토링
@@ -34,7 +35,7 @@ public class QuestionController {
 
         return "/qna/form";
     }
-    @PostMapping("/questions")
+    @PostMapping("")
     public String writeQuestion(Question question, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
             throw new UserNotPermittedException();
@@ -49,14 +50,7 @@ public class QuestionController {
         return "redirect:/";
     }
 
-    @GetMapping("")
-    public String home(Model model) {
-        model.addAttribute("questions", questionRepository.findAll());
-
-        return "index";
-    }
-
-    @GetMapping("/questions/{id}")
+    @GetMapping("/{id}")
     public String showQuestion(@PathVariable Long id, Model model) {
         Question selectedQuestion = questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
         model.addAttribute("question", selectedQuestion);
@@ -64,7 +58,7 @@ public class QuestionController {
         return "qna/show";
     }
 
-    @GetMapping("/questions/{id}/form")
+    @GetMapping("/{id}/form")
     public String questionUpdateForm(@PathVariable Long id, Model model, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
             throw new UserNotPermittedException();
@@ -83,7 +77,7 @@ public class QuestionController {
         return "qna/updateForm";
     }
 
-    @PutMapping("/questions/{id}")
+    @PutMapping("/{id}")
     public String updateQuestion(@PathVariable Long id, Question updatedQuestion, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
             throw new UserNotPermittedException();
@@ -104,7 +98,7 @@ public class QuestionController {
         return "redirect:/questions/{id}";
     }
 
-    @DeleteMapping("/questions/{id}")
+    @DeleteMapping("/{id}")
     public String deleteQuestion(@PathVariable Long id, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
             throw new UserNotPermittedException();

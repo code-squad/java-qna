@@ -5,14 +5,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
 @Controller
+@RequestMapping("/questions/{questionId}")
 public class AnswerController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -23,7 +21,7 @@ public class AnswerController {
     @Autowired
     private AnswerRepository answerRepository;
 
-    @PostMapping("/questions/{questionId}/answers")
+    @PostMapping("/answers")
     public String write(@PathVariable Long questionId, Answer answer, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
             throw new UserNotPermittedException();
@@ -39,7 +37,7 @@ public class AnswerController {
         return "redirect:/questions/{questionId}";
     }
 
-    @DeleteMapping("/questions/{questionId}/answers/{id}")
+    @DeleteMapping("/answers/{id}")
     public String delete(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
         if (!HttpSessionUtils.isLoginUser(session)) {
             throw new UserNotPermittedException();

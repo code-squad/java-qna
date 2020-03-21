@@ -50,21 +50,21 @@ public class UserController {
     }
 
     @PostMapping("")
-    public String createUser(User user) {
+    public String create(User user) {
         userRepository.save(user);
 
         return "redirect:/users";
     }
 
     @GetMapping("")
-    public String listUsers(Model model) {
+    public String list(Model model) {
         model.addAttribute("users", userRepository.findAll());
 
         return "user/list";
     }
 
     @GetMapping("/{id}")
-    public String showUser(@PathVariable Long id, Model model) {
+    public String show(@PathVariable Long id, Model model) {
         User selectedUser = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         model.addAttribute("user", selectedUser);
         logger.info("{} 사용자의 정보를 조회 합니다.", selectedUser);
@@ -73,7 +73,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/form")
-    public String userForm(@PathVariable Long id, Model model, HttpSession session) {
+    public String form(@PathVariable Long id, Model model, HttpSession session) {
         User loginUser = HttpSessionUtils.couldGetValidUserFromSession(session);
         User selectedUser = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 
@@ -87,7 +87,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public String updateUser(@PathVariable Long id, @RequestParam String confirmPassword,  User updatedUser, HttpSession session) {
+    public String update(@PathVariable Long id, @RequestParam String confirmPassword,  User updatedUser, HttpSession session) {
         User loginUser = HttpSessionUtils.couldGetValidUserFromSession(session);
         User selectedUser = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 

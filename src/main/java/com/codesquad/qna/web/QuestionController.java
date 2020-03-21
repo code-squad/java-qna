@@ -20,14 +20,14 @@ public class QuestionController {
     private QuestionRepository questionRepository;
 
     @GetMapping("/form")
-    public String questionForm(HttpSession session, Model model) {
+    public String form(HttpSession session, Model model) {
         User writer = HttpSessionUtils.couldGetValidUserFromSession(session);
         model.addAttribute("userName", writer.getUserName());
 
         return "/qna/form";
     }
     @PostMapping("")
-    public String writeQuestion(@RequestParam String title, @RequestParam String contents, HttpSession session) {
+    public String write(@RequestParam String title, @RequestParam String contents, HttpSession session) {
         User writer = HttpSessionUtils.couldGetValidUserFromSession(session);
         Question question = new Question(writer, title, contents);
         DatabaseUtils.replaceEscapesToTags(question);
@@ -38,7 +38,7 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}")
-    public String showQuestion(@PathVariable Long id, Model model) {
+    public String show(@PathVariable Long id, Model model) {
         Question selectedQuestion = questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
         model.addAttribute("question", selectedQuestion);
 
@@ -46,7 +46,7 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}/form")
-    public String questionUpdateForm(@PathVariable Long id, Model model, HttpSession session) {
+    public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
         User loginUser = HttpSessionUtils.couldGetValidUserFromSession(session);
         Question selectedQuestion = questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
 
@@ -61,7 +61,7 @@ public class QuestionController {
     }
 
     @PutMapping("/{id}")
-    public String updateQuestion(@PathVariable Long id, Question updatedQuestion, HttpSession session) {
+    public String update(@PathVariable Long id, Question updatedQuestion, HttpSession session) {
         User writer = HttpSessionUtils.couldGetValidUserFromSession(session);
         Question selectedQuestion = questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
 
@@ -78,7 +78,7 @@ public class QuestionController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteQuestion(@PathVariable Long id, HttpSession session) {
+    public String delete(@PathVariable Long id, HttpSession session) {
         User writer = HttpSessionUtils.couldGetValidUserFromSession(session);
         Question selectedQuestion = questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
 

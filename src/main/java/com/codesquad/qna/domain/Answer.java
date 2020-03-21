@@ -61,4 +61,9 @@ public class Answer {
     public boolean isSameWriter(User writer) {
         return this.writer.equals(writer);
     }
+
+    @Override
+    public String toString() {
+        return "[Answer ID] " + id + "\n [Writer] " + writer;
+    }
 }

@@ -2,6 +2,8 @@ package com.codesquad.qna.web;
 
 import com.codesquad.qna.domain.User;
 import com.codesquad.qna.domain.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +13,8 @@ import javax.servlet.http.HttpSession;
 
 @Controller
 public class UserController {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private UserRepository userRepository;
@@ -32,11 +36,14 @@ public class UserController {
             throw new LoginFailedException();
         }
         session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, selectedUser);
+        logger.info("{} 사용자가 로그인을 했습니다.", selectedUser);
+
         return "redirect:/";
     }
 
     @GetMapping("/users/logout")
     public String logout(HttpSession session) {
+        logger.info("{} 사용자가 로그아웃을 했습니다.", HttpSessionUtils.getUserFromSession(session));
         session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
 
         return "redirect:/";
@@ -60,6 +67,7 @@ public class UserController {
     public String showUser(@PathVariable Long id, Model model) {
         User selectedUser = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         model.addAttribute("user", selectedUser);
+        logger.info("{} 사용자의 정보를 조회 합니다.", selectedUser);
 
         return "user/profile";
     }
@@ -83,6 +91,8 @@ public class UserController {
         if (selectedUser.isCorrectPassword(confirmPassword)) {
             selectedUser.update(updatedUser);
             userRepository.save(selectedUser);
+            logger.info("{} 사용자의 정보를 수정 했습니다.", selectedUser);
+
             return "redirect:/users";
         } else {
             throw new LoginFailedException();

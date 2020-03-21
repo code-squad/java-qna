@@ -24,8 +24,12 @@ public class Answer {
 
     private LocalDateTime createdDate;
 
-    public Answer() {
-        createdDate = LocalDateTime.now();
+    public Answer() { }
+
+    public Answer(User writer, Question question, String contents) {
+        this.writer = writer;
+        this.question = question;
+        this.contents = contents;
     }
 
     public Long getId() {
@@ -34,14 +38,6 @@ public class Answer {
 
     public User getWriter() {
         return writer;
-    }
-
-    public void setWriter(User writer) {
-        this.writer = writer;
-    }
-
-    public void setQuestion(Question question) {
-        this.question = question;
     }
 
     public String getContents() {

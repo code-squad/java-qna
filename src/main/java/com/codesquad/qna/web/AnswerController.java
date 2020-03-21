@@ -22,11 +22,10 @@ public class AnswerController {
     private AnswerRepository answerRepository;
 
     @PostMapping("/answers")
-    public String write(@PathVariable Long questionId, Answer answer, HttpSession session) {
+    public String write(@PathVariable Long questionId, @RequestParam String contents, HttpSession session) {
         User writer = HttpSessionUtils.couldGetValidUserFromSession(session);
         Question selectedQuestion = questionRepository.findById(questionId).orElseThrow(QuestionNotFoundException::new);
-        answer.setWriter(writer);
-        answer.setQuestion(selectedQuestion);
+        Answer answer = new Answer(writer, selectedQuestion, contents);
         answerRepository.save(answer);
         logger.info("답변 {} 등록에 성공 했습니다.", answer);
 

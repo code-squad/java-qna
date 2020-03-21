@@ -19,9 +19,6 @@ public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
 
-    @Autowired
-    private AnswerRepository answerRepository;
-
     @GetMapping("/form")
     public String questionForm(HttpSession session, Model model) {
         User writer = HttpSessionUtils.couldGetValidUserFromSession(session);
@@ -30,9 +27,9 @@ public class QuestionController {
         return "/qna/form";
     }
     @PostMapping("")
-    public String writeQuestion(Question question, HttpSession session) {
+    public String writeQuestion(@RequestParam String title, @RequestParam String contents, HttpSession session) {
         User writer = HttpSessionUtils.couldGetValidUserFromSession(session);
-        question.setWriter(writer);
+        Question question = new Question(writer, title, contents);
         DatabaseUtils.replaceEscapesToTags(question);
         questionRepository.save(question);
         logger.info("{} 질문글의 등록에 성공 하였습니다.", question);

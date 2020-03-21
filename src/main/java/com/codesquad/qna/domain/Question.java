@@ -26,7 +26,12 @@ public class Question {
     @OrderBy("id ASC")
     private List<Answer> answers;
 
-    public Question() {
+    public Question() { }
+
+    public Question(User writer, String title, String contents) {
+        this.writer = writer;
+        this.title = title;
+        this.contents = contents;
         createdDate = LocalDateTime.now();
     }
 

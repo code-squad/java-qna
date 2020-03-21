@@ -77,8 +77,8 @@ public class Question {
         contents = updatedQuestion.getContents();
     }
 
-    public boolean isSameWriter(User sessionedUser) {
-        return writer.equals(sessionedUser);
+    public boolean isNotSameWriter(User loginUser) {
+        return !writer.equals(loginUser);
     }
 
     @Override

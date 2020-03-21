@@ -1,6 +1,7 @@
 package com.codesquad.qna.domain;
 
 import javax.persistence.*;
+import java.util.Optional;
 
 @Entity
 public class User {
@@ -57,13 +58,11 @@ public class User {
         this.email = updatedUser.email;
     }
 
-    public boolean isCorrectPassword(String confirmPassword) {
-        if (confirmPassword == null) {
-            return false;
-        }
-
-        return password.equals(confirmPassword);
+    public boolean isNotCorrectPassword(String confirmPassword) {
+        return Optional.ofNullable(confirmPassword).isPresent() ?
+                !password.equals(confirmPassword) : false;
     }
+
 
 
     @Override
@@ -95,7 +94,6 @@ public class User {
         }
         return true;
     }
-
 
     @Override
     public String toString() {

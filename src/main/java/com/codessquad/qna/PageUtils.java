@@ -9,7 +9,7 @@ import java.util.List;
 
 public class PageUtils {
     private static final int INITIAL_PAGE_NUMBER = 0;
-    private static final int QUESTIONS_OF_EACH_PAGE = 3;
+    private static final int QUESTIONS_OF_EACH_PAGE = 4;
     private static final int SIZE_OF_PAGE_BAR = 5;
     private int firstPage;
     private int lastPage;

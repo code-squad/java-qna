@@ -1,6 +1,6 @@
 package com.codessquad.qna.util;
 
-public class PathUtil {
+public class Paths {
     private static final String REDIRECT = "redirect:";
     //home
     public static final String HOME = REDIRECT + "/";

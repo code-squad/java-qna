@@ -1,28 +1,17 @@
 # 질문답변 게시판
 
 ### 반영한 피드백
-1. ofNullable로 포장한 후에 단지 orElseThrow를 하는 정도라면 옵셔널을 쓰지 않고 그냥 if문으로 null 체크하는 것이 객체 생성 비용을 아끼기
-2. session 검증을 먼저해서 불필요하게 쿼리를 날릴 일 없게 하기
+1. 상수만 모아놓은 클래스에는 이름에 복수형을 허용한다
+2. 예외 클래스 이름 지을 때 원래 있는거랑 겹치지않는지 꼭 확인하기
+3. &&로 너무 많이 엮지 않기
 
 ### 구현한 기능
-- fetch 사용
-   1. 답변 생성
-   2. 답변 삭제
+- Pagination
+   1. 질문을 한 페이지에 15개씩 가져오도록 구현한다.
+   2. 질문 목록은 생성일 기준 내림 차순으로 구현한다.
+   3. 시작 번호, 끝 번호 등을 구하고, 동적으로 html을 생성하는 로직 구현
+   4. 한 화면에 보이는 페이지 수는 최대 5개. 6개 넘어가는 경우 다음 페이지 그룹으로 이동할 수 있는 버튼이 나타남
 
-- RestController 생성
-   1. 답변 생성
-   2. 답변 삭제
-
-- 도메인 클래스에 대한 중복 제거 및 리팩토링
-   
-> 공부할 내용
-
-1. JpaRepository vs CrudRepository
-   - CrudRepository: 기본 crud 기능만 제공
-   - JpaRepository:  JPA 관련 특화 기능들 (ex. flushing, 배치성 작업) + CrudRepository + PagingAndSortingRepository
-
-2. JPA에서 save()
-   - 엔티티의 @Id를 기준으로 해당 프로퍼티가 null이면 Transient 상태로 판단하고 id가 null이 아니면 Detached 상태로 판단
    
 ### heroku url
 - https://java-qna-1.herokuapp.com/

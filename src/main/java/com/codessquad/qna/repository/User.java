@@ -1,8 +1,8 @@
 package com.codessquad.qna.repository;
 
 import com.codessquad.qna.exception.WrongFormatException;
-import com.codessquad.qna.util.ErrorMessageUtil;
-import com.codessquad.qna.util.PathUtil;
+import com.codessquad.qna.util.ErrorMessages;
+import com.codessquad.qna.util.Paths;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,9 +32,9 @@ public class User extends AbstractEntity{
 
     public void update(User updateData, String currentPassword) {
         if (!isCorrectPassword(currentPassword))
-            throw new WrongFormatException(PathUtil.BAD_REQUEST, ErrorMessageUtil.WRONG_PASSWORD);
+            throw new WrongFormatException(Paths.BAD_REQUEST, ErrorMessages.WRONG_PASSWORD);
         if (!isCorrectFormat(updateData))
-            throw new WrongFormatException(PathUtil.BAD_REQUEST, ErrorMessageUtil.WRONG_FORMAT);
+            throw new WrongFormatException(Paths.BAD_REQUEST, ErrorMessages.WRONG_FORMAT);
         this.password = updateData.password;
         this.name = updateData.name;
         this.email = updateData.email;
@@ -45,11 +45,35 @@ public class User extends AbstractEntity{
     }
 
     public boolean isCorrectFormat(User user) {
-        boolean userIdIsExist = ObjectUtils.isNotEmpty(user.userId);
-        boolean nameIsExist = ObjectUtils.isNotEmpty(user.name);
-        boolean passwordIsExist = ObjectUtils.isNotEmpty(user.password);
-        boolean emailIsExist = ObjectUtils.isNotEmpty(user.email);
+        if (ObjectUtils.isEmpty(user.userId))
+            return false;
 
-        return userIdIsExist && nameIsExist && passwordIsExist && emailIsExist;
+        if (ObjectUtils.isEmpty(user.password))
+            return false;
+
+        if (ObjectUtils.isEmpty(user.name))
+            return false;
+
+        if (ObjectUtils.isEmpty(user.email))
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        User other = (User) obj;
+        if (getId() == null) {
+            if (other.getId() != null)
+                return false;
+        } else if (!getId().equals(other.getId()))
+            return false;
+        return true;
     }
 }

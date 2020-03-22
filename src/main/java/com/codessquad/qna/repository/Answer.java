@@ -1,8 +1,8 @@
 package com.codessquad.qna.repository;
 
 import com.codessquad.qna.exception.WrongFormatException;
-import com.codessquad.qna.util.ErrorMessageUtil;
-import com.codessquad.qna.util.PathUtil;
+import com.codessquad.qna.util.ErrorMessages;
+import com.codessquad.qna.util.Paths;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.ObjectUtils;
@@ -35,7 +35,7 @@ public class Answer extends AbstractEntity{
 
     public void update(Answer updateData) {
         if (!isCorrectFormat(updateData))
-            throw new WrongFormatException(PathUtil.BAD_REQUEST, ErrorMessageUtil.WRONG_FORMAT);
+            throw new WrongFormatException(Paths.BAD_REQUEST, ErrorMessages.WRONG_FORMAT);
         this.contents = updateData.contents;
     }
 

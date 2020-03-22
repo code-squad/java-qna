@@ -1,10 +1,10 @@
 package com.codessquad.qna.controller;
 
-import com.codessquad.qna.exception.NoSuchElementException;
+import com.codessquad.qna.exception.CustomNoSuchElementException;
 import com.codessquad.qna.repository.User;
 import com.codessquad.qna.repository.UserRepository;
-import com.codessquad.qna.util.ErrorMessageUtil;
-import com.codessquad.qna.util.PathUtil;
+import com.codessquad.qna.util.ErrorMessages;
+import com.codessquad.qna.util.Paths;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +20,6 @@ public class ApiUserController {
     @GetMapping("/{id}")
     public User show(@PathVariable Long id) {
         return userRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_USER));
+                new CustomNoSuchElementException(Paths.NOT_FOUND, ErrorMessages.NOTFOUND_USER));
     }
 }

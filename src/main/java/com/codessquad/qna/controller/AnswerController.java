@@ -1,11 +1,11 @@
 package com.codessquad.qna.controller;
 
-import com.codessquad.qna.exception.NoSuchElementException;
+import com.codessquad.qna.exception.CustomNoSuchElementException;
 import com.codessquad.qna.exception.UnauthorizedException;
 import com.codessquad.qna.repository.*;
-import com.codessquad.qna.util.ErrorMessageUtil;
+import com.codessquad.qna.util.ErrorMessages;
 import com.codessquad.qna.util.HttpSessionUtil;
-import com.codessquad.qna.util.PathUtil;
+import com.codessquad.qna.util.Paths;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -36,11 +36,11 @@ public class AnswerController {
         Answer answer = findAnswer(answerId);
 
         if (!answer.isCorrectWriter(user))
-           throw new UnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.UNAUTHORIZED);
+           throw new UnauthorizedException(Paths.UNAUTHORIZED, ErrorMessages.UNAUTHORIZED);
 
         model.addAttribute("answer", answer);
         model.addAttribute("question", question);
-        return PathUtil.ANSWER_EDIT_TEMPLATE;
+        return Paths.ANSWER_EDIT_TEMPLATE;
     }
 
     @PutMapping("/{answerId}")
@@ -50,23 +50,23 @@ public class AnswerController {
         Answer answer = findAnswer(answerId);
 
         if (!answer.isCorrectWriter(user)) {
-            throw new UnauthorizedException(PathUtil.UNAUTHORIZED, ErrorMessageUtil.UNAUTHORIZED);
+            throw new UnauthorizedException(Paths.UNAUTHORIZED, ErrorMessages.UNAUTHORIZED);
         }
 
         Answer updateData = new Answer(user, question, contents);
         answer.update(updateData);
         answerRepository.save(answer);
-        return PathUtil.REDIRECT_QUESTION_DETAIL + questionId;
+        return Paths.REDIRECT_QUESTION_DETAIL + questionId;
     }
 
 
     private Question findQuestion(Long id) {
         return questionRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_QUESTION));
+                new CustomNoSuchElementException(Paths.NOT_FOUND, ErrorMessages.NOTFOUND_QUESTION));
     }
 
     private Answer findAnswer(Long id) {
         return answerRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementException(PathUtil.NOT_FOUND, ErrorMessageUtil.NOTFOUND_ANSWER));
+                new CustomNoSuchElementException(Paths.NOT_FOUND, ErrorMessages.NOTFOUND_ANSWER));
     }
 }

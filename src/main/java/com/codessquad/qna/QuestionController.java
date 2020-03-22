@@ -16,7 +16,7 @@ import static com.codessquad.qna.HttpSessionUtils.getUserFromSession;
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
-    private static final Logger log = LoggerFactory.getLogger(HomeController.class);
+    private static final Logger log = LoggerFactory.getLogger(QuestionController.class);
 
     @Autowired
     private QuestionRepository questionRepository;

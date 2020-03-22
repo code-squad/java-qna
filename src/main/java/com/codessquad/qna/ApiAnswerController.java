@@ -3,23 +3,17 @@ package com.codessquad.qna;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
 
-import static com.codessquad.qna.HttpSessionUtils.getUserFromSession;
 import static com.codessquad.qna.HttpSessionUtils.isLogin;
+import static com.codessquad.qna.HttpSessionUtils.getUserFromSession;
 
-@Controller
-@RequestMapping("/questions/{questionId}/answers")
-public class AnswerController {
+@RestController
+@RequestMapping("/api/questions/{questionId}/answers")
+public class ApiAnswerController {
     private static final Logger log = LoggerFactory.getLogger(ApiAnswerController.class);
 
     @Autowired
@@ -28,28 +22,32 @@ public class AnswerController {
     @Autowired
     private QuestionRepository questionRepository;
 
-    @GetMapping("/{id}/form")
-    public String viewUpdateForm(@PathVariable Long id, Model model, HttpSession session) {
+    @PostMapping("")
+    public Answer createAnswer(@PathVariable Long questionId, String contents, HttpSession session) {
+        if (!isLogin(session)) {
+            return null;
+        }
+        User sessionUser = getUserFromSession(session);
+        Question question = findQuestion(questionId);
+        Answer answer = new Answer(sessionUser, question, contents);
+        return answerRepository.save(answer);
+    }
+
+    @DeleteMapping("/{id}")
+    public boolean deleteAnswer(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
         try {
-            model.addAttribute("answer", getVerifiedAnswer(id, session));
-            return "/qna/updatedAnswerForm";
+            Answer answer = getVerifiedAnswer(id, session);
+            answer.delete();
+            answerRepository.save(answer);
+            return answer.isDeleted();
         } catch (IllegalAccessException | EntityNotFoundException e) {
             log.info("Error Code > {} ", e.toString());
-            return e.getMessage();
+            return false;
         }
     }
 
-    @PutMapping("/{id}/form")
-    public String updateAnswer(@PathVariable Long questionId, @PathVariable Long id, String contents, HttpSession session) {
-        try {
-            Answer answer = getVerifiedAnswer(id, session);
-            answer.update(contents);
-            answerRepository.save(answer);
-            return "redirect:/questions/" + questionId;
-        } catch (IllegalAccessException | EntityNotFoundException e) {
-            log.info("Error Code > {} ", e.toString());
-            return e.getMessage();
-        }
+    private Question findQuestion(Long questionId) {
+        return questionRepository.findById(questionId).orElseThrow(() -> new EntityNotFoundException("/error/notFound"));
     }
 
     private Answer findAnswer(Long id) {

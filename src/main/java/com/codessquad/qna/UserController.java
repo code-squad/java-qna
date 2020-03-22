@@ -17,7 +17,7 @@ import static com.codessquad.qna.HttpSessionUtils.USER_SESSION_KEY;
 @Controller
 @RequestMapping("/users")
 public class UserController {
-    private static final Logger log = LoggerFactory.getLogger(HomeController.class);
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private UserRepository userRepository;

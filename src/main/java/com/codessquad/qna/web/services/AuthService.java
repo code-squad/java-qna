@@ -2,7 +2,6 @@ package com.codessquad.qna.web.services;
 
 import com.codessquad.qna.domain.User;
 import com.codessquad.qna.domain.UserRepository;
-import com.codessquad.qna.exceptions.PermissionDeniedException;
 import com.codessquad.qna.exceptions.UnauthorizedException;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
-
-import static com.codessquad.qna.exceptions.UnauthorizedException.NOT_LOGIN;
-import static com.codessquad.qna.exceptions.UnauthorizedException.NO_MATCH_USER;
 
 @Service
 public class AuthService {
@@ -27,17 +23,8 @@ public class AuthService {
     }
 
     public void validateAuthentication(HttpServletRequest request, User entrant) throws UnauthorizedException {
-        /**
-         * 함수 파라미터가 Supplier<? extends Throwable>이다.
-         * UnauthorizedException 생성자는 UnauthorizedException(String message) 이다.
-         * 따라서 UnauthorizedException::new -> Function<String, UnauthorizedException>
-         * Function<String, UnauthorizedException> 타입은 Supplier<? extends Throwable>로 캐스팅되지 않기 때문에
-         * 아래 코드애서 UnauthorizedException::new 함수를 사용할 수 없다.
-         */
         Optional<User> optionalOrigin = userRepository.findByAccountId(entrant.getAccountId());
-
-
-        User origin = optionalOrigin.orElseThrow(() -> new UnauthorizedException(NO_MATCH_USER));
+        User origin = optionalOrigin.orElseThrow(UnauthorizedException::noMatchUser);
         origin.verify(entrant);
 
         HttpSession session = request.getSession(true);
@@ -57,21 +44,13 @@ public class AuthService {
         response.addCookie(cookie);
     }
 
-    public User getRequester(HttpServletRequest request) throws UnauthorizedException {
-        try {
-            Long requesterId = (Long) request.getSession(false).getAttribute(AUTHENTICATION_ID);
-
-            return userRepository.findById(requesterId).orElseThrow(() -> new RuntimeException("이런 문제가 가능할까?"));
-        } catch (NullPointerException exception) {
-            throw new UnauthorizedException(NOT_LOGIN);
+    public User getRequester(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw UnauthorizedException.notLogin();
         }
-    }
+        Long id = (Long) session.getAttribute(AUTHENTICATION_ID);
 
-    public void hasAuthorization(HttpServletRequest request, User targetUser) throws UnauthorizedException, PermissionDeniedException {
-        User requester = getRequester(request);
-
-        if (!requester.equals(targetUser)) {
-            throw new PermissionDeniedException();
-        }
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("세션에 문제가 발생했어요."));
     }
 }

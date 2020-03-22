@@ -1,11 +1,10 @@
 package com.codessquad.qna.domain;
 
+import com.codessquad.qna.exceptions.PermissionDeniedException;
 import com.codessquad.qna.exceptions.UnauthorizedException;
 
 import javax.persistence.*;
 import java.util.Objects;
-
-import static com.codessquad.qna.exceptions.UnauthorizedException.NO_MATCH_PASSWORD;
 
 @Entity
 public class User {
@@ -42,10 +41,6 @@ public class User {
 
     public void setAccountId(String userId) {
         this.accountId = userId;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public void setPassword(String password) {
@@ -97,7 +92,17 @@ public class User {
 
     public void verify(User candidate) {
         if (!password.equals(candidate.password)) {
-            throw new UnauthorizedException(NO_MATCH_PASSWORD);
+            throw UnauthorizedException.noMatchPassword();
         }
+    }
+
+    public void hasAuthorization(User target) {
+        if (!equals(target)) {
+            throw new PermissionDeniedException();
+        }
+    }
+
+    public void hasAuthorization(Question target) {
+        hasAuthorization(target.getWriter());
     }
 }

@@ -1,8 +1,9 @@
 {{#partial "main"}}
+<h2 class="mb-4">딩고의 질문</h2>
 <table class="table">
     <thead>
     <tr>
-        <th scope="col">#</th>
+        <th scope="col">답변수</th>
         <th scope="col">제목</th>
         <th scope="col">작성날짜</th>
         <th scope="col">작성자</th>
@@ -11,10 +12,10 @@
     <tbody>
     {{#questions}}
     <tr>
-        <th scope="row">{{id}}</th>
+        <th scope="row">{{numberOfAnswer}}</th>
         <td><a href="/questions/{{id}}">{{title}}</a></td>
         <td>{{createdTime}}</td>
-        <td><a href="/users/{{this.writer.id}}">{{this.writer.accountId}}</a></td>
+        <td><a href="/users/{{writer.id}}">{{writer.accountId}}</a></td>
     </tr>
     {{/questions}}
     </tbody>

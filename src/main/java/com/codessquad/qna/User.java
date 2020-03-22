@@ -13,12 +13,10 @@ import java.util.Objects;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty
     private Long id;
 
     @Column(nullable = false, length = 20, unique = true)
     @NotEmpty
-    @JsonProperty
     private String userId;
 
     @NotEmpty
@@ -26,11 +24,9 @@ public class User {
     private String password;
 
     @NotEmpty
-    @JsonProperty
     private String name;
 
     @NotEmpty
-    @JsonProperty
     private String email;
 
     public void setUserId(String userId) {

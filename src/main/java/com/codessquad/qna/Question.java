@@ -15,23 +15,18 @@ import java.util.List;
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty
     private Long id;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
-    @JsonProperty
     private User writer;
 
     @NotEmpty
-    @JsonProperty
     private String title;
 
     @NotEmpty
-    @JsonProperty
     private String contents;
 
-    @JsonProperty
     private boolean deleted;
     private LocalDateTime postingTime;
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
@@ -41,9 +36,9 @@ public class Question {
     @JsonIgnore
     private List<Answer> answers;
 
-    public Question() {}
+    protected Question() {}
 
-    public Question(User writer, String title, String contents) {
+    protected Question(User writer, String title, String contents) {
         this.writer = writer;
         this.title = title;
         this.contents = contents;

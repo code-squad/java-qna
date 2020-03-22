@@ -45,7 +45,7 @@ public class User extends AbstractEntity{
     }
 
     public boolean isCorrectFormat(User user) {
-        if (ObjectUtils.isEmpty(userId))
+        if (ObjectUtils.isEmpty(user.userId))
             return false;
 
         if (ObjectUtils.isEmpty(user.password))

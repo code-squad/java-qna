@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 const changePage = async (pageNumber) => {
     const response =
-        await fetch('/api/page/' + pageNumber, {method: 'GET'}).then(response => { return response.json()});
+        await fetch(`/api/questions?page=${pageNumber}`, {method: 'GET'}).then(response => { return response.json()});
 
     LAST_PAGE = response.totalPages;
 

@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 
@@ -22,8 +23,7 @@ public class ApiAnswerController {
     @PostMapping("/{questionId}/answers")
     public Answer create(@PathVariable Long questionId,
                          String contents,
-                         HttpSession httpSession,
-                         Model model) {
+                         HttpSession httpSession) {
         try {
             hasPermission(httpSession);
             User sessionedUser = HttpSessionUtils.getUserFromSession(httpSession);
@@ -37,40 +37,40 @@ public class ApiAnswerController {
     }
 
     @GetMapping("/{questionId}/answers/{answerId}/{writer}/form")
-    public String updateForm(@PathVariable Long questionId,
-                             @PathVariable Long answerId,
-                             @PathVariable String writer,
-                             HttpSession httpSession,
-                             Model model) {
+    public ModelAndView updateForm(@PathVariable Long questionId,
+                                   @PathVariable Long answerId,
+                                   @PathVariable String writer,
+                                   HttpSession httpSession,
+                                   Model model) {
         try {
             hasPermission(httpSession, writer);
             model.addAttribute("question", findQuestionById(questionId));
             model.addAttribute("answer", findAnswerById(answerId));
-            return "answer/updateForm";
+            return new ModelAndView("/answer/updateForm");
         } catch (IllegalStateException e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "/user/login";
+            return new ModelAndView("/user/login");
         }
     }
 
-    @PutMapping("/{questionId}/answers/{answerId}/update")
-    public String update(@PathVariable Long answerId,
-                         String contents,
-                         HttpSession httpSession,
-                         Model model) {
+    @PutMapping("/{questionId}/answers/{answerId}")
+    public ModelAndView update(@PathVariable Long answerId,
+                               String contents,
+                               HttpSession httpSession,
+                               Model model) {
         try {
             hasPermission(httpSession);
             Answer answer = findAnswerById(answerId);
             answer.update(contents);
             answerRepository.save(answer);
-            return "redirect:/questions/{questionId}";
+            return new ModelAndView("redirect:/questions/{questionId}");
         } catch (IllegalStateException e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "/user/login";
+            return new ModelAndView("/user/login");
         }
     }
 
-    @DeleteMapping("/{questionId}/answers/{answerId}/{writer}/delete")
+    @DeleteMapping("/{questionId}/answers/{answerId}/{writer}")
     public Result delete(@PathVariable Long answerId,
                          @PathVariable String writer,
                          @PathVariable Long questionId,

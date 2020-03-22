@@ -21,7 +21,7 @@ public class UserController {
 
     @GetMapping("/loginForm")
     public String loginForm() {
-        return "/user/login";
+        return "user/logi";
     }
 
     @PostMapping("/login")
@@ -33,7 +33,7 @@ public class UserController {
             return "redirect:/";
         } catch (IllegalStateException e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "/user/login";
+            return "user/login";
         }
     }
 

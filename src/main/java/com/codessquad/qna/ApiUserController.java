@@ -16,6 +16,7 @@ public class ApiUserController {
 
     @GetMapping("/{id}")
     public User show(@PathVariable Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new IllegalStateException("There is no user"));
+        return userRepository.findById(id).orElseThrow(() ->
+                new IllegalStateException("There is no user"));
     }
 }

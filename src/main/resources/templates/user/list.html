@@ -16,12 +16,12 @@
                 <tbody>
                 {{#users}}
                 <tr>
-                    <th scope="row"><a href="/users/{{userId}}"/>{{id}}</th>
+                    <th scope="row"><a href="/users/{{id}}"/>{{id}}</th>
                     <td>{{userId}}</td>
                     <td>{{name}}</td>
                     <td>{{email}}</td>
                     <td>
-                        <a class="btn btn-success" href="/users/{{id}}/form" role="button">수정</a>
+                        <a class="btn btn-success" href="/users/{{id}}/update" role="button">수정</a>
                     </td>
                 </tr>
                 {{/users}}

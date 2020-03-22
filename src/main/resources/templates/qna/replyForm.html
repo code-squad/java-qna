@@ -1,0 +1,22 @@
+{{> header}}
+
+<div class="container" id="main">
+    <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
+        <div class="panel panel-default content-main">
+            {{#updatingAnswer}}
+            <form action="/questions/{{question.id}}/answers/{{id}}" method="post" name="answer">
+                <input name="_method" type="hidden" value="put"/>
+                <div class="form-group">
+                    <label for="contents">내용</label>
+                    <textarea class="form-control" id="contents" name="contents"
+                              rows="5">{{updatingAnswer.contents}}</textarea>
+                </div>
+                <button class="btn btn-success clearfix pull-right" type="submit">수정하기</button>
+                <div class="clearfix"/>
+            </form>
+            {{/updatingAnswer}}
+        </div>
+    </div>
+</div>
+
+{{> footer}}

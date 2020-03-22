@@ -1,39 +1,43 @@
 package com.codesquad.qna.domain;
 
-import javax.persistence.Column;
+import com.codesquad.qna.common.AbstractEntity;
+
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
-public class Question {
+public class Question extends AbstractEntity {
 
-    @Id
-    @GeneratedValue
-    private Long id;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    private User writer;
 
-    @Column(nullable = false)
-    private String writer;
-
+    @NotEmpty
     private String title;
+
+    @NotEmpty
     private String contents;
-    private LocalDateTime createdDateTime;
 
-    public Long getId() {
-        return id;
+    private Integer replyCount;
+
+    public Question() {
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Question(User writer, Question question) {
+        this.writer = writer;
+        this.title = question.title;
+        this.contents = question.contents;
+        this.replyCount = 0;
     }
 
-    public String getWriter() {
+    public User getWriter() {
         return writer;
     }
 
-    public void setWriter(String writer) {
+    public void setWriter(User writer) {
         this.writer = writer;
     }
 
@@ -53,22 +57,34 @@ public class Question {
         this.contents = contents;
     }
 
-    public String getFormattedCreatedTime() {
-        return createdDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    public Integer getReplyCount() {
+        return replyCount;
     }
 
-    public void setCreatedDateTime(LocalDateTime createdDateTime) {
-        this.createdDateTime = createdDateTime;
+    public void setReplyCount(Integer replyCount) {
+        this.replyCount = replyCount;
+    }
+
+    public void increaseReplyCount() {
+        replyCount++;
+    }
+
+    public void decreaseReplyCount() {
+        replyCount--;
+    }
+
+    public void update(Question updateQuestion) {
+        this.title = updateQuestion.title;
+        this.contents = updateQuestion.contents;
     }
 
     @Override
     public String toString() {
         return "Question{" +
-                "id=" + id +
                 ", writer='" + writer + '\'' +
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
-                ", createdDateTime=" + createdDateTime +
+                super.toString() +
                 '}';
     }
 }

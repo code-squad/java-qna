@@ -4,24 +4,26 @@
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
         <div class="panel panel-default qna-list">
             <ul class="list">
+                {{#questions}}
                 <li>
                     <div class="wrap">
                         <div class="main">
                             <strong class="subject">
-                                <a href="/questions/{{id}}"></a>
+                                <a href="/questions/{{id}}">{{title}}</a>
                             </strong>
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
-                                <span class="time"></span>
-                                <a class="author" href="users/profile.html"></a>
+                                <span class="time">{{formattedTime}}</span>
+                                <a class="author" href="/users/{{writer.id}}">{{writer.name}}</a>
                             </div>
                             <div class="reply" title="댓글">
                                 <i class="icon-reply"></i>
-                                <span class="point"></span>
+                                <span class="point">{{id}}</span>
                             </div>
                         </div>
                     </div>
                 </li>
+                {{/questions}}
             </ul>
             <div class="row">
                 <div class="col-md-3"></div>
@@ -37,12 +39,14 @@
                     </ul>
                 </div>
                 <div class="col-md-3 qna-write">
-                    <a class="btn btn-primary pull-right" href="questions/form" role="button">질문하기</a>
+                    <a class="btn btn-primary pull-right" href="/questions/create" role="button">질문하기</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+{{> footer}}
 
 <!--login modal-->
 <!--

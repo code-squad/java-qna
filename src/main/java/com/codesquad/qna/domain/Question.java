@@ -1,33 +1,45 @@
 package com.codesquad.qna.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Entity
 public class Question {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String writer;
+
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    private User writer;
+
     private String title;
+
     private String contents;
 
-    @Column
-    private LocalDateTime createdDate;
+    private LocalDateTime createdDateTime;
 
-    public Question() {
-        createdDate = LocalDateTime.now();
+    @OneToMany(mappedBy="question")
+    @OrderBy("id ASC")
+    private List<Answer> answers;
+
+    public Question() { }
+
+    public Question(User writer, String title, String contents) {
+        this.writer = writer;
+        this.title = title;
+        this.contents = contents;
+        createdDateTime = LocalDateTime.now();
     }
 
-    public String getWriter() {
+    public User getWriter() {
         return writer;
     }
 
-    public void setWriter(String writer) {
+    public void setWriter(User writer) {
         this.writer = writer;
     }
 
@@ -47,12 +59,22 @@ public class Question {
         this.contents = contents;
     }
 
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
+    public String getCreatedDateTime() {
+        String dateTimePattern = "yyyy년 MM월 dd일 HH시 mm분 ss초";
+
+        return createdDateTime.format(DateTimeFormatter.ofPattern(dateTimePattern));
     }
 
     public Long getId() {
         return id;
+    }
+
+    public Long getNumberOfAnswers() {
+        return (long)answers.size();
+    }
+
+    public List<Answer> getAnswers() {
+        return answers;
     }
 
     public void update(Question updatedQuestion) {
@@ -60,16 +82,12 @@ public class Question {
         contents = updatedQuestion.getContents();
     }
 
-    public boolean isSameWriter(User sessionedUser) {
-        return writer.equals(sessionedUser.getUserName());
+    public boolean isNotSameWriter(User loginUser) {
+        return !writer.equals(loginUser);
     }
 
     @Override
     public String toString() {
-        return "Writer : " + writer + "\n" +
-                "Title : " + title + "\n" +
-                "Contents : " + contents + "\n" +
-                "Date : " + getCreatedDate() + "\n" +
-                "Id : " + id;
+        return "[Question ID] " + id + "\n [Writer] " + writer;
     }
 }

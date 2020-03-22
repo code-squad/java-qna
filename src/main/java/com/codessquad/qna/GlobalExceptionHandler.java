@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
     public String notFound(NotFoundException e, Model model, HttpServletRequest request) {
         LOGGER.debug("[page/EXCEPTION] : {}", "NOT_FOUND");
         setModel(e,request,model);
-        return "/errors/404";
+        return "/errors/4XX";
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
     public String illegal(IllegalStateException e, Model model, HttpServletRequest request) {
         LOGGER.debug("[page/EXCEPTION] : {}", "UNAUTHORIZED");
         setModel(e,request,model);
-        return "/errors/401";
+        return "/errors/4XX";
     }
 
     @ResponseStatus(HttpStatus.FORBIDDEN)
@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
     public String notMatch(IllegalArgumentException e, Model model, HttpServletRequest request) {
         LOGGER.debug("[page/EXCEPTION] : {}", "NOT_MATCH_PASSWORD");
         setModel(e,request,model);
-        return "/errors/403";
+        return "/errors/4XX";
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
     public String invalidInput(InvalidInputException e, Model model, HttpServletRequest request) {
         LOGGER.debug("[page/EXCEPTION] : {}", "BAD_REQUEST");
         setModel(e,request,model);
-        return "/errors/400";
+        return "/errors/4XX";
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -55,7 +55,7 @@ public class GlobalExceptionHandler {
     public String canNotDelete(CanNotDeleteException e, Model model, HttpServletRequest request) {
         LOGGER.debug("[page/EXCEPTION] : {}", "BAD_REQUEST");
         setModel(e,request,model);
-        return "/errors/400";
+        return "/errors/4XX";
     }
 
     private void setModel(Exception e, HttpServletRequest request, Model model) {

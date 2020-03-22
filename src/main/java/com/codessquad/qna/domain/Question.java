@@ -1,39 +1,40 @@
 package com.codessquad.qna.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Entity
-public class Question {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Question extends AbstractEntity {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+    @JsonProperty
     private User writer;
 
     @OneToMany(mappedBy = "question")
     @Where(clause = "deleted = false")
     @OrderBy("id ASC")
+    @JsonIgnore
     private List<Answer> answers;
 
     @NotBlank
     @Column(length = 50)
+    @JsonProperty
     private String title;
 
     @NotBlank
     @Type(type = "text")
+    @JsonProperty
     private String contents;
 
-    private LocalDateTime writeTime;
+    @JsonProperty
+    private Integer countOfAnswer = 0;
 
     private boolean deleted;
 
@@ -45,10 +46,6 @@ public class Question {
 
     public List<Answer> getAnswers() {
         return answers;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public void setWriter(User writer) {
@@ -75,16 +72,12 @@ public class Question {
         this.contents = contents;
     }
 
-    public void setWriteTime(LocalDateTime writeTime) {
-        this.writeTime = writeTime;
+    public Integer getCountOfAnswer() {
+        return countOfAnswer;
     }
 
-    public String getWriteTime() {
-        return writeTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-    }
-
-    public void setWriteTimeNow() {
-        setWriteTime(LocalDateTime.now());
+    public boolean isDeleted() {
+        return deleted;
     }
 
     public void update(Question updatedQuestion) {
@@ -111,6 +104,14 @@ public class Question {
         }
 
         return isAllAnswersByWriter();
+    }
+
+    public void addCount() {
+        this.countOfAnswer += 1;
+    }
+
+    public void deleteCount() {
+        this.countOfAnswer -= 1;
     }
 
     public void delete(){

@@ -18,7 +18,7 @@
                       <div class="article-header-text">
                           <a href="/users/92/kimmunsu" class="article-author-name">{{question.writer.name}}</a>
                           <a href="/questions/413" class="article-header-time" title="퍼머링크">
-                              {{question.writeTime}}
+                              {{question.formattedCreateDate}}
                               <i class="icon-link"></i>
                           </a>
                       </div>
@@ -46,7 +46,7 @@
 
               <div class="qna-comment">
                   <div class="qna-comment-slipp">
-                      <p class="qna-comment-count"><strong>2</strong>개의 의견</p>
+                      <p class="qna-comment-count"><strong>{{question.countOfAnswer}}</strong>개의 의견</p>
                       <div class="qna-comment-slipp-articles">
 
                           {{#question.answers}}
@@ -58,7 +58,7 @@
                                   <div class="article-header-text">
                                       <a href="/users/1/자바지기" class="article-author-name">{{writer.name}}</a>
                                       <a href="#answer-1434" class="article-header-time" title="퍼머링크">
-                                          {{createdAt}}
+                                          {{formattedCreateDate}}
                                       </a>
                                   </div>
                               </div>
@@ -68,13 +68,10 @@
                               <div class="article-util">
                                   <ul class="article-util-list">
                                       <li>
-                                          <a class="link-modify-article" href="/questions/413/answers/1405/form">수정</a>
+                                          <a class="link-modify-article" href="/api/qna/updateAnswer/{{question.id}}">수정</a>
                                       </li>
                                       <li>
-                                          <form class="delete-answer-form" action="/questions/{{question.id}}/answers/{{this.id}}" method="POST">
-                                              <input type="hidden" name="_method" value="DELETE">
-                                              <button type="submit" class="delete-answer-button">삭제</button>
-                                          </form>
+                                          <a class="link-delete-article" href="/api/questions/{{question.id}}/answers/{{this.id}}">삭제</a>
                                       </li>
                                   </ul>
                               </div>
@@ -82,7 +79,7 @@
                           {{/question.answers}}
 
                           {{#sessionUser}}
-                          <form class="submit-write" method="post" action="/questions/{{question.id}}/answers">
+                          <form class="answer-write" method="post" action="/api/questions/{{question.id}}/answers">
                               <div class="form-group" style="padding:14px;">
                                   <textarea class="form-control" placeholder="Update your status" name="contents"></textarea>
                               </div>
@@ -117,12 +114,9 @@
 			<li>
 				<a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
 			</li>
-			<li>
-				<form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
-					<input type="hidden" name="_method" value="DELETE">
-                     <button type="submit" class="delete-answer-button">삭제</button>
-				</form>
-			</li>
+            <li>
+                <a class="link-delete-article" href="/api/questions/{3}/answers/{4}">삭제</a>
+            </li>
 		</ul>
 		</div>
 	</article>

@@ -1,39 +1,34 @@
 package com.codessquad.qna.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
 @Entity
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class User extends AbstractEntity {
     @NotBlank
     @Column(length = 20, unique = true)
+    @JsonProperty
     private String userId;
 
     @NotBlank
     @Column(length = 20)
+    @JsonIgnore
     private String password;
 
     @NotBlank
+    @JsonProperty
     private String name;
 
     @NotBlank
+    @JsonProperty
     private String email;
 
     @Transient
     private String updatedPassword;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getUserId() {
         return userId;
@@ -97,7 +92,7 @@ public class User {
     }
 
     public boolean matchId(Long inputId) {
-        return id.equals(inputId);
+        return getId().equals(inputId);
     }
 
     public boolean matchName(String writer) {

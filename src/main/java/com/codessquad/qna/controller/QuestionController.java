@@ -52,7 +52,6 @@ public class QuestionController {
 
         User user = HttpSessionUtils.getUserFromSession(session);
         question.setWriter(user);
-        question.setWriteTimeNow();
 
         LOGGER.debug("[page] : {}", "질문 DB에 저장");
         questionRepository.save(question);
@@ -127,7 +126,12 @@ public class QuestionController {
     }
 
     private Question getQuestionById(Long id){
-        return questionRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 질문입니다."));
+        return questionRepository.findById(id).map(question -> {
+          if(question.isDeleted()){
+              throw new NotFoundException("삭제된 질문입니다.");
+          }
+            return question;
+        }).orElseThrow(() -> new NotFoundException("존재하지 않는 질문입니다."));
     }
 
     private Result hasPermission(HttpSession session, Question question) {

@@ -1,27 +1,25 @@
+## STEP6
 
-### Heroku
+- https://wooody92.herokuapp.com
 
-- https://wooody92.herokuapp.com/
+> 함께한 팀원 : Jack
+> 페어프로그래밍 방식 : Ground rule 논의 -> Step6의 페이지 기능 구현을 위해 학습 후 아이디어 공유 -> 함께 코드 작성 -> 세부적인 기능을 각자 수정 후 P.R
 
 ### 0. 구현 기능
 
-- 답변 추가하기 (ajax, json 활용)
-  - Template 생성 및 append 메서드를 통해 오름차순으로 정렬
-- 답변 삭제하기 (ajax, json 활용)
-  - answer 객체의 boolean deleted 값을 받아 이벤트 발생시킨 템플릿 삭제
-- 답변 수정하기
-  - 수정하기 버튼 클릭 시, 서버로부터 json data 정상적으로 받아오는 것을 확인했다. 코드 작성하면서 생각해보니 댓글 수정기능의 경우는 댓글 수정폼이라는 새페이지로 로드해서 수정하는 방식이어서 ModelAndView 이용하여 처리했다.
-- @JsonIgnore 사용하여 양방향 연관관계 무한참조 에러제거
-- 로깅 라이브러리 log4j2 -> logback 변경
+- 동적으로 구동하는 페이지 나누기 기능 구현했습니다.
+- 페이지를 각 양 끝으로 이동하면, 이전 혹은 다음 버튼을 보이지않게 제거하여 예상치못한 버그차단 했습니다.
+- PageController와 PageUtils 클래스를 목적성에 맞게 분리했습니다.
 
 ### 1. 회고
 
-- Ajax, jQuery, XHR 등 처음 접해서 개념을 학습했다.
+- PageUtils 클래스를 만들어서 페이지 컨트롤러에서 import static 선언하여 사용하려고 했는데 하다보니 여러 문제가 생겼습니다. 주로 QuestionRepository를 가져다 쓰면서 발생한 문제였는데 그래서 궁금한점이 있습니다.
 
-  https://github.com/wooody92/notes/tree/master/spring/study
+  1. @Autowired QuestionRepository는 static하게 사용하는 것은 바람직하지 않나요?
 
-- 프로젝트 진행하며 실수 혹은 무지로 인해 삽질한 내용을 정리했다.
+  2. 아래 삽질했던 링크처럼 클래스 생성자에서 QuestionRepository를 사용하고 싶은데, 생성자 수행전에 @Autowired 시키는 방법은 없을까요?
 
-  https://github.com/wooody92/notes/tree/master/spring/삽질노트
+  3. 실제 작성한 코드에서는 빈을 제거하고, QuestionRepository를 매개변수로 하는 메서드들을 만들어 사용했는데 괜찮을까요?
 
-- GitHub 블로그를 만들어 정리해나가면 좋을 것 같다고 생각했다.
+     https://github.com/wooody92/notes/blob/master/spring/삽질노트/0319%20auto-wired%20before%20class%20constructor.md
+

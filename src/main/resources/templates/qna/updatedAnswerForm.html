@@ -7,7 +7,7 @@
 <div class="container" id="main">
    <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
       <div class="panel panel-default content-main">
-          <form name="question" method="post" action="/api/questions/{{answer.question.id}}/answers/{{id}}/form">
+          <form name="question" method="post" action="/questions/{{answer.question.id}}/answers/{{id}}/form">
               <input type="hidden" name="_method" value="PUT" />
               <div class="form-group">
                   <label for="contents">내용</label>
